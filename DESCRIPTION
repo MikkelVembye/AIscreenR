@@ -8,7 +8,7 @@ Authors@R: c(
            role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-9071-0724"))
            )
-Description: Screening with OPEN-AI including ChatGPT
+Description: Screening with OPEN-AI including ChatGPT.
 Depends:
     R (>= 4.1.0)
 License: MIT + file LICENSE
@@ -18,7 +18,6 @@ RoxygenNote: 7.2.3
 Imports:
     tibble,
     dplyr, 
-    purrr,
     httr,
     tictoc,
     stringr
