@@ -1,0 +1,27 @@
+Package: AIscreenR
+Title: AI screening tools for systematic reviews
+Version: 0.0.0.9999
+Authors@R: c(
+    person(given = "Mikkel H.", 
+           family = "Vembye", 
+           email = "mikkel.vembye@gmail.com", 
+           role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-9071-0724"))
+           )
+Description: Screening with OPEN-AI including ChatGPT
+Depends:
+    R (>= 4.1.0)
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Imports:
+    tibble,
+    dplyr, 
+    purrr,
+    httr,
+    tictoc,
+    stringr
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
