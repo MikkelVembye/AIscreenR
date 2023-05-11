@@ -63,7 +63,7 @@ ask_chatgpt <- function(
 
 
     answer <- stringr::str_trim(httr::content(response)$choices[[1]]$message$content) |>
-      stringr::str_remove_all("\n")
+      stringr::str_replace_all("\n", " ")
 
     if(rlang::is_empty(answer)){
       answer <- "API limit reached or invalid API"
