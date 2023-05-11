@@ -4,5 +4,5 @@
 # Manage dplyr behavior
 
 utils::globalVariables(
-  c("answer_raw")
+  c("answer")
 )

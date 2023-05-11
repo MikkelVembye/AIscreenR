@@ -5,7 +5,7 @@
 #' @param api_key Insert
 #' @param model Insert
 #' @param sleep_time Insert
-#' @param add_name_to_vars Insert
+#' @param time_info Logical indicating if time for answer should be returned
 #'
 #' @return A tibble with answer and its running time.
 #' @export
@@ -17,54 +17,123 @@
 #' ask_chatgpt(q, api_key = 123456789, sleep_time = 0)
 #' }
 #'
+#'
+#'
+#'
+
+
 ask_chatgpt <- function(
     question,
     api_key,
     model = "gpt-3.5-turbo",
     sleep_time = 20,
-    add_name_to_vars = NULL
-){
+    time_info = FALSE
+ ){
 
-  Sys.sleep(sleep_time)
+  run_ask_chatgpt <- function(
+    question,
+    api_key,
+    model,
+    sleep_time,
+    time_info
+    ){
 
-  tictoc::tic()
+    tictoc::tic()
 
-  response <- httr::POST(
-    url = "https://api.openai.com/v1/chat/completions",
-    httr::add_headers(Authorization = paste("Bearer", api_key)),
-    httr::content_type_json(),
-    encode = "json",
-    body = list(
-      model = model,
-      messages = list(list(
-        role = "user",
-        content = question
-      ))
+    # Insert homepage
+
+    response <- httr::POST(
+      url = "https://api.openai.com/v1/chat/completions",
+      httr::add_headers(Authorization = paste("Bearer", api_key)),
+      httr::content_type_json(),
+      encode = "json",
+      body = list(
+        model = model,
+        messages = list(list(
+          role = "user",
+          content = question
+        ))
+      )
     )
-  )
 
-  time <- tictoc::toc(quiet = TRUE)
+    time <- tictoc::toc(quiet = TRUE)
+    run_time <- round(as.numeric(time$toc - time$tic), 2)
+
+    if (sleep_time > run_time) Sys.sleep(sleep_time - round(run_time + 1))
 
 
-  res <- tibble::tibble(
+    answer <- stringr::str_trim(httr::content(response)$choices[[1]]$message$content) |>
+      stringr::str_remove_all("\n")
 
-    time = as.numeric(time$toc - time$tic),
-    answer_raw = stringr::str_trim(httr::content(response)$choices[[1]]$message$content),
-    answer = stringr::str_remove_all(answer_raw, "\n")
+    if(rlang::is_empty(answer)){
+      answer <- "API limit reached"
+      run_time <- NA_real_
+    }
+    res <- tibble::tibble(answer = answer)
 
-  ) |>
-    dplyr::select(-answer_raw)
-
-  if (!is.null(add_name_to_vars)){
-
-    if (!is.character(add_name_to_vars)){
-      stop("add_name_to_vars only takes a character string as input")
+    if(time_info){
+      res <- res |> dplyr::mutate(run_time = run_time)
     }
 
-    res <- res |> dplyr::rename_with(~ paste0(.x, add_name_to_vars))
+    res
 
   }
 
-  res
+  if (time_info){
+
+    run_ask_chatgpt <-
+      purrr::possibly(
+        run_ask_chatgpt,
+        otherwise = tibble::tibble(
+          answer = paste0(
+          "ERROR (Possible because the token limit is reached. ",
+          "Try to reduce the number of characters [including the answer] below 3500)"
+          ),
+          run_time = NA_real_
+        )
+      )
+
+  } else {
+
+  run_ask_chatgpt <-
+    purrr::possibly(
+      run_ask_chatgpt,
+      otherwise = tibble::tibble(
+        answer = paste0(
+        "ERROR (Possible because the token limit is reached. ",
+        "Try to reduce the number of characters [including the answer] below 3500)"
+     )
+    )
+   )
+
+  }
+
+  run_ask_chatgpt(
+    question = question,
+    api_key = api_key,
+    model = model,
+    sleep_time = sleep_time,
+    time_info = time_info
+  )
+
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
