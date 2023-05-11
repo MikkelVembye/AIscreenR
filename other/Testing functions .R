@@ -1,4 +1,3 @@
-api_key <- "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"
 
 q <- "What is a carrot?"
 ask_chatgpt(q, api_key = api_key, sleep_time = 0, time_info = FALSE)
