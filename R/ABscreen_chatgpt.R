@@ -66,7 +66,7 @@ ask_chatgpt <- function(
       stringr::str_remove_all("\n")
 
     if(rlang::is_empty(answer)){
-      answer <- "API limit reached"
+      answer <- "API limit reached or invalid API"
       run_time <- NA_real_
     }
     res <- tibble::tibble(answer = answer)
