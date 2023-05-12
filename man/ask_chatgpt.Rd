@@ -13,18 +13,18 @@ ask_chatgpt(
 )
 }
 \arguments{
-\item{question}{Character with the question you want ChatGPT to answer}
+\item{question}{Character with the question you want ChatGPT to answer.}
 
 \item{api_key}{Numerical value with your personal API key. Find at \url{https://platform.openai.com/account/api-keys}}
 
 \item{model}{Character indicating the ChatGPT model to be use. Default is "gpt-3.5-turbo".}
 
 \item{sleep_time}{Numerical value indicating in seconds the sleeping time in between questions. This
-is especially helpful when using the function together with \code{purrr:::map_*} functions. With a free subscription at ChatGPT
+is especially helpful when using the function together with \code{purrr::map_*} functions. With a free subscription at ChatGPT
 you can ask 3 questions per minute. With a plus subscription you have access to 60 questions per minute, and can reduce the
 default sleeping time. Default is 20 seconds.}
 
-\item{time_info}{Logical indicating if time for answer should be returned}
+\item{time_info}{Logical indicating if the time of the answer should be returned.}
 }
 \value{
 A tibble with the ChatGPT answer to your questions.
