@@ -90,7 +90,7 @@ ask_chatgpt <- function(
       purrr::possibly(
         run_ask_chatgpt,
         otherwise = tibble::tibble(
-          answer = "ERROR (Try to reduce the number of characters)",
+          answer = "ERROR (Have you loaded your API? Alternatively, try to reduce the number of characters)",
           run_time = NA_real_
         )
       )
@@ -101,7 +101,7 @@ ask_chatgpt <- function(
     purrr::possibly(
       run_ask_chatgpt,
       otherwise = tibble::tibble(
-        answer = "ERROR (Try to reduce the number of characters)"
+        answer = "ERROR (Have you loaded your API? Alternatively, try to reduce the number of characters)"
     )
    )
 
