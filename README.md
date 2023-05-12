@@ -8,9 +8,9 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of AIscreenR is to OPEN-AI tools to support screening processes
-(including title and abstract screening) in systematic reviews and
-related literature reviews.
+The goal of AIscreenR is to use OPEN-AI tools to support screening
+processes (including title and abstract screening) in systematic reviews
+and related literature reviews.
 
 ## Installation
 
