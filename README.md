@@ -22,4 +22,15 @@ You can install the development version of AIscreenR from
 devtools::install_github("MikkelVembye/AIscreenR")
 ```
 
-To be done
+Small example of how to ask a question in ChatGPT
+
+``` r
+
+# Find your own api key at https://platform.openai.com/account/api-keys
+api_key <- 123456789
+q <- "What is a carrot?"
+ask_chatgpt(q, api_key = api_key, sleep_time = 0)
+
+# Find documentation behind by running the below code
+?AIscreenR::ask_chatgpt
+```
