@@ -10,7 +10,7 @@
 
 The goal of AIscreenR is to OPEN-AI tools to support screening processes
 (including title and abstract screening) in systematic reviews and
-related literature reviews
+related literature reviews.
 
 ## Installation
 
@@ -21,3 +21,5 @@ You can install the development version of AIscreenR from
 # install.packages("devtools")
 devtools::install_github("MikkelVembye/AIscreenR")
 ```
+
+To be done
