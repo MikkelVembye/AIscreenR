@@ -1,24 +1,29 @@
 
-#' Abstract screening with ChatGPT function
+#' Asking single questions to ChatGPT
 #'
-#' @param question Insert
-#' @param api_key Insert
-#' @param model Insert
-#' @param sleep_time Insert
+#' @param question Character with the question you want ChatGPT to answer
+#' @param api_key Numerical value with your personal API key. Find at \url{https://platform.openai.com/account/api-keys}
+#' @param model Character indicating the ChatGPT model to be use. Default is "gpt-3.5-turbo".
+#' @param sleep_time Numerical value indicating in seconds the sleeping time in between questions. This
+#' is especially helpful when using the function together with \code{purrr:::map_*} functions. With a free subscription at ChatGPT
+#' you can ask 3 questions per minute. With a plus subscription you have access to 60 questions per minute, and can reduce the
+#' default sleeping time. Default is 20 seconds.
 #' @param time_info Logical indicating if time for answer should be returned
 #'
-#' @return A tibble with answer and its running time.
+#' @return A tibble with the ChatGPT answer to your questions.
 #' @export
 #'
 #' @examples
 #'
 #' \dontrun{
+#'
+#' # Find your api key at https://platform.openai.com/account/api-keys
+#' api_key <- 123456789
+#'
 #' q <- "What is a carrot?"
-#' ask_chatgpt(q, api_key = 123456789, sleep_time = 0)
+#' ask_chatgpt(q, api_key = api_key, sleep_time = 0)
+#'
 #' }
-#'
-#'
-#'
 #'
 
 
@@ -38,9 +43,11 @@ ask_chatgpt <- function(
     time_info
     ){
 
+    Sys.sleep(sleep_time)
+
     tictoc::tic()
 
-    # Insert homepage
+    # Code reproduced from https://www.r-bloggers.com/2023/03/call-chatgpt-or-really-any-other-api-from-r/
 
     response <- httr::POST(
       url = "https://api.openai.com/v1/chat/completions",
@@ -59,14 +66,12 @@ ask_chatgpt <- function(
     time <- tictoc::toc(quiet = TRUE)
     run_time <- round(as.numeric(time$toc - time$tic), 2)
 
-    if (sleep_time > run_time) Sys.sleep(sleep_time - round(run_time + 1))
-
 
     answer <- stringr::str_trim(httr::content(response)$choices[[1]]$message$content) |>
       stringr::str_replace_all("\n", " ")
 
     if(rlang::is_empty(answer)){
-      answer <- "API limit reached or invalid API"
+      answer <- "API limit reached or invalid API or lost internet connection"
       run_time <- NA_real_
     }
     res <- tibble::tibble(answer = answer)
@@ -85,10 +90,7 @@ ask_chatgpt <- function(
       purrr::possibly(
         run_ask_chatgpt,
         otherwise = tibble::tibble(
-          answer = paste0(
-          "ERROR (Possible because the token limit is reached. ",
-          "Try to reduce the number of characters [including the answer] below 3500)"
-          ),
+          answer = "ERROR (Try to reduce the number of characters)",
           run_time = NA_real_
         )
       )
@@ -99,10 +101,7 @@ ask_chatgpt <- function(
     purrr::possibly(
       run_ask_chatgpt,
       otherwise = tibble::tibble(
-        answer = paste0(
-        "ERROR (Possible because the token limit is reached. ",
-        "Try to reduce the number of characters [including the answer] below 3500)"
-     )
+        answer = "ERROR (Try to reduce the number of characters)"
     )
    )
 

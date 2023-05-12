@@ -2,7 +2,7 @@
 % Please edit documentation in R/abscreen_chatgpt.R
 \name{ask_chatgpt}
 \alias{ask_chatgpt}
-\title{Abstract screening with ChatGPT function}
+\title{Asking single questions to ChatGPT}
 \usage{
 ask_chatgpt(
   question,
@@ -13,30 +13,35 @@ ask_chatgpt(
 )
 }
 \arguments{
-\item{question}{Insert}
+\item{question}{Character with the question you want ChatGPT to answer}
 
-\item{api_key}{Insert}
+\item{api_key}{Numerical value with your personal API key. Find at \url{https://platform.openai.com/account/api-keys}}
 
-\item{model}{Insert}
+\item{model}{Character indicating the ChatGPT model to be use. Default is "gpt-3.5-turbo".}
 
-\item{sleep_time}{Insert}
+\item{sleep_time}{Numerical value indicating in seconds the sleeping time in between questions. This
+is especially helpful when using the function together with \code{purrr:::map_*} functions. With a free subscription at ChatGPT
+you can ask 3 questions per minute. With a plus subscription you have access to 60 questions per minute, and can reduce the
+default sleeping time. Default is 20 seconds.}
 
 \item{time_info}{Logical indicating if time for answer should be returned}
 }
 \value{
-A tibble with answer and its running time.
+A tibble with the ChatGPT answer to your questions.
 }
 \description{
-Abstract screening with ChatGPT function
+Asking single questions to ChatGPT
 }
 \examples{
 
 \dontrun{
+
+# Find your api key at https://platform.openai.com/account/api-keys
+api_key <- 123456789
+
 q <- "What is a carrot?"
-ask_chatgpt(q, api_key = 123456789, sleep_time = 0)
+ask_chatgpt(q, api_key = api_key, sleep_time = 0)
+
 }
-
-
-
 
 }
