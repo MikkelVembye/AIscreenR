@@ -1,5 +1,5 @@
 
-#' Asking single questions to ChatGPT test
+#' Asking single questions to ChatGPT
 #'
 #' @param question Character with the question you want ChatGPT to answer.
 #' @param api_key Numerical value with your personal API key. Find at \url{https://platform.openai.com/account/api-keys}
