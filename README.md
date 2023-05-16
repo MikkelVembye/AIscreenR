@@ -20,6 +20,7 @@ You can install the development version of AIscreenR from
 ``` r
 # install.packages("devtools")
 devtools::install_github("MikkelVembye/AIscreenR")
+library(AIscreenR)
 ```
 
 Small example of how to ask a question in ChatGPT
