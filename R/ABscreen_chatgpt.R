@@ -45,7 +45,7 @@ ask_chatgpt <- function(
 
     Sys.sleep(sleep_time)
 
-    tictoc::tic()
+    #tictoc::tic()
 
     # Code reproduced from https://www.r-bloggers.com/2023/03/call-chatgpt-or-really-any-other-api-from-r/
 
@@ -63,9 +63,9 @@ ask_chatgpt <- function(
       )
     )
 
-    time <- tictoc::toc(quiet = TRUE)
-    run_time <- round(as.numeric(time$toc - time$tic), 2)
-
+    #time <- tictoc::toc(quiet = TRUE)
+    #run_time <- round(as.numeric(time$toc - time$tic), 2)
+    run_time <- as.numeric(response$times[[6]])
 
     answer <- stringr::str_trim(httr::content(response)$choices[[1]]$message$content) |>
       stringr::str_replace_all("\n", " ")

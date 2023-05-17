@@ -19,7 +19,6 @@ Imports:
     dplyr,
     tibble,
     httr,
-    tictoc,
     stringr,
     purrr,
     rlang
