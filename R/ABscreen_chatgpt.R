@@ -71,7 +71,9 @@ ask_chatgpt <- function(
       stringr::str_replace_all("\n", " ")
 
     if(rlang::is_empty(answer)){
-      answer <- "API limit reached or invalid API or lost internet connection"
+      answer <- paste0(
+        "Error ", as.numeric(response$status_code),
+        ". Check https://platform.openai.com/docs/guides/error-codes")
       run_time <- NA_real_
     }
     res <- tibble::tibble(answer = answer)
@@ -90,7 +92,7 @@ ask_chatgpt <- function(
       purrr::possibly(
         run_ask_chatgpt,
         otherwise = tibble::tibble(
-          answer = "ERROR (Have you loaded your API? Alternatively, try to reduce the number of characters)",
+          answer = "ERROR (Have you loaded your API? Alternatively, try to reduce the number of characters/tokens)",
           run_time = NA_real_
         )
       )
