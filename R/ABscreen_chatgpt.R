@@ -9,6 +9,7 @@
 #' you can ask 3 questions per minute. With a plus subscription you have access to 60 questions per minute, and can reduce the
 #' default sleeping time. Default is 20 seconds.
 #' @param time_info Logical indicating if the time of the answer should be returned.
+#' @param reps Numerical indicating the number of times the same questions should be sent to ChatGPT.
 #'
 #' @return A tibble with the ChatGPT answer to your questions.
 #' @export
@@ -31,8 +32,9 @@ ask_chatgpt <- function(
     question,
     api_key,
     model = "gpt-3.5-turbo",
-    sleep_time = 20,
-    time_info = FALSE
+    sleep_time = 0,
+    time_info = FALSE,
+    reps = 1
  ){
 
   run_ask_chatgpt <- function(
@@ -74,7 +76,8 @@ ask_chatgpt <- function(
       answer <- paste0(
         "Error ", as.numeric(response$status_code),
         ". Check https://platform.openai.com/docs/guides/error-codes")
-      run_time <- NA_real_
+
+      #run_time <- NA_real_
     }
     res <- tibble::tibble(answer = answer)
 
@@ -92,7 +95,7 @@ ask_chatgpt <- function(
       purrr::possibly(
         run_ask_chatgpt,
         otherwise = tibble::tibble(
-          answer = "ERROR (Have you loaded your API? Alternatively, try to reduce the number of characters/tokens)",
+          answer = "ERROR (Have you loaded your API?)",
           run_time = NA_real_
         )
       )
@@ -103,19 +106,43 @@ ask_chatgpt <- function(
     purrr::possibly(
       run_ask_chatgpt,
       otherwise = tibble::tibble(
-        answer = "ERROR (Have you loaded your API? Alternatively, try to reduce the number of characters)"
+        answer = "ERROR (Have you loaded your API?)"
     )
    )
 
   }
 
-  run_ask_chatgpt(
-    question = question,
-    api_key = api_key,
-    model = model,
-    sleep_time = sleep_time,
-    time_info = time_info
-  )
+
+  if (reps == 1){
+
+    final_res <- run_ask_chatgpt(
+      question = question,
+      api_key = api_key,
+      model = model,
+      sleep_time = sleep_time,
+      time_info = time_info
+    )
+
+  } else if (reps > 1){
+
+    final_res <-
+      furrr::future_map_dfr(
+        1:reps, \(i) run_ask_chatgpt(
+          question = question,
+          api_key = api_key,
+          model = model,
+          sleep_time = sleep_time,
+          time_info = time_info
+      )
+    ) |>
+      dplyr::mutate(
+        n = 1:reps
+      )
+
+
+  }
+
+  final_res
 
 
 }

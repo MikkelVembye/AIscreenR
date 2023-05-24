@@ -8,8 +8,9 @@ ask_chatgpt(
   question,
   api_key,
   model = "gpt-3.5-turbo",
-  sleep_time = 20,
-  time_info = FALSE
+  sleep_time = 0,
+  time_info = FALSE,
+  reps = 1
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ you can ask 3 questions per minute. With a plus subscription you have access to 
 default sleeping time. Default is 20 seconds.}
 
 \item{time_info}{Logical indicating if the time of the answer should be returned.}
+
+\item{reps}{Numerical indicating the number of times the same questions should be sent to ChatGPT.}
 }
 \value{
 A tibble with the ChatGPT answer to your questions.
