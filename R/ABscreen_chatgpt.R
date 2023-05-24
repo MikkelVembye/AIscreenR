@@ -1,5 +1,5 @@
 
-#' Asking single questions to ChatGPT
+#' Asking a single question to ChatGPT
 #'
 #' @param question Character with the question you want ChatGPT to answer.
 #' @param api_key Numerical value with your personal API key. Find at \url{https://platform.openai.com/account/api-keys}
@@ -10,8 +10,10 @@
 #' default sleeping time. Default is 20 seconds.
 #' @param time_info Logical indicating if the time of the answer should be returned.
 #' @param reps Numerical indicating the number of times the same questions should be sent to ChatGPT.
+#' This can be useful when investigating the consistency of the yield answer. Default is 1.
 #'
-#' @return A tibble with the ChatGPT answer to your questions.
+#'
+#' @return A tibble with the ChatGPT answer to your question.
 #' @export
 #'
 #' @examples

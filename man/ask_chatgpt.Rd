@@ -2,7 +2,7 @@
 % Please edit documentation in R/ABscreen_chatgpt.R
 \name{ask_chatgpt}
 \alias{ask_chatgpt}
-\title{Asking single questions to ChatGPT}
+\title{Asking a single question to ChatGPT}
 \usage{
 ask_chatgpt(
   question,
@@ -27,13 +27,14 @@ default sleeping time. Default is 20 seconds.}
 
 \item{time_info}{Logical indicating if the time of the answer should be returned.}
 
-\item{reps}{Numerical indicating the number of times the same questions should be sent to ChatGPT.}
+\item{reps}{Numerical indicating the number of times the same questions should be sent to ChatGPT.
+This can be useful when investigating the consistency of the yield answer. Default is 1.}
 }
 \value{
-A tibble with the ChatGPT answer to your questions.
+A tibble with the ChatGPT answer to your question.
 }
 \description{
-Asking single questions to ChatGPT
+Asking a single question to ChatGPT
 }
 \examples{
 
