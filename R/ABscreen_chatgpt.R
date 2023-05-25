@@ -11,7 +11,8 @@
 #' @param time_info Logical indicating if the time of the answer should be returned.
 #' @param reps Numerical indicating the number of times the same questions should be sent to ChatGPT.
 #' This can be useful when investigating the consistency of the yield answer. Default is 1.
-#'
+#' @param seed Numerical value for a seed to ensure that proper,
+#' parallel-safe random numbers are produced.
 #'
 #' @return A tibble with the ChatGPT answer to your question.
 #' @export
@@ -36,7 +37,8 @@ ask_chatgpt <- function(
     model = "gpt-3.5-turbo",
     sleep_time = 0,
     time_info = FALSE,
-    reps = 1
+    reps = 1,
+    seed = NULL
  ){
 
   run_ask_chatgpt <- function(
@@ -65,10 +67,11 @@ ask_chatgpt <- function(
         messages = list(list(
           role = "user",
           content = question
-        ))
+        )
+       )
       ),
       encode = "json"
-      )
+     )
     )
 
     #time <- tictoc::toc(quiet = TRUE)
@@ -131,20 +134,23 @@ ask_chatgpt <- function(
 
   } else if (reps > 1){
 
-    final_res <-
-      furrr::future_map_dfr(
-        1:reps, \(i) run_ask_chatgpt(
-          question = question,
-          api_key = api_key,
-          model = model,
-          sleep_time = sleep_time,
-          time_info = time_info
-      )
-    ) |>
-      dplyr::mutate(
-        n = 1:reps
-      )
+    furrr_seed <- if (is.null(seed)) TRUE else NULL
 
+    suppressPackageStartupMessages(
+      final_res <-
+        furrr::future_map_dfr(
+          1:reps, \(i) run_ask_chatgpt(
+            question = question,
+            api_key = api_key,
+            model = model,
+            sleep_time = sleep_time,
+            time_info = time_info
+        ), .options = furrr::furrr_options(seed = furrr_seed)
+      ) |>
+        dplyr::mutate(
+          n = 1:reps
+      )
+    )
 
   }
 
