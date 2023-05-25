@@ -2,7 +2,7 @@
 q <- "What is a carrot?"
 ask_chatgpt(q, api_key = api_key, sleep_time = 0, time_info = TRUE)
 
-purrr::map_dfr(1:10, \(i) ask_chatgpt(q, api_key = api_key, sleep_time = 0, time_info = TRUE))
+#purrr::map_dfr(1:10, \(i) ask_chatgpt(q, api_key = api_key, sleep_time = 0, time_info = TRUE))
 
 library(future)
 
@@ -19,7 +19,7 @@ system.time(
 )
 
 
-plan(multisession)
+plan(multisession, workers = 7)
 
 
 system.time(
@@ -28,11 +28,9 @@ system.time(
     api_key = api_key,
     sleep_time = 0,
     time_info = TRUE,
-    reps = 3
+    reps = 70
   )
 )
-
-
 
 res_par
 

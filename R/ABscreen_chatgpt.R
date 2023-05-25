@@ -53,17 +53,21 @@ ask_chatgpt <- function(
 
     # Code reproduced from https://www.r-bloggers.com/2023/03/call-chatgpt-or-really-any-other-api-from-r/
 
-    response <- httr::POST(
+    response <-
+      suppressMessages(
+      httr::RETRY(
+      verb = "POST",
       url = "https://api.openai.com/v1/chat/completions",
       httr::add_headers(Authorization = paste("Bearer", api_key)),
       httr::content_type_json(),
-      encode = "json",
       body = list(
         model = model,
         messages = list(list(
           role = "user",
           content = question
         ))
+      ),
+      encode = "json"
       )
     )
 
@@ -78,9 +82,9 @@ ask_chatgpt <- function(
       answer <- paste0(
         "Error ", as.numeric(response$status_code),
         ". Check https://platform.openai.com/docs/guides/error-codes")
-
       #run_time <- NA_real_
     }
+
     res <- tibble::tibble(answer = answer)
 
     if(time_info){
