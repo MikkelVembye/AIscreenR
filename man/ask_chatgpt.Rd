@@ -35,7 +35,7 @@ This can be useful when investigating the consistency of the yield answer. Defau
 \item{seed}{Numerical value for a seed to ensure that proper,
 parallel-safe random numbers are produced.}
 
-\item{...}{Further time functions to be added to the RETRY.
+\item{...}{Further time functions to be added to RETRY.
 See \url{https://httr.r-lib.org/reference/RETRY.html}}
 }
 \value{

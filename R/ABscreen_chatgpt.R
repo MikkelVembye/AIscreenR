@@ -13,7 +13,7 @@
 #' This can be useful when investigating the consistency of the yield answer. Default is 1.
 #' @param seed Numerical value for a seed to ensure that proper,
 #' parallel-safe random numbers are produced.
-#' @param ... Further time functions to be added to the RETRY.
+#' @param ... Further time functions to be added to RETRY.
 #' See \url{https://httr.r-lib.org/reference/RETRY.html}
 #'
 #' @return A tibble with the ChatGPT answer to your question.
