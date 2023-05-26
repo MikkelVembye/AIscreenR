@@ -5,12 +5,11 @@
 #' @param api_key Numerical value with your personal API key. Find at \url{https://platform.openai.com/account/api-keys}
 #' @param model Character indicating the ChatGPT model to be use. Default is "gpt-3.5-turbo".
 #' @param sleep_time Numerical value indicating in seconds the sleeping time in between questions. This
-#' is especially helpful when using the function together with \code{purrr::map_*} functions. With a free subscription at ChatGPT
-#' you can ask 3 questions per minute. With a plus subscription you have access to 60 questions per minute, and can reduce the
-#' default sleeping time. Default is 20 seconds.
+#' is especially helpful when not a pay-as-you-go user. For more information see
+#' \url{https://platform.openai.com/docs/guides/rate-limits/what-are-the-rate-limits-for-our-api}
 #' @param time_info Logical indicating if the time of the answer should be returned.
-#' @param reps Numerical indicating the number of times the same questions should be sent to ChatGPT.
-#' This can be useful when investigating the consistency of the yield answer. Default is 1.
+#' @param reps Numerical indicating the number of times the same question should be sent to ChatGPT.
+#' This can be useful to test consistency between answers. Default is 1.
 #' @param seed Numerical value for a seed to ensure that proper,
 #' parallel-safe random numbers are produced.
 #' @param ... Further time functions to be added to RETRY.
