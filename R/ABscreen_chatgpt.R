@@ -13,6 +13,8 @@
 #' This can be useful when investigating the consistency of the yield answer. Default is 1.
 #' @param seed Numerical value for a seed to ensure that proper,
 #' parallel-safe random numbers are produced.
+#' @param ... Further time functions to be added to the RETRY.
+#' See \url{https://httr.r-lib.org/reference/RETRY.html}
 #'
 #' @return A tibble with the ChatGPT answer to your question.
 #' @export
@@ -38,7 +40,8 @@ ask_chatgpt <- function(
     sleep_time = 0,
     time_info = FALSE,
     reps = 1,
-    seed = NULL
+    seed = NULL,
+    ...
  ){
 
   run_ask_chatgpt <- function(
@@ -46,14 +49,15 @@ ask_chatgpt <- function(
     api_key,
     model,
     sleep_time,
-    time_info
+    time_info,
+    ...
     ){
 
     Sys.sleep(sleep_time)
 
-    #tictoc::tic()
+    tictoc::tic()
 
-    # Code reproduced from https://www.r-bloggers.com/2023/03/call-chatgpt-or-really-any-other-api-from-r/
+    # Raw code reproduced from https://www.r-bloggers.com/2023/03/call-chatgpt-or-really-any-other-api-from-r/
 
     response <-
       suppressMessages(
@@ -70,20 +74,21 @@ ask_chatgpt <- function(
         )
        )
       ),
-      encode = "json"
+      encode = "json",
+      ...
      )
     )
 
-    #time <- tictoc::toc(quiet = TRUE)
-    #run_time <- round(as.numeric(time$toc - time$tic), 2)
-    run_time <- as.numeric(response$times[[6]])
+    time <- tictoc::toc(quiet = TRUE)
+    run_time <- round(as.numeric(time$toc - time$tic), 2)
+    #run_time <- as.numeric(response$times[[6]])
 
     answer <- stringr::str_trim(httr::content(response)$choices[[1]]$message$content) |>
       stringr::str_replace_all("\n", " ")
 
     if(rlang::is_empty(answer)){
       answer <- paste0(
-        "Error ", as.numeric(response$status_code),
+        httr::http_status(response)$message,
         ". Check https://platform.openai.com/docs/guides/error-codes")
       #run_time <- NA_real_
     }
@@ -104,7 +109,7 @@ ask_chatgpt <- function(
       purrr::possibly(
         run_ask_chatgpt,
         otherwise = tibble::tibble(
-          answer = "ERROR (Have you loaded your API?)",
+          answer = "Error (Have you loaded your API?)",
           run_time = NA_real_
         )
       )
@@ -115,7 +120,7 @@ ask_chatgpt <- function(
     purrr::possibly(
       run_ask_chatgpt,
       otherwise = tibble::tibble(
-        answer = "ERROR (Have you loaded your API?)"
+        answer = "Error (Have you loaded your API?)"
     )
    )
 
@@ -129,7 +134,8 @@ ask_chatgpt <- function(
       api_key = api_key,
       model = model,
       sleep_time = sleep_time,
-      time_info = time_info
+      time_info = time_info,
+      ...
     )
 
   } else if (reps > 1){
@@ -144,7 +150,8 @@ ask_chatgpt <- function(
             api_key = api_key,
             model = model,
             sleep_time = sleep_time,
-            time_info = time_info
+            time_info = time_info,
+            ...
         ), .options = furrr::furrr_options(seed = furrr_seed)
       ) |>
         dplyr::mutate(

@@ -11,7 +11,8 @@ ask_chatgpt(
   sleep_time = 0,
   time_info = FALSE,
   reps = 1,
-  seed = NULL
+  seed = NULL,
+  ...
 )
 }
 \arguments{
@@ -33,6 +34,9 @@ This can be useful when investigating the consistency of the yield answer. Defau
 
 \item{seed}{Numerical value for a seed to ensure that proper,
 parallel-safe random numbers are produced.}
+
+\item{...}{Further time functions to be added to the RETRY.
+See \url{https://httr.r-lib.org/reference/RETRY.html}}
 }
 \value{
 A tibble with the ChatGPT answer to your question.
