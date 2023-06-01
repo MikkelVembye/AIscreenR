@@ -2,3 +2,4 @@
 ^\.Rproj\.user$
 ^other$
 ^README\.Rmd$
+^man-roxygen$

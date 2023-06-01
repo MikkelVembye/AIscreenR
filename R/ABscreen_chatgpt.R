@@ -1,4 +1,160 @@
 
+#' Title and abstract screening with ChatGPT
+#'
+#' @description This function supports the conduct of title and abstract screening with ChatGPT in R.
+#' The function allow to run title and abstract screening across multiple prompts and with
+#' repeated questions to check for consistency across answers.
+#'
+#' @template common-arg
+#' @param api_key Numerical value with your personal API key. Find at \url{https://platform.openai.com/account/api-keys}
+#' @param model Character indicating the ChatGPT model to be use. Default is "gpt-3.5-turbo".
+#' @param sleep_time Numerical value indicating in seconds the sleeping time in between questions. This
+#' is especially helpful when not a pay-as-you-go user. For more information see
+#' \url{https://platform.openai.com/docs/guides/rate-limits/what-are-the-rate-limits-for-our-api}
+#' @param time_info Logical indicating if the time of the answer should be returned.
+#' @param reps Numerical indicating the number of times the same question should be sent to ChatGPT.
+#' This can be useful to test consistency between answers. Default is 1.
+#' @param seed Numerical value for a seed to ensure that proper,
+#' parallel-safe random numbers are produced.
+#' @param ... Further time functions to be added to RETRY.
+#' See \url{https://httr.r-lib.org/reference/RETRY.html}
+#'
+#' @return A \code{tibble} with answer
+#' @export
+#'
+#' @examples
+#'
+#' \dontrun{
+#' library(future)
+#'
+#' # Find your api key at https://platform.openai.com/account/api-keys
+#' api_key <- 123456789
+#'
+#' data <- load("data.RData")
+#'
+#' plan(multisession, workers = 7)
+#'
+#' system.time(
+#'  test_dat <-
+#'   tabscreen_chatgpt_engine(
+#'     data = data,
+#'     prompt = prompts,
+#'     studyid = studyid,
+#'     title = Title,
+#'     abstract = Abstract,
+#'     api_key = api_key,
+#'     reps = 2
+#'  )
+#' )
+#'
+#' }
+#'
+
+tabscreen_chatgpt <-
+  function(
+    data,
+    prompt,
+    studyid,
+    title,
+    abstract,
+    api_key,
+    model = "gpt-3.5-turbo",
+    sleep_time = 0,
+    time_info = FALSE,
+    reps = 1,
+    seed = NULL,
+    ...
+  ) {
+
+
+  if (missing(studyid)){
+
+    dat <-
+      data |>
+      dplyr::mutate(
+       studyid = 1:nrow(data)
+      ) |>
+      dplyr::relocate(studyid, .before = {{ title }})
+
+
+  } else {
+
+    dat <-
+      data |>
+      dplyr::mutate(
+        studyid = {{ studyid }}
+      ) |>
+      dplyr::relocate(studyid, .before = {{ title }})
+
+  }
+
+  dat <-
+    dat |>
+    dplyr::slice(rep(1:nrow(dat), each = length(prompt))) |>
+    dplyr::mutate(
+      prompt = rep(prompt, nrow(dat)),
+      question_raw = paste0(
+        prompt,
+        ". Now, please evaluate the following titles and abstracts for",
+        " Study ", studyid, ":",
+        " -Title: ", {{ title }},
+        " -Abstract: ", {{ abstract }}),
+      question = stringr::str_replace_all(question_raw, "\n\n", " "),
+      question = stringr::str_remove_all(question, "\n")
+    ) |>
+    dplyr::select(-question_raw) |>
+    dplyr::relocate(prompt, .after = studyid) |>
+    dplyr::arrange(prompt)
+
+
+  furrr_seed <- if (is.null(seed)) TRUE else NULL
+
+  if (reps == 1){
+
+    answer_dat <-
+      dat |>
+      dplyr::mutate(
+        furrr::future_map_dfr(
+          question, ~ ask_chatgpt(
+            question = .x,
+            api_key = api_key,
+            model = model,
+            sleep_time = sleep_time,
+            time_info = time_info,
+            seed = seed,
+            ...
+            ),
+          .options = furrr::furrr_options(seed = furrr_seed))
+      )
+
+  } else if (reps > 1) {
+
+    answer_dat <-
+      dat |>
+      dplyr::mutate(
+        res = furrr::future_map(
+          question, ~ ask_chatgpt(
+            question = .x,
+            api_key = api_key,
+            model = model,
+            sleep_time = sleep_time,
+            time_info = time_info,
+            reps = reps,
+            seed = seed,
+            ...
+          ),
+          .options = furrr::furrr_options(seed = furrr_seed))
+      ) |>
+      tidyr::unnest(res)
+
+  }
+
+  answer_dat
+
+}
+
+
+
 #' Asking a single question to ChatGPT
 #'
 #' @param question Character with the question you want ChatGPT to answer.

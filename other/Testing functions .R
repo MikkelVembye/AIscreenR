@@ -42,3 +42,32 @@ res_par
 #    names_glue = "{.value}_{n}",
 #    values_from = c(answer, run_time)
 #  )
+
+fic_dat <- tibble::tibble(
+  Studyid = 1:10,
+  Title = paste("Text", 1:10),
+  Abstract = paste("Abstract text", 1:10)
+)
+
+prompts <- paste("Prompt\n\ntext\n", 1:2)
+text1 <- paste("First text", 1:10)
+text2 <- paste("Second text", 1:10)
+
+paste(
+  prompts,
+  "Some other text",
+  text1,
+  text2
+)
+
+#fic_dat |> dplyr::slice(rep(1:length(fic_dat), length(prompts))) |> dplyr::pull(abstract)
+
+
+tab_dat <-
+tabscreen_chatgpt(
+ data = fic_dat,
+ prompt = prompts,
+ studyid = Studyid,
+ title = Title,
+ abstract = Abstract
+); tab_dat

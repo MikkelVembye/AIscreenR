@@ -22,6 +22,7 @@ Imports:
     stringr,
     purrr,
     furrr,
+    tidyr,
     tictoc,
     rlang
 Suggests: 
