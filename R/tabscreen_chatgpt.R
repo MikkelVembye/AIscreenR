@@ -222,8 +222,8 @@ tabscreen_chatgpt <-
       dplyr::arrange(prompt, {{ arrange_var }})
 
 
-    still_errror <- answer_dat |> dplyr::filter(stringr::str_detect(answer, "Error|error")) |> nrow()
-    if (still_errror > 0) message("NOTE: Request falied for some title and abstracts.")
+    still_error <- answer_dat |> dplyr::filter(stringr::str_detect(answer, "Error|error")) |> nrow()
+    if (still_error > 0) message("NOTE: Request falied for some title and abstracts.")
 
   }
 
