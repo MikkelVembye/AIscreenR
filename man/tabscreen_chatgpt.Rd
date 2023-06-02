@@ -11,6 +11,7 @@ tabscreen_chatgpt(
   title,
   abstract,
   api_key,
+  arrange_var = studyid,
   model = "gpt-3.5-turbo",
   sleep_time = 0,
   time_info = FALSE,
@@ -31,6 +32,8 @@ tabscreen_chatgpt(
 \item{abstract}{Insert}
 
 \item{api_key}{Numerical value with your personal API key. Find at \url{https://platform.openai.com/account/api-keys}}
+
+\item{arrange_var}{Function indicating the variables determing the arrangement of the data. Default is \code{studyid}.}
 
 \item{model}{Character indicating the ChatGPT model to be use. Default is "gpt-3.5-turbo".}
 

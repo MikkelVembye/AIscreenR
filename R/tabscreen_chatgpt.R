@@ -7,6 +7,7 @@
 #'
 #' @template common-arg
 #' @param api_key Numerical value with your personal API key. Find at \url{https://platform.openai.com/account/api-keys}
+#' @param arrange_var Function indicating the variables determing the arrangement of the data. Default is \code{studyid}.
 #' @param model Character indicating the ChatGPT model to be use. Default is "gpt-3.5-turbo".
 #' @param sleep_time Numerical value indicating in seconds the sleeping time in between questions. This
 #' is especially helpful when not a pay-as-you-go user. For more information see
@@ -58,6 +59,7 @@ tabscreen_chatgpt <-
     title,
     abstract,
     api_key,
+    arrange_var = studyid,
     model = "gpt-3.5-turbo",
     sleep_time = 0,
     time_info = FALSE,
@@ -104,7 +106,7 @@ tabscreen_chatgpt <-
     ) |>
     dplyr::select(-question_raw) |>
     dplyr::relocate(prompt, .after = studyid) |>
-    dplyr::arrange(prompt)
+    dplyr::arrange(prompt, {{ arrange_var }})
 
 
   furrr_seed <- if (is.null(seed)) TRUE else NULL
@@ -163,7 +165,8 @@ tabscreen_chatgpt <-
 
     error_dat <-
       answer_dat |>
-      dplyr::filter(stringr::str_detect(answer, "Error|error"))
+      dplyr::filter(stringr::str_detect(answer, "Error|error")) |>
+      dplyr::select(-answer)
 
     if (reps == 1){
 
@@ -205,14 +208,18 @@ tabscreen_chatgpt <-
         ) |>
         tidyr::unnest(res)
 
-      answer_dat <-
-        dplyr::bind_rows(
-          succes_dat,
-          answer_dat_retry
-        ) |>
-        dplyr::arrange(prompt, studyid)
-
     }
+
+    answer_dat <-
+      dplyr::bind_rows(
+        succes_dat,
+        answer_dat_retry
+      ) |>
+      dplyr::arrange(prompt, {{ arrange_var }})
+
+
+    still_errror <- answer_dat |> dplyr::filter(stringr::str_detect(answer, "Error|error")) |> nrow()
+    if (still_errror > 0) message("NOTE: Request falied for some title and abstracts.")
 
   }
 
