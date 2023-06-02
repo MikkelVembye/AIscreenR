@@ -151,6 +151,71 @@ tabscreen_chatgpt <-
 
   }
 
+  n_errors <- answer_dat |> dplyr::filter(stringr::str_detect(answer, "Error|error")) |> nrow()
+
+  if (n_error > 0){
+
+    message("Request falied for some title and abstracts. Retrying screening for those studies")
+
+    succes_dat <-
+      answer_dat |>
+      dplyr::filter(!stringr::str_detect(answer, "Error|error"))
+
+    error_dat <-
+      answer_dat |>
+      dplyr::filter(stringr::str_detect(answer, "Error|error"))
+
+    if (reps == 1){
+
+      answer_dat_retry <-
+        error_dat |>
+        dplyr::mutate(
+          furrr::future_map_dfr(
+            question, ~ ask_chatgpt(
+              question = .x,
+              api_key = api_key,
+              model = model,
+              sleep_time = sleep_time,
+              time_info = time_info,
+              seed = seed
+            ),
+            ...,
+            .options = furrr::furrr_options(seed = furrr_seed)
+          )
+        )
+
+    } else if (reps > 1) {
+
+      answer_dat_retry <-
+        error_dat |>
+        dplyr::mutate(
+          res = furrr::future_map(
+            question, ~ ask_chatgpt(
+              question = .x,
+              api_key = api_key,
+              model = model,
+              sleep_time = sleep_time,
+              time_info = time_info,
+              reps = reps,
+              seed = seed
+            ),
+            ...,
+            .options = furrr::furrr_options(seed = furrr_seed)
+          )
+        ) |>
+        tidyr::unnest(res)
+
+      answer_dat <-
+        dplyr::bind_rows(
+          succes_dat,
+          answer_dat_retry
+        ) |>
+        dplyr::arrange(prompt, studyid)
+
+    }
+
+  }
+
   answer_dat
 
 }
