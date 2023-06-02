@@ -151,7 +151,7 @@ tabscreen_chatgpt <-
 
   }
 
-  n_errors <- answer_dat |> dplyr::filter(stringr::str_detect(answer, "Error|error")) |> nrow()
+  n_error <- answer_dat |> dplyr::filter(stringr::str_detect(answer, "Error|error")) |> nrow()
 
   if (n_error > 0){
 
