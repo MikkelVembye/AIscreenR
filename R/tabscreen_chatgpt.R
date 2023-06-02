@@ -93,6 +93,9 @@ tabscreen_chatgpt <-
 
   dat <-
     dat |>
+    dplyr::mutate(
+      dplyr::across(c({{ title }}, {{ abstract }}), ~ dplyr::if_else(is.na(.x) | .x == "" | .x == " ", "No information", .x))
+    ) |>
     dplyr::slice(rep(1:nrow(dat), each = length(prompt))) |>
     dplyr::mutate(
       prompt = rep(prompt, nrow(dat)),
