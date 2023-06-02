@@ -216,7 +216,7 @@ tabscreen_chatgpt <-
 
   }
 
-  answer_dat
+  tibble::new_tibble(answer_dat, class = "chatgpt")
 
 }
 
