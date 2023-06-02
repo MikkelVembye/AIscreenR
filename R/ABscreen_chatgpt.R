@@ -122,9 +122,10 @@ tabscreen_chatgpt <-
             sleep_time = sleep_time,
             time_info = time_info,
             seed = seed
-            ),
+          ),
           ...,
-          .options = furrr::furrr_options(seed = furrr_seed))
+          .options = furrr::furrr_options(seed = furrr_seed)
+        )
       )
 
   } else if (reps > 1) {
@@ -143,7 +144,8 @@ tabscreen_chatgpt <-
             seed = seed
           ),
           ...,
-          .options = furrr::furrr_options(seed = furrr_seed))
+          .options = furrr::furrr_options(seed = furrr_seed)
+        )
       ) |>
       tidyr::unnest(res)
 
