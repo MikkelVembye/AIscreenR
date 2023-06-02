@@ -121,9 +121,9 @@ tabscreen_chatgpt <-
             model = model,
             sleep_time = sleep_time,
             time_info = time_info,
-            seed = seed,
-            ...
+            seed = seed
             ),
+          ...,
           .options = furrr::furrr_options(seed = furrr_seed))
       )
 
@@ -140,9 +140,9 @@ tabscreen_chatgpt <-
             sleep_time = sleep_time,
             time_info = time_info,
             reps = reps,
-            seed = seed,
-            ...
+            seed = seed
           ),
+          ...,
           .options = furrr::furrr_options(seed = furrr_seed))
       ) |>
       tidyr::unnest(res)
