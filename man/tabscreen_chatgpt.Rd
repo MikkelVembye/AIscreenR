@@ -69,12 +69,13 @@ library(future)
 api_key <- 123456789
 
 data <- load("data.RData")
+prompts <- paste("Prompt", 1:3)
 
 plan(multisession, workers = 7)
 
 system.time(
  test_dat <-
-  tabscreen_chatgpt_engine(
+  tabscreen_chatgpt(
     data = data,
     prompt = prompts,
     studyid = studyid,
