@@ -20,18 +20,34 @@ You can install the development version of AIscreenR from
 ``` r
 # install.packages("devtools")
 devtools::install_github("MikkelVembye/AIscreenR")
-library(AIscreenR)
 ```
 
 Small example of how to ask a question in ChatGPT
 
 ``` r
+# Find your api key at https://platform.openai.com/account/api-keys 
+# Thereafter, either encrypt it with the secret functions from the httr2 package
+# see https://httr2.r-lib.org/reference/secrets.html or run set_api_key() 
+# below and then enter you key.
+library(AIscreenR)
+library(httr2)
+#> Warning: package 'httr2' was built under R version 4.2.3
 
-# Find your own api key at https://platform.openai.com/account/api-keys
-api_key <- 123456789
+AIscreenR:::set_api_key(
+  key = httr2::secret_decrypt(
+    "4UAcFSIHVz8Z4zED1WEj3k65xFBWlJ8dzavRDGG4dz0pBxEOXtvSkLwK6_fZaZqCr94oVtKBD6DQo82vwa2gljJMTw",
+    "AISCREENR_KEY"
+  )
+)
 q <- "What is a carrot?"
-ask_chatgpt(q, api_key = api_key, sleep_time = 0, time_info = TRUE, reps = 1)
+ask_chatgpt(q, time_info = TRUE)
+#> # A tibble: 1 × 2
+#>   answer                                                                run_time
+#>   <chr>                                                                    <dbl>
+#> 1 A carrot is a root vegetable that is typically orange in color and i…     6.68
+```
 
+``` r
 # Find documentation behind by running the below code
 ?AIscreenR::ask_chatgpt
 ```
