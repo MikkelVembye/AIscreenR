@@ -19,6 +19,7 @@ knitr::opts_chunk$set(
 # AIscreenR: AI screening tools in R for systematic reviewing
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of AIscreenR is to use AI tools to support screening processes (including title and abstract screening) in systematic reviews and related literature reviews.

@@ -1,7 +1,8 @@
 ^AIscreenR\.Rproj$
 ^\.Rproj\.user$
 ^other$
-^README\.Rmd$
+README.Rmd
+README.md
 ^man-roxygen$
 ^_pkgdown\.yml$
 ^docs$

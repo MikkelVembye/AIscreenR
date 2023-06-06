@@ -6,6 +6,8 @@
 # AIscreenR: AI screening tools in R for systematic reviewing
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of AIscreenR is to use AI tools to support screening processes
@@ -44,7 +46,7 @@ ask_chatgpt(q, time_info = TRUE)
 #> # A tibble: 1 × 2
 #>   answer                                                                run_time
 #>   <chr>                                                                    <dbl>
-#> 1 A carrot is a root vegetable with a long, narrow shape and a bright …     5.22
+#> 1 A carrot is a root vegetable, typically orange in color, though it c…     7.97
 ```
 
 ``` r
