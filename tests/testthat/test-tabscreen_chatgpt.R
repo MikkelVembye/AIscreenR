@@ -18,9 +18,10 @@ test_that("AISCREENR_KEY works and secret_decrypt behaves properly",{
   AIscreenR:::set_api_key(key = key)
 
   q <- "What is a carrot?"
-  answer_dat <- ask_chatgpt(q, time_info = TRUE)
+  answer_dat <- ask_chatgpt(q, time_info = TRUE, rep = 2)
 
 
   expect_true(is.numeric(answer_dat$run_time))
+  expect_equal(nrow(answer_dat), 2)
 
 })
