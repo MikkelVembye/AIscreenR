@@ -29,8 +29,6 @@ jobs:
       AISCREENR_KEY: ${{ secrets.AISCREENR_KEY }}
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
-    if: env.AISCREENR_KEY != null
-    run: echo "running"
 
     steps:
       - uses: actions/checkout@v2
