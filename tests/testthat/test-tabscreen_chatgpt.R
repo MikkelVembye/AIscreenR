@@ -12,6 +12,8 @@ test_that("Testthat works in get_api_key()", {
 
 test_that("AISCREENR_KEY works and secret_decrypt behaves properly",{
 
+  #skip("Cannot get the Action secret to work when pushed to GitHub")
+
   key <- httr2::secret_decrypt("4UAcFSIHVz8Z4zED1WEj3k65xFBWlJ8dzavRDGG4dz0pBxEOXtvSkLwK6_fZaZqCr94oVtKBD6DQo82vwa2gljJMTw", "AISCREENR_KEY")
   AIscreenR:::set_api_key(key = key)
 
