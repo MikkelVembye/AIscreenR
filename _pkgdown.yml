@@ -1,0 +1,14 @@
+url: https://mikkelvembye.github.io/AIscreenR/
+template:
+  bootstrap: 5
+development:
+  mode: auto
+
+reference:
+  - title: "ChatGPT"
+    desc: "R functions to automat title and abstract screeening in ChatGPT"
+    contents:
+      - ask_chatgpt
+      - tabscreen_chatgpt
+
+
