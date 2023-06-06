@@ -8,6 +8,8 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/MikkelVembye/AIscreenR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/MikkelVembye/AIscreenR?branch=main)
 <!-- badges: end -->
 
 The goal of AIscreenR is to use AI tools to support screening processes
@@ -46,7 +48,7 @@ ask_chatgpt(q, time_info = TRUE)
 #> # A tibble: 1 × 2
 #>   answer                                                                run_time
 #>   <chr>                                                                    <dbl>
-#> 1 A carrot is a root vegetable, typically orange in color, though it c…     7.97
+#> 1 A carrot is a vegetable that is typically orange in color, although …     6.38
 ```
 
 ``` r
