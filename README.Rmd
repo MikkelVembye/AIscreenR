@@ -38,7 +38,7 @@ Small example of how to ask a question in ChatGPT
 # Find your api key at https://platform.openai.com/account/api-keys 
 # Thereafter, either encrypt it with the secret functions from the httr2 package
 # see https://httr2.r-lib.org/reference/secrets.html or run set_api_key() 
-# below and then enter you key.
+# and then enter you key.
 library(AIscreenR)
 library(httr2)
 

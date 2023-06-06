@@ -28,7 +28,7 @@ Small example of how to ask a question in ChatGPT
 # Find your api key at https://platform.openai.com/account/api-keys 
 # Thereafter, either encrypt it with the secret functions from the httr2 package
 # see https://httr2.r-lib.org/reference/secrets.html or run set_api_key() 
-# below and then enter you key.
+# and then enter you key.
 library(AIscreenR)
 library(httr2)
 #> Warning: package 'httr2' was built under R version 4.2.3
@@ -44,7 +44,7 @@ ask_chatgpt(q, time_info = TRUE)
 #> # A tibble: 1 × 2
 #>   answer                                                                run_time
 #>   <chr>                                                                    <dbl>
-#> 1 A carrot is a root vegetable that is typically orange in color and i…     6.68
+#> 1 A carrot is a root vegetable with a long, narrow shape and a bright …     5.22
 ```
 
 ``` r
