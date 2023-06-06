@@ -20,7 +20,7 @@
 #' @param ... Further time functions to be added to RETRY.
 #' See \url{https://httr.r-lib.org/reference/RETRY.html}
 #'
-#' @return A \code{tibble} with answer
+#' @return A \code{tibble} with answer and run_time if \code{time_info = TRUE}.
 #' @export
 #'
 #' @examples

@@ -53,7 +53,7 @@ parallel-safe random numbers are produced.}
 See \url{https://httr.r-lib.org/reference/RETRY.html}}
 }
 \value{
-A \code{tibble} with answer
+A \code{tibble} with answer and run_time if \code{time_info = TRUE}.
 }
 \description{
 This function supports the conduct of title and abstract screening with ChatGPT in R.
