@@ -6,7 +6,7 @@
 \usage{
 ask_chatgpt(
   question,
-  api_key,
+  api_key = get_api_key(),
   model = "gpt-3.5-turbo",
   sleep_time = 0,
   time_info = FALSE,

@@ -1,6 +1,20 @@
 
+AIscreenR:::set_api_key(
+  key = httr2::secret_decrypt(
+    "4UAcFSIHVz8Z4zED1WEj3k65xFBWlJ8dzavRDGG4dz0pBxEOXtvSkLwK6_fZaZqCr94oVtKBD6DQo82vwa2gljJMTw",
+    "AISCREENR_KEY"
+  )
+)
+
+#get_api_key()
+
 q <- "What is a carrot?"
-ask_chatgpt(q, api_key = api_key, sleep_time = 0, time_info = TRUE, reps = 2)
+ask_chatgpt(
+  q,
+  sleep_time = 0,
+  time_info = TRUE,
+  reps = 2
+)
 
 #purrr::map_dfr(1:10, \(i) ask_chatgpt(q, api_key = api_key, sleep_time = 0, time_info = TRUE))
 
@@ -25,8 +39,6 @@ plan(multisession, workers = 7)
 system.time(
   res_par <- ask_chatgpt(
     q,
-    api_key = api_key,
-    sleep_time = 0,
     time_info = TRUE,
     reps = 10
   )

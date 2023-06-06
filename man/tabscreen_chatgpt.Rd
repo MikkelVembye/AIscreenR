@@ -10,7 +10,7 @@ tabscreen_chatgpt(
   studyid,
   title,
   abstract,
-  api_key,
+  api_key = get_api_key(),
   arrange_var = studyid,
   model = "gpt-3.5-turbo",
   sleep_time = 0,
@@ -80,9 +80,7 @@ system.time(
     prompt = prompts,
     studyid = studyid,
     title = Title,
-    abstract = Abstract,
-    api_key = api_key,
-    reps = 2
+    abstract = Abstract
  )
 )
 

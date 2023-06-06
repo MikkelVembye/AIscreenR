@@ -19,11 +19,13 @@ Imports:
     dplyr,
     tibble,
     httr,
+    httr2,
     stringr,
     purrr,
     furrr,
     tidyr,
     tictoc,
+    askpass,
     rlang
 Suggests: 
     testthat (>= 3.0.0)
