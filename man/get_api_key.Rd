@@ -7,8 +7,9 @@
 get_api_key(env_var = "CHATGPT_KEY")
 }
 \arguments{
-\item{env_var}{Character string indicating the name of the R environment variable
-with the API key. See \code{set_api_key()} to set/create this variable.}
+\item{env_var}{Character string indicating the name of the temporary R environment variable with
+the API key and the used AI model. Currently, the argument only takes \code{env_var = "CHATGPT_KEY"}.
+See \code{set_api_key()} to set/create this variable.}
 }
 \value{
 The specified API key (NOTE: Avoid exposing this in the console).

@@ -10,8 +10,8 @@ set_api_key(key, env_var = "CHATGPT_KEY")
 \item{key}{Character string with an (ideally encrypt) API key. If not provided it
 returns a password box in which the true API key can be entered secretly.}
 
-\item{env_var}{Character string indicating the name of the temporary R environment variables
-and the used AI model. Currently, the argument only takes \code{env_var = "CHATGPT_KEY"}.}
+\item{env_var}{Character string indicating the name of the temporary R environment variable with
+the API key and the used AI model. Currently, the argument only takes \code{env_var = "CHATGPT_KEY"}.}
 }
 \value{
 A temporary environment variable with the name from \code{env_var}.

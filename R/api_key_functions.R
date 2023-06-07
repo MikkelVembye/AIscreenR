@@ -12,8 +12,8 @@
 #'
 #' @param key Character string with an (ideally encrypt) API key. If not provided it
 #' returns a password box in which the true API key can be entered secretly.
-#' @param env_var Character string indicating the name of the temporary R environment variables
-#' and the used AI model. Currently, the argument only takes \code{env_var = "CHATGPT_KEY"}.
+#' @param env_var Character string indicating the name of the temporary R environment variable with
+#' the API key and the used AI model. Currently, the argument only takes \code{env_var = "CHATGPT_KEY"}.
 #'
 #' @return A temporary environment variable with the name from \code{env_var}.
 #' If \code{key} is missing, it returns a password box in which the true API key can be entered.
@@ -30,18 +30,21 @@
 # Inspired by codes from https://httr2.r-lib.org/articles/wrapping-apis.html
 
 set_api_key <- function(key, env_var = "CHATGPT_KEY") {
+
   if (missing(key)) {
     key <- askpass::askpass("Please enter your API key")
   }
 
   if ("CHATGPT_KEY" %in% env_var) Sys.setenv("CHATGPT_KEY" = key)
+
 }
 
 
 #' @title Get API key from temporary R environment variable
 #'
-#' @param env_var Character string indicating the name of the R environment variable
-#' with the API key. See \code{set_api_key()} to set/create this variable.
+#' @param env_var Character string indicating the name of the temporary R environment variable with
+#' the API key and the used AI model. Currently, the argument only takes \code{env_var = "CHATGPT_KEY"}.
+#' See \code{set_api_key()} to set/create this variable.
 #'
 #' @return The specified API key (NOTE: Avoid exposing this in the console).
 #' @export
