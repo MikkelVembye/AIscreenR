@@ -11,7 +11,7 @@
 #' functions from the package that call an API.
 #'
 #' @param key Character string with an (ideally encrypt) API key. If not provided it
-#' returns a password box in which the true API key can be entered.
+#' returns a password box in which the true API key can be entered secretly.
 #' @param env_var Character string indicating the name of the temporary R environment variables
 #' and the used AI model. Currently, the argument only takes \code{env_var = "CHATGPT_KEY"}.
 #'

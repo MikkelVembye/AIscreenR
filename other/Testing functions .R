@@ -10,7 +10,7 @@ ask_chatgpt(
   q,
   sleep_time = 0,
   time_info = TRUE,
-  reps = 2
+  reps = 1
 )
 
 #purrr::map_dfr(1:10, \(i) ask_chatgpt(q, api_key = api_key, sleep_time = 0, time_info = TRUE))

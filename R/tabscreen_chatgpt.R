@@ -315,7 +315,8 @@ ask_chatgpt <- function(
     #run_time <- as.numeric(response$times[[6]])
 
     answer <- stringr::str_trim(httr::content(response)$choices[[1]]$message$content) |>
-      stringr::str_replace_all("\n", " ")
+      stringr::str_replace_all("\n", " ") |>
+      stringr::str_replace_all("\"", "'")
 
     if(rlang::is_empty(answer)){
       answer <- paste0(
