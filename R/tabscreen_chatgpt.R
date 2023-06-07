@@ -337,23 +337,27 @@ ask_chatgpt <- function(
   if (time_info){
 
     run_ask_chatgpt <-
+      suppressWarnings(
       purrr::possibly(
         run_ask_chatgpt,
         otherwise = tibble::tibble(
           answer = "Error (Have you loaded your API?)",
           run_time = NA_real_
         )
+       )
       )
 
   } else {
 
   run_ask_chatgpt <-
+    suppressWarnings(
     purrr::possibly(
       run_ask_chatgpt,
       otherwise = tibble::tibble(
         answer = "Error (Have you loaded your API?)"
+      )
+     )
     )
-   )
 
   }
 
@@ -374,6 +378,7 @@ ask_chatgpt <- function(
     furrr_seed <- if (is.null(seed)) TRUE else NULL
 
     suppressPackageStartupMessages(
+      suppressWarnings(
       final_res <-
         furrr::future_map_dfr(
           1:reps, \(i) run_ask_chatgpt(
@@ -388,6 +393,7 @@ ask_chatgpt <- function(
         dplyr::mutate(
           n = 1:reps
       )
+     )
     )
 
   }

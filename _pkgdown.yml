@@ -15,4 +15,5 @@ reference:
     desc: "R functions to ease and automate API management"
     contents:
       - set_api_key
+      - get_api_key
 

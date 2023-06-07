@@ -18,11 +18,22 @@ A temporary environment variable with the name from \code{env_var}.
 If \code{key} is missing, it returns a password box in which the true API key can be entered.
 }
 \description{
-Creating a temporary R environment API key variable
+This function automatically sets/creates an interim R environment variable with
+the API key to call a given AI model (e.g. ChatGPT). Thereby users avoid exposing their API keys.
+If the API key is set in the console, it will/can be revealed via the .Rhistory.
+Find more information about this issue at https://httr2.r-lib.org/articles/wrapping-apis.html
+}
+\details{
+When set_api_key() has successfully been executed, \code{get_api_key()} automatically
+retrieves the API key from the R environment and the users do not need to specify the API when running
+functions from the package that call an API.
 }
 \examples{
 \dontrun{
 set_api_key()
 }
 
+}
+\seealso{
+\code{\link{get_api_key}}
 }
