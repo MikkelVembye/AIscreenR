@@ -25,7 +25,6 @@
 #' \dontrun{
 #' set_api_key()
 #' }
-#'
 
 # Inspired by codes from https://httr2.r-lib.org/articles/wrapping-apis.html
 
@@ -55,7 +54,6 @@ set_api_key <- function(key, env_var = "CHATGPT_KEY") {
 #' \dontrun{
 #' get_api_key()
 #' }
-#'
 
 
 get_api_key <- function(env_var = "CHATGPT_KEY") {

@@ -32,7 +32,6 @@ functions from the package that call an API.
 \dontrun{
 set_api_key()
 }
-
 }
 \seealso{
 \code{\link{get_api_key}}

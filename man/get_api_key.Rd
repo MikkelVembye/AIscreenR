@@ -21,7 +21,6 @@ Get API key from temporary R environment variable
 \dontrun{
 get_api_key()
 }
-
 }
 \seealso{
 \code{\link{set_api_key}}
