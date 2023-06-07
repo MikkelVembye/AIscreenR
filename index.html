@@ -74,18 +74,14 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://httr2.r-lib.org" class="external-link">httr2</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: package 'httr2' was built under R version 4.2.3</span></span>
 <span></span>
-<span><span class="fu">AIscreenR</span><span class="fu">:::</span><span class="fu">set_api_key</span><span class="op">(</span></span>
-<span>  key <span class="op">=</span> <span class="fu">httr2</span><span class="fu">::</span><span class="fu"><a href="https://httr2.r-lib.org/reference/secrets.html" class="external-link">secret_decrypt</a></span><span class="op">(</span></span>
-<span>    <span class="st">"4UAcFSIHVz8Z4zED1WEj3k65xFBWlJ8dzavRDGG4dz0pBxEOXtvSkLwK6_fZaZqCr94oVtKBD6DQo82vwa2gljJMTw"</span>,</span>
-<span>    <span class="st">"AISCREENR_KEY"</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/set_api_key.html">set_api_key</a></span><span class="op">(</span><span class="fu">AIscreenR</span><span class="fu">:::</span><span class="fu">testing_key_chatgpt</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
 <span><span class="va">q</span> <span class="op">&lt;-</span> <span class="st">"What is a carrot?"</span></span>
 <span><span class="fu"><a href="reference/ask_chatgpt.html">ask_chatgpt</a></span><span class="op">(</span><span class="va">q</span>, time_info <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 1 × 2</span></span>
 <span><span class="co">#&gt;   answer                                                                run_time</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;                                                                    &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 A carrot is a vegetable that is typically orange in color, although …     6.38</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 A carrot is a root vegetable that is orange in color and is known fo…     7.09</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Find documentation behind by running the below code</span></span>
 <span><span class="op">?</span><span class="fu">AIscreenR</span><span class="fu">::</span><span class="va"><a href="reference/ask_chatgpt.html">ask_chatgpt</a></span></span></code></pre></div>
