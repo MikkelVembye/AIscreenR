@@ -37,18 +37,14 @@ library(AIscreenR)
 library(httr2)
 #> Warning: package 'httr2' was built under R version 4.2.3
 
-AIscreenR:::set_api_key(
-  key = httr2::secret_decrypt(
-    "4UAcFSIHVz8Z4zED1WEj3k65xFBWlJ8dzavRDGG4dz0pBxEOXtvSkLwK6_fZaZqCr94oVtKBD6DQo82vwa2gljJMTw",
-    "AISCREENR_KEY"
-  )
-)
+set_api_key(AIscreenR:::testing_key_chatgpt())
+
 q <- "What is a carrot?"
 ask_chatgpt(q, time_info = TRUE)
 #> # A tibble: 1 × 2
 #>   answer                                                                run_time
 #>   <chr>                                                                    <dbl>
-#> 1 A carrot is a vegetable that is typically orange in color, although …     6.38
+#> 1 A carrot is a root vegetable that is orange in color and is known fo…     7.09
 ```
 
 ``` r
