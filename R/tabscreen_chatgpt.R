@@ -397,43 +397,9 @@ ask_chatgpt <- function(
 
 }
 
-# Code retrieved from https://httr2.r-lib.org/articles/wrapping-apis.html
+# Function with encrypt code string
 
-set_api_key <- function(key = NULL) {
-  if (is.null(key)) {
-    key <- askpass::askpass("Please enter your API key")
-  }
-  Sys.setenv("CHATGPT_KEY" = key)
-}
-
-
-get_api_key <- function() {
-
-  key <- Sys.getenv("CHATGPT_KEY")
-
-  if (identical(key, "")){
-
-    if (is_testing()) {
-
-      key <- testing_key()
-
-    } else {
-
-      stop("No API key found, please supply with `api_key` argument or with CHATGPT_KEY env var. Use/see set_api_key()")
-
-    }
-
-  }
-
-  key
-
-}
-
-is_testing <- function() {
-  identical(Sys.getenv("TESTTHAT"), "true")
-}
-
-testing_key <- function() {
+testing_key_chatgpt <- function() {
   httr2::secret_decrypt(
     "4UAcFSIHVz8Z4zED1WEj3k65xFBWlJ8dzavRDGG4dz0pBxEOXtvSkLwK6_fZaZqCr94oVtKBD6DQo82vwa2gljJMTw",
     "AISCREENR_KEY"

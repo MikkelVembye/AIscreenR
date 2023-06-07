@@ -1,10 +1,7 @@
 
-AIscreenR:::set_api_key(
-  key = httr2::secret_decrypt(
-    "4UAcFSIHVz8Z4zED1WEj3k65xFBWlJ8dzavRDGG4dz0pBxEOXtvSkLwK6_fZaZqCr94oVtKBD6DQo82vwa2gljJMTw",
-    "AISCREENR_KEY"
-  )
-)
+AIscreenR::set_api_key(AIscreenR:::testing_key_chatgpt())
+AIscreenR:::set_api_key()
+
 
 #get_api_key()
 
@@ -25,8 +22,6 @@ plan(sequential)
 system.time(
   res_seq <- ask_chatgpt(
     q,
-    api_key = api_key,
-    sleep_time = 0,
     time_info = TRUE,
     reps = 3
   )
