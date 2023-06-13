@@ -44,7 +44,7 @@ ask_chatgpt(q, time_info = TRUE)
 #> # A tibble: 1 × 2
 #>   answer                                                                run_time
 #>   <chr>                                                                    <dbl>
-#> 1 A carrot is a root vegetable that is orange in color and is known fo…     7.09
+#> 1 A carrot is a root vegetable that has a firm, crunchy texture and a …     6.13
 ```
 
 ``` r
