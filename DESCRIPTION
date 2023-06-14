@@ -26,7 +26,8 @@ Imports:
     tidyr,
     tictoc,
     askpass,
-    rlang
+    rlang,
+    curl
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

@@ -8,6 +8,7 @@ reference:
   - title: "ChatGPT"
     desc: "R functions to automate title and abstract screeening in ChatGPT"
     contents:
+      - ask_gpt
       - ask_chatgpt
       - tabscreen_chatgpt
 
@@ -17,3 +18,7 @@ reference:
       - set_api_key
       - get_api_key
 
+  - title: "Rate limits"
+    desc: "R functions to find api rate limits"
+    contents:
+      - rate_limits_per_minute
