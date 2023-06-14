@@ -423,7 +423,6 @@ ask_chatgpt <- function(
 #'
 #' @examples
 #' \dontrun{
-#'
 #' # Find your api key at https://platform.openai.com/account/api-keys
 #' set_api_key()
 #'
