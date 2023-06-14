@@ -16,10 +16,16 @@
     <loc>https://mikkelvembye.github.io/AIscreenR/reference/ask_chatgpt.html</loc>
   </url>
   <url>
+    <loc>https://mikkelvembye.github.io/AIscreenR/reference/ask_gpt.html</loc>
+  </url>
+  <url>
     <loc>https://mikkelvembye.github.io/AIscreenR/reference/get_api_key.html</loc>
   </url>
   <url>
     <loc>https://mikkelvembye.github.io/AIscreenR/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://mikkelvembye.github.io/AIscreenR/reference/rate_limits_per_minute.html</loc>
   </url>
   <url>
     <loc>https://mikkelvembye.github.io/AIscreenR/reference/set_api_key.html</loc>
