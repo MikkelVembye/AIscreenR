@@ -47,25 +47,25 @@ Default = \code{"gpt-3.5-turbo-16k-0613"}.Find available model at
 use \code{\link[=set_api_key]{set_api_key()}} to securely automate the use of the
 api key by setting the api key as a locale environment variable.}
 
-\item{max_tries, max_seconds}{Cap the maximum number of attempts with
+\item{max_tries, max_seconds}{'Cap the maximum number of attempts with
 \code{max_tries} or the total elapsed time from the first request with
 \code{max_seconds}. If neither option is supplied (the default), \code{\link[=req_perform]{req_perform()}}
-will not retry (Wickham, 2023).}
+will not retry' (Wickham, 2023).}
 
-\item{is_transient}{A predicate function that takes a single argument
+\item{is_transient}{'A predicate function that takes a single argument
 (the response) and returns \code{TRUE} or \code{FALSE} specifying whether or not
-the response represents a transient error (Wickham, 2023).}
+the response represents a transient error' (Wickham, 2023).}
 
-\item{backoff}{A function that takes a single argument (the number of failed
-attempts so far) and returns the number of seconds to wait (Wickham, 2023).}
+\item{backoff}{'A function that takes a single argument (the number of failed
+attempts so far) and returns the number of seconds to wait' (Wickham, 2023).}
 
-\item{after}{A function that takes a single argument (the response) and
+\item{after}{'A function that takes a single argument (the response) and
 returns either a number of seconds to wait or \code{NULL}, which indicates
 that a precise wait time is not available that the \code{backoff} strategy
-should be used instead (Wickham, 2023).}
+should be used instead' (Wickham, 2023).}
 
-\item{rpm}{Numerical value indicating the number of request available to
-the specified api key. Find more information at
+\item{rpm}{Numerical value indicating the number of requests per minute (rpm)
+available for the specified api key. Find more information at
 \url{https://platform.openai.com/docs/guides/rate-limits/what-are-the-rate-limits-for-our-api}.
 Alternatively, use \code{\link[=rate_limits_per_minute]{rate_limits_per_minute()}}.}
 
@@ -81,7 +81,9 @@ A tibble including the following variables, the ChatGPT answer,
 the running time of each request, and the total amount of tokens used.
 }
 \description{
-Asking a single question to ChatGPT
+The function makes it possible to ask a question to ChatGPT. If
+\code{reps > 1} the same question is asked reps times. This can be useful to test consistency
+between answers.
 }
 \examples{
 \dontrun{

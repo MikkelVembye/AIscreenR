@@ -39,15 +39,17 @@ library(httr2)
 
 set_api_key(AIscreenR:::testing_key_chatgpt())
 
-q <- "What is a carrot?"
-ask_chatgpt(q, time_info = TRUE)
-#> # A tibble: 1 × 2
-#>   answer                                                                run_time
-#>   <chr>                                                                    <dbl>
-#> 1 A carrot is a root vegetable that has a firm, crunchy texture and a …     6.13
+rate_limits <- rate_limits_per_minute()
+
+q <- "What is a banana?"
+ask_gpt(q, rpm = rate_limits$requests_per_minute)
+#> # A tibble: 1 × 3
+#>   answer                                                         run_time tokens
+#>   <chr>                                                             <dbl>  <int>
+#> 1 A banana is a fruit that is elongated and curved with a soft …        4     52
 ```
 
 ``` r
 # Find documentation behind by running the below code
-?AIscreenR::ask_chatgpt
+?AIscreenR::ask_gpt
 ```

@@ -407,6 +407,10 @@ ask_chatgpt <- function(
 
 #' @title  Asking a single question to ChatGPT
 #'
+#' @description The function makes it possible to ask a question to ChatGPT. If
+#' `reps > 1` the same question is asked reps times. This can be useful to test consistency
+#'  between answers.
+#'
 #' @references Wickham H (2023).
 #' \emph{httr2: Perform HTTP Requests and Process the Responses}.
 #' https://httr2.r-lib.org, https://github.com/r-lib/httr2.
