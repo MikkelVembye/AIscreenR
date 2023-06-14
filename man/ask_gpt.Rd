@@ -78,7 +78,7 @@ parallel-safe random numbers are produced.}
 }
 \value{
 A tibble including the following variables, the ChatGPT answer,
-the running time of each request, and the total amount of tokens used.
+the running time (in seconds) of each request, and the total amount of tokens used.
 }
 \description{
 The function makes it possible to ask a question to ChatGPT. If
@@ -87,7 +87,6 @@ between answers.
 }
 \examples{
 \dontrun{
-
 # Find your api key at https://platform.openai.com/account/api-keys
 set_api_key()
 

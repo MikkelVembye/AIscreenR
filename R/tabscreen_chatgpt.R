@@ -418,7 +418,7 @@ ask_chatgpt <- function(
 #' @template askgpt-arg
 #'
 #' @return A tibble including the following variables, the ChatGPT answer,
-#' the running time of each request, and the total amount of tokens used.
+#' the running time (in seconds) of each request, and the total amount of tokens used.
 #' @export
 #'
 #' @examples
