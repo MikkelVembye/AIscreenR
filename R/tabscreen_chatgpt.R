@@ -655,7 +655,7 @@ status_code_text <- function(){
 
 
 gpt_is_transient <- function(resp){
-  status_code() == 429 || status_code() == 500
+  status_code() == 400 ||  status_code() == 429 || status_code() == 500
 }
 
 
