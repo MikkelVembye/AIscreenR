@@ -437,7 +437,7 @@ ask_gpt <- function(
     ...,
     time_info = TRUE,
     token_info = TRUE,
-    model = "gpt-3.5-turbo-16k-0613",
+    model = "gpt-3.5-turbo-0301",
     role = "user",
     api_key = get_api_key(),
     max_tries = 8,

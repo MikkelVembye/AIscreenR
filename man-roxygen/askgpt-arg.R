@@ -6,7 +6,7 @@
 #' @param token_info Logical indicating whether the total number of tokens
 #' per request should be included in the output data. Default = `TRUE`.
 #' @param model Character string with the name of the completion model.
-#'  Default = `"gpt-3.5-turbo-16k-0613"`. Find available model at
+#'  Default = `"gpt-3.5-turbo-0301"`. Find available model at
 #' \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.
 #' @param role Character string indicate the role of the user. Default is `"user"`.
 #' @param api_key Numerical value with your personal API key. Find at

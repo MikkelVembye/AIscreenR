@@ -9,7 +9,7 @@ ask_gpt(
   ...,
   time_info = TRUE,
   token_info = TRUE,
-  model = "gpt-3.5-turbo-16k-0613",
+  model = "gpt-3.5-turbo-0301",
   role = "user",
   api_key = get_api_key(),
   max_tries = 8,
@@ -35,7 +35,7 @@ request/question should be included in the data. Default = \code{TRUE}.}
 per request should be included in the output data. Default = \code{TRUE}.}
 
 \item{model}{Character string with the name of the completion model.
-Default = \code{"gpt-3.5-turbo-16k-0613"}. Find available model at
+Default = \code{"gpt-3.5-turbo-0301"}. Find available model at
 \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.}
 
 \item{role}{Character string indicate the role of the user. Default is \code{"user"}.}
