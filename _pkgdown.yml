@@ -9,6 +9,7 @@ reference:
     desc: "R functions to automate title and abstract screeening in ChatGPT"
     contents:
       - ask_gpt
+      - tabscreen_gpt
       - ask_chatgpt
       - tabscreen_chatgpt
 

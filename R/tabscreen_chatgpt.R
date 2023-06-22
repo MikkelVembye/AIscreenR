@@ -24,7 +24,6 @@
 #' @export
 #'
 #' @examples
-#'
 #' \dontrun{
 #' library(future)
 #'
@@ -48,7 +47,6 @@
 #' )
 #'
 #' }
-#'
 
 tabscreen_chatgpt <-
   function(
@@ -404,6 +402,198 @@ ask_chatgpt <- function(
 
 }
 
+################################################################################
+# HTTR2 functions
+################################################################################
+
+#' @title Title and abstract screening with ChatGPT
+#'
+#' @description This function supports the conduct of title and abstract screening with ChatGPT in R.
+#' The function allow to run title and abstract screening across multiple prompts and with
+#' repeated questions to check for consistency across answers
+#'
+#' @references Wickham H (2023).
+#' \emph{httr2: Perform HTTP Requests and Process the Responses}.
+#' https://httr2.r-lib.org, https://github.com/r-lib/httr2.
+#'
+#' @template common-arg
+#' @param arrange_var Function indicating the variables determing the arrangement of the data. Default is \code{studyid}.
+#' @template askgpt-arg
+#'
+#' @return A \code{tibble} with answer and run_time if \code{time_info = TRUE}.
+#'
+#' @importFrom stats df
+#' @import dplyr
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' library(future)
+#'
+#' # Find your api key at https://platform.openai.com/account/api-keys
+#' set_api_key()
+#'
+#' data <- load("data.RData")
+#' prompts <- paste("Prompt", 1:3)
+#'
+#' plan(multisession, workers = 7)
+#'
+#' system.time(
+#'  test_dat <-
+#'   tabscreen_chatgpt(
+#'     data = data,
+#'     prompt = prompts,
+#'     studyid = studyid,
+#'     title = Title,
+#'     abstract = Abstract
+#'  )
+#' )
+#' }
+
+tabscreen_gpt <- function(
+    data,
+    prompt,
+    studyid,
+    title,
+    abstract,
+    ...,
+    arrange_var = studyid,
+    time_info = TRUE,
+    token_info = TRUE,
+    model = "gpt-3.5-turbo-0301",
+    role = "user",
+    api_key = get_api_key(),
+    max_tries = 2,
+    max_seconds = NULL,
+    is_transient = gpt_is_transient,
+    backoff = NULL,
+    after = NULL,
+    rpm = 3500,
+    reps = 1,
+    seed = NULL
+){
+
+  if (missing(studyid)){
+
+    dat <-
+      data |>
+      dplyr::mutate(
+        studyid = 1:nrow(data)
+      ) |>
+      dplyr::relocate(studyid, .before = {{ title }})
+
+
+  } else {
+
+    dat <-
+      data |>
+      dplyr::mutate(
+        studyid = {{ studyid }}
+      ) |>
+      dplyr::relocate(studyid, .before = {{ title }})
+
+  }
+
+  question_dat <-
+    dat |>
+    dplyr::mutate(
+      dplyr::across(c({{ title }}, {{ abstract }}), ~ dplyr::if_else(
+        is.na(.x) | .x == "" | .x == " ", "No information", .x)
+      )
+    ) |>
+    dplyr::slice(rep(1:nrow(dat), length(prompt))) |>
+    dplyr::mutate(
+      prompt = rep(prompt, each = dplyr::n_distinct(studyid))
+    ) |>
+    dplyr::slice(rep(1:dplyr::n(), each = length(model))) |>
+    dplyr::mutate(
+      model = rep(model, dplyr::n_distinct(studyid)*dplyr::n_distinct(prompt)),
+      question_raw = paste0(
+        prompt,
+        " Now, please evaluate the following titles and abstracts for",
+        " Study ", studyid, ":",
+        " -Title: ", {{ title }},
+        " -Abstract: ", {{ abstract }}),
+      question = stringr::str_replace_all(question_raw, "\n\n", " "),
+      question = stringr::str_remove_all(question, "\n")
+    ) |>
+    dplyr::select(-question_raw) |>
+    dplyr::arrange(model, prompt, {{ arrange_var }})
+
+  furrr_seed <- if (is.null(seed)) TRUE else NULL
+
+  answer_dat <-
+    question_dat |>
+    dplyr::mutate(
+      res = furrr::future_map2(
+        .x = question, .y = model, ~ ask_gpt(
+          question = .x,
+          model = .y,
+          time_info = time_info,
+          token_info = token_info,
+          role = role,
+          api_key = api_key,
+          max_tries = max_tries,
+          max_seconds = max_seconds,
+          is_transient = is_transient,
+          backoff = backoff,
+          after = after,
+          rpm = rpm,
+          reps = reps,
+          seed = seed
+        ),
+        #...,
+        .options = furrr::furrr_options(seed = furrr_seed))
+    ) |>
+    tidyr::unnest(res)
+
+  n_error <- answer_dat |> dplyr::filter(stringr::str_detect(answer, "Error|error")) |> nrow()
+
+  if (n_error > 0){
+
+    succes_dat <- answer_dat |>
+      filter(!stringr::str_detect(answer, "Error|error"))
+
+
+    error_dat <- answer_dat |>
+      filter(stringr::str_detect(answer, "Error|error")) |>
+      dplyr::mutate(
+        furrr::future_map_dfr(
+          .x = question, .y = model, ~ AIscreenR::ask_gpt(
+            question = .x,
+            model = .y,
+            time_info = time_info,
+            token_info = token_info,
+            role = role,
+            api_key = api_key,
+            max_tries = max_tries,
+            max_seconds = max_seconds,
+            is_transient = is_transient,
+            backoff = backoff,
+            after = after,
+            rpm = rpm,
+            reps = reps,
+            seed = seed
+          ),
+          .options = furrr::furrr_options(seed = TRUE))
+      )
+
+    answer_dat <-
+      dplyr::bind_rows(
+        succes_dat,
+        error_dat
+      ) |>
+      dplyr::arrange(model, prompt, {{ arrange_var }})
+
+    still_error <- answer_dat |> dplyr::filter(stringr::str_detect(answer, "Error|error")) |> nrow()
+    if (still_error > 0) message("NOTE: Request falied for some title and abstracts.")
+
+  }
+
+  tibble::new_tibble(answer_dat, class = "chatgpt")
+
+}
+
 
 #' @title  Asking a single question to ChatGPT
 #'
@@ -415,6 +605,7 @@ ask_chatgpt <- function(
 #' \emph{httr2: Perform HTTP Requests and Process the Responses}.
 #' https://httr2.r-lib.org, https://github.com/r-lib/httr2.
 #'
+#' @param question Character string with the question you want ChatGPT to answer.
 #' @template askgpt-arg
 #'
 #' @return A tibble including the following variables, the ChatGPT answer,
@@ -655,7 +846,7 @@ status_code_text <- function(){
 
 
 gpt_is_transient <- function(resp){
-  status_code() == 400 ||  status_code() == 429 || status_code() == 500
+  status_code() == 400 ||  status_code() == 429 || status_code() == 500 || status_code() ==  503
 }
 
 

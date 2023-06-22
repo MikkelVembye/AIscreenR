@@ -21,15 +21,16 @@ tabscreen_chatgpt(
 )
 }
 \arguments{
-\item{data}{Insert}
+\item{data}{Data with title and abstracts}
 
-\item{prompt}{Insert}
+\item{prompt}{Prompt(s) to paste before title and abstract}
 
-\item{studyid}{Insert}
+\item{studyid}{ID indication unique ID of study. Is missing, this is generated
+automatically.}
 
-\item{title}{Insert}
+\item{title}{Name of variable with containing title information}
 
-\item{abstract}{Insert}
+\item{abstract}{Name of variable with containing abstract information}
 
 \item{api_key}{Numerical value with your personal API key. Find at \url{https://platform.openai.com/account/api-keys}}
 
@@ -61,7 +62,6 @@ The function allow to run title and abstract screening across multiple prompts a
 repeated questions to check for consistency across answers.
 }
 \examples{
-
 \dontrun{
 library(future)
 
@@ -85,5 +85,4 @@ system.time(
 )
 
 }
-
 }

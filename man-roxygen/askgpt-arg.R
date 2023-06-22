@@ -1,4 +1,3 @@
-#' @param question Character string with the question you want ChatGPT to answer.
 #' @param ... Further argument to pass to the request body.
 #'  See \url{https://platform.openai.com/docs/api-reference/chat/create}.
 #' @param time_info Logical indicating whether the run time of each
