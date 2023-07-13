@@ -27,6 +27,8 @@ Imports:
     curl,
     lifecycle
 Suggests: 
+    readxl,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 URL: https://mikkelvembye.github.io/AIscreenR/
+LazyData: true
