@@ -18,15 +18,12 @@ RoxygenNote: 7.2.3
 Imports:
     dplyr,
     tibble,
-    httr,
     httr2,
     stringr,
-    purrr,
     furrr,
     tidyr,
     tictoc,
     askpass,
-    rlang,
     curl
 Suggests: 
     testthat (>= 3.0.0)

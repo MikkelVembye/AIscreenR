@@ -6,7 +6,7 @@
 \usage{
 rate_limits_per_minute(
   AI_tool = "CHATGPT",
-  model = "gpt-3.5-turbo-16k-0613",
+  model = "gpt-3.5-turbo-0613",
   api_key = get_api_key()
 )
 }

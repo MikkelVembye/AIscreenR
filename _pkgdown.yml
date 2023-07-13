@@ -8,10 +8,8 @@ reference:
   - title: "ChatGPT"
     desc: "R functions to automate title and abstract screeening in ChatGPT"
     contents:
-      - ask_gpt
-      - tabscreen_gpt
-      - ask_chatgpt
-      - tabscreen_chatgpt
+      - ask_gpt_0301
+      - tabscreen_gpt_0301
 
   - title: "API management"
     desc: "R functions to ease and automate API management"
