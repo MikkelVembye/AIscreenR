@@ -72,21 +72,45 @@
 <span><span class="co"># and then enter you key.</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mikkelvembye.github.io/AIscreenR/">AIscreenR</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://httr2.r-lib.org" class="external-link">httr2</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: package 'httr2' was built under R version 4.2.3</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://revtools.net" class="external-link">revtools</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/set_api_key.html">set_api_key</a></span><span class="op">(</span><span class="fu">AIscreenR</span><span class="fu">:::</span><span class="fu">testing_key_chatgpt</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">rate_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">rate_limits</span></span>
+<span><span class="co">#&gt; # A tibble: 1 × 3</span></span>
+<span><span class="co">#&gt;   model              requests_per_minute tokens_per_minute</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;                            &lt;dbl&gt;             &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 gpt-3.5-turbo-0613                3500             90000</span></span>
 <span></span>
 <span><span class="va">q</span> <span class="op">&lt;-</span> <span class="st">"What is a banana?"</span></span>
-<span><span class="fu">ask_gpt</span><span class="op">(</span><span class="va">q</span>, rpm <span class="op">=</span> <span class="va">rate_limits</span><span class="op">$</span><span class="va">requests_per_minute</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/ask_gpt_0301.html">ask_gpt_0301</a></span><span class="op">(</span><span class="va">q</span>, rpm <span class="op">=</span> <span class="va">rate_limits</span><span class="op">$</span><span class="va">requests_per_minute</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 1 × 3</span></span>
 <span><span class="co">#&gt;   answer                                                         run_time tokens</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;                                                             &lt;dbl&gt;  &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1 A banana is a fruit that is elongated and curved with a soft …        4     52</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 A banana is a type of fruit that grows on a tall, herbaceous …      3.4    118</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Find documentation behind by running the below code</span></span>
-<span><span class="op">?</span><span class="fu">AIscreenR</span><span class="fu">::</span><span class="va">ask_gpt</span></span></code></pre></div>
+<span><span class="op">?</span><span class="fu">AIscreenR</span><span class="fu">::</span><span class="va"><a href="reference/ask_gpt_0301.html">ask_gpt_0301</a></span></span></code></pre></div>
+<p>How to load ris files. In this example we have downloaded the ris files from the <a href="https://eppi.ioe.ac.uk/EPPIReviewer-Web/home" class="external-link">EPPI-Reviewer</a>.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ris_dat</span> <span class="op">&lt;-</span> <span class="fu">revtools</span><span class="fu">::</span><span class="fu">read_bibliography</span><span class="op">(</span><span class="st">"other/ris files/Pilotscreen_executive_functions.ris"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">eppi_id</span>, <span class="va">title</span>, <span class="va">abstract</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ris_dat</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 5 × 3</span></span>
+<span><span class="co">#&gt;   eppi_id  title                                                        abstract</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;                                                        &lt;chr&gt;   </span></span>
+<span><span class="co">#&gt; 1 84952933 A 4-component scale of working memory: Developing the Persi… Introdu…</span></span>
+<span><span class="co">#&gt; 2 84955993 A quick and easy strategy to reduce test anxiety and enhanc… The neg…</span></span>
+<span><span class="co">#&gt; 3 84972741 How do 3-year-olds use relevance inferencing to interpret i… If a ch…</span></span>
+<span><span class="co">#&gt; 4 84952367 The impact of Texas HIPPY on school readiness and academic … This st…</span></span>
+<span><span class="co">#&gt; 5 84959326 The effect of two different approaches to teaching life sci… In Janu…</span></span></code></pre></div>
+<p>NOTE: More extensive examples of how to use this tool will soon be added!</p>
 </div>
 </div>
 
