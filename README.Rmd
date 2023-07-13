@@ -36,27 +36,42 @@ devtools::install_github("MikkelVembye/AIscreenR")
 ```
 
 Small example of how to ask a question in ChatGPT
-```{r}
+```{r, message=FALSE, warning=FALSE}
 # Find your api key at https://platform.openai.com/account/api-keys 
 # Thereafter, either encrypt it with the secret functions from the httr2 package
 # see https://httr2.r-lib.org/reference/secrets.html or run set_api_key() 
 # and then enter you key.
 library(AIscreenR)
 library(httr2)
+library(revtools)
+library(tibble)
+library(dplyr)
 
 set_api_key(AIscreenR:::testing_key_chatgpt())
 
 rate_limits <- rate_limits_per_minute()
+rate_limits
 
 q <- "What is a banana?"
-ask_gpt(q, rpm = rate_limits$requests_per_minute)
+ask_gpt_0301(q, rpm = rate_limits$requests_per_minute)
 ```
 
 
 ```{r, eval=FALSE}
 # Find documentation behind by running the below code
-?AIscreenR::ask_gpt
+?AIscreenR::ask_gpt_0301
 ```
 
+How to load ris files. In this example we have downloaded the ris files from 
+the [EPPI-Reviewer](https://eppi.ioe.ac.uk/EPPIReviewer-Web/home). 
 
+```{r}
+ris_dat <- revtools::read_bibliography("other/ris files/Pilotscreen_executive_functions.ris") |> 
+  suppressWarnings() |> 
+  dplyr::select(eppi_id, title, abstract) |> 
+  tibble::as_tibble()
 
+ris_dat |> head(5)
+```
+
+NOTE: More extensive examples of how to use this tool will soon be added!
