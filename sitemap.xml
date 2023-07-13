@@ -13,10 +13,7 @@
     <loc>https://mikkelvembye.github.io/AIscreenR/index.html</loc>
   </url>
   <url>
-    <loc>https://mikkelvembye.github.io/AIscreenR/reference/ask_chatgpt.html</loc>
-  </url>
-  <url>
-    <loc>https://mikkelvembye.github.io/AIscreenR/reference/ask_gpt.html</loc>
+    <loc>https://mikkelvembye.github.io/AIscreenR/reference/ask_gpt_0301.html</loc>
   </url>
   <url>
     <loc>https://mikkelvembye.github.io/AIscreenR/reference/get_api_key.html</loc>
@@ -31,9 +28,6 @@
     <loc>https://mikkelvembye.github.io/AIscreenR/reference/set_api_key.html</loc>
   </url>
   <url>
-    <loc>https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_chatgpt.html</loc>
-  </url>
-  <url>
-    <loc>https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.html</loc>
+    <loc>https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt_0301.html</loc>
   </url>
 </urlset>

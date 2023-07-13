@@ -79,14 +79,14 @@
 <span><span class="va">rate_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">q</span> <span class="op">&lt;-</span> <span class="st">"What is a banana?"</span></span>
-<span><span class="fu"><a href="reference/ask_gpt.html">ask_gpt</a></span><span class="op">(</span><span class="va">q</span>, rpm <span class="op">=</span> <span class="va">rate_limits</span><span class="op">$</span><span class="va">requests_per_minute</span><span class="op">)</span></span>
+<span><span class="fu">ask_gpt</span><span class="op">(</span><span class="va">q</span>, rpm <span class="op">=</span> <span class="va">rate_limits</span><span class="op">$</span><span class="va">requests_per_minute</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 1 × 3</span></span>
 <span><span class="co">#&gt;   answer                                                         run_time tokens</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;                                                             &lt;dbl&gt;  &lt;int&gt;</span></span>
 <span><span class="co">#&gt; 1 A banana is a fruit that is elongated and curved with a soft …        4     52</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Find documentation behind by running the below code</span></span>
-<span><span class="op">?</span><span class="fu">AIscreenR</span><span class="fu">::</span><span class="va"><a href="reference/ask_gpt.html">ask_gpt</a></span></span></code></pre></div>
+<span><span class="op">?</span><span class="fu">AIscreenR</span><span class="fu">::</span><span class="va">ask_gpt</span></span></code></pre></div>
 </div>
 </div>
 
