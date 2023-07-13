@@ -12,7 +12,7 @@
 #' @param AI_tool Character string specified the AI tool from which the api is
 #' issued. Default is `"CHATGPT"`
 #' @param model Character string with the name of the completion model.
-#' Default = `"gpt-3.5-turbo-16k-0613"`.
+#' Default = `"gpt-3.5-turbo-0613"`.
 #' Find available model at
 #' \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.
 #' @param api_key Numerical value with your personal API key. Find at

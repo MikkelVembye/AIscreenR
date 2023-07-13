@@ -15,7 +15,7 @@ rate_limits_per_minute(
 issued. Default is \code{"CHATGPT"}}
 
 \item{model}{Character string with the name of the completion model.
-Default = \code{"gpt-3.5-turbo-16k-0613"}.
+Default = \code{"gpt-3.5-turbo-0613"}.
 Find available model at
 \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.}
 
