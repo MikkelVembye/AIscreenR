@@ -53,7 +53,7 @@ ask_gpt_0301(q, rpm = rate_limits$requests_per_minute)
 #> # A tibble: 1 × 3
 #>   answer                                                         run_time tokens
 #>   <chr>                                                             <dbl>  <int>
-#> 1 A banana is a type of fruit that grows on a tall, herbaceous …      3.4    118
+#> 1 A banana is a long, curved fruit with a yellow skin and a pul…      2.1     91
 ```
 
 ``` r
@@ -65,20 +65,26 @@ How to load ris files. In this example we have downloaded the ris files
 from the [EPPI-Reviewer](https://eppi.ioe.ac.uk/EPPIReviewer-Web/home).
 
 ``` r
+# References included for full-text screening
+include <- c(45542056, 84953535, 84964488, 84956376, 84971042, 84966265)
+
 ris_dat <- revtools::read_bibliography("other/ris files/Pilotscreen_executive_functions.ris") |> 
   suppressWarnings() |> 
-  dplyr::select(eppi_id, title, abstract) |> 
-  tibble::as_tibble()
+  select(eppi_id, title, abstract) |> 
+  as_tibble() |> 
+  mutate(
+    human_code = if_else(eppi_id %in% include, 1, 0)
+  )
 
 ris_dat |> head(5)
-#> # A tibble: 5 × 3
-#>   eppi_id  title                                                        abstract
-#>   <chr>    <chr>                                                        <chr>   
-#> 1 84952933 A 4-component scale of working memory: Developing the Persi… Introdu…
-#> 2 84955993 A quick and easy strategy to reduce test anxiety and enhanc… The neg…
-#> 3 84972741 How do 3-year-olds use relevance inferencing to interpret i… If a ch…
-#> 4 84952367 The impact of Texas HIPPY on school readiness and academic … This st…
-#> 5 84959326 The effect of two different approaches to teaching life sci… In Janu…
+#> # A tibble: 5 × 4
+#>   eppi_id  title                                             abstract human_code
+#>   <chr>    <chr>                                             <chr>         <dbl>
+#> 1 84952933 A 4-component scale of working memory: Developin… Introdu…          0
+#> 2 84955993 A quick and easy strategy to reduce test anxiety… The neg…          0
+#> 3 84972741 How do 3-year-olds use relevance inferencing to … If a ch…          0
+#> 4 84952367 The impact of Texas HIPPY on school readiness an… This st…          0
+#> 5 84959326 The effect of two different approaches to teachi… In Janu…          0
 ```
 
 NOTE: More extensive examples of how to use this tool will soon be

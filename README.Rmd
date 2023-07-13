@@ -66,10 +66,16 @@ How to load ris files. In this example we have downloaded the ris files from
 the [EPPI-Reviewer](https://eppi.ioe.ac.uk/EPPIReviewer-Web/home). 
 
 ```{r}
+# References included for full-text screening
+include <- c(45542056, 84953535, 84964488, 84956376, 84971042, 84966265)
+
 ris_dat <- revtools::read_bibliography("other/ris files/Pilotscreen_executive_functions.ris") |> 
   suppressWarnings() |> 
-  dplyr::select(eppi_id, title, abstract) |> 
-  tibble::as_tibble()
+  select(eppi_id, title, abstract) |> 
+  as_tibble() |> 
+  mutate(
+    human_code = if_else(eppi_id %in% include, 1, 0)
+  )
 
 ris_dat |> head(5)
 ```
