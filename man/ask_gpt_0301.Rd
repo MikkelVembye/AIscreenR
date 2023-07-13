@@ -2,7 +2,7 @@
 % Please edit documentation in R/tabscreen_chatgpt.R
 \name{ask_gpt_0301}
 \alias{ask_gpt_0301}
-\title{Asking a single question to ChatGPT (0301 models)}
+\title{Asking a single question to ChatGPT (0301/0314 models)}
 \usage{
 ask_gpt_0301(
   question,
@@ -81,6 +81,13 @@ A tibble including the following variables, the ChatGPT answer,
 the running time (in seconds) of each request, and the total amount of tokens used.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}\if{html}{\out{<br>}}
+\if{html}{\out{<br>}}
+\code{tabscreen_gpt_0301} will deprecate September 13 when OPEN-AI removes the
+0301 and 0314 models. Instead use INSERT FUNCTION WHEN READY.
+Read more at \url{https://platform.openai.com/docs/deprecations/2023-06-13-updated-chat-models}.
+\if{html}{\out{<br>}}
+\if{html}{\out{<br>}}
 The function makes it possible to ask a question to ChatGPT. If
 \code{reps > 1} the same question is asked reps times. This can be useful to test consistency
 between answers.

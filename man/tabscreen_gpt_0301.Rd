@@ -2,7 +2,7 @@
 % Please edit documentation in R/tabscreen_chatgpt.R
 \name{tabscreen_gpt_0301}
 \alias{tabscreen_gpt_0301}
-\title{Title and abstract screening with ChatGPT (0301 models)}
+\title{Title and abstract screening with ChatGPT (0301/0314 models)}
 \usage{
 tabscreen_gpt_0301(
   data,
@@ -96,6 +96,13 @@ parallel-safe random numbers are produced.}
 A \code{tibble} with answer and run_time if \code{time_info = TRUE}.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}\if{html}{\out{<br>}}
+\if{html}{\out{<br>}}
+\code{tabscreen_gpt_0301} will deprecate September 13 when OPEN-AI removes the
+0301 and 0314 models. Instead use INSERT FUNCTION WHEN READY.
+Read more at \url{https://platform.openai.com/docs/deprecations/2023-06-13-updated-chat-models}.
+\if{html}{\out{<br>}}
+\if{html}{\out{<br>}}
 This function supports the conduct of title and abstract screening with ChatGPT in R.
 The function allow to run title and abstract screening across multiple prompts and with
 repeated questions to check for consistency across answers

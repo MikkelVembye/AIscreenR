@@ -3,9 +3,17 @@
 # HTTR2 functions (0301 models)
 ################################################################################
 
-#' @title Title and abstract screening with ChatGPT (0301 models)
+#' @title Title and abstract screening with ChatGPT (0301/0314 models)
 #'
-#' @description This function supports the conduct of title and abstract screening with ChatGPT in R.
+#' @description
+#' `r lifecycle::badge("deprecated")`<br>
+#' <br>
+#' `tabscreen_gpt_0301` will deprecate September 13 when OPEN-AI removes the
+#' 0301 and 0314 models. Instead use INSERT FUNCTION WHEN READY.
+#' Read more at \url{https://platform.openai.com/docs/deprecations/2023-06-13-updated-chat-models}.
+#' <br>
+#' <br>
+#' This function supports the conduct of title and abstract screening with ChatGPT in R.
 #' The function allow to run title and abstract screening across multiple prompts and with
 #' repeated questions to check for consistency across answers
 #'
@@ -192,11 +200,19 @@ tabscreen_gpt_0301 <- function(
 }
 
 
-#' @title  Asking a single question to ChatGPT (0301 models)
+#' @title  Asking a single question to ChatGPT (0301/0314 models)
 #'
-#' @description The function makes it possible to ask a question to ChatGPT. If
+#' @description
+#' `r lifecycle::badge("deprecated")`<br>
+#' <br>
+#' `tabscreen_gpt_0301` will deprecate September 13 when OPEN-AI removes the
+#' 0301 and 0314 models. Instead use INSERT FUNCTION WHEN READY.
+#' Read more at \url{https://platform.openai.com/docs/deprecations/2023-06-13-updated-chat-models}.
+#' <br>
+#' <br>
+#' The function makes it possible to ask a question to ChatGPT. If
 #' `reps > 1` the same question is asked reps times. This can be useful to test consistency
-#'  between answers.
+#' between answers.
 #'
 #' @references Wickham H (2023).
 #' \emph{httr2: Perform HTTP Requests and Process the Responses}.
