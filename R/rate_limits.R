@@ -1,7 +1,10 @@
 
 #' @title Find updated rate limits for API models
 #'
-#' @description `rate_limits_per_minute` reports the rate limits for a given api.
+#' @description
+#' `r lifecycle::badge("stable")`<br>
+#' <br>
+#' `rate_limits_per_minute` reports the rate limits for a given api.
 #' includes the allowed requests per minute (RPM) as well as tokens per minute (TPM).
 #' Find general information at
 #' \url{https://platform.openai.com/docs/guides/rate-limits/overview}.

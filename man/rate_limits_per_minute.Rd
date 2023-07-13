@@ -31,6 +31,8 @@ A tibble including variables with information about the model used,
 the number of requests and tokens per minute.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}\if{html}{\out{<br>}}
+\if{html}{\out{<br>}}
 \code{rate_limits_per_minute} reports the rate limits for a given api.
 includes the allowed requests per minute (RPM) as well as tokens per minute (TPM).
 Find general information at
