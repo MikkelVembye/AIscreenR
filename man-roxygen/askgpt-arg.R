@@ -36,3 +36,4 @@
 #'  between answers. Default is `1`.
 #' @param seed Numerical value for a seed to ensure that proper,
 #'  parallel-safe random numbers are produced.
+

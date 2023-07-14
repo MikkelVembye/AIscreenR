@@ -1,4 +1,506 @@
 
+#' @title Title and abstract screening with ChatGPT using function calls.
+#'
+#' @description
+#' `r lifecycle::badge("stable")`<br>
+#' <br>
+#' This function supports the conduct of title and abstract screening with ChatGPT in R.
+#' The function allow to run title and abstract screening across multiple prompts and with
+#' repeated questions to check for consistency across answers. This function draws
+#' on the newly developed function calling to better steer output of response.
+#'
+#' @references Wickham H (2023).
+#' \emph{httr2: Perform HTTP Requests and Process the Responses}.
+#' https://httr2.r-lib.org, https://github.com/r-lib/httr2.
+#'
+#' @template common-arg
+#' @param ... Further argument to pass to the request body.
+#'   See \url{https://platform.openai.com/docs/api-reference/chat/create}.
+#' @param arrange_var Function indicating the variables determining the arrangement
+#'   of the data. Default is \code{studyid}.
+#' @param model Character string with the name of the completion model. Can take
+#'   multiple models, including gpt-4 models.Default = `"gpt-3.5-turbo-0613"`.
+#'   Find available model at
+#' \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.
+#' @param role Character string indicate the role of the user. Default is `"user"`.
+#' @param functions Function to steer output. Default is `incl_function_simple`.
+#'   Find further documentation for function calling at
+#'   \url{https://openai.com/blog/function-calling-and-other-api-updates}.
+#' @param function_call_name Functions to call.
+#'   Default is `list(name = "inclusion_decision_simple")`
+#' @param top_p 'An alternative to sampling with temperature, called nucleus sampling,
+#' where the model considers the results of the tokens with top_p probability mass.
+#' So 0.1 means only the tokens comprising the top 10% probability mass are considered.
+#' We generally recommend altering this or temperature but not both.' (OPEN-AI).
+#' Find documentation at
+#' \url{https://platform.openai.com/docs/api-reference/chat/create#chat/create-top_p}.
+#' @param time_info Logical indicating whether the run time of each
+#'  request/question should be included in the data. Default = `TRUE`.
+#' @param token_info Logical indicating whether the total number of tokens
+#' per request should be included in the output data. Default = `TRUE`.
+#' @param api_key Numerical value with your personal API key. Find at
+#'  \url{https://platform.openai.com/account/api-keys}. Use
+#'  [secret_make_key()], [secret_encrypt()], and
+#'  [secret_decrypt()] to scramble and decrypt the api key and
+#'  use [set_api_key()] to securely automate the use of the
+#'  api key by setting the api key as a locale environment variable.
+#' @param max_tries,max_seconds 'Cap the maximum number of attempts with
+#'  `max_tries` or the total elapsed time from the first request with
+#'  `max_seconds`. If neither option is supplied (the default), [req_perform()]
+#'  will not retry' (Wickham, 2023).
+#' @param is_transient 'A predicate function that takes a single argument
+#'  (the response) and returns `TRUE` or `FALSE` specifying whether or not
+#'  the response represents a transient error' (Wickham, 2023).
+#' @param backoff 'A function that takes a single argument (the number of failed
+#'   attempts so far) and returns the number of seconds to wait' (Wickham, 2023).
+#' @param after 'A function that takes a single argument (the response) and
+#'   returns either a number of seconds to wait or `NULL`, which indicates
+#'   that a precise wait time is not available that the `backoff` strategy
+#'   should be used instead' (Wickham, 2023).
+#' @param rpm Numerical value indicating the number of requests per minute (rpm)
+#'  available for the specified api key. Find more information at
+#'  \url{https://platform.openai.com/docs/guides/rate-limits/what-are-the-rate-limits-for-our-api}.
+#'  Alternatively, use [rate_limits_per_minute()].
+#' @param reps Numerical value indicating the number of times the same
+#'  question should be sent to ChatGPT. This can be useful to test consistency
+#'  between answers. Default is `1`.
+#' @param seed Numerical value for a seed to ensure that proper,
+#'  parallel-safe random numbers are produced.
+#' @param progress Logical indicating whether a progress line should be shown when running
+#' the title and abstract screening in parallel. Default is `TRUE`.
+#'
+#' @return A \code{tibble} with the gpt decision, run time, tokens used, top_p, and number
+#' of repeated requests.
+#'
+#' @importFrom stats df
+#' @import dplyr
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' tabscreen_gpt(
+#'   data = FFT_dat[1:2,],
+#'   prompt = prompt,
+#'   studyid = studyid,
+#'   title = title,
+#'   abstract = abstract,
+#'   model = c("gpt-3.5-turbo-0613", "gpt-3.5-turbo-16k-0613"),
+#'   max_tries = 1,
+#'   reps = 10
+#'   )
+#' }
+
+
+tabscreen_gpt <- function(
+  data,
+  prompt,
+  studyid,
+  title,
+  abstract,
+  ...,
+  arrange_var = studyid,
+  model = "gpt-3.5-turbo-0613",
+  role = "user",
+  functions = incl_function_simple,
+  function_call_name = list(name = "inclusion_decision_simple"),
+  top_p = 1,
+  time_info = TRUE,
+  token_info = TRUE,
+  api_key = get_api_key(),
+  max_tries = 4,
+  max_seconds = NULL,
+  is_transient = gpt_is_transient,
+  backoff = NULL,
+  after = NULL,
+  rpm = 3500,
+  reps = 1,
+  seed = NULL,
+  progress = TRUE
+
+  ){
+
+  ###############################################
+  # Function to send a single request to ChatGPT
+  ###############################################
+
+  ask_gpt_engine <- function(
+    body,
+    timeinf = time_info,
+    tokeninf = token_info,
+    key = api_key,
+    max_t = max_tries,
+    max_s = max_seconds,
+    is_trans = is_transient,
+    back = backoff,
+    aft = after,
+    RPM = rpm
+
+  ){
+
+    detailed <- body$function_call$name == "inclusion_decision"
+
+    tictoc::tic()
+
+    url <- "https://api.openai.com/v1/chat/completions"
+
+    req <-
+      httr2::request(url) |>
+      httr2::req_method("POST") |>
+      httr2::req_headers(
+        "Content-Type" = "application/json",
+        "Authorization" = paste("Bearer", key)
+      ) |>
+      httr2::req_body_json(body) |>
+      httr2::req_retry(
+        max_tries = max_t,
+        max_seconds = max_s,
+        is_transient = is_trans,
+        backoff = back,
+        after = aft
+      ) |>
+      httr2::req_throttle(RPM/60) |>
+      httr2::req_user_agent("AIscreenR (http://mikkelvembye.github.io/AIscreenR/)")
+
+
+    if (curl::has_internet()){
+
+      resp <- try(
+        suppressMessages(req |> httr2::req_perform()),
+        silent = TRUE
+      )
+
+      if (status_code() == 200){
+
+        resp <- resp |> httr2::resp_body_json()
+
+        if (detailed){
+
+          res <-
+            tibble::as_tibble(jsonlite::fromJSON(resp$choices[[1]]$message$function_call$arguments)) |>
+            dplyr::mutate(
+
+              decision_binary = as.numeric(
+                dplyr::if_else(stringr::str_detect(decision_gpt, "1"), 1, 0, missing = NA_real_)
+              ),
+
+              detailed_description = dplyr::if_else(
+                is.na(decision_binary), "Something went wrong [Try again]", detailed_description,
+                missing = "Missing"
+              ),
+
+              tokens = resp$usage$total_tokens
+
+            )
+
+        } else {
+
+          res <-
+            tibble::as_tibble(jsonlite::fromJSON(resp$choices[[1]]$message$function_call$arguments)) |>
+            dplyr::mutate(
+
+              decision_binary = as.numeric(
+                dplyr::if_else(stringr::str_detect(decision_gpt, "1"), 1, 0, missing = NA_real_)
+              ),
+
+              tokens = resp$usage$total_tokens
+
+            )
+
+        }
+
+
+      } else {
+
+        # The following code must be made more generic in order to take in further
+        # functions
+
+        detail_desc <- if(detailed) NA_character_ else NULL
+
+        res <- tibble::tibble(
+          decision_gpt = status_code_text(),
+          detailed_description = detail_desc,
+          decision_binary = NA_real_,
+          tokens = NA_real_
+        )
+
+      }
+
+    } else {
+
+      detail_desc <- if(detailed) NA_character_ else NULL
+
+      res <- tibble::tibble(
+        decision_gpt = "Error: Could not reach host [check internet connection]",
+        detailed_description = detail_desc,
+        decision_binary = NA_real_,
+        tokens = NA_real_
+      )
+
+    }
+
+
+    time <- tictoc::toc(quiet = TRUE)
+
+    run_time <- round(as.numeric(time$toc - time$tic), 1)
+
+    res <- res |> dplyr::mutate(run_time = run_time)
+
+    if (!timeinf) res <- res |> dplyr::select(-run_time)
+    if (!tokeninf) res <- res |> dplyr::select(-tokens)
+
+
+    res
+
+
+  }
+
+  ###############################################
+  # Function to send repeated requests to ChatGPT
+  ###############################################
+
+  ask_gpt <- function(
+    question,
+    ...,
+    model_gpt = model,
+    role_gpt = role,
+    funcs = functions,
+    func_call_name = function_call_name,
+    topp = top_p,
+    n_reps = reps,
+    seeds = seed
+  ){
+
+    body <- list(
+      model = model_gpt,
+      messages = list(
+        list(
+          role = role_gpt,
+          content = question
+        )
+      ),
+      functions = funcs,
+      function_call = func_call_name,
+      top_p = topp,
+      ...
+    )
+
+    if(n_reps > 1) n_reps <- 1:n_reps
+
+    furrr_seed <- if (is.null(seeds)) TRUE else NULL
+
+    final_res <-
+      furrr::future_map_dfr(
+        n_reps, \(i) ask_gpt_engine(body = body),
+        .options = furrr::furrr_options(seed = furrr_seed)
+      ) |>
+      dplyr::mutate(top_p = topp)
+
+    if(length(n_reps) > 1) final_res <- final_res |> dplyr::mutate(n = n_reps)
+
+
+    final_res
+
+  }
+
+  # Add behaviour for detailed description function
+
+  ask_gpt <-
+    suppressWarnings(
+      purrr::possibly(
+        ask_gpt,
+        otherwise = tibble::tibble(
+          decision_gpt = NA_character_,
+          decision_binary = NA_real_,
+          tokens = NA_real_,
+          run_time = NA_real_,
+          top_p = NA_real_,
+          n = NA_integer_
+        )
+      )
+    )
+
+  # Data manipulation
+
+  if (missing(studyid)){
+
+    dat <-
+      data |>
+      dplyr::mutate(
+        studyid = 1:nrow(data)
+      ) |>
+      dplyr::relocate(studyid, .before = {{ title }})
+
+
+  } else {
+
+    dat <-
+      data |>
+      dplyr::mutate(
+        studyid = {{ studyid }}
+      ) |>
+      dplyr::relocate(studyid, .before = {{ title }})
+
+  }
+
+  question_dat <-
+    dat |>
+    dplyr::mutate(
+      dplyr::across(c({{ title }}, {{ abstract }}), ~ dplyr::if_else(
+        is.na(.x) | .x == "" | .x == " ", "No information", .x, missing = "No information")
+      )
+    ) |>
+    ## Make promptid variable
+    dplyr::slice(rep(1:nrow(dat), length(prompt))) |>
+    dplyr::mutate(
+      prompt = rep(prompt, each = dplyr::n_distinct(studyid))
+    ) |>
+    dplyr::slice(rep(1:dplyr::n(), each = length(model))) |>
+    dplyr::mutate(
+      model = rep(model, dplyr::n_distinct(studyid)*dplyr::n_distinct(prompt)),
+      question_raw = paste0(
+        prompt,
+        " Now, please evaluate the following titles and abstracts for",
+        " Study ", studyid, ":",
+        " -Title: ", {{ title }},
+        " -Abstract: ", {{ abstract }}),
+      question = stringr::str_replace_all(question_raw, "\n\n", " "),
+      question = stringr::str_remove_all(question, "\n")
+    ) |>
+    dplyr::select(-question_raw) |>
+    dplyr::arrange(model, prompt, {{ arrange_var }})
+
+  ## Make function that suggests the user to exclude references with no abstract
+
+  # RUNNING QUESTIONS
+  furrr_seed <- if (is.null(seed)) TRUE else NULL
+
+  answer_dat <-
+    question_dat |>
+    dplyr::mutate(
+      res = furrr::future_map2(
+        .x = question, .y = model, ~ ask_gpt(question = .x, model_gpt = .y),
+        ...,
+        .options = furrr::furrr_options(seed = furrr_seed),
+        .progress = progress
+      )
+    ) |>
+    tidyr::unnest(res)
+
+  n_error <- answer_dat |> dplyr::filter(is.na(decision_binary)) |> nrow()
+
+  if (n_error > 0){
+
+    succes_dat <- answer_dat |>
+      dplyr::filter(!is.na(decision_binary))
+
+
+    error_dat <- answer_dat |>
+      dplyr::filter(is.na(decision_binary)) |>
+      dplyr::select(1:question) |>
+      dplyr::mutate(
+        furrr::future_map_dfr(
+          .x = question, .y = model, ~ ask_gpt(
+            question = .x,
+            model_gpt = .y,
+            n_reps = 1
+          ),
+          ...,
+          .options = furrr::furrr_options(seed = furrr_seed),
+          .progress = progress
+        )
+      )
+
+    answer_dat <-
+      dplyr::bind_rows(
+        succes_dat,
+        error_dat
+      ) |>
+      dplyr::arrange(model, prompt, {{ arrange_var }})
+
+    still_error <- answer_dat |> dplyr::filter(is.na(decision_binary)) |> nrow()
+    if (still_error > 0) message("NOTE: Requests falied for some title and abstracts.")
+
+  }
+
+  tibble::new_tibble(answer_dat, class = "chatgpt")
+
+}
+
+
+
+
+
+
+######################################
+# HELPER FUNCTIONS FOR tabscreen_gpt()
+######################################
+
+# Body functions
+
+inclusion_decision_description <- paste0(
+  "If the study should be included for further review, write '1'.",
+  "If the study should be excluded, write '0'.",
+  "If there is not enough information to make a clear decision, write '1.1'.",
+  "If there is no or only a little information in the abstract also write '1.1'",
+  "When providing the response only provide the numerical decision."
+)
+
+detailed_description_description <- "Give a detailed description of your inclusion decision."
+
+incl_function <- list(
+  # Function 1
+  list(
+    name = "inclusion_decision",
+    description = inclusion_decision_description,
+    parameters = list(
+      type = "object",
+      properties = list(
+        decision_gpt = list(
+          type = "string",
+          items = list(
+            type = "string",
+            description = "A string of either '1', '0', or '1.1'"
+          ),
+          description = "List the inclusion decision"
+        ),
+        detailed_description = list(
+          type = "string",
+          items = list(
+            type = "string",
+            description = detailed_description_description
+          ),
+          description = "List the detailed description of your inclusion decision"
+        )
+      ),
+      required = list("decision_gpt", "detailed_description")
+    )
+  )
+)
+
+incl_function_simple <- list(
+  # Function 2
+  list(
+    name = "inclusion_decision_simple",
+    description = inclusion_decision_description,
+    parameters = list(
+      type = "object",
+      properties = list(
+        decision_gpt = list(
+          type = "string",
+          items = list(
+            type = "string",
+            description = "A string of either '1', '0', or '1.1'"
+          ),
+          description = "List the inclusion decision"
+        )
+      ),
+      required = list("decision_gpt")
+    )
+  )
+)
+
+
+
 ################################################################################
 # HTTR2 functions (0301 models)
 ################################################################################
@@ -164,7 +666,7 @@ tabscreen_gpt_0301 <- function(
       filter(stringr::str_detect(answer, "Error|error")) |>
       dplyr::mutate(
         furrr::future_map_dfr(
-          .x = question, .y = model, ~ AIscreenR::ask_gpt_0301(
+          .x = question, .y = model, ~ ask_gpt_0301(
             question = .x,
             model = .y,
             time_info = time_info,
@@ -256,7 +758,7 @@ ask_gpt_0301 <- function(
 
   if (!is.character(question)) stop("The question must be a character string")
 
-  ask_gpt_engine <- function(
+  ask_gpt_engine_0301 <- function(
     question,
     ...,
     time_info,
@@ -354,7 +856,7 @@ ask_gpt_0301 <- function(
 
   if (reps == 1) {
 
-    final_res <- ask_gpt_engine(
+    final_res <- ask_gpt_engine_0301(
       question = question,
       ...,
       time_info = time_info,
@@ -378,7 +880,7 @@ ask_gpt_0301 <- function(
       suppressWarnings(
         final_res <-
           furrr::future_map_dfr(
-            1:reps, \(i) ask_gpt_engine(
+            1:reps, \(i) ask_gpt_engine_0301(
               question = question,
               ...,
               time_info = time_info,
@@ -483,72 +985,6 @@ testing_key_chatgpt <- function() {
 #    "AISCREENR_KEY"
 #  )
 #}
-
-# HELPER FUNCTIONS
-
-# Body functions
-
-inclusion_decision_description <- paste0(
-  "If the study should be included for further review, write '1'.",
-  "If the study should be excluded, write '0'.",
-  "If there is not enough information to make a clear decision then write '1.1'.",
-  "If there is no or only a little abstract information also write '1.1'",
-  "When providing the response always begin the answer the numerical decision."
-)
-
-detailed_description_description <- "Give a detailed description of your inclusion decision."
-
-incl_function <- list(
-  # Function 1
-  list(
-    name = "inclusion_decision",
-    description = inclusion_decision_description,
-    parameters = list(
-      type = "object",
-      properties = list(
-        decision_gpt = list(
-          type = "string",
-          items = list(
-            type = "string",
-            description = "A string of either '1', '0', or '1.1'"
-          ),
-          description = "List the inclusion decision"
-        ),
-        detailed_description = list(
-          type = "string",
-          items = list(
-            type = "string",
-            description = detailed_description_description
-          ),
-          description = "List the detailed description of your inclusion decision"
-        )
-      ),
-      required = list("decision_gpt", "detailed_description")
-    )
-  )
-)
-
-incl_function_simple <- list(
-  # Function 2
-  list(
-    name = "inclusion_decision_simple",
-    description = inclusion_decision_description,
-    parameters = list(
-      type = "object",
-      properties = list(
-        decision_gpt = list(
-          type = "string",
-          items = list(
-            type = "string",
-            description = "A string of either '1', '0', or '1.1'"
-          ),
-          description = "List the inclusion decision"
-        )
-      ),
-      required = list("decision_gpt")
-    )
-  )
-)
 
 
 

@@ -25,7 +25,9 @@ Imports:
     tictoc,
     askpass,
     curl,
-    lifecycle
+    purrr,
+    lifecycle,
+    jsonlite
 Suggests: 
     readxl,
     testthat (>= 3.0.0)
