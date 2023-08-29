@@ -123,7 +123,7 @@ of repeated requests.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}\if{html}{\out{<br>}}
 \if{html}{\out{<br>}}
 This function supports the conduct of title and abstract screening with ChatGPT in R.
-The function allow to run title and abstract screening across multiple prompts and with
+The function allows to run title and abstract screening across multiple prompts and with
 repeated questions to check for consistency across answers. This function draws
 on the newly developed function calling to better steer output of response.
 }

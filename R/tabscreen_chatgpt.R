@@ -5,7 +5,7 @@
 #' `r lifecycle::badge("stable")`<br>
 #' <br>
 #' This function supports the conduct of title and abstract screening with ChatGPT in R.
-#' The function allow to run title and abstract screening across multiple prompts and with
+#' The function allows to run title and abstract screening across multiple prompts and with
 #' repeated questions to check for consistency across answers. This function draws
 #' on the newly developed function calling to better steer output of response.
 #'
@@ -116,7 +116,6 @@ tabscreen_gpt <- function(
   reps = 1,
   seed = NULL,
   progress = TRUE
-
   ){
 
   ###############################################
@@ -134,7 +133,6 @@ tabscreen_gpt <- function(
     back = backoff,
     aft = after,
     RPM = rpm
-
   ){
 
     detailed <- body$function_call$name == "inclusion_decision"
@@ -302,22 +300,44 @@ tabscreen_gpt <- function(
 
   }
 
-  # Add behaviour for detailed description function
 
-  ask_gpt <-
-    suppressWarnings(
-      purrr::possibly(
-        ask_gpt,
-        otherwise = tibble::tibble(
-          decision_gpt = NA_character_,
-          decision_binary = NA_real_,
-          tokens = NA_real_,
-          run_time = NA_real_,
-          top_p = NA_real_,
-          n = NA_integer_
+
+  if (function_call_name$name == "inclusion_decision_simple"){
+
+    ask_gpt <-
+      suppressWarnings(
+        purrr::possibly(
+          ask_gpt,
+          otherwise = tibble::tibble(
+            decision_gpt = NA_character_,
+            decision_binary = NA_real_,
+            tokens = NA_real_,
+            run_time = NA_real_,
+            top_p = NA_real_,
+            n = NA_integer_
+          )
         )
       )
-    )
+
+  } else {
+
+    ask_gpt <-
+      suppressWarnings(
+        purrr::possibly(
+          ask_gpt,
+          otherwise = tibble::tibble(
+            decision_gpt = NA_character_,
+            detailed_description = NA_character_,
+            decision_binary = NA_real_,
+            tokens = NA_real_,
+            run_time = NA_real_,
+            top_p = NA_real_,
+            n = NA_integer_
+          )
+        )
+      )
+
+  }
 
   # Data manipulation
 
@@ -440,11 +460,11 @@ tabscreen_gpt <- function(
 # Body functions
 
 inclusion_decision_description <- paste0(
-  "If the title and abstract should be included for further reviewing, write '1'. ",
-  "If the title and abstract should be excluded from the review, write '0'. ",
-  "If there is not enough information to make a clear decision, write '1.1'. ",
-  "Also write '1.1' if there is no information in the title and abstract. ",
-  "When providing the response only provide the numerical decision as listed above."
+  "If the study should be included for further review, write '1'.",
+  "If the study should be excluded, write '0'.",
+  "If there is not enough information to make a clear decision, write '1.1'.",
+  "If there is no or only a little information in the abstract also write '1.1'",
+  "When providing the response only provide the numerical decision."
 )
 
 detailed_description_description <- paste0(
