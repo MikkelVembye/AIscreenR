@@ -22,6 +22,6 @@ reference:
       - rate_limits_per_minute
 
   - title: "Datasets"
-    desc: "Ris file data from systematic seviews"
+    desc: "Ris file data from systematic reviews"
     contents:
       - FFT_dat
