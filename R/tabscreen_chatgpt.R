@@ -88,7 +88,7 @@
 #'   max_tries = 1,
 #'   reps = 10
 #'   )
-#' }
+#'  }
 
 
 tabscreen_gpt <- function(
@@ -438,14 +438,20 @@ tabscreen_gpt <- function(
 # Body functions
 
 inclusion_decision_description <- paste0(
-  "If the study should be included for further review, write '1'.",
-  "If the study should be excluded, write '0'.",
-  "If there is not enough information to make a clear decision, write '1.1'.",
-  "If there is no or only a little information in the abstract also write '1.1'",
-  "When providing the response only provide the numerical decision."
+  "If the title and abstract should be included for further reviewing, write '1'. ",
+  "If the title and abstract should be excluded from the review, write '0'. ",
+  "If there is not enough information to make a clear decision, write '1.1'. ",
+  "Also write '1.1' if there is no information in the title and abstract. ",
+  "When providing the response only provide the numerical decision as listed above."
 )
 
-detailed_description_description <- "Give a detailed description of your inclusion decision."
+detailed_description_description <- paste0(
+  "If the title and abstract should be included for further reviewing, give a detailed description of your inclusion decision. ",
+  "If the title and abstract should be excluded from the review, give a detailed description of your exclusion decision. ",
+  "If there is not enough information to make a clear decision, give a detailed description of why you can reach a decision. ",
+  "If there is no information in the title and abstract, write 'No information'"
+)
+
 
 incl_function <- list(
   # Function 1

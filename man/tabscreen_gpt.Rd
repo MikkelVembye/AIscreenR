@@ -139,7 +139,7 @@ tabscreen_gpt(
   max_tries = 1,
   reps = 10
   )
-}
+ }
 }
 \references{
 Wickham H (2023).

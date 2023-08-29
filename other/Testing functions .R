@@ -37,9 +37,8 @@ as comorbid conditions in drug use treatment participant.  For each study,
 I would like you to assess:  1) Is the study about a family-based intervention,
 such as Functional Family Therapy, Multidimensional Family Therapy, or
 Behavioral Family Therapy? (Outpatient manual-based interventions of any
-duration delivered to young people and their families). If no exclude the
-abstract and write '0' followed by the
-detailed response. 2) Are the participants in outpatient drug treatment primarily
+duration delivered to young people and their families). If not, exclude study.
+2) Are the participants in outpatient drug treatment primarily
 for non-opioid drug use? 3) Are the participants within age 11–21?"
 
 library(future)
@@ -51,7 +50,9 @@ test_dat <- tabscreen_gpt(
   studyid = studyid,
   title = title,
   abstract = abstract,
-  model = c("gpt-3.5-turbo-0613", "gpt-3.5-turbo-16k-0613"),
+  model = c("gpt-3.5-turbo-0613"), # "gpt-3.5-turbo-16k-0613"
+  functions = AIscreenR:::incl_function,
+  function_call_name = list(name = "inclusion_decision"),
   max_tries = 1,
   reps = 2
 
