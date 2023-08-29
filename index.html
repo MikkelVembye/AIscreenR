@@ -86,14 +86,14 @@
 <span><span class="co">#&gt; 1 gpt-3.5-turbo-0613                3500             90000</span></span>
 <span></span>
 <span><span class="va">q</span> <span class="op">&lt;-</span> <span class="st">"What is a banana?"</span></span>
-<span><span class="fu"><a href="reference/ask_gpt_0301.html">ask_gpt_0301</a></span><span class="op">(</span><span class="va">q</span>, rpm <span class="op">=</span> <span class="va">rate_limits</span><span class="op">$</span><span class="va">requests_per_minute</span><span class="op">)</span></span>
+<span><span class="fu">ask_gpt_0301</span><span class="op">(</span><span class="va">q</span>, rpm <span class="op">=</span> <span class="va">rate_limits</span><span class="op">$</span><span class="va">requests_per_minute</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 1 × 3</span></span>
 <span><span class="co">#&gt;   answer                                                         run_time tokens</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;                                                             &lt;dbl&gt;  &lt;int&gt;</span></span>
 <span><span class="co">#&gt; 1 A banana is a long, curved fruit with a yellow skin and a pul…      2.1     91</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Find documentation behind by running the below code</span></span>
-<span><span class="op">?</span><span class="fu">AIscreenR</span><span class="fu">::</span><span class="va"><a href="reference/ask_gpt_0301.html">ask_gpt_0301</a></span></span></code></pre></div>
+<span><span class="op">?</span><span class="fu">AIscreenR</span><span class="fu">::</span><span class="va">ask_gpt_0301</span></span></code></pre></div>
 <p>How to load ris files. In this example we have downloaded the ris files from the <a href="https://eppi.ioe.ac.uk/EPPIReviewer-Web/home" class="external-link">EPPI-Reviewer</a>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># References included for full-text screening</span></span>
