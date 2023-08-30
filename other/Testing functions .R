@@ -2,18 +2,18 @@
 AIscreenR::set_api_key(AIscreenR:::testing_key_chatgpt())
 AIscreenR:::set_api_key()
 
-body2 <- body <- list(
-  model = "gpt-3.5-turbo-0613",
-  messages = list(
-    list(
-      role = "user",
-      content = "What is a carrot?"
-    )
-  ),
-  functions = incl_function_simple,
-  function_call = list(name = "inclusion_decision_simple"),
-  top_p = 1
-)
+#body2 <- body <- list(
+#  model = "gpt-3.5-turbo-0613",
+#  messages = list(
+#    list(
+#      role = "user",
+#      content = "What is a carrot?"
+#    )
+#  ),
+#  functions = incl_function_simple,
+#  function_call = list(name = "inclusion_decision_simple"),
+#  top_p = 1
+#)
 
 prompt <- "Evaluate the following study based on the selection criteria
 for a systematic review on the effects of family-based interventions on drug abuse
@@ -44,10 +44,6 @@ for non-opioid drug use? 3) Are the participants within age 11–21?"
 library(future)
 plan(multisession)
 
-FFT_test <- FFT_dat |>
-  #dplyr::mutate(
-  #  abstract =
-  #)
 
 test_dat <- tabscreen_gpt(
   data = FFT_dat[1:2,],
@@ -59,13 +55,13 @@ test_dat <- tabscreen_gpt(
   functions = AIscreenR:::incl_function,
   function_call_name = list(name = "inclusion_decision"),
   max_tries = 1,
-  reps = 10
+  reps = 2
 
 ); test_dat
 
+is_chatgpt(test_dat)
 
 
-func_list_test = list(name = "inclusion_decision_simple")
-
-func_list_test$name == "inclusion_decision"
+#func_list_test = list(name = "inclusion_decision_simple")
+#func_list_test$name == "inclusion_decision"
 

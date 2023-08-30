@@ -448,9 +448,6 @@ tabscreen_gpt <- function(
 
 
 
-
-
-
 #----------------------------------------------------------------
 #
 #  Functions
@@ -611,6 +608,24 @@ testing_key_chatgpt <- function() {
 #}
 
 
+#----------------------------------------------------------------
+#
+#  Inherits
+#
+#----------------------------------------------------------------
+
+#' Test if the object is a chatgpt object
+#'
+#' This function returns `TRUE` for `chatgpt` objects,
+#' and `FALSE` for all other objects.
+#'
+#' @param x An object
+#' @return `TRUE` if the object inherits from the `chatgpt` class.
+#' @export
+
+is_chatgpt <- function(x){
+  inherits(x, "chatgpt")
+}
 
 
 

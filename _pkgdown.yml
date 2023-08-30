@@ -25,3 +25,7 @@ reference:
     desc: "Ris file data from systematic reviews"
     contents:
       - FFT_dat
+
+  - title: "Coercion"
+    contents:
+      - is_chatgpt
