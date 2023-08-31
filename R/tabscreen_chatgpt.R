@@ -68,6 +68,9 @@
 #'  parallel-safe random numbers are produced.
 #' @param progress Logical indicating whether a progress line should be shown when running
 #' the title and abstract screening in parallel. Default is `TRUE`.
+#' @param messages Logical indicating whether to print messages. Defualt is `TRUE`.
+#' @param incl_cutoff_upper Add text
+#' @param incl_cutoff_lower Add text
 #'
 #' @return A \code{tibble} with the gpt decision, run time, tokens used, top_p, and number
 #' of repeated requests.
@@ -115,8 +118,24 @@ tabscreen_gpt <- function(
   rpm = 3500,
   reps = 1,
   seed = NULL,
-  progress = TRUE
+  progress = TRUE,
+  messages = TRUE,
+  incl_cutoff_upper = 0.5,
+  incl_cutoff_lower = 0.4
   ){
+
+  if (messages){
+
+    if (functions[[1]]$name == "inclusion_decision"){
+      message(
+        paste0(
+          "Be aware that getting detailed reponses from ChatGPT ",
+          "will substantially increase the prize of the screening."
+        )
+      )
+    }
+
+  }
 
   ###############################################
   # Function to send a single request to ChatGPT
@@ -339,7 +358,11 @@ tabscreen_gpt <- function(
 
   }
 
+
+  ###############################################
   # Data manipulation
+  ###############################################
+
 
   if (missing(studyid)){
 
@@ -382,14 +405,25 @@ tabscreen_gpt <- function(
         " Now, evaluate the following title and abstract for",
         " Study ", studyid, ":",
         " -Title: ", {{ title }},
-        " -Abstract: ", {{ abstract }}),
+        " -Abstract: ", {{ abstract }}
+        ),
       question = stringr::str_replace_all(question_raw, "\n\n", " "),
       question = stringr::str_remove_all(question, "\n")
     ) |>
     dplyr::select(-question_raw) |>
     dplyr::arrange(model, prompt, {{ arrange_var }})
 
-  ## Make function that suggests the user to exclude references with no abstract
+
+  if (messages){
+    if ("No information" %in% unique(question_dat$abstract)) {
+      message(
+        paste0(
+          "Consider removing references that has no abstract",
+          "since these can distort the accuracy of the screening"
+        )
+      )
+    }
+  }
 
   # RUNNING QUESTIONS
   furrr_seed <- if (is.null(seed)) TRUE else NULL
@@ -438,11 +472,83 @@ tabscreen_gpt <- function(
       dplyr::arrange(model, prompt, {{ arrange_var }})
 
     still_error <- answer_dat |> dplyr::filter(is.na(decision_binary)) |> nrow()
-    if (still_error > 0) message("NOTE: Requests falied for some title and abstracts.")
+
+    if (messages){
+      if (still_error > 0) message("NOTE: Requests falied for some titles and abstracts.")
+    }
 
   }
 
-  tibble::new_tibble(answer_dat, class = "chatgpt")
+  answer_dat <- tibble::new_tibble(answer_dat, class = "chatgpt_tbl")
+
+  sum_dat <-
+    answer_dat |>
+    summarise(
+
+      incl_p = mean(decision_binary == 1, na.rm = TRUE),
+
+      final_decision = dplyr::case_when(
+        incl_p < incl_cutoff_upper & incl_p >= incl_cutoff_lower ~ "Check",
+        incl_p >= incl_cutoff_upper ~ "Include",
+        incl_p < incl_cutoff_lower ~ "Exclude",
+        TRUE ~ NA_character_
+      ),
+
+      reps = n(),
+
+      n_mis_answers = sum(is.na(decision_binary)),
+
+      .by = c(studyid:question, top_p)
+
+    )
+
+  if ("detailed_description" %in% names(answer_dat)){
+
+    long_answer_dat_sum <-
+      answer_dat |>
+      mutate(
+        incl_p = mean(decision_binary == 1, na.rm = TRUE),
+
+        final_decision_num = dplyr::case_when(
+          incl_p < incl_cutoff_upper & incl_p >= incl_cutoff_lower ~ 1,
+          incl_p >= incl_cutoff_upper ~ 1,
+          incl_p < incl_cutoff_lower ~ 0,
+          TRUE ~ NA_real_
+        ),
+
+        n_words_answer = stringr::str_count(detailed_description, '\\w+'),
+
+        .by = c(studyid:question, top_p)
+
+      ) |>
+      filter(decision_binary == final_decision_num) |>
+      arrange(studyid, model, question, top_p, desc(n_words_answer)) |>
+      summarise(
+        longest_answer = detailed_description[1],
+
+        .by = c(studyid:question, top_p)
+
+      )
+
+    answer_dat_sum <-
+      left_join(sum_dat, long_answer_dat_sum) |>
+      suppressMessages() |>
+      relocate(longest_answer, .after = final_decision) |>
+      tibble::new_tibble(class = "chatgpt_tbl")
+
+
+
+  } else {
+
+    answer_dat_sum <- tibble::new_tibble(sum_dat, class = "chatgpt_tbl")
+
+  }
+
+  res <- list(answer_data_all = answer_dat, answer_data_sum = answer_dat_sum)
+  class(res) <- c("list", "chatgpt")
+
+  res
+
 
 }
 

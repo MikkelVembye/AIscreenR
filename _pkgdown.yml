@@ -29,3 +29,7 @@ reference:
   - title: "Coercion"
     contents:
       - is_chatgpt
+
+  - title: "Print methods"
+    contents:
+      - print.chatgpt

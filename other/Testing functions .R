@@ -55,9 +55,10 @@ test_dat <- tabscreen_gpt(
   functions = AIscreenR:::incl_function,
   function_call_name = list(name = "inclusion_decision"),
   max_tries = 1,
-  reps = 2
-
+  reps = 3
 ); test_dat
+
+sum_dat <- test_dat$answer_data_sum; sum_dat
 
 is_chatgpt(test_dat)
 

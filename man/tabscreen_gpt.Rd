@@ -28,7 +28,10 @@ tabscreen_gpt(
   rpm = 3500,
   reps = 1,
   seed = NULL,
-  progress = TRUE
+  progress = TRUE,
+  messages = TRUE,
+  incl_cutoff_upper = 0.5,
+  incl_cutoff_lower = 0.4
 )
 }
 \arguments{
@@ -114,6 +117,12 @@ parallel-safe random numbers are produced.}
 
 \item{progress}{Logical indicating whether a progress line should be shown when running
 the title and abstract screening in parallel. Default is \code{TRUE}.}
+
+\item{messages}{Logical indicating whether to print messages. Defualt is \code{TRUE}.}
+
+\item{incl_cutoff_upper}{Add text}
+
+\item{incl_cutoff_lower}{Add text}
 }
 \value{
 A \code{tibble} with the gpt decision, run time, tokens used, top_p, and number
