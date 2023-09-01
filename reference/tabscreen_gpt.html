@@ -223,11 +223,17 @@ the title and abstract screening in parallel. Default is <code>TRUE</code>.</p><
 
 
 <dt>incl_cutoff_upper</dt>
-<dd><p>Add text</p></dd>
+<dd><p>Numerical value indicating the probability threshold
+for which a studies should be included. Default is 0.5, which indicates that
+titles and abstracts that ChatGPT has included more than 50 percent of the times
+should be included.</p></dd>
 
 
 <dt>incl_cutoff_lower</dt>
-<dd><p>Add text</p></dd>
+<dd><p>Numerical value indicating the probability threshold
+above which studies should be check by a human. Default is 0.4, which means
+that if you ask ChatGPT the same questions 10 times and it includes the
+title and abstract 4 times, we suggest that the study should be check by a human.</p></dd>
 
 </dl></div>
     <div class="section level2">
