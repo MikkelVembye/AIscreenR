@@ -15,6 +15,11 @@
 
 print.chatgpt <- function(x, ...){
 
-  print(x$answer_data_sum, ...)
+  dat1 <- substitute(x$answer_data_all)
+  dat2 <- substitute(x$answer_data_sum)
+
+  cat("Find data with all answers by executing\n\n", deparse(dat1),
+      "\n\nFind data with the result aggregated across multiple answers by executing\n\n",
+      deparse(dat2), ...)
 
 }

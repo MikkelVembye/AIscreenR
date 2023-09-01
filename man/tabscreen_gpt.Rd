@@ -20,7 +20,7 @@ tabscreen_gpt(
   time_info = TRUE,
   token_info = TRUE,
   api_key = get_api_key(),
-  max_tries = 4,
+  max_tries = 8,
   max_seconds = NULL,
   is_transient = gpt_is_transient,
   backoff = NULL,

@@ -45,22 +45,30 @@ library(future)
 plan(multisession)
 
 
-test_dat <- tabscreen_gpt(
-  data = FFT_dat[1:2,],
+test_obj <- tabscreen_gpt(
+  data = FFT_dat[145:146,],
   prompt = prompt,
   studyid = studyid,
   title = title,
   abstract = abstract,
-  model = c("gpt-3.5-turbo-0613"), # "gpt-3.5-turbo-16k-0613"
+  #model = c("gpt-3.5-turbo-0613") # "gpt-3.5-turbo-16k-0613"
   functions = AIscreenR:::incl_function,
   function_call_name = list(name = "inclusion_decision"),
-  max_tries = 1,
+  #max_tries = 1,
   reps = 3
-); test_dat
+  #incl_cutoff_upper = 0.5,
+  #incl_cutoff_lower = 0.3
+  #messages = FALSE
+)
 
-sum_dat <- test_dat$answer_data_sum; sum_dat
 
-is_chatgpt(test_dat)
+all_dat <- test_obj$answer_data_all
+sum_dat <- test_obj$answer_data_sum
+
+all_dat$detailed_description
+
+
+is_chatgpt(test_obj)
 
 
 #func_list_test = list(name = "inclusion_decision_simple")
