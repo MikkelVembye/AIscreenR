@@ -46,14 +46,14 @@ plan(multisession)
 
 
 test_obj <- tabscreen_gpt(
-  data = FFT_dat[145:146,],
+  data = FFT_dat[141:150,],
   prompt = prompt,
   studyid = studyid,
   title = title,
   abstract = abstract,
   #model = c("gpt-3.5-turbo-0613") # "gpt-3.5-turbo-16k-0613"
-  functions = AIscreenR:::incl_function,
-  function_call_name = list(name = "inclusion_decision"),
+  #functions = AIscreenR:::incl_function,
+  #function_call_name = list(name = "inclusion_decision"),
   #max_tries = 1,
   reps = 3
   #incl_cutoff_upper = 0.5,
@@ -63,7 +63,10 @@ test_obj <- tabscreen_gpt(
 
 
 all_dat <- test_obj$answer_data_all
+all_dat
+
 sum_dat <- test_obj$answer_data_sum
+sum_dat
 
 all_dat$detailed_description
 

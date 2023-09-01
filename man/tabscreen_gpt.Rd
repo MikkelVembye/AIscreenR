@@ -120,9 +120,15 @@ the title and abstract screening in parallel. Default is \code{TRUE}.}
 
 \item{messages}{Logical indicating whether to print messages. Defualt is \code{TRUE}.}
 
-\item{incl_cutoff_upper}{Add text}
+\item{incl_cutoff_upper}{Numerical value indicating the probability threshold
+for which a studies should be included. Default is 0.5, which indicates that
+titles and abstracts that ChatGPT has included more than 50 percent of the times
+should be included.}
 
-\item{incl_cutoff_lower}{Add text}
+\item{incl_cutoff_lower}{Numerical value indicating the probability threshold
+above which studies should be check by a human. Default is 0.4, which means
+that if you ask ChatGPT the same questions 10 times and it includes the
+title and abstract 4 times, we suggest that the study should be check by a human.}
 }
 \value{
 A \code{tibble} with the gpt decision, run time, tokens used, top_p, and number

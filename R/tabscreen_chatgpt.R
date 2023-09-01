@@ -69,8 +69,14 @@
 #' @param progress Logical indicating whether a progress line should be shown when running
 #' the title and abstract screening in parallel. Default is `TRUE`.
 #' @param messages Logical indicating whether to print messages. Defualt is `TRUE`.
-#' @param incl_cutoff_upper Add text
-#' @param incl_cutoff_lower Add text
+#' @param incl_cutoff_upper Numerical value indicating the probability threshold
+#' for which a studies should be included. Default is 0.5, which indicates that
+#' titles and abstracts that ChatGPT has included more than 50 percent of the times
+#' should be included.
+#' @param incl_cutoff_lower Numerical value indicating the probability threshold
+#' above which studies should be check by a human. Default is 0.4, which means
+#' that if you ask ChatGPT the same questions 10 times and it includes the
+#' title and abstract 4 times, we suggest that the study should be check by a human.
 #'
 #' @return A \code{tibble} with the gpt decision, run time, tokens used, top_p, and number
 #' of repeated requests.
@@ -494,6 +500,13 @@ tabscreen_gpt <- function(
         TRUE ~ NA_character_
       ),
 
+      final_decision_num = dplyr::case_when(
+        incl_p < incl_cutoff_upper & incl_p >= incl_cutoff_lower ~ 1,
+        incl_p >= incl_cutoff_upper ~ 1,
+        incl_p < incl_cutoff_lower ~ 0,
+        TRUE ~ NA_real_
+      ),
+
       reps = n(),
 
       n_mis_answers = sum(is.na(decision_binary)),
@@ -533,7 +546,7 @@ tabscreen_gpt <- function(
     answer_dat_sum <-
       left_join(sum_dat, long_answer_dat_sum) |>
       suppressMessages() |>
-      relocate(longest_answer, .after = final_decision) |>
+      relocate(longest_answer, .after = final_decision_num) |>
       tibble::new_tibble(class = "chatgpt_tbl")
 
 
