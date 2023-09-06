@@ -76,7 +76,7 @@ Find documentation at
 \item{time_info}{Logical indicating whether the run time of each
 request/question should be included in the data. Default = \code{TRUE}.}
 
-\item{token_info}{Logical indicating whether the total number of tokens
+\item{token_info}{Logical indicating whether the number of prompt and completion tokens
 per request should be included in the output data. Default = \code{TRUE}.}
 
 \item{api_key}{Numerical value with your personal API key. Find at
@@ -131,8 +131,13 @@ that if you ask ChatGPT the same questions 10 times and it includes the
 title and abstract 4 times, we suggest that the study should be check by a human.}
 }
 \value{
-A \code{tibble} with the gpt decision, run time, tokens used, top_p, and number
-of repeated requests.
+An object of class \code{"chatgpt"}. The object is a list containing the following
+components:
+\item{answer_data_sum}{dataset with the summerized, probalistic inclusion decision
+for each title and abstract across multiple repeated questions.}
+\item{answer_data_all}{dataset with all individual answers.}
+\item{price}{numerical value indicating the total price of the screening.}
+\item{price_data}{dataset with prices across all gpt models used for screening.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}\if{html}{\out{<br>}}
@@ -141,6 +146,56 @@ This function supports the conduct of title and abstract screening with ChatGPT 
 The function allows to run title and abstract screening across multiple prompts and with
 repeated questions to check for consistency across answers. This function draws
 on the newly developed function calling to better steer output of response.
+}
+\note{
+The \code{answer_data_sum} data contains the following mandatory variables:
+\tabular{lll}{
+\bold{studyid} \tab \code{integer} \tab indicating the study ID of the reference. \cr
+\bold{title} \tab \code{character} \tab indicating the title of the reference. \cr
+\bold{abstract} \tab \code{character}   \tab indicating the abstract of the reference. \cr
+\bold{prompt} \tab \code{character} \tab indicating the prompt. \cr
+\bold{model} \tab \code{character}   \tab indicating the specific gpt-model used. \cr
+\bold{question} \tab \code{character} \tab indicating the final question sent to ChatGPT. \cr
+\bold{top_p} \tab \code{numeric}  \tab indicating the applied top_p. \cr
+\bold{incl_p} \tab \code{numeric}  \tab indicating the probability of inclusion calculated across multiple repeated responses on the same title and abstract. \cr
+\bold{final_decision} \tab \code{character} \tab indicating the final decision reached by gpt - either 'Include', 'Exclude', or 'Check'. \cr
+\bold{final_decision_num}  \tab \code{integer}  \tab indicating the final numeric decision reached by gpt - either 1 or 0. \cr
+\bold{longest_answer}  \tab \code{character} \tab indicating the longest gpt response obtained
+across multiple repeated responses on the same title and abstract. Only included if the detailed function calling
+function is used. See 'Examples' below for how to use this function. \cr
+\bold{reps}  \tab \code{integer}  \tab indicating the number of times the same question has been sent to ChatGPT. \cr
+\bold{n_mis_answers} \tab \code{integer} \tab indicating the number of missing responses \cr
+}
+\if{html}{\out{<br>}}
+The \code{answer_data_all} data contains the following mandatory variables:
+\tabular{lll}{
+\bold{studyid} \tab \code{integer} \tab indicating the study ID of the reference. \cr
+\bold{title} \tab \code{character} \tab indicating the title of the reference. \cr
+\bold{abstract} \tab \code{character}   \tab indicating the abstract of the reference. \cr
+\bold{prompt} \tab \code{character} \tab indicating the prompt. \cr
+\bold{model} \tab \code{character}   \tab indicating the specific gpt-model used. \cr
+\bold{question} \tab \code{character} \tab indicating the final question sent to ChatGPT. \cr
+\bold{decision_gpt}  \tab \code{character} \tab indicating the raw gpt decision - either \code{"1", "0", "1.1"} for inclusion, exclusion, or uncertainty, respectively. \cr
+\bold{detailed_description}  \tab \code{character} \tab indicating detailed description of the given decision made by ChatGPT.
+Only included if the detailed function calling function is used. See 'Examples' below for how to use this function. \cr
+\bold{decision_binary}  \tab \code{integer} \tab indicating the binary gpt decision,
+that is 1 for inclusion and 0 for exclusion. 1.1 decision are coded equal to 1 in this case. \cr
+\bold{prompt_tokens}  \tab \code{integer} \tab indicating the number of prompt tokens sent to the server for the given request. \cr
+\bold{completion_tokens}  \tab \code{integer} \tab indicating the number of completion tokens sent to the server for the given request. \cr
+\bold{run_time}  \tab \code{numeric} \tab indicating the time it took to obtain a response from the server for the given request. \cr
+\bold{top_p}  \tab \code{numeric} \tab indicating the applied top_p. \cr
+\bold{n} \tab \code{integer} \tab indicating request ID.  \cr
+}
+\if{html}{\out{<br>}}
+The \code{price_data} data contains the following variables:
+\tabular{lll}{
+\bold{model} \tab \code{character} \tab gpt model. \cr
+\bold{input_price_dollor} \tab \code{integer} \tab price for all prompt/input tokens for the correspondent gpt-model. \cr
+\bold{output_price_dollor}  \tab \code{integer} \tab price for all completion/output tokens for the correspondent gpt-model. \cr
+\bold{price_total_dollor} \tab \code{integer} \tab total price for all tokens for the correspondent gpt-model. \cr
+}
+
+Find current token pricing at \url{https://openai.com/pricing}.
 }
 \examples{
 \dontrun{
@@ -154,7 +209,21 @@ tabscreen_gpt(
   max_tries = 1,
   reps = 10
   )
- }
+
+ # Get detailed descriptions of the gpt decisions by using the
+ # embedded function calling functions from the package. See example below.
+ tabscreen_gpt(
+   data = FFT_dat[1:2,],
+   prompt = prompt,
+   studyid = studyid,
+   title = title,
+   abstract = abstract,
+   functions = AIscreenR:::incl_function,
+   function_call_name = list(name = "inclusion_decision"),
+   max_tries = 1,
+   reps = 2
+ )
+}
 }
 \references{
 Wickham H (2023).

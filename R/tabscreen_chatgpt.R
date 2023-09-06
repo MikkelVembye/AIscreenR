@@ -36,7 +36,7 @@
 #' \url{https://platform.openai.com/docs/api-reference/chat/create#chat/create-top_p}.
 #' @param time_info Logical indicating whether the run time of each
 #'  request/question should be included in the data. Default = `TRUE`.
-#' @param token_info Logical indicating whether the total number of tokens
+#' @param token_info Logical indicating whether the number of prompt and completion tokens
 #' per request should be included in the output data. Default = `TRUE`.
 #' @param api_key Numerical value with your personal API key. Find at
 #'  \url{https://platform.openai.com/account/api-keys}. Use
@@ -78,8 +78,62 @@
 #' that if you ask ChatGPT the same questions 10 times and it includes the
 #' title and abstract 4 times, we suggest that the study should be check by a human.
 #'
-#' @return A \code{tibble} with the gpt decision, run time, tokens used, top_p, and number
-#' of repeated requests.
+#' @return An object of class \code{"chatgpt"}. The object is a list containing the following
+#' components:
+#' \item{answer_data_sum}{dataset with the summerized, probalistic inclusion decision
+#' for each title and abstract across multiple repeated questions.}
+#' \item{answer_data_all}{dataset with all individual answers.}
+#' \item{price}{numerical value indicating the total price of the screening.}
+#' \item{price_data}{dataset with prices across all gpt models used for screening.}
+#'
+#' @note The \code{answer_data_sum} data contains the following mandatory variables:
+#' \tabular{lll}{
+#'  \bold{studyid} \tab \code{integer} \tab indicating the study ID of the reference. \cr
+#'  \bold{title} \tab \code{character} \tab indicating the title of the reference. \cr
+#'  \bold{abstract} \tab \code{character}   \tab indicating the abstract of the reference. \cr
+#'  \bold{prompt} \tab \code{character} \tab indicating the prompt. \cr
+#'  \bold{model} \tab \code{character}   \tab indicating the specific gpt-model used. \cr
+#'  \bold{question} \tab \code{character} \tab indicating the final question sent to ChatGPT. \cr
+#'  \bold{top_p} \tab \code{numeric}  \tab indicating the applied top_p. \cr
+#'  \bold{incl_p} \tab \code{numeric}  \tab indicating the probability of inclusion calculated across multiple repeated responses on the same title and abstract. \cr
+#'  \bold{final_decision} \tab \code{character} \tab indicating the final decision reached by gpt - either 'Include', 'Exclude', or 'Check'. \cr
+#'  \bold{final_decision_num}  \tab \code{integer}  \tab indicating the final numeric decision reached by gpt - either 1 or 0. \cr
+#'  \bold{longest_answer}  \tab \code{character} \tab indicating the longest gpt response obtained
+#'  across multiple repeated responses on the same title and abstract. Only included if the detailed function calling
+#'  function is used. See 'Examples' below for how to use this function. \cr
+#'  \bold{reps}  \tab \code{integer}  \tab indicating the number of times the same question has been sent to ChatGPT. \cr
+#'  \bold{n_mis_answers} \tab \code{integer} \tab indicating the number of missing responses \cr
+#' }
+#' <br>
+#' The \code{answer_data_all} data contains the following mandatory variables:
+#' \tabular{lll}{
+#'  \bold{studyid} \tab \code{integer} \tab indicating the study ID of the reference. \cr
+#'  \bold{title} \tab \code{character} \tab indicating the title of the reference. \cr
+#'  \bold{abstract} \tab \code{character}   \tab indicating the abstract of the reference. \cr
+#'  \bold{prompt} \tab \code{character} \tab indicating the prompt. \cr
+#'  \bold{model} \tab \code{character}   \tab indicating the specific gpt-model used. \cr
+#'  \bold{question} \tab \code{character} \tab indicating the final question sent to ChatGPT. \cr
+#'  \bold{decision_gpt}  \tab \code{character} \tab indicating the raw gpt decision - either \code{"1", "0", "1.1"} for inclusion, exclusion, or uncertainty, respectively. \cr
+#'  \bold{detailed_description}  \tab \code{character} \tab indicating detailed description of the given decision made by ChatGPT.
+#'  Only included if the detailed function calling function is used. See 'Examples' below for how to use this function. \cr
+#'  \bold{decision_binary}  \tab \code{integer} \tab indicating the binary gpt decision,
+#'  that is 1 for inclusion and 0 for exclusion. 1.1 decision are coded equal to 1 in this case. \cr
+#'  \bold{prompt_tokens}  \tab \code{integer} \tab indicating the number of prompt tokens sent to the server for the given request. \cr
+#'  \bold{completion_tokens}  \tab \code{integer} \tab indicating the number of completion tokens sent to the server for the given request. \cr
+#'  \bold{run_time}  \tab \code{numeric} \tab indicating the time it took to obtain a response from the server for the given request. \cr
+#'  \bold{top_p}  \tab \code{numeric} \tab indicating the applied top_p. \cr
+#'  \bold{n} \tab \code{integer} \tab indicating request ID.  \cr
+#' }
+#' <br>
+#' The \code{price_data} data contains the following variables:
+#' \tabular{lll}{
+#'  \bold{model} \tab \code{character} \tab gpt model. \cr
+#'  \bold{input_price_dollor} \tab \code{integer} \tab price for all prompt/input tokens for the correspondent gpt-model. \cr
+#'  \bold{output_price_dollor}  \tab \code{integer} \tab price for all completion/output tokens for the correspondent gpt-model. \cr
+#'  \bold{price_total_dollor} \tab \code{integer} \tab total price for all tokens for the correspondent gpt-model. \cr
+#' }
+#'
+#' Find current token pricing at \url{https://openai.com/pricing}.
 #'
 #' @importFrom stats df
 #' @import dplyr
@@ -97,7 +151,21 @@
 #'   max_tries = 1,
 #'   reps = 10
 #'   )
-#'  }
+#'
+#'  # Get detailed descriptions of the gpt decisions by using the
+#'  # embedded function calling functions from the package. See example below.
+#'  tabscreen_gpt(
+#'    data = FFT_dat[1:2,],
+#'    prompt = prompt,
+#'    studyid = studyid,
+#'    title = title,
+#'    abstract = abstract,
+#'    functions = AIscreenR:::incl_function,
+#'    function_call_name = list(name = "inclusion_decision"),
+#'    max_tries = 1,
+#'    reps = 2
+#'  )
+#'}
 
 
 tabscreen_gpt <- function(
@@ -135,7 +203,7 @@ tabscreen_gpt <- function(
     if (functions[[1]]$name == "inclusion_decision"){
       message(
         paste0(
-          "Be aware that getting detailed reponses from ChatGPT ",
+          "*Be aware that getting detailed reponses from ChatGPT ",
           "will substantially increase the prize of the screening."
         )
       )
@@ -211,7 +279,8 @@ tabscreen_gpt <- function(
                 missing = "Missing"
               ),
 
-              tokens = resp$usage$total_tokens
+              prompt_tokens = resp$usage$prompt_tokens,
+              completion_tokens = resp$usage$completion_tokens
 
             )
 
@@ -225,7 +294,8 @@ tabscreen_gpt <- function(
                 dplyr::if_else(stringr::str_detect(decision_gpt, "1"), 1, 0, missing = NA_real_)
               ),
 
-              tokens = resp$usage$total_tokens
+              prompt_tokens = resp$usage$prompt_tokens,
+              completion_tokens = resp$usage$completion_tokens
 
             )
 
@@ -243,7 +313,8 @@ tabscreen_gpt <- function(
           decision_gpt = status_code_text(),
           detailed_description = detail_desc,
           decision_binary = NA_real_,
-          tokens = NA_real_
+          prompt_tokens = NA_real_,
+          completion_tokens = NA_real_
         )
 
       }
@@ -256,7 +327,8 @@ tabscreen_gpt <- function(
         decision_gpt = "Error: Could not reach host [check internet connection]",
         detailed_description = detail_desc,
         decision_binary = NA_real_,
-        tokens = NA_real_
+        prompt_tokens = NA_real_,
+        completion_tokens = NA_real_
       )
 
     }
@@ -269,7 +341,7 @@ tabscreen_gpt <- function(
     res <- res |> dplyr::mutate(run_time = run_time)
 
     if (!timeinf) res <- res |> dplyr::select(-run_time)
-    if (!tokeninf) res <- res |> dplyr::select(-tokens)
+    if (!tokeninf) res <- res |> dplyr::select(-c(prompt_tokens, completion_tokens))
 
 
     res
@@ -325,7 +397,8 @@ tabscreen_gpt <- function(
 
   }
 
-
+  t_info <- if (time_info) NA_real_ else NULL
+  p_tokens <- c_tokens <- if (token_info) NA_real_ else NULL
 
   if (function_call_name$name == "inclusion_decision_simple"){
 
@@ -336,8 +409,9 @@ tabscreen_gpt <- function(
           otherwise = tibble::tibble(
             decision_gpt = NA_character_,
             decision_binary = NA_real_,
-            tokens = NA_real_,
-            run_time = NA_real_,
+            prompt_tokens = p_tokens,
+            completion_tokens = c_tokens,
+            run_time = t_info,
             top_p = NA_real_,
             n = NA_integer_
           )
@@ -354,8 +428,9 @@ tabscreen_gpt <- function(
             decision_gpt = NA_character_,
             detailed_description = NA_character_,
             decision_binary = NA_real_,
-            tokens = NA_real_,
-            run_time = NA_real_,
+            prompt_tokens = p_tokens,
+            completion_tokens = c_tokens,
+            run_time = t_info,
             top_p = NA_real_,
             n = NA_integer_
           )
@@ -424,7 +499,7 @@ tabscreen_gpt <- function(
     if ("No information" %in% unique(question_dat$abstract)) {
       message(
         paste0(
-          "Consider removing references that has no abstract",
+          "*Consider removing references that has no abstract ",
           "since these can distort the accuracy of the screening"
         )
       )
@@ -480,12 +555,46 @@ tabscreen_gpt <- function(
     still_error <- answer_dat |> dplyr::filter(is.na(decision_binary)) |> nrow()
 
     if (messages){
-      if (still_error > 0) message("NOTE: Requests falied for some titles and abstracts.")
+      if (still_error > 0) message("*NOTE: Requests falied for some titles and abstracts.")
     }
 
   }
 
   answer_dat <- tibble::new_tibble(answer_dat, class = "chatgpt_tbl")
+
+  if (token_info){
+
+    price_dat <-
+      answer_dat |>
+      filter(!is.na(prompt_tokens) | !is.na(completion_tokens)) |>
+      summarise(
+
+        input_price_dollor = case_when(
+          any(c("gpt-3.5-turbo", "gpt-3.5-turbo-0613") %in% model) ~ round(sum(prompt_tokens, na.rm = TRUE) * (0.0015/1000), 4),
+          any(c("gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613") %in% model) ~ round(sum(prompt_tokens, na.rm = TRUE) * (0.003/1000), 4),
+          any(c("gpt-4", "gpt-4-0613") %in% model) ~ round(sum(prompt_tokens, na.rm = TRUE) * (0.03/1000), 4),
+          any(c("gpt-4-32k", "gpt-4-32k-0613") %in% model) ~ round(sum(prompt_tokens, na.rm = TRUE) * (0.06/1000), 4),
+          TRUE ~ NA_real_
+        ),
+
+        output_price_dollor = case_when(
+          any(c("gpt-3.5-turbo", "gpt-3.5-turbo-0613") %in% model) ~ round(sum(completion_tokens, na.rm = TRUE) * (0.002/1000), 4),
+          any(c("gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613") %in% model) ~ round(sum(completion_tokens, na.rm = TRUE) * (0.004/1000), 4),
+          any(c("gpt-4", "gpt-4-0613") %in% model) ~ round(sum(completion_tokens, na.rm = TRUE) * (0.06/1000), 4),
+          any(c("gpt-4-32k", "gpt-4-32k-0613") %in% model) ~ round(sum(completion_tokens, na.rm = TRUE) * (0.12/1000), 4),
+          TRUE ~ NA_real_
+        ),
+
+        price_total_dollor = input_price_dollor + output_price_dollor,
+
+        .by = model
+
+      )
+
+    price <- sum(price_dat$price_total_dollor, na.rm = TRUE)
+
+  }
+
 
   sum_dat <-
     answer_dat |>
@@ -557,7 +666,12 @@ tabscreen_gpt <- function(
 
   }
 
-  res <- list(answer_data_all = answer_dat, answer_data_sum = answer_dat_sum)
+  if (token_info){
+    res <- list(price_data = price_dat, price_dollor = price, answer_data_all = answer_dat, answer_data_sum = answer_dat_sum)
+  } else {
+    res <- list(answer_data_all = answer_dat, answer_data_sum = answer_dat_sum)
+  }
+
   class(res) <- c("list", "chatgpt")
 
   res
