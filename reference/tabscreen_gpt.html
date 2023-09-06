@@ -157,7 +157,7 @@ request/question should be included in the data. Default = <code>TRUE</code>.</p
 
 
 <dt>token_info</dt>
-<dd><p>Logical indicating whether the total number of tokens
+<dd><p>Logical indicating whether the number of prompt and completion tokens
 per request should be included in the output data. Default = <code>TRUE</code>.</p></dd>
 
 
@@ -240,8 +240,31 @@ title and abstract 4 times, we suggest that the study should be check by a human
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A <code>tibble</code> with the gpt decision, run time, tokens used, top_p, and number
-of repeated requests.</p>
+<p>An object of class <code>"chatgpt"</code>. The object is a list containing the following
+components:</p>
+<dl><dt>answer_data_sum</dt>
+<dd><p>dataset with the summerized, probalistic inclusion decision
+for each title and abstract across multiple repeated questions.</p></dd>
+
+<dt>answer_data_all</dt>
+<dd><p>dataset with all individual answers.</p></dd>
+
+<dt>price</dt>
+<dd><p>numerical value indicating the total price of the screening.</p></dd>
+
+<dt>price_data</dt>
+<dd><p>dataset with prices across all gpt models used for screening.</p></dd>
+
+</dl></div>
+    <div class="section level2">
+    <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
+    <p>The <code>answer_data_sum</code> data contains the following mandatory variables:</p><table class="table table"><tr><td><b>studyid</b></td><td><code>integer</code></td><td>indicating the study ID of the reference.</td></tr><tr><td><b>title</b></td><td><code>character</code></td><td>indicating the title of the reference.</td></tr><tr><td><b>abstract</b></td><td><code>character</code></td><td>indicating the abstract of the reference.</td></tr><tr><td><b>prompt</b></td><td><code>character</code></td><td>indicating the prompt.</td></tr><tr><td><b>model</b></td><td><code>character</code></td><td>indicating the specific gpt-model used.</td></tr><tr><td><b>question</b></td><td><code>character</code></td><td>indicating the final question sent to ChatGPT.</td></tr><tr><td><b>top_p</b></td><td><code>numeric</code></td><td>indicating the applied top_p.</td></tr><tr><td><b>incl_p</b></td><td><code>numeric</code></td><td>indicating the probability of inclusion calculated across multiple repeated responses on the same title and abstract.</td></tr><tr><td><b>final_decision</b></td><td><code>character</code></td><td>indicating the final decision reached by gpt - either 'Include', 'Exclude', or 'Check'.</td></tr><tr><td><b>final_decision_num</b></td><td><code>integer</code></td><td>indicating the final numeric decision reached by gpt - either 1 or 0.</td></tr><tr><td><b>longest_answer</b></td><td><code>character</code></td><td>indicating the longest gpt response obtained
+across multiple repeated responses on the same title and abstract. Only included if the detailed function calling
+function is used. See 'Examples' below for how to use this function.</td></tr><tr><td><b>reps</b></td><td><code>integer</code></td><td>indicating the number of times the same question has been sent to ChatGPT.</td></tr><tr><td><b>n_mis_answers</b></td><td><code>integer</code></td><td>indicating the number of missing responses</td></tr></table><p><br>
+The <code>answer_data_all</code> data contains the following mandatory variables:</p><table class="table table"><tr><td><b>studyid</b></td><td><code>integer</code></td><td>indicating the study ID of the reference.</td></tr><tr><td><b>title</b></td><td><code>character</code></td><td>indicating the title of the reference.</td></tr><tr><td><b>abstract</b></td><td><code>character</code></td><td>indicating the abstract of the reference.</td></tr><tr><td><b>prompt</b></td><td><code>character</code></td><td>indicating the prompt.</td></tr><tr><td><b>model</b></td><td><code>character</code></td><td>indicating the specific gpt-model used.</td></tr><tr><td><b>question</b></td><td><code>character</code></td><td>indicating the final question sent to ChatGPT.</td></tr><tr><td><b>decision_gpt</b></td><td><code>character</code></td><td>indicating the raw gpt decision - either <code>"1", "0", "1.1"</code> for inclusion, exclusion, or uncertainty, respectively.</td></tr><tr><td><b>detailed_description</b></td><td><code>character</code></td><td>indicating detailed description of the given decision made by ChatGPT.
+Only included if the detailed function calling function is used. See 'Examples' below for how to use this function.</td></tr><tr><td><b>decision_binary</b></td><td><code>integer</code></td><td>indicating the binary gpt decision,
+that is 1 for inclusion and 0 for exclusion. 1.1 decision are coded equal to 1 in this case.</td></tr><tr><td><b>prompt_tokens</b></td><td><code>integer</code></td><td>indicating the number of prompt tokens sent to the server for the given request.</td></tr><tr><td><b>completion_tokens</b></td><td><code>integer</code></td><td>indicating the number of completion tokens sent to the server for the given request.</td></tr><tr><td><b>run_time</b></td><td><code>numeric</code></td><td>indicating the time it took to obtain a response from the server for the given request.</td></tr><tr><td><b>top_p</b></td><td><code>numeric</code></td><td>indicating the applied top_p.</td></tr><tr><td><b>n</b></td><td><code>integer</code></td><td>indicating request ID.</td></tr></table><p><br>
+The <code>price_data</code> data contains the following variables:</p><table class="table table"><tr><td><b>model</b></td><td><code>character</code></td><td>gpt model.</td></tr><tr><td><b>input_price_dollor</b></td><td><code>integer</code></td><td>price for all prompt/input tokens for the correspondent gpt-model.</td></tr><tr><td><b>output_price_dollor</b></td><td><code>integer</code></td><td>price for all completion/output tokens for the correspondent gpt-model.</td></tr><tr><td><b>price_total_dollor</b></td><td><code>integer</code></td><td>total price for all tokens for the correspondent gpt-model.</td></tr></table><p>Find current token pricing at <a href="https://openai.com/pricing" class="external-link">https://openai.com/pricing</a>.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -263,7 +286,21 @@ https://httr2.r-lib.org, https://github.com/r-lib/httr2.</p>
 <span class="r-in"><span>  max_tries <span class="op">=</span> <span class="fl">1</span>,</span></span>
 <span class="r-in"><span>  reps <span class="op">=</span> <span class="fl">10</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
-<span class="r-in"><span> <span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="co"># Get detailed descriptions of the gpt decisions by using the</span></span></span>
+<span class="r-in"><span> <span class="co"># embedded function calling functions from the package. See example below.</span></span></span>
+<span class="r-in"><span> <span class="fu">tabscreen_gpt</span><span class="op">(</span></span></span>
+<span class="r-in"><span>   data <span class="op">=</span> <span class="va">FFT_dat</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,<span class="op">]</span>,</span></span>
+<span class="r-in"><span>   prompt <span class="op">=</span> <span class="va">prompt</span>,</span></span>
+<span class="r-in"><span>   studyid <span class="op">=</span> <span class="va">studyid</span>,</span></span>
+<span class="r-in"><span>   title <span class="op">=</span> <span class="va">title</span>,</span></span>
+<span class="r-in"><span>   abstract <span class="op">=</span> <span class="va">abstract</span>,</span></span>
+<span class="r-in"><span>   functions <span class="op">=</span> <span class="fu">AIscreenR</span><span class="fu">:::</span><span class="va">incl_function</span>,</span></span>
+<span class="r-in"><span>   function_call_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"inclusion_decision"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>   max_tries <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>   reps <span class="op">=</span> <span class="fl">2</span></span></span>
+<span class="r-in"><span> <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
