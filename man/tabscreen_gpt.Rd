@@ -190,9 +190,9 @@ that is 1 for inclusion and 0 for exclusion. 1.1 decision are coded equal to 1 i
 The \code{price_data} data contains the following variables:
 \tabular{lll}{
 \bold{model} \tab \code{character} \tab gpt model. \cr
-\bold{input_price_dollor} \tab \code{integer} \tab price for all prompt/input tokens for the correspondent gpt-model. \cr
-\bold{output_price_dollor}  \tab \code{integer} \tab price for all completion/output tokens for the correspondent gpt-model. \cr
-\bold{price_total_dollor} \tab \code{integer} \tab total price for all tokens for the correspondent gpt-model. \cr
+\bold{input_price_dollar} \tab \code{integer} \tab price for all prompt/input tokens for the correspondent gpt-model. \cr
+\bold{output_price_dollar}  \tab \code{integer} \tab price for all completion/output tokens for the correspondent gpt-model. \cr
+\bold{price_total_dollar} \tab \code{integer} \tab total price for all tokens for the correspondent gpt-model. \cr
 }
 
 Find current token pricing at \url{https://openai.com/pricing}.

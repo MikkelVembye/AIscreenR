@@ -128,9 +128,9 @@
 #' The \code{price_data} data contains the following variables:
 #' \tabular{lll}{
 #'  \bold{model} \tab \code{character} \tab gpt model. \cr
-#'  \bold{input_price_dollor} \tab \code{integer} \tab price for all prompt/input tokens for the correspondent gpt-model. \cr
-#'  \bold{output_price_dollor}  \tab \code{integer} \tab price for all completion/output tokens for the correspondent gpt-model. \cr
-#'  \bold{price_total_dollor} \tab \code{integer} \tab total price for all tokens for the correspondent gpt-model. \cr
+#'  \bold{input_price_dollar} \tab \code{integer} \tab price for all prompt/input tokens for the correspondent gpt-model. \cr
+#'  \bold{output_price_dollar}  \tab \code{integer} \tab price for all completion/output tokens for the correspondent gpt-model. \cr
+#'  \bold{price_total_dollar} \tab \code{integer} \tab total price for all tokens for the correspondent gpt-model. \cr
 #' }
 #'
 #' Find current token pricing at \url{https://openai.com/pricing}.
@@ -569,7 +569,7 @@ tabscreen_gpt <- function(
       filter(!is.na(prompt_tokens) | !is.na(completion_tokens)) |>
       summarise(
 
-        input_price_dollor = case_when(
+        input_price_dollar = case_when(
           any(c("gpt-3.5-turbo", "gpt-3.5-turbo-0613") %in% model) ~ round(sum(prompt_tokens, na.rm = TRUE) * (0.0015/1000), 4),
           any(c("gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613") %in% model) ~ round(sum(prompt_tokens, na.rm = TRUE) * (0.003/1000), 4),
           any(c("gpt-4", "gpt-4-0613") %in% model) ~ round(sum(prompt_tokens, na.rm = TRUE) * (0.03/1000), 4),
@@ -577,7 +577,7 @@ tabscreen_gpt <- function(
           TRUE ~ NA_real_
         ),
 
-        output_price_dollor = case_when(
+        output_price_dollar = case_when(
           any(c("gpt-3.5-turbo", "gpt-3.5-turbo-0613") %in% model) ~ round(sum(completion_tokens, na.rm = TRUE) * (0.002/1000), 4),
           any(c("gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613") %in% model) ~ round(sum(completion_tokens, na.rm = TRUE) * (0.004/1000), 4),
           any(c("gpt-4", "gpt-4-0613") %in% model) ~ round(sum(completion_tokens, na.rm = TRUE) * (0.06/1000), 4),
@@ -585,13 +585,13 @@ tabscreen_gpt <- function(
           TRUE ~ NA_real_
         ),
 
-        price_total_dollor = input_price_dollor + output_price_dollor,
+        price_total_dollar = input_price_dollar + output_price_dollar,
 
         .by = model
 
       )
 
-    price <- sum(price_dat$price_total_dollor, na.rm = TRUE)
+    price <- sum(price_dat$price_total_dollar, na.rm = TRUE)
 
   }
 
@@ -667,7 +667,7 @@ tabscreen_gpt <- function(
   }
 
   if (token_info){
-    res <- list(price_data = price_dat, price_dollor = price, answer_data_all = answer_dat, answer_data_sum = answer_dat_sum)
+    res <- list(price_data = price_dat, price_dollar = price, answer_data_all = answer_dat, answer_data_sum = answer_dat_sum)
   } else {
     res <- list(answer_data_all = answer_dat, answer_data_sum = answer_dat_sum)
   }

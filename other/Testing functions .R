@@ -61,11 +61,11 @@ test_obj <- tabscreen_gpt(
   #messages = FALSE
 ); test_obj
 
-price_in_dollor <- test_obj$price_dollor
-price_in_dollor
+price_in_dollar <- test_obj$price_dollar
+price_in_dollar
 
 price_dat <- test_obj$price_dat
-dplyr::glimpse(price_dat)
+price_dat
 
 
 all_dat <- test_obj$answer_data_all
