@@ -7,7 +7,7 @@
 #' This function supports the conduct of title and abstract screening with ChatGPT in R.
 #' The function allows to run title and abstract screening across multiple prompts and with
 #' repeated questions to check for consistency across answers. This function draws
-#' on the newly developed function calling to better steer output of response.
+#' on the newly developed function calling to better steer the output of the responses.
 #'
 #' @references Wickham H (2023).
 #' \emph{httr2: Perform HTTP Requests and Process the Responses}.
@@ -19,25 +19,27 @@
 #' @param arrange_var Function indicating the variables determining the arrangement
 #'   of the data. Default is \code{studyid}.
 #' @param model Character string with the name of the completion model. Can take
-#'   multiple models, including gpt-4 models.Default = `"gpt-3.5-turbo-0613"`.
+#'   multiple models, including gpt-4 models. Default = `"gpt-3.5-turbo-0613"`.
 #'   Find available model at
 #' \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.
 #' @param role Character string indicate the role of the user. Default is `"user"`.
 #' @param functions Function to steer output. Default is `incl_function_simple`.
+#'   To get detailed responses use the `AIscreenR:::incl_function`. Also see 'Examples below.
 #'   Find further documentation for function calling at
 #'   \url{https://openai.com/blog/function-calling-and-other-api-updates}.
 #' @param function_call_name Functions to call.
-#'   Default is `list(name = "inclusion_decision_simple")`
+#'   Default is `list(name = "inclusion_decision_simple")`. To get detailed responses
+#'   use `list(name = "inclusion_decision")`. Also see 'Examples below.
 #' @param top_p 'An alternative to sampling with temperature, called nucleus sampling,
-#' where the model considers the results of the tokens with top_p probability mass.
-#' So 0.1 means only the tokens comprising the top 10% probability mass are considered.
-#' We generally recommend altering this or temperature but not both.' (OPEN-AI).
-#' Find documentation at
+#'   where the model considers the results of the tokens with top_p probability mass.
+#'   So 0.1 means only the tokens comprising the top 10% probability mass are considered.
+#'   We generally recommend altering this or temperature but not both.' (OPEN-AI).
+#'   Find documentation at
 #' \url{https://platform.openai.com/docs/api-reference/chat/create#chat/create-top_p}.
 #' @param time_info Logical indicating whether the run time of each
-#'  request/question should be included in the data. Default = `TRUE`.
+#'   request/question should be included in the data. Default = `TRUE`.
 #' @param token_info Logical indicating whether the number of prompt and completion tokens
-#' per request should be included in the output data. Default = `TRUE`.
+#'   per request should be included in the output data. Default = `TRUE`.
 #' @param api_key Numerical value with your personal API key. Find at
 #'  \url{https://platform.openai.com/account/api-keys}. Use
 #'  [secret_make_key()], [secret_encrypt()], and
@@ -58,25 +60,27 @@
 #'   that a precise wait time is not available that the `backoff` strategy
 #'   should be used instead' (Wickham, 2023).
 #' @param rpm Numerical value indicating the number of requests per minute (rpm)
-#'  available for the specified api key. Find more information at
-#'  \url{https://platform.openai.com/docs/guides/rate-limits/what-are-the-rate-limits-for-our-api}.
-#'  Alternatively, use [rate_limits_per_minute()].
+#'   available for the specified api key. Find more information at
+#'   \url{https://platform.openai.com/docs/guides/rate-limits/what-are-the-rate-limits-for-our-api}.
+#'   Alternatively, use [rate_limits_per_minute()].
 #' @param reps Numerical value indicating the number of times the same
-#'  question should be sent to ChatGPT. This can be useful to test consistency
-#'  between answers. Default is `1`.
+#'   question should be sent to ChatGPT. This can be useful to test consistency
+#'   between answers. Default is `1` but when using 3.5 models, we recommend setting this
+#'   value to `10`.
 #' @param seed Numerical value for a seed to ensure that proper,
-#'  parallel-safe random numbers are produced.
+#'   parallel-safe random numbers are produced.
 #' @param progress Logical indicating whether a progress line should be shown when running
-#' the title and abstract screening in parallel. Default is `TRUE`.
-#' @param messages Logical indicating whether to print messages. Defualt is `TRUE`.
+#'   the title and abstract screening in parallel. Default is `TRUE`.
+#' @param messages Logical indicating whether to print messages embedded in the function.
+#'   Defualt is `TRUE`.
 #' @param incl_cutoff_upper Numerical value indicating the probability threshold
-#' for which a studies should be included. Default is 0.5, which indicates that
-#' titles and abstracts that ChatGPT has included more than 50 percent of the times
-#' should be included.
+#'   for which a studies should be included. Default is 0.5, which indicates that
+#'   titles and abstracts that ChatGPT has included more than 50 percent of the times
+#'   should be included.
 #' @param incl_cutoff_lower Numerical value indicating the probability threshold
-#' above which studies should be check by a human. Default is 0.4, which means
-#' that if you ask ChatGPT the same questions 10 times and it includes the
-#' title and abstract 4 times, we suggest that the study should be check by a human.
+#'   above which studies should be check by a human. Default is 0.4, which means
+#'   that if you ask ChatGPT the same questions 10 times and it includes the
+#'   title and abstract 4 times, we suggest that the study should be check by a human.
 #'
 #' @return An object of class \code{"chatgpt"}. The object is a list containing the following
 #' components:

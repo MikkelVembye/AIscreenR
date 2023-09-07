@@ -1,7 +1,7 @@
-#' @param data Data with title and abstracts
-#' @param prompt Prompt(s) to paste before title and abstract
-#' @param studyid ID indication unique ID of study. Is missing, this is generated
+#' @param data Dataset containing the titles and abstracts.
+#' @param prompt Prompt(s) to paste before the title and abstract.
+#' @param studyid Unique ID of study. If missing, this is generated
 #' automatically.
-#' @param title Name of variable with containing title information
-#' @param abstract Name of variable with containing abstract information
+#' @param title Name of the variable containing the title information.
+#' @param abstract Name of variable containing the abstract information.
 

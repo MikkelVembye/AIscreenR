@@ -5,12 +5,12 @@
 #' `r lifecycle::badge("stable")`<br>
 #' <br>
 #' `rate_limits_per_minute` reports the rate limits for a given api.
-#' includes the allowed requests per minute (RPM) as well as tokens per minute (TPM).
+#' The function returns the available requests per minute (RPM) as well as tokens per minute (TPM).
 #' Find general information at
 #' \url{https://platform.openai.com/docs/guides/rate-limits/overview}.
 #'
-#' @param AI_tool Character string specified the AI tool from which the api is
-#' issued. Default is `"CHATGPT"`
+#' @param AI_tool Character string specifying the AI tool from which the api is
+#' issued. Default is `"chatgpt"`.
 #' @param model Character string with the name of the completion model.
 #' Default = `"gpt-3.5-turbo-0613"`.
 #' Find available model at
@@ -34,13 +34,13 @@
 #' }
 
 rate_limits_per_minute <- function(
-    AI_tool = "CHATGPT",
+    AI_tool = "chatgpt",
     model = "gpt-3.5-turbo-0613",
     api_key = get_api_key()
     ){
 
 
-  if ("CHATGPT" %in% AI_tool){
+  if ("chatgpt" %in% AI_tool){
 
     body <- list(
       model = model,

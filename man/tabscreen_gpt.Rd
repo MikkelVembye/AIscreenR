@@ -35,16 +35,16 @@ tabscreen_gpt(
 )
 }
 \arguments{
-\item{data}{Data with title and abstracts}
+\item{data}{Dataset containing the titles and abstracts.}
 
-\item{prompt}{Prompt(s) to paste before title and abstract}
+\item{prompt}{Prompt(s) to paste before the title and abstract.}
 
-\item{studyid}{ID indication unique ID of study. Is missing, this is generated
+\item{studyid}{Unique ID of study. If missing, this is generated
 automatically.}
 
-\item{title}{Name of variable with containing title information}
+\item{title}{Name of the variable containing the title information.}
 
-\item{abstract}{Name of variable with containing abstract information}
+\item{abstract}{Name of variable containing the abstract information.}
 
 \item{...}{Further argument to pass to the request body.
 See \url{https://platform.openai.com/docs/api-reference/chat/create}.}
@@ -53,18 +53,20 @@ See \url{https://platform.openai.com/docs/api-reference/chat/create}.}
 of the data. Default is \code{studyid}.}
 
 \item{model}{Character string with the name of the completion model. Can take
-multiple models, including gpt-4 models.Default = \code{"gpt-3.5-turbo-0613"}.
+multiple models, including gpt-4 models. Default = \code{"gpt-3.5-turbo-0613"}.
 Find available model at
 \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.}
 
 \item{role}{Character string indicate the role of the user. Default is \code{"user"}.}
 
 \item{functions}{Function to steer output. Default is \code{incl_function_simple}.
+To get detailed responses use the \code{AIscreenR:::incl_function}. Also see 'Examples below.
 Find further documentation for function calling at
 \url{https://openai.com/blog/function-calling-and-other-api-updates}.}
 
 \item{function_call_name}{Functions to call.
-Default is \code{list(name = "inclusion_decision_simple")}}
+Default is \code{list(name = "inclusion_decision_simple")}. To get detailed responses
+use \code{list(name = "inclusion_decision")}. Also see 'Examples below.}
 
 \item{top_p}{'An alternative to sampling with temperature, called nucleus sampling,
 where the model considers the results of the tokens with top_p probability mass.
@@ -110,7 +112,8 @@ Alternatively, use \code{\link[=rate_limits_per_minute]{rate_limits_per_minute()
 
 \item{reps}{Numerical value indicating the number of times the same
 question should be sent to ChatGPT. This can be useful to test consistency
-between answers. Default is \code{1}.}
+between answers. Default is \code{1} but when using 3.5 models, we recommend setting this
+value to \code{10}.}
 
 \item{seed}{Numerical value for a seed to ensure that proper,
 parallel-safe random numbers are produced.}
@@ -118,7 +121,8 @@ parallel-safe random numbers are produced.}
 \item{progress}{Logical indicating whether a progress line should be shown when running
 the title and abstract screening in parallel. Default is \code{TRUE}.}
 
-\item{messages}{Logical indicating whether to print messages. Defualt is \code{TRUE}.}
+\item{messages}{Logical indicating whether to print messages embedded in the function.
+Defualt is \code{TRUE}.}
 
 \item{incl_cutoff_upper}{Numerical value indicating the probability threshold
 for which a studies should be included. Default is 0.5, which indicates that
@@ -145,7 +149,7 @@ for each title and abstract across multiple repeated questions.}
 This function supports the conduct of title and abstract screening with ChatGPT in R.
 The function allows to run title and abstract screening across multiple prompts and with
 repeated questions to check for consistency across answers. This function draws
-on the newly developed function calling to better steer output of response.
+on the newly developed function calling to better steer the output of the responses.
 }
 \note{
 The \code{answer_data_sum} data contains the following mandatory variables:
