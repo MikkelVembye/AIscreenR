@@ -4,12 +4,12 @@
 This function supports the conduct of title and abstract screening with ChatGPT in R.
 The function allows to run title and abstract screening across multiple prompts and with
 repeated questions to check for consistency across answers. This function draws
-on the newly developed function calling to better steer output of response."><title>Title and abstract screening with ChatGPT using function calls. — tabscreen_gpt • AIscreenR</title><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Title and abstract screening with ChatGPT using function calls. — tabscreen_gpt"><meta property="og:description" content="
+on the newly developed function calling to better steer the output of the responses."><title>Title and abstract screening with ChatGPT using function calls. — tabscreen_gpt • AIscreenR</title><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Title and abstract screening with ChatGPT using function calls. — tabscreen_gpt"><meta property="og:description" content="
 
 This function supports the conduct of title and abstract screening with ChatGPT in R.
 The function allows to run title and abstract screening across multiple prompts and with
 repeated questions to check for consistency across answers. This function draws
-on the newly developed function calling to better steer output of response."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
+on the newly developed function calling to better steer the output of the responses."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body>
@@ -51,7 +51,7 @@ on the newly developed function calling to better steer output of response."><!-
 This function supports the conduct of title and abstract screening with ChatGPT in R.
 The function allows to run title and abstract screening across multiple prompts and with
 repeated questions to check for consistency across answers. This function draws
-on the newly developed function calling to better steer output of response.</p>
+on the newly developed function calling to better steer the output of the responses.</p>
     </div>
 
     <div class="section level2">
@@ -90,24 +90,24 @@ on the newly developed function calling to better steer output of response.</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>data</dt>
-<dd><p>Data with title and abstracts</p></dd>
+<dd><p>Dataset containing the titles and abstracts.</p></dd>
 
 
 <dt>prompt</dt>
-<dd><p>Prompt(s) to paste before title and abstract</p></dd>
+<dd><p>Prompt(s) to paste before the title and abstract.</p></dd>
 
 
 <dt>studyid</dt>
-<dd><p>ID indication unique ID of study. Is missing, this is generated
+<dd><p>Unique ID of study. If missing, this is generated
 automatically.</p></dd>
 
 
 <dt>title</dt>
-<dd><p>Name of variable with containing title information</p></dd>
+<dd><p>Name of the variable containing the title information.</p></dd>
 
 
 <dt>abstract</dt>
-<dd><p>Name of variable with containing abstract information</p></dd>
+<dd><p>Name of variable containing the abstract information.</p></dd>
 
 
 <dt>...</dt>
@@ -122,7 +122,7 @@ of the data. Default is <code>studyid</code>.</p></dd>
 
 <dt>model</dt>
 <dd><p>Character string with the name of the completion model. Can take
-multiple models, including gpt-4 models.Default = <code>"gpt-3.5-turbo-0613"</code>.
+multiple models, including gpt-4 models. Default = <code>"gpt-3.5-turbo-0613"</code>.
 Find available model at
 <a href="https://platform.openai.com/docs/models/model-endpoint-compatibility" class="external-link">https://platform.openai.com/docs/models/model-endpoint-compatibility</a>.</p></dd>
 
@@ -133,13 +133,15 @@ Find available model at
 
 <dt>functions</dt>
 <dd><p>Function to steer output. Default is <code>incl_function_simple</code>.
+To get detailed responses use the <code>AIscreenR:::incl_function</code>. Also see 'Examples below.
 Find further documentation for function calling at
 <a href="https://openai.com/blog/function-calling-and-other-api-updates" class="external-link">https://openai.com/blog/function-calling-and-other-api-updates</a>.</p></dd>
 
 
 <dt>function_call_name</dt>
 <dd><p>Functions to call.
-Default is <code>list(name = "inclusion_decision_simple")</code></p></dd>
+Default is <code>list(name = "inclusion_decision_simple")</code>. To get detailed responses
+use <code>list(name = "inclusion_decision")</code>. Also see 'Examples below.</p></dd>
 
 
 <dt>top_p</dt>
@@ -205,7 +207,8 @@ Alternatively, use <code><a href="rate_limits_per_minute.html">rate_limits_per_m
 <dt>reps</dt>
 <dd><p>Numerical value indicating the number of times the same
 question should be sent to ChatGPT. This can be useful to test consistency
-between answers. Default is <code>1</code>.</p></dd>
+between answers. Default is <code>1</code> but when using 3.5 models, we recommend setting this
+value to <code>10</code>.</p></dd>
 
 
 <dt>seed</dt>
@@ -219,7 +222,8 @@ the title and abstract screening in parallel. Default is <code>TRUE</code>.</p><
 
 
 <dt>messages</dt>
-<dd><p>Logical indicating whether to print messages. Defualt is <code>TRUE</code>.</p></dd>
+<dd><p>Logical indicating whether to print messages embedded in the function.
+Defualt is <code>TRUE</code>.</p></dd>
 
 
 <dt>incl_cutoff_upper</dt>
