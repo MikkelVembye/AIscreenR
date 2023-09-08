@@ -33,3 +33,8 @@ reference:
   - title: "Print methods"
     contents:
       - print.chatgpt
+      - print.gpt_price
+
+  - title: "Pricing"
+    contents:
+      - approximate_price_gpt

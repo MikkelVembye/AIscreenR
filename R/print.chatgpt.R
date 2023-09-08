@@ -3,8 +3,7 @@
 #' @param x an object of class "chatgpt".
 #' @param ... other print arguments.
 #'
-#' @return An object with the head of the summarized and final answer data
-#' ideally deduced from multiple answers from ChatGPT.
+#' @return Information about how to find answer datasets and pricing information.
 #' @export
 #'
 #' @examples
@@ -14,9 +13,6 @@
 
 
 print.chatgpt <- function(x, ...){
-
-  #dat1 <- substitute(x$answer_data_all)
-  #dat2 <- substitute(x$answer_data_sum)
 
   cat("Find data with all answers by executing\n object_name$answer_data_all",
       "\n\nFind data with the result aggregated across multiple answers by executing\n",

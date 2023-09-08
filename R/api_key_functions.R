@@ -4,14 +4,17 @@
 #' @description This function automatically sets/creates an interim R environment variable with
 #' the API key to call a given AI model (e.g. ChatGPT). Thereby users avoid exposing their API keys.
 #' If the API key is set in the console, it will/can be revealed via the .Rhistory.
-#' Find more information about this issue at https://httr2.r-lib.org/articles/wrapping-apis.html
+#' Find more information about this issue at \url{https://httr2.r-lib.org/articles/wrapping-apis.html}.
 #'
 #' @details When set_api_key() has successfully been executed, \code{get_api_key()} automatically
 #' retrieves the API key from the R environment and the users do not need to specify the API when running
-#' functions from the package that call an API.
+#' functions from the package that call the API. The API key can be permanently set by
+#' using [usethis::edit_r_environ()]. Then write `CHATGPT_KEY=[insert your api key here]` and close
+#' the `.Renviron` window and restart R.
 #'
-#' @param key Character string with an (ideally encrypt) API key. If not provided it
-#' returns a password box in which the true API key can be entered secretly.
+#' @param key Character string with an (ideally encrypt) API key. See how to encrypt key here:
+#' \url{https://httr2.r-lib.org/articles/wrapping-apis.html#basics}. If not provided, it
+#' returns a password box in which the true API key can be secretly entered.
 #' @param env_var Character string indicating the name of the temporary R environment variable with
 #' the API key and the used AI model. Currently, the argument only takes \code{env_var = "CHATGPT_KEY"}.
 #'
@@ -19,6 +22,7 @@
 #' If \code{key} is missing, it returns a password box in which the true API key can be entered.
 #' @export
 #'
+#' @note Find your personal API key at \url{https://platform.openai.com/account/api-keys}.
 #' @seealso \code{\link{get_api_key}}
 #'
 #' @examples
@@ -39,16 +43,22 @@ set_api_key <- function(key, env_var = "CHATGPT_KEY") {
 }
 
 
-#' @title Get API key from temporary R environment variable
+#' @title Get API key from R environment variable.
 #'
 #' @param env_var Character string indicating the name of the temporary R environment variable with
 #' the API key and the used AI model. Currently, the argument only takes \code{env_var = "CHATGPT_KEY"}.
-#' See \code{set_api_key()} to set/create this variable.
+#' See [set_api_key()] to set/create this variable.
+#'
+#' @details `get_api_key()` can be used after executing [set_api_key()] or by adding the
+#' api key permanently to your R environment by using [usethis::edit_r_environ()].
+#' Then write `CHATGPT_KEY=[insert your api key here]` and close the `.Renviron` window and restart R.
 #'
 #' @return The specified API key (NOTE: Avoid exposing this in the console).
 #' @export
 #'
-#' @seealso \code{\link{set_api_key}}
+#' @note Find your personal API key at \url{https://platform.openai.com/account/api-keys}.
+#' @seealso \code{\link{set_api_key}}.
+#'
 #'
 #' @examples
 #' \dontrun{

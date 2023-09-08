@@ -79,7 +79,8 @@ Find documentation at
 request/question should be included in the data. Default = \code{TRUE}.}
 
 \item{token_info}{Logical indicating whether the number of prompt and completion tokens
-per request should be included in the output data. Default = \code{TRUE}.}
+per request should be included in the output data. Default = \code{TRUE}. When \code{TRUE},
+the output object will include price information of the conducted screening.}
 
 \item{api_key}{Numerical value with your personal API key. Find at
 \url{https://platform.openai.com/account/api-keys}. Use
@@ -140,7 +141,7 @@ components:
 \item{answer_data_sum}{dataset with the summerized, probalistic inclusion decision
 for each title and abstract across multiple repeated questions.}
 \item{answer_data_all}{dataset with all individual answers.}
-\item{price}{numerical value indicating the total price of the screening.}
+\item{price}{numerical value indicating the total price (in USD) of the screening.}
 \item{price_data}{dataset with prices across all gpt models used for screening.}
 }
 \description{

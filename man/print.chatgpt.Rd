@@ -12,8 +12,7 @@
 \item{...}{other print arguments.}
 }
 \value{
-An object with the head of the summarized and final answer data
-ideally deduced from multiple answers from ChatGPT.
+Information about how to find answer datasets and pricing information.
 }
 \description{
 Print methods for 'chatgpt' objects

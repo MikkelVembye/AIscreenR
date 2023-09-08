@@ -41,6 +41,18 @@ duration delivered to young people and their families). If not, exclude study.
 2) Are the participants in outpatient drug treatment primarily
 for non-opioid drug use? 3) Are the participants within age 11–21?"
 
+app_obj <- approximate_price_gpt(
+  data = FFT_dat[149:150,],
+  prompt = prompt,
+  studyid = studyid,
+  title = title,
+  abstract = abstract,
+  model = c("gpt-3.5-turbo-0613"),
+  rep = 1100
+)
+
+app_obj
+
 library(future)
 plan(multisession)
 
@@ -55,7 +67,8 @@ test_obj <- tabscreen_gpt(
   functions = AIscreenR:::incl_function,
   function_call_name = list(name = "inclusion_decision"),
   max_tries = 1,
-  reps = 2
+  reps = 2,
+  max_tokens = 40
   #incl_cutoff_upper = 0.5,
   #incl_cutoff_lower = 0.3
   #messages = FALSE

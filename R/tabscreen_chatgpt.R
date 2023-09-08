@@ -39,7 +39,8 @@
 #' @param time_info Logical indicating whether the run time of each
 #'   request/question should be included in the data. Default = `TRUE`.
 #' @param token_info Logical indicating whether the number of prompt and completion tokens
-#'   per request should be included in the output data. Default = `TRUE`.
+#'   per request should be included in the output data. Default = `TRUE`. When `TRUE`,
+#'   the output object will include price information of the conducted screening.
 #' @param api_key Numerical value with your personal API key. Find at
 #'  \url{https://platform.openai.com/account/api-keys}. Use
 #'  [secret_make_key()], [secret_encrypt()], and
@@ -87,7 +88,7 @@
 #' \item{answer_data_sum}{dataset with the summerized, probalistic inclusion decision
 #' for each title and abstract across multiple repeated questions.}
 #' \item{answer_data_all}{dataset with all individual answers.}
-#' \item{price}{numerical value indicating the total price of the screening.}
+#' \item{price}{numerical value indicating the total price (in USD) of the screening.}
 #' \item{price_data}{dataset with prices across all gpt models used for screening.}
 #'
 #' @note The \code{answer_data_sum} data contains the following mandatory variables:
