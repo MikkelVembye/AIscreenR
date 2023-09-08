@@ -161,8 +161,7 @@ test_obj <-
     abstract = abstract, # indicate the variable with the abstracts in the data
     model = c("gpt-3.5-turbo-0613"),
     reps = 2 # Number of times the same question is asked to ChatGPT
-  ) |> 
-  suppressWarnings()
+  ) 
 #> * The approximate price of the current (simple) screening will be around $0.0037.
 
 test_obj
@@ -189,10 +188,10 @@ all_dat |> select(decision_gpt:n)
 #> # A tibble: 4 × 7
 #>   decision_gpt decision_binary prompt_tokens completion_tokens run_time top_p
 #>   <chr>                  <dbl>         <int>             <int>    <dbl> <dbl>
-#> 1 1.1                        1           538                13      1       1
-#> 2 1.1                        1           538                12      0.9     1
-#> 3 1                          1           699                10      0.9     1
-#> 4 1                          1           699                10      1.2     1
+#> 1 1.1                        1           538                13      1.6     1
+#> 2 1.1                        1           538                12      1.2     1
+#> 3 1.1                        1           699                13      2.3     1
+#> 4 1                          1           699                11      1.3     1
 #> # ℹ 1 more variable: n <int>
 
 

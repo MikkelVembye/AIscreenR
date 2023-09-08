@@ -136,7 +136,7 @@ app_obj$price_data
 Example of how to conduct simple screening, getting return 1 if a reference should be included,
 0 if excluded, and 1.1 if a firm decision cannot be reached. 
 
-```{r}
+```{r, warning=FALSE}
 # Subsetting the number of references to speed up the tutorial screening
 
 test_obj <- 
@@ -148,8 +148,7 @@ test_obj <-
     abstract = abstract, # indicate the variable with the abstracts in the data
     model = c("gpt-3.5-turbo-0613"),
     reps = 2 # Number of times the same question is asked to ChatGPT
-  ) |> 
-  suppressWarnings()
+  ) 
 
 test_obj
 
