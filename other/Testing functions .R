@@ -42,16 +42,17 @@ duration delivered to young people and their families). If not, exclude study.
 for non-opioid drug use? 3) Are the participants within age 11–21?"
 
 app_obj <- approximate_price_gpt(
-  data = FFT_dat[150,],
+  data = FFT_dat[c(1:150),],
   prompt = prompt,
   studyid = studyid,
   title = title,
   abstract = abstract,
   model = c("gpt-4"),
-  rep = 250
+  rep = 120
 )
 
-app_obj$price_dollar
+app_obj
+
 
 
 library(future)
@@ -88,7 +89,7 @@ all_dat
 sum_dat <- test_obj$answer_data_sum
 sum_dat
 
-all_dat$detailed_description
+#all_dat$detailed_description
 
 
 

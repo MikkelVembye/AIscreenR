@@ -35,7 +35,7 @@ devtools::install_github("MikkelVembye/AIscreenR")
 
 ```
 
-Small example of how to ask a question in ChatGPT
+Setting API key and checking rate limits
 ```{r, message=FALSE, warning=FALSE}
 # Find your api key at https://platform.openai.com/account/api-keys 
 # Thereafter, either encrypt it with the secret functions from the httr2 package
@@ -46,38 +46,123 @@ library(httr2)
 library(revtools)
 library(tibble)
 library(dplyr)
+library(revtools)
 
 set_api_key(AIscreenR:::testing_key_chatgpt())
 
 rate_limits <- rate_limits_per_minute()
 rate_limits
-
-q <- "What is a banana?"
-ask_gpt_0301(q, rpm = rate_limits$requests_per_minute)
-```
-
-
-```{r, eval=FALSE}
-# Find documentation behind by running the below code
-?AIscreenR::ask_gpt_0301
 ```
 
 How to load ris files. In this example we have downloaded the ris files from 
 the [EPPI-Reviewer](https://eppi.ioe.ac.uk/EPPIReviewer-Web/home). 
 
-```{r}
-# References included for full-text screening
-include <- c(45542056, 84953535, 84964488, 84956376, 84971042, 84966265)
-
-ris_dat <- revtools::read_bibliography("other/ris files/Pilotscreen_executive_functions.ris") |> 
+```{r, eval = FALSE}
+# Loading ris file data via revtools
+ris_dat_excl <- revtools::read_bibliography("path/FFT_exclude.ris") |> 
   suppressWarnings() |> 
-  select(eppi_id, title, abstract) |> 
+  select(studyid = eppi_id, title, abstract) |> 
   as_tibble() |> 
   mutate(
-    human_code = if_else(eppi_id %in% include, 1, 0)
+    human_code = 0 # Indicating exclusion
   )
 
-ris_dat |> head(5)
+ris_dat_incl <- revtools::read_bibliography("path/FFT_include.ris") |> 
+  suppressWarnings() |> 
+  select(studyid = eppi_id, title, abstract) |> 
+  as_tibble() |> 
+  mutate(
+    human_code = 1 # Indicating inclusion
+  )
+
+FFT_dat <- bind_rows(ris_dat_excl, ris_dat_incl)
+head(FFT_dat, 10)
+```
+```{r, echo=FALSE}
+head(FFT_dat, 10)
 ```
 
-NOTE: More extensive examples of how to use this tool will soon be added!
+Example of how to enter a prompt. Can also be done in word.
+
+```{r}
+prompt <- "Evaluate the following study based on the selection criteria
+for a systematic review on the effects of family-based interventions on drug abuse
+reduction for young people in treatment for non-opioid drug use.
+A family-based intervention (FFT) is equivalent to a behavior focused
+family therapy, where young people’s drug use is understood in relation to family
+behavior problems. Family-based interventions also includes manual-based family therapies as
+it targets young people and their families as a system throughout treatment, and thereby recognizes
+the important role of the family system in the development and treatment of young people’s drug use
+problems. FFT was developed in the late 1980s on request from the US National Institute on Drug Abuse
+(NIDA). The development of FFT was initially heavily inspired by the alcohol abuse program
+Community Reinforcement Approach (CRA), which was aimed at restructuring the environment
+to reinforce non-alcohol associated activities. FFT developed to have more emphasis on
+contingency contracting, impulse control strategies specific to drug use,
+and increased emphasis on involvement of family members in treatment.
+FFT is designed to accommodate diverse populations of youths with a variety of behavioral,
+cultural and individual preferences. FFT has evolved for use in severe behavioral disturbances
+known to co-exist with substance use and dependence, and the core interventions
+have been enhanced to address several mental health related problems commonly occurring
+as comorbid conditions in drug use treatment participant.  For each study,
+I would like you to assess:  1) Is the study about a family-based intervention,
+such as Functional Family Therapy, Multidimensional Family Therapy, or
+Behavioral Family Therapy? (Outpatient manual-based interventions of any
+duration delivered to young people and their families). If not, exclude study.
+2) Are the participants in outpatient drug treatment primarily
+for non-opioid drug use? 3) Are the participants within age 11–21?"
+```
+
+Approximate price of screening
+
+```{r}
+app_obj <- 
+  approximate_price_gpt(
+    data = FFT_dat,
+    prompt = prompt,
+    studyid = studyid, # indicate the variable with the studyid in the data
+    title = title, # indicate the variable with the titles in the data
+    abstract = abstract, # indicate the variable with the abstracts in the data
+    model = c("gpt-3.5-turbo-0613"),
+    rep = 10 
+  )
+
+app_obj
+
+app_obj$price_dollar
+app_obj$price_data
+
+```
+
+Example of how to conduct simple screening, getting return 1 if a reference should be included,
+0 if excluded, and 1.1 if a firm decision cannot be reached. 
+
+```{r}
+# Subsetting the number of references to speed up the tutorial screening
+
+test_obj <- 
+  tabscreen_gpt(
+    data = FFT_dat[c(149:150),],
+    prompt = prompt, 
+    studyid = studyid, # indicate the variable with the studyid in the data
+    title = title, # indicate the variable with the titles in the data
+    abstract = abstract, # indicate the variable with the abstracts in the data
+    model = c("gpt-3.5-turbo-0613"),
+    reps = 2 # Number of times the same question is asked to ChatGPT
+  ) |> 
+  suppressWarnings()
+
+test_obj
+
+# Data sets in object
+price_dat <- test_obj$price_dat
+price_dat
+
+
+all_dat <- test_obj$answer_data_all
+all_dat |> select(decision_gpt:n)
+
+
+sum_dat <- test_obj$answer_data_sum
+sum_dat |> select(incl_p:n_mis_answers)
+```
+
