@@ -160,7 +160,8 @@ request/question should be included in the data. Default = <code>TRUE</code>.</p
 
 <dt>token_info</dt>
 <dd><p>Logical indicating whether the number of prompt and completion tokens
-per request should be included in the output data. Default = <code>TRUE</code>.</p></dd>
+per request should be included in the output data. Default = <code>TRUE</code>. When <code>TRUE</code>,
+the output object will include price information of the conducted screening.</p></dd>
 
 
 <dt>api_key</dt>
@@ -254,7 +255,7 @@ for each title and abstract across multiple repeated questions.</p></dd>
 <dd><p>dataset with all individual answers.</p></dd>
 
 <dt>price</dt>
-<dd><p>numerical value indicating the total price of the screening.</p></dd>
+<dd><p>numerical value indicating the total price (in USD) of the screening.</p></dd>
 
 <dt>price_data</dt>
 <dd><p>dataset with prices across all gpt models used for screening.</p></dd>

@@ -19,6 +19,9 @@
     <loc>https://mikkelvembye.github.io/AIscreenR/reference/FFT_dat.html</loc>
   </url>
   <url>
+    <loc>https://mikkelvembye.github.io/AIscreenR/reference/approximate_price_gpt.html</loc>
+  </url>
+  <url>
     <loc>https://mikkelvembye.github.io/AIscreenR/reference/get_api_key.html</loc>
   </url>
   <url>
@@ -29,6 +32,9 @@
   </url>
   <url>
     <loc>https://mikkelvembye.github.io/AIscreenR/reference/print.chatgpt.html</loc>
+  </url>
+  <url>
+    <loc>https://mikkelvembye.github.io/AIscreenR/reference/print.gpt_price.html</loc>
   </url>
   <url>
     <loc>https://mikkelvembye.github.io/AIscreenR/reference/rate_limits_per_minute.html</loc>
