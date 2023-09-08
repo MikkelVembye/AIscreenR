@@ -47,7 +47,7 @@
 #' )
 #'
 #' app_price
-#'
+#' app_price$price_dollar
 #' app_price$price_data
 
 
@@ -114,7 +114,7 @@ approximate_price_gpt <-
         question = stringr::str_remove_all(question, "\n"),
 
         prompt_tokens = round(stringr::str_count(question, '\\w+') * token_word_ratio),
-        completion_tokens = 11, # Average number of completion tokens for the inclusion_decision_simple function
+        completion_tokens = 11 # Average number of completion tokens for the inclusion_decision_simple function
 
       ) |>
       dplyr::select(-question_raw)

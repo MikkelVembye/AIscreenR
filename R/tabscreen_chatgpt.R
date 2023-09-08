@@ -203,18 +203,6 @@ tabscreen_gpt <- function(
   incl_cutoff_lower = 0.4
   ){
 
-  if (messages){
-
-    if (functions[[1]]$name == "inclusion_decision"){
-      message(
-        paste0(
-          "*Be aware that getting detailed reponses from ChatGPT ",
-          "will substantially increase the prize of the screening."
-        )
-      )
-    }
-
-  }
 
   ###############################################
   # Function to send a single request to ChatGPT
@@ -500,15 +488,86 @@ tabscreen_gpt <- function(
     dplyr::arrange(model, prompt, {{ arrange_var }})
 
 
+  app_price_dat <-
+    question_dat |>
+    mutate(
+      prompt_tokens = round(stringr::str_count(question, '\\w+') * 1.6),
+      completion_tokens = 11 # Average number of completion tokens for the inclusion_decision_simple function
+    ) |>
+    filter(!is.na(prompt_tokens) | !is.na(completion_tokens)) |>
+    summarise(
+
+      input_price_dollar = case_when(
+        any(c("gpt-3.5-turbo", "gpt-3.5-turbo-0613") %in% model) ~ round(sum(prompt_tokens, na.rm = TRUE) * (0.0015/1000), 4),
+        any(c("gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613") %in% model) ~ round(sum(prompt_tokens, na.rm = TRUE) * (0.003/1000), 4),
+        any(c("gpt-4", "gpt-4-0613") %in% model) ~ round(sum(prompt_tokens, na.rm = TRUE) * (0.03/1000), 4),
+        any(c("gpt-4-32k", "gpt-4-32k-0613") %in% model) ~ round(sum(prompt_tokens, na.rm = TRUE) * (0.06/1000), 4),
+        TRUE ~ NA_real_
+      ),
+
+
+      output_price_dollar = case_when(
+        any(c("gpt-3.5-turbo", "gpt-3.5-turbo-0613") %in% model) ~ sum(completion_tokens, na.rm = TRUE) * (0.002/1000),
+        any(c("gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613") %in% model) ~ sum(completion_tokens, na.rm = TRUE) * (0.004/1000),
+        any(c("gpt-4", "gpt-4-0613") %in% model) ~ sum(completion_tokens, na.rm = TRUE) * (0.06/1000),
+        any(c("gpt-4-32k", "gpt-4-32k-0613") %in% model) ~ sum(completion_tokens, na.rm = TRUE) * (0.12/1000),
+        TRUE ~ NA_real_
+      ),
+
+      input_price_dollar = input_price_dollar * reps,
+      output_price_dollar = output_price_dollar * reps,
+      price_total_dollar = input_price_dollar + output_price_dollar,
+
+      .by = model
+
+    )
+
+  app_price <- round(sum(app_price_dat$price_total_dollar, na.rm = TRUE), 4)
+
+
   if (messages){
+
+    message(paste0("* The approximate price of the current (simple) screening will be around $", app_price, "."))
+
+    if (functions[[1]]$name == "inclusion_decision"){
+      message(
+        paste0(
+          "* Be aware that getting detailed reponses from ChatGPT ",
+          "will substantially increase the prize of the screening relative to the noted approximate prize."
+        )
+      )
+    }
+
     if ("No information" %in% unique(question_dat$abstract)) {
       message(
         paste0(
-          "*Consider removing references that has no abstract ",
+          "* Consider removing references that has no abstract ",
           "since these can distort the accuracy of the screening"
         )
       )
     }
+  }
+
+  if (!messages && stringr::str_detect(model, "4")){
+
+    warn <- "* Be aware that using gpt-4 models cost at least 10 times more than gpt-3.5 models.\n"
+    price <- paste0("* The approximate price of the current (simple) screening will be around $", app_price, ".")
+
+    if (functions[[1]]$name == "inclusion_decision"){
+      detail_mess <- paste0(
+        "\n* Be aware that getting detailed reponses from ChatGPT ",
+        "will substantially increase the prize of the screening relative to the noted approximate prize."
+      )
+    } else {
+      detail_mess <- NULL
+    }
+
+    extra_mes <- if (reps > 1) "\n* Consider to reduce reps to 1." else NULL
+
+    warn_message <- paste0(warn, price, detail_mess, extra_mes)
+
+    message(warn_message)
+
   }
 
   # RUNNING QUESTIONS
@@ -560,7 +619,7 @@ tabscreen_gpt <- function(
     still_error <- answer_dat |> dplyr::filter(is.na(decision_binary)) |> nrow()
 
     if (messages){
-      if (still_error > 0) message("*NOTE: Requests falied for some titles and abstracts.")
+      if (still_error > 0) message("* NOTE: Requests falied for some titles and abstracts.")
     }
 
   }

@@ -42,36 +42,36 @@ duration delivered to young people and their families). If not, exclude study.
 for non-opioid drug use? 3) Are the participants within age 11–21?"
 
 app_obj <- approximate_price_gpt(
-  data = FFT_dat[149:150,],
+  data = FFT_dat[150,],
   prompt = prompt,
   studyid = studyid,
   title = title,
   abstract = abstract,
-  model = c("gpt-3.5-turbo-0613"),
-  rep = 1100
+  model = c("gpt-4"),
+  rep = 250
 )
 
-app_obj
+app_obj$price_dollar
+
 
 library(future)
 plan(multisession)
 
 
 test_obj <- tabscreen_gpt(
-  data = FFT_dat[c(149:150),],
+  data = FFT_dat[c(149),],
   prompt = prompt,
   studyid = studyid,
   title = title,
   abstract = abstract,
-  model = c("gpt-3.5-turbo-0613", "gpt-4"), # "gpt-3.5-turbo-16k-0613", "gpt-4"
+  model = c("gpt-4"), # "gpt-3.5-turbo-16k-0613", "gpt-4"
   functions = AIscreenR:::incl_function,
   function_call_name = list(name = "inclusion_decision"),
   max_tries = 1,
   reps = 2,
-  max_tokens = 40
+  messages = TRUE
   #incl_cutoff_upper = 0.5,
   #incl_cutoff_lower = 0.3
-  #messages = FALSE
 ); test_obj
 
 price_in_dollar <- test_obj$price_dollar

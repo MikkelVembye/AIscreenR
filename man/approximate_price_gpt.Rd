@@ -70,6 +70,6 @@ app_price <- approximate_price_gpt(
 )
 
 app_price
-
+app_price$price_dollar
 app_price$price_data
 }
