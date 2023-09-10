@@ -38,7 +38,7 @@ library(usethis)
 
 ## Retrieve rate limit information 
 
-```{r, eval = TRUE}
+```{r, eval = FALSE}
 # Rate limits across one model
 rate_limits <- rate_limits_per_minute(model = "gpt-3.5-turbo-0613")
 rate_limits
