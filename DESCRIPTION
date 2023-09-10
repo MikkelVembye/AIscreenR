@@ -29,8 +29,13 @@ Imports:
     lifecycle,
     jsonlite
 Suggests: 
+    knitr,
     readxl,
+    rmarkdown,
+    revtools,
+    usethis,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 URL: https://mikkelvembye.github.io/AIscreenR/
 LazyData: true
+VignetteBuilder: knitr

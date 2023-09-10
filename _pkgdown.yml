@@ -5,7 +5,7 @@ development:
   mode: auto
 
 reference:
-  - title: "ChatGPT"
+  - title: "Screening with ChatGPT"
     desc: "R functions to automate title and abstract screeening in ChatGPT"
     contents:
       - tabscreen_gpt

@@ -52,8 +52,8 @@ components:
 This function supports the approximation of the price of the total title and abstract
 screening with ChatGPT. The function only provide approximately accurate pricing
 estimates for screenings drawing on the function calling function \code{incl_function_simple} (Default)
-since the detailed descriptions will increase the completion tokens with an unknown account
-which further more is quite model sensitive. gpt-4 models will yields more extensive
+since the detailed descriptions will increase the completion tokens with an unknown amount
+which furthermore is rather model sensitive with gpt-4 models yielding longer
 detailed responses relative to gpt-3.5-turbo models.
 }
 \examples{

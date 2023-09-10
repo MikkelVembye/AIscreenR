@@ -34,15 +34,13 @@ Setting API key and checking rate limits
 # see https://httr2.r-lib.org/reference/secrets.html or run set_api_key() 
 # and then enter you key.
 library(AIscreenR)
-library(httr2)
 library(revtools)
 library(tibble)
 library(dplyr)
-library(revtools)
 
 set_api_key(AIscreenR:::testing_key_chatgpt())
 
-rate_limits <- rate_limits_per_minute()
+rate_limits <- rate_limits_per_minute(model = "gpt-3.5-turbo-0613")
 rate_limits
 #> # A tibble: 1 × 3
 #>   model              requests_per_minute tokens_per_minute
@@ -188,10 +186,10 @@ all_dat |> select(decision_gpt:n)
 #> # A tibble: 4 × 7
 #>   decision_gpt decision_binary prompt_tokens completion_tokens run_time top_p
 #>   <chr>                  <dbl>         <int>             <int>    <dbl> <dbl>
-#> 1 1.1                        1           538                13      1.6     1
-#> 2 1.1                        1           538                12      1.2     1
-#> 3 1.1                        1           699                13      2.3     1
-#> 4 1                          1           699                11      1.3     1
+#> 1 1.1                        1           538                13      1.2     1
+#> 2 1.1                        1           538                13      1       1
+#> 3 1                          1           699                11      0.8     1
+#> 4 1                          1           699                11      0.9     1
 #> # ℹ 1 more variable: n <int>
 
 
