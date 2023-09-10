@@ -31,6 +31,12 @@ https://platform.openai.com/docs/guides/rate-limits/overview."><!-- mathjax --><
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/Using-ChatGPT-For-Screening.html">Using ChatGPT for Title and Abstract Screening in Systematic Reviews</a>
+  </div>
+</li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -79,8 +85,8 @@ Find available model at
 <dt>api_key</dt>
 <dd><p>Numerical value with your personal API key. Find at
 <a href="https://platform.openai.com/account/api-keys" class="external-link">https://platform.openai.com/account/api-keys</a>. Use
-<code><a href="https://httr2.r-lib.org/reference/secrets.html" class="external-link">secret_make_key()</a></code>, <code><a href="https://httr2.r-lib.org/reference/secrets.html" class="external-link">secret_encrypt()</a></code>, and
-<code><a href="https://httr2.r-lib.org/reference/secrets.html" class="external-link">secret_decrypt()</a></code> to scramble and decrypt the api key and
+<code>secret_make_key()</code>, <code>secret_encrypt()</code>, and
+<code>secret_decrypt()</code> to scramble and decrypt the api key and
 use <code><a href="set_api_key.html">set_api_key()</a></code> to securely automate the use of the
 api key by setting the api key as a locale environment variable.</p></dd>
 

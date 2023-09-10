@@ -27,6 +27,12 @@ Find more information about this issue at https://httr2.r-lib.org/articles/wrapp
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/Using-ChatGPT-For-Screening.html">Using ChatGPT for Title and Abstract Screening in Systematic Reviews</a>
+  </div>
+</li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -79,7 +85,7 @@ If <code>key</code> is missing, it returns a password box in which the true API 
     <p>When set_api_key() has successfully been executed, <code><a href="get_api_key.html">get_api_key()</a></code> automatically
 retrieves the API key from the R environment and the users do not need to specify the API when running
 functions from the package that call the API. The API key can be permanently set by
-using <code>usethis::edit_r_environ()</code>. Then write <code>CHATGPT_KEY=[insert your api key here]</code> and close
+using <code><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">usethis::edit_r_environ()</a></code>. Then write <code>CHATGPT_KEY=[insert your api key here]</code> and close
 the <code>.Renviron</code> window and restart R.</p>
     </div>
     <div class="section level2">
