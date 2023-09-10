@@ -44,7 +44,7 @@ rate_limits <- rate_limits_per_minute(model = "gpt-3.5-turbo-0613")
 rate_limits
 
 # Rate limit overview across multiple models
-models <- c("gpt-3.5-turbo-0613", "gpt-3.5-turbo-16k-0613", "gpt-4") # Add futher models if necessary
+models <- c("gpt-3.5-turbo-0613", "gpt-3.5-turbo-16k-0613", "gpt-4") # Add further models if necessary
 
 models_rate_limits <- 
   map(models, ~ rate_limits_per_minute(model = .x)) |> 
