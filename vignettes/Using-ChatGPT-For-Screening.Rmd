@@ -11,8 +11,7 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  out.width = "100%",
-  eval = httr2::secret_has_key("AISCREENR_KEY")
+  out.width = "100%"
 )
 ```
 
