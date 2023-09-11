@@ -74,7 +74,7 @@ rate_limits
 #> 1 gpt-3.5-turbo-0613                3500             90000
 
 
-# Rate limit overview across multiple models
+# Rate limits overview across multiple models
 models <- c("gpt-3.5-turbo-0613", "gpt-3.5-turbo-16k-0613", "gpt-4") # Add further models if necessary
 
 models_rate_limits <- 
