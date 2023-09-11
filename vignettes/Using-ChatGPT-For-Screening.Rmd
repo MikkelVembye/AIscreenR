@@ -32,6 +32,20 @@ library(usethis)
 
 ## Handling the API key with `AIscreenR`
 
+Before you can use the function from `AIscreenR`, you must generate your own secret
+API key. To do so you must first ensure that you have created an account at OpenAI (*if you have not done so at this stage, you can sign up [here](https://auth0.openai.com/u/login/identifier?state=hKFo2SBqQjNHSlc1ejIyREpUb01hdDF2OHEzQy12NnJwWlFUN6Fur3VuaXZlcnNhbC1sb2dpbqN0aWTZIEJSOWJaamdKLWswNGlfWDQ2NER1OXJmVUNpVmVzVjZfo2NpZNkgRFJpdnNubTJNdTQyVDNLT3BxZHR3QjNOWXZpSFl6d0Q)).* When having an account, go to [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys) and press the `+ Create new secret key` button (see picture below) and give your key a name. 
+
+\  
+
+```{r eval=TRUE, echo=FALSE}
+knitr::include_graphics("helper-stuff/API_key.png")
+```
+\ 
+
+When you have generate your secret API key, remember to store it safely since
+you will not be able see it again. **NOTE**: *If you lose your API key, you can 
+just generate a new one*. 
+
 ### Temporary solution
 
 ### Pemanent solution
@@ -39,7 +53,12 @@ library(usethis)
 To add your API key permanently as an environment variables, you can execute
 `usethis::edit_r_environ()`.
 
-![](helper-stuff/Renviron.png){width=100%}
+\  
+
+```{r eval=TRUE, echo=FALSE}
+knitr::include_graphics("helper-stuff/Renviron.png")
+```
+\ 
 
 After entering the API key, save the `.Renviron` document and restart `RStudio` (ctrl + shift + F10).
 
@@ -125,6 +144,7 @@ app_obj$price_dollar
 app_obj$price_data
 
 ```
+
 
 
 
