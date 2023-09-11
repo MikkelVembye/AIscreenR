@@ -49,6 +49,11 @@ After entering the API key, save the `.Renviron` document and restart `RStudio` 
 # Rate limits across one model
 rate_limits <- rate_limits_per_minute(model = "gpt-3.5-turbo-0613")
 rate_limits
+#> # A tibble: 1 × 3
+#>   model              requests_per_minute tokens_per_minute
+#>   <chr>                            <dbl>             <dbl>
+#> 1 gpt-3.5-turbo-0613                3500             90000
+
 
 # Rate limit overview across multiple models
 models <- c("gpt-3.5-turbo-0613", "gpt-3.5-turbo-16k-0613", "gpt-4") # Add further models if necessary
@@ -58,6 +63,12 @@ models_rate_limits <-
   list_rbind()
 
 models_rate_limits
+#> # A tibble: 3 × 3
+#>   model                  requests_per_minute tokens_per_minute
+#>   <chr>                                <dbl>             <dbl>
+#> 1 gpt-3.5-turbo-0613                    3500             90000
+#> 2 gpt-3.5-turbo-16k-0613                3500            180000
+#> 3 gpt-4                                  200             10000
 ```
 
 ## Approximate price of screening
