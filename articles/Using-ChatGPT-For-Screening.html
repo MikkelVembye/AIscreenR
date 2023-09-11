@@ -107,6 +107,11 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <code class="sourceCode R"><span><span class="co"># Rate limits across one model</span></span>
 <span><span class="va">rate_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"gpt-3.5-turbo-0613"</span><span class="op">)</span></span>
 <span><span class="va">rate_limits</span></span>
+<span><span class="co">#&gt; # A tibble: 1 × 3</span></span>
+<span><span class="co">#&gt;   model              requests_per_minute tokens_per_minute</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;                            &lt;dbl&gt;             &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 gpt-3.5-turbo-0613                3500             90000</span></span>
+<span></span>
 <span></span>
 <span><span class="co"># Rate limit overview across multiple models</span></span>
 <span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-3.5-turbo-16k-0613"</span>, <span class="st">"gpt-4"</span><span class="op">)</span> <span class="co"># Add further models if necessary</span></span>
@@ -115,7 +120,13 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">models</span>, <span class="op">~</span> <span class="fu"><a href="../reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">.x</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/list_c.html" class="external-link">list_rbind</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">models_rate_limits</span></span></code></pre></div>
+<span><span class="va">models_rate_limits</span></span>
+<span><span class="co">#&gt; # A tibble: 3 × 3</span></span>
+<span><span class="co">#&gt;   model                  requests_per_minute tokens_per_minute</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;                                &lt;dbl&gt;             &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 gpt-3.5-turbo-0613                    3500             90000</span></span>
+<span><span class="co">#&gt; 2 gpt-3.5-turbo-16k-0613                3500            180000</span></span>
+<span><span class="co">#&gt; 3 gpt-4                                  200             10000</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="approximate-price-of-screening">Approximate price of screening<a class="anchor" aria-label="anchor" href="#approximate-price-of-screening"></a>
