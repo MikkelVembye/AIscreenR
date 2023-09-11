@@ -38,7 +38,7 @@ API key. To do so you must first ensure that you have created an account at Open
 \  
 
 ```{r eval=TRUE, echo=FALSE}
-knitr::include_graphics("helper-stuff/API_key.png")
+knitr::include_graphics("helper-stuff/API_key_pic.png")
 ```
 \ 
 
