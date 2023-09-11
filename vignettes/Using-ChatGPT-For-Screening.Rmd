@@ -39,7 +39,7 @@ library(usethis)
 To add your API key permanently as an environment variables, you can execute
 `usethis::edit_r_environ()`.
 
-![](Renviron.png){width=100%}
+![](helper-stuff/Renviron.png){width=100%}
 
 After entering the API key, save the `.Renviron` document and restart `RStudio` (ctrl + shift + F10).
 
