@@ -13,6 +13,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   out.width = "100%"
 )
+
 ```
 
 [INSERT NOTE ABOUT RETROSPECTIVE CAVEAT]
@@ -35,9 +36,18 @@ library(usethis)
 
 ### Pemanent solution
 
+To add your API key permanently as an environment variables, you can execute
+`usethis::edit_r_environ()`.
+
+```{r eval=TRUE, echo=FALSE}
+knitr::include_graphics("Renviron.png")
+```
+
+After entering the API key, save the `.Renviron` document and restart `RStudio` (ctrl + shift + F10).
+
 ## Retrieve rate limit information 
 
-```{r, eval = FALSE}
+```{r, eval=FALSE}
 # Rate limits across one model
 rate_limits <- rate_limits_per_minute(model = "gpt-3.5-turbo-0613")
 rate_limits
@@ -106,5 +116,6 @@ app_obj$price_dollar
 app_obj$price_data
 
 ```
+
 
 
