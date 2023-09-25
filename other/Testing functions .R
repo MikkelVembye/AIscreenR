@@ -81,13 +81,13 @@ price_in_dollar
 price_dat <- test_obj$price_dat
 price_dat
 
-
 all_dat <- test_obj$answer_data_all
 all_dat
 
-
 sum_dat <- test_obj$answer_data_sum
 sum_dat
+
+plan(sequential)
 
 #all_dat$detailed_description
 

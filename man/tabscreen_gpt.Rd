@@ -163,8 +163,8 @@ The \code{answer_data_sum} data contains the following mandatory variables:
 \bold{question} \tab \code{character} \tab indicating the final question sent to ChatGPT. \cr
 \bold{top_p} \tab \code{numeric}  \tab indicating the applied top_p. \cr
 \bold{incl_p} \tab \code{numeric}  \tab indicating the probability of inclusion calculated across multiple repeated responses on the same title and abstract. \cr
-\bold{final_decision} \tab \code{character} \tab indicating the final decision reached by gpt - either 'Include', 'Exclude', or 'Check'. \cr
-\bold{final_decision_num}  \tab \code{integer}  \tab indicating the final numeric decision reached by gpt - either 1 or 0. \cr
+\bold{final_decision_gpt} \tab \code{character} \tab indicating the final decision reached by gpt - either 'Include', 'Exclude', or 'Check'. \cr
+\bold{final_decision_gpt_num}  \tab \code{integer}  \tab indicating the final numeric decision reached by gpt - either 1 or 0. \cr
 \bold{longest_answer}  \tab \code{character} \tab indicating the longest gpt response obtained
 across multiple repeated responses on the same title and abstract. Only included if the detailed function calling
 function is used. See 'Examples' below for how to use this function. \cr
@@ -204,6 +204,9 @@ Find current token pricing at \url{https://openai.com/pricing}.
 }
 \examples{
 \dontrun{
+
+prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
+
 tabscreen_gpt(
   data = FFT_dat[1:2,],
   prompt = prompt,

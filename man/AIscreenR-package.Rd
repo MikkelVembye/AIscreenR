@@ -12,6 +12,7 @@ Screening with AI tools including ChatGPT.
 Useful links:
 \itemize{
   \item \url{https://mikkelvembye.github.io/AIscreenR/}
+  \item Report bugs at \url{https://github.com/MikkelVembye/AIscreenR/issues}
 }
 
 }

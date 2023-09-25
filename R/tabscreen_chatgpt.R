@@ -101,8 +101,8 @@
 #'  \bold{question} \tab \code{character} \tab indicating the final question sent to ChatGPT. \cr
 #'  \bold{top_p} \tab \code{numeric}  \tab indicating the applied top_p. \cr
 #'  \bold{incl_p} \tab \code{numeric}  \tab indicating the probability of inclusion calculated across multiple repeated responses on the same title and abstract. \cr
-#'  \bold{final_decision} \tab \code{character} \tab indicating the final decision reached by gpt - either 'Include', 'Exclude', or 'Check'. \cr
-#'  \bold{final_decision_num}  \tab \code{integer}  \tab indicating the final numeric decision reached by gpt - either 1 or 0. \cr
+#'  \bold{final_decision_gpt} \tab \code{character} \tab indicating the final decision reached by gpt - either 'Include', 'Exclude', or 'Check'. \cr
+#'  \bold{final_decision_gpt_num}  \tab \code{integer}  \tab indicating the final numeric decision reached by gpt - either 1 or 0. \cr
 #'  \bold{longest_answer}  \tab \code{character} \tab indicating the longest gpt response obtained
 #'  across multiple repeated responses on the same title and abstract. Only included if the detailed function calling
 #'  function is used. See 'Examples' below for how to use this function. \cr
@@ -146,6 +146,9 @@
 #'
 #' @examples
 #' \dontrun{
+#'
+#' prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
+#'
 #' tabscreen_gpt(
 #'   data = FFT_dat[1:2,],
 #'   prompt = prompt,
@@ -348,8 +351,7 @@ tabscreen_gpt <- function(
 
   ask_gpt <- function(
     question,
-    ...,
-    model_gpt = model,
+    model_gpt,
     role_gpt = role,
     funcs = functions,
     func_call_name = function_call_name,
@@ -383,8 +385,7 @@ tabscreen_gpt <- function(
       ) |>
       dplyr::mutate(top_p = topp)
 
-    if(length(n_reps) > 1) final_res <- final_res |> dplyr::mutate(n = n_reps)
-
+    final_res <- final_res |> dplyr::mutate(n = n_reps)
 
     final_res
 
@@ -573,17 +574,30 @@ tabscreen_gpt <- function(
   # RUNNING QUESTIONS
   furrr_seed <- if (is.null(seed)) TRUE else NULL
 
+  params <- question_dat |> dplyr::select(question, model_gpt = model)
+
   answer_dat <-
     question_dat |>
     dplyr::mutate(
-      res = furrr::future_map2(
-        .x = question, .y = model, ~ ask_gpt(question = .x, model_gpt = .y),
-        ...,
+      res = furrr::future_pmap(
+        .l = params,
+        .f = ask_gpt,
         .options = furrr::furrr_options(seed = furrr_seed),
         .progress = progress
       )
     ) |>
     tidyr::unnest(res)
+
+  #answer_dat <-
+  #  question_dat |>
+  #  dplyr::mutate(
+  #    res = furrr::future_map2(
+  #      .x = question, .y = model, ~ ask_gpt(question = .x, model_gpt = .y),
+  #      .options = furrr::furrr_options(seed = furrr_seed),
+  #      .progress = progress
+  #    )
+  #  ) |>
+  #  tidyr::unnest(res)
 
   n_error <- answer_dat |> dplyr::filter(is.na(decision_binary)) |> nrow()
 
@@ -666,14 +680,14 @@ tabscreen_gpt <- function(
 
       incl_p = mean(decision_binary == 1, na.rm = TRUE),
 
-      final_decision = dplyr::case_when(
+      final_decision_gpt = dplyr::case_when(
         incl_p < incl_cutoff_upper & incl_p >= incl_cutoff_lower ~ "Check",
         incl_p >= incl_cutoff_upper ~ "Include",
         incl_p < incl_cutoff_lower ~ "Exclude",
         TRUE ~ NA_character_
       ),
 
-      final_decision_num = dplyr::case_when(
+      final_decision_gpt_num = dplyr::case_when(
         incl_p < incl_cutoff_upper & incl_p >= incl_cutoff_lower ~ 1,
         incl_p >= incl_cutoff_upper ~ 1,
         incl_p < incl_cutoff_lower ~ 0,
@@ -695,7 +709,7 @@ tabscreen_gpt <- function(
       mutate(
         incl_p = mean(decision_binary == 1, na.rm = TRUE),
 
-        final_decision_num = dplyr::case_when(
+        final_decision_gpt_num = dplyr::case_when(
           incl_p < incl_cutoff_upper & incl_p >= incl_cutoff_lower ~ 1,
           incl_p >= incl_cutoff_upper ~ 1,
           incl_p < incl_cutoff_lower ~ 0,
@@ -707,7 +721,7 @@ tabscreen_gpt <- function(
         .by = c(studyid:question, top_p)
 
       ) |>
-      filter(decision_binary == final_decision_num) |>
+      filter(decision_binary == final_decision_gpt_num) |>
       arrange(studyid, model, question, top_p, desc(n_words_answer)) |>
       summarise(
         longest_answer = detailed_description[1],
@@ -719,7 +733,7 @@ tabscreen_gpt <- function(
     answer_dat_sum <-
       left_join(sum_dat, long_answer_dat_sum) |>
       suppressMessages() |>
-      relocate(longest_answer, .after = final_decision_num) |>
+      relocate(longest_answer, .after = final_decision_gpt_num) |>
       tibble::new_tibble(class = "chatgpt_tbl")
 
 
