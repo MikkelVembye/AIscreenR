@@ -46,7 +46,7 @@ rate_limits_per_minute <- function(
       model = model,
       messages = list(list(
         role = "user",
-        content = ""
+        content = "1+1"
       ))
     )
 

@@ -14,6 +14,9 @@ AIscreenR:::set_api_key()
 #  function_call = list(name = "inclusion_decision_simple"),
 #  top_p = 1
 #)
+models <- c("gpt-3.5-turbo-0613", "gpt-4")
+purrr::map(models, ~ rate_limits_per_minute(model = .x )) |>
+  purrr::list_rbind()
 
 prompt <- "Evaluate the following study based on the selection criteria
 for a systematic review on the effects of family-based interventions on drug abuse
