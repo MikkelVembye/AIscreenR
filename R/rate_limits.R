@@ -73,13 +73,21 @@ rate_limits_per_minute_engine <- function(
       ) |>
       httr2::req_user_agent("AIscreenR (http://mikkelvembye.github.io/AIscreenR/)")
 
-    rmp <- req |>
-      httr2::req_perform() |>
+
+    if (curl::has_internet()){
+
+    resp <- try(
+      suppressMessages(req |> httr2::req_perform()),
+      silent = TRUE
+    )
+
+    if (status_code() == 200){
+
+    rmp <- resp |>
       httr2::resp_header("x-ratelimit-limit-requests") |>
       as.numeric()
 
-    tmp <- req |>
-      httr2::req_perform() |>
+    tmp <- resp |>
       httr2::resp_header("x-ratelimit-limit-tokens") |>
       as.numeric()
 
@@ -88,6 +96,26 @@ rate_limits_per_minute_engine <- function(
       requests_per_minute = rmp,
       tokens_per_minute = tmp
       )
+
+    } else {
+
+      res <- tibble::tibble(
+        model = status_code_text(),
+        requests_per_minute = NA_real_,
+        tokens_per_minute = NA_real_
+      )
+
+      }
+
+    } else {
+
+      res <- tibble::tibble(
+        model = "Error: Could not reach host [check internet connection]",
+        requests_per_minute = NA_real_,
+        tokens_per_minute = NA_real_
+      )
+
+    }
 
   }
 
