@@ -12,7 +12,7 @@
 #' @param AI_tool Character string specifying the AI tool from which the api is
 #' issued. Default is `"chatgpt"`.
 #' @param model Character string with the name of the completion model.
-#' Default = `"gpt-3.5-turbo-0613"`.
+#' Default = `"gpt-3.5-turbo-0613"`. Can take multiple strings.
 #' Find available model at
 #' \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.
 #' @param api_key Numerical value with your personal API key. Find at
@@ -34,9 +34,19 @@
 #' }
 
 rate_limits_per_minute <- function(
-    AI_tool = "chatgpt",
     model = "gpt-3.5-turbo-0613",
+    AI_tool = "chatgpt",
     api_key = get_api_key()
+) {
+
+  purrr::map(model, ~ rate_limits_per_minute_engine(model = .x, AI_tool = AI_tool, api_key = api_key)) |>
+    purrr::list_rbind()
+
+}
+
+
+rate_limits_per_minute_engine <- function(
+    model, AI_tool, api_key
     ){
 
 
