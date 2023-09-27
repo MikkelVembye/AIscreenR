@@ -92,7 +92,7 @@ plan(multisession)
 
 test_obj <- tabscreen_gpt(
   data = FFT_dat[c(149:150),],
-  prompt = c(prompt, prompt2),
+  prompt = prompt,
   studyid = studyid,
   title = title,
   abstract = abstract,
@@ -101,7 +101,7 @@ test_obj <- tabscreen_gpt(
   rpm = c(3500, 200),
   #functions = AIscreenR:::incl_function,
   #function_call_name = list(name = "inclusion_decision"),
-  top_p = c(0.2, 1),
+  top_p = c(1),
   max_tries = 1,
   messages = TRUE
 
