@@ -230,10 +230,7 @@ tabscreen_gpt <- function(
     "gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613",
     "gpt-4", "gpt-4-0613",
     "gpt-4-32k", "gpt-4-32k-0613"
-  )))) stop("Unknown gpt model used.")
-
-
-
+  )))) stop("Unknown gpt model(s) used - check model name(s).")
 
 
   ###############################################
@@ -255,8 +252,8 @@ tabscreen_gpt <- function(
 
     detailed <- body$function_call$name == "inclusion_decision"
 
-
-    if(RPM > 200 && stringr::str_detect(body$model, "gpt-4")) RPM <- 200
+    if (RPM > 3500) RPM <- 3500
+    if (RPM > 200 && stringr::str_detect(body$model, "gpt-4")) RPM <- 200
 
     tictoc::tic()
 
@@ -595,7 +592,7 @@ tabscreen_gpt <- function(
       )
     }
 
-    if (max_reps_gpt4 > 1 && any(stringr::str_detect(model, "gpt-4"))){
+    if (max_reps_gpt4 > 1){
       message("* Consider to reduce reps to 1 for gpt-4 models.")
     }
 
@@ -683,7 +680,7 @@ tabscreen_gpt <- function(
     still_error <- answer_dat |> dplyr::filter(is.na(decision_binary)) |> nrow()
 
     if (messages){
-      if (still_error == 1) message(paste("* NOTE: Requests falied for", still_error, "title and abstract."))
+      if (still_error == 1) message(paste("* NOTE: Requests falied for 1 title and abstract."))
       if (still_error > 1) message(paste("* NOTE: Requests falied for", still_error, "titles and abstracts."))
     }
 
