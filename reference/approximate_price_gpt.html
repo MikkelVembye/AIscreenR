@@ -24,7 +24,7 @@ detailed responses relative to gpt-3.5-turbo models."><!-- mathjax --><script sr
     
     <a class="navbar-brand me-2" href="../index.html">AIscreenR</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Unreleased version">0.0.0.9005</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Unreleased version">0.0.0.9006</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,6 +82,7 @@ detailed responses relative to gpt-3.5-turbo models.</p>
 <span>  <span class="va">abstract</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"gpt-3.5-turbo-0613"</span>,</span>
 <span>  reps <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  top_p <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  token_word_ratio <span class="op">=</span> <span class="fl">1.6</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -123,6 +124,15 @@ between answers. Default is <code>1</code> but when using 3.5 models, we recomme
 value to <code>10</code>.</p></dd>
 
 
+<dt>top_p</dt>
+<dd><p>'An alternative to sampling with temperature, called nucleus sampling,
+where the model considers the results of the tokens with top_p probability mass.
+So 0.1 means only the tokens comprising the top 10% probability mass are considered.
+We generally recommend altering this or temperature but not both.' (OPEN-AI). Default is 1.
+Find documentation at
+<a href="https://platform.openai.com/docs/api-reference/chat/create#chat/create-top_p" class="external-link">https://platform.openai.com/docs/api-reference/chat/create#chat/create-top_p</a>.</p></dd>
+
+
 <dt>token_word_ratio</dt>
 <dd><p>The multiplier used to approximate the number of tokens per word.
 Default is <code>1.6</code> which we empirically have found to be the average number of tokens per word.</p></dd>
@@ -153,19 +163,19 @@ components:</p>
 <span class="r-in"><span>  title <span class="op">=</span> <span class="va">title</span>,</span></span>
 <span class="r-in"><span>  abstract <span class="op">=</span> <span class="va">abstract</span>,</span></span>
 <span class="r-in"><span>  model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-4"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  reps <span class="op">=</span> <span class="fl">10</span></span></span>
+<span class="r-in"><span>  reps <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">app_price</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> The approximate price of the screening will be around $0.36164</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> The approximate price of the (simple) screening will be around $0.0513.</span>
 <span class="r-in"><span><span class="va">app_price</span><span class="op">$</span><span class="va">price_dollar</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.36164</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0513</span>
 <span class="r-in"><span><span class="va">app_price</span><span class="op">$</span><span class="va">price_data</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   model              input_price_dollar output_price_dollar price_total_dollar</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> gpt-3.5-turbo-0613              0.017             0.000<span style="text-decoration: underline;">44</span>             0.017<span style="text-decoration: underline;">4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> gpt-4                           0.331             0.013<span style="text-decoration: underline;">2</span>              0.344 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   model     iterations input_price_dollar output_price_dollar total_price_dollor</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> gpt-3.5-…         10             0.016<span style="text-decoration: underline;">5</span>             0.000<span style="text-decoration: underline;">44</span>             0.016<span style="text-decoration: underline;">9</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> gpt-4              1             0.033<span style="text-decoration: underline;">1</span>             0.001<span style="text-decoration: underline;">32</span>             0.034<span style="text-decoration: underline;">4</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
