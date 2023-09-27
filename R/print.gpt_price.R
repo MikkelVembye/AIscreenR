@@ -12,6 +12,6 @@
 #' }
 
 print.gpt_price <- function(x, ...){
-  price <- paste0("$", x$price_dollar)
-  cat("The approximate price of the screening will be around", price, ...)
+  price <- paste0("$", x$price_dollar, ".")
+  cat("The approximate price of the (simple) screening will be around", price, ...)
 }

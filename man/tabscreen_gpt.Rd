@@ -71,7 +71,7 @@ use \code{list(name = "inclusion_decision")}. Also see 'Examples below.}
 \item{top_p}{'An alternative to sampling with temperature, called nucleus sampling,
 where the model considers the results of the tokens with top_p probability mass.
 So 0.1 means only the tokens comprising the top 10\% probability mass are considered.
-We generally recommend altering this or temperature but not both.' (OPEN-AI).
+We generally recommend altering this or temperature but not both.' (OPEN-AI). Default is 1.
 Find documentation at
 \url{https://platform.openai.com/docs/api-reference/chat/create#chat/create-top_p}.}
 
@@ -158,6 +158,7 @@ The \code{answer_data_sum} data contains the following mandatory variables:
 \bold{studyid} \tab \code{integer} \tab indicating the study ID of the reference. \cr
 \bold{title} \tab \code{character} \tab indicating the title of the reference. \cr
 \bold{abstract} \tab \code{character}   \tab indicating the abstract of the reference. \cr
+\bold{promptid} \tab \code{integer} \tab indicating the prompt ID. \cr
 \bold{prompt} \tab \code{character} \tab indicating the prompt. \cr
 \bold{model} \tab \code{character}   \tab indicating the specific gpt-model used. \cr
 \bold{question} \tab \code{character} \tab indicating the final question sent to ChatGPT. \cr
@@ -177,9 +178,12 @@ The \code{answer_data_all} data contains the following mandatory variables:
 \bold{studyid} \tab \code{integer} \tab indicating the study ID of the reference. \cr
 \bold{title} \tab \code{character} \tab indicating the title of the reference. \cr
 \bold{abstract} \tab \code{character}   \tab indicating the abstract of the reference. \cr
+\bold{promptid} \tab \code{integer} \tab indicating the prompt ID. \cr
 \bold{prompt} \tab \code{character} \tab indicating the prompt. \cr
 \bold{model} \tab \code{character}   \tab indicating the specific gpt-model used. \cr
+\bold{iterations} \tab \code{numeric} \tab indicating the number of times the same question has been sent to ChatGPT. \cr
 \bold{question} \tab \code{character} \tab indicating the final question sent to ChatGPT. \cr
+\bold{top_p}  \tab \code{numeric} \tab indicating the applied top_p. \cr
 \bold{decision_gpt}  \tab \code{character} \tab indicating the raw gpt decision - either \code{"1", "0", "1.1"} for inclusion, exclusion, or uncertainty, respectively. \cr
 \bold{detailed_description}  \tab \code{character} \tab indicating detailed description of the given decision made by ChatGPT.
 Only included if the detailed function calling function is used. See 'Examples' below for how to use this function. \cr
@@ -188,10 +192,16 @@ that is 1 for inclusion and 0 for exclusion. 1.1 decision are coded equal to 1 i
 \bold{prompt_tokens}  \tab \code{integer} \tab indicating the number of prompt tokens sent to the server for the given request. \cr
 \bold{completion_tokens}  \tab \code{integer} \tab indicating the number of completion tokens sent to the server for the given request. \cr
 \bold{run_time}  \tab \code{numeric} \tab indicating the time it took to obtain a response from the server for the given request. \cr
-\bold{top_p}  \tab \code{numeric} \tab indicating the applied top_p. \cr
 \bold{n} \tab \code{integer} \tab indicating request ID.  \cr
 }
 \if{html}{\out{<br>}}
+If any requests failed to reach the server, the \code{chatgpt} object contains an
+error data set (\code{error_data}) having the same variables as \code{answer_data_all}
+but with failed request references only.\if{html}{\out{
+<br>
+}}
+
+
 The \code{price_data} data contains the following variables:
 \tabular{lll}{
 \bold{model} \tab \code{character} \tab gpt model. \cr

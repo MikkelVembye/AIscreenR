@@ -12,6 +12,7 @@ approximate_price_gpt(
   abstract,
   model = "gpt-3.5-turbo-0613",
   reps = 1,
+  top_p = 1,
   token_word_ratio = 1.6
 )
 }
@@ -36,6 +37,13 @@ Find available model at
 question should be sent to ChatGPT. This can be useful to test consistency
 between answers. Default is \code{1} but when using 3.5 models, we recommend setting this
 value to \code{10}.}
+
+\item{top_p}{'An alternative to sampling with temperature, called nucleus sampling,
+where the model considers the results of the tokens with top_p probability mass.
+So 0.1 means only the tokens comprising the top 10\% probability mass are considered.
+We generally recommend altering this or temperature but not both.' (OPEN-AI). Default is 1.
+Find documentation at
+\url{https://platform.openai.com/docs/api-reference/chat/create#chat/create-top_p}.}
 
 \item{token_word_ratio}{The multiplier used to approximate the number of tokens per word.
 Default is \code{1.6} which we empirically have found to be the average number of tokens per word.}
@@ -66,7 +74,7 @@ app_price <- approximate_price_gpt(
   title = title,
   abstract = abstract,
   model = c("gpt-3.5-turbo-0613", "gpt-4"),
-  reps = 10
+  reps = c(10, 1)
 )
 
 app_price

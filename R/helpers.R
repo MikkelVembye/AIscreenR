@@ -9,5 +9,7 @@ utils::globalVariables(
     "requests_per_minute", "tokens_per_minute",
     "input_price_dollar", "output_price_dollar", "price_total_dollar",
     "decision_gpt", "decision_binary", "detailed_description",
-    "final_decision_gpt_num", "n_words_answer", "longest_answer", "final_decision_gpt")
+    "final_decision_gpt_num", "n_words_answer", "longest_answer", "final_decision_gpt",
+    "req_per_min", "topp", "iterations", "input_price", "output_price", "max_reps",
+    "promptid")
 )

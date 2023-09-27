@@ -21,6 +21,13 @@
 #'   question should be sent to ChatGPT. This can be useful to test consistency
 #'   between answers. Default is `1` but when using 3.5 models, we recommend setting this
 #'   value to `10`.
+#' @param top_p 'An alternative to sampling with temperature, called nucleus sampling,
+#'   where the model considers the results of the tokens with top_p probability mass.
+#'   So 0.1 means only the tokens comprising the top 10% probability mass are considered.
+#'   We generally recommend altering this or temperature but not both.' (OPEN-AI). Default is 1.
+#'   Find documentation at
+#' \url{https://platform.openai.com/docs/api-reference/chat/create#chat/create-top_p}.
+#'
 #' @param token_word_ratio The multiplier used to approximate the number of tokens per word.
 #'   Default is `1.6` which we empirically have found to be the average number of tokens per word.
 #'
@@ -43,7 +50,7 @@
 #'   title = title,
 #'   abstract = abstract,
 #'   model = c("gpt-3.5-turbo-0613", "gpt-4"),
-#'   reps = 10
+#'   reps = c(10, 1)
 #' )
 #'
 #' app_price
@@ -60,8 +67,13 @@ approximate_price_gpt <-
     abstract,
     model = "gpt-3.5-turbo-0613",
     reps = 1,
+    top_p = 1,
     token_word_ratio = 1.6
   ){
+
+    if (length(reps) > 1 && length(model) != length(reps)){
+      stop("model and reps must be of the same length.")
+    }
 
     ###############################################
     # Data manipulation
@@ -89,6 +101,8 @@ approximate_price_gpt <-
 
     }
 
+    mp_reps <- if (length(reps) > 1) 1 else length(model)
+
     question_dat <-
       dat |>
       dplyr::mutate(
@@ -98,11 +112,14 @@ approximate_price_gpt <-
       ) |>
       dplyr::slice(rep(1:nrow(dat), length(prompt))) |>
       dplyr::mutate(
+        promptid = rep(paste("Prompt", 1:length(prompt)), each = dplyr::n_distinct(studyid)),
         prompt = rep(prompt, each = dplyr::n_distinct(studyid))
       ) |>
       dplyr::slice(rep(1:dplyr::n(), each = length(model))) |>
       dplyr::mutate(
         model = rep(model, dplyr::n_distinct(studyid)*dplyr::n_distinct(prompt)),
+        iterations = rep(reps, dplyr::n_distinct(studyid)*dplyr::n_distinct(prompt)*mp_reps),
+        #req_per_min = rep(rpm, dplyr::n_distinct(studyid)*dplyr::n_distinct(prompt)*mp_rpm),
         question_raw = paste0(
           prompt,
           " Now, evaluate the following title and abstract for",
@@ -111,47 +128,59 @@ approximate_price_gpt <-
           " -Abstract: ", {{ abstract }}
         ),
         question = stringr::str_replace_all(question_raw, "\n\n", " "),
-        question = stringr::str_remove_all(question, "\n"),
-
-        prompt_tokens = round(stringr::str_count(question, '\\w+') * token_word_ratio),
-        completion_tokens = 11 # Average number of completion tokens for the inclusion_decision_simple function
-
+        question = stringr::str_remove_all(question, "\n")
       ) |>
-      dplyr::select(-question_raw)
+      dplyr::select(-question_raw) |>
+      dplyr::slice(rep(1:dplyr::n(), each = length(top_p))) |>
+      mutate(
+        topp = rep(top_p, n_distinct(studyid)*n_distinct(prompt)*n_distinct(model))
+      )
+
+
 
 
     price_dat <-
       question_dat |>
+      mutate(
+        prompt_tokens = round(stringr::str_count(question, '\\w+') * 1.6),
+        completion_tokens = 11 # Average number of completion tokens for the inclusion_decision_simple function
+
+      ) |>
       filter(!is.na(prompt_tokens) | !is.na(completion_tokens)) |>
+      dplyr::rowwise() |>
+      mutate(
+
+        input_price = case_when(
+          any(c("gpt-3.5-turbo", "gpt-3.5-turbo-0613") %in% model) ~ round(prompt_tokens * (0.0015/1000) * iterations, 4),
+          any(c("gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613") %in% model) ~ round(prompt_tokens * (0.003/1000) * iterations, 4),
+          any(c("gpt-4", "gpt-4-0613") %in% model) ~ round(prompt_tokens * (0.03/1000) * iterations, 4),
+          any(c("gpt-4-32k", "gpt-4-32k-0613") %in% model) ~ round(prompt_tokens * (0.06/1000) * iterations, 4),
+          TRUE ~ NA_real_
+        ),
+
+        output_price = case_when(
+          any(c("gpt-3.5-turbo", "gpt-3.5-turbo-0613") %in% model) ~ completion_tokens * (0.002/1000) * iterations,
+          any(c("gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613") %in% model) ~ completion_tokens * (0.004/1000) * iterations,
+          any(c("gpt-4", "gpt-4-0613") %in% model) ~ completion_tokens * (0.06/1000) * iterations,
+          any(c("gpt-4-32k", "gpt-4-32k-0613") %in% model) ~ completion_tokens * (0.12/1000) * iterations,
+          TRUE ~ NA_real_
+        )
+
+      ) |>
+      ungroup() |>
       summarise(
 
-        input_price_dollar = case_when(
-          any(c("gpt-3.5-turbo", "gpt-3.5-turbo-0613") %in% model) ~ round(sum(prompt_tokens, na.rm = TRUE) * (0.0015/1000), 4),
-          any(c("gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613") %in% model) ~ round(sum(prompt_tokens, na.rm = TRUE) * (0.003/1000), 4),
-          any(c("gpt-4", "gpt-4-0613") %in% model) ~ round(sum(prompt_tokens, na.rm = TRUE) * (0.03/1000), 4),
-          any(c("gpt-4-32k", "gpt-4-32k-0613") %in% model) ~ round(sum(prompt_tokens, na.rm = TRUE) * (0.06/1000), 4),
-          TRUE ~ NA_real_
-        ),
-
-
-        output_price_dollar = case_when(
-          any(c("gpt-3.5-turbo", "gpt-3.5-turbo-0613") %in% model) ~ sum(completion_tokens, na.rm = TRUE) * (0.002/1000),
-          any(c("gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613") %in% model) ~ sum(completion_tokens, na.rm = TRUE) * (0.004/1000),
-          any(c("gpt-4", "gpt-4-0613") %in% model) ~ sum(completion_tokens, na.rm = TRUE) * (0.06/1000),
-          any(c("gpt-4-32k", "gpt-4-32k-0613") %in% model) ~ sum(completion_tokens, na.rm = TRUE) * (0.12/1000),
-          TRUE ~ NA_real_
-        ),
-
-        input_price_dollar = input_price_dollar * reps,
-        output_price_dollar = output_price_dollar * reps,
-        price_total_dollar = input_price_dollar + output_price_dollar,
+        iterations = unique(iterations),
+        input_price_dollar = sum(input_price, na.rm = TRUE),
+        output_price_dollar = sum(output_price, na.rm = TRUE),
+        total_price_dollor = round(input_price_dollar + output_price_dollar, 4),
 
         .by = model
 
       )
 
 
-    price <- sum(price_dat$price_total_dollar, na.rm = TRUE)
+    price <- sum(price_dat$total_price_dollor, na.rm = TRUE)
 
     res <- list(price_data = price_dat, price_dollar = price)
     class(res) <- c("list", "gpt_price")

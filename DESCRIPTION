@@ -1,6 +1,6 @@
 Package: AIscreenR
 Title: AI screening tools for systematic reviews
-Version: 0.0.0.9005
+Version: 0.0.0.9006
 Date: 2023-09-14
 Authors@R: c(
     person(given = "Mikkel H.", 

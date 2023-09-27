@@ -33,7 +33,7 @@
 #' @param top_p 'An alternative to sampling with temperature, called nucleus sampling,
 #'   where the model considers the results of the tokens with top_p probability mass.
 #'   So 0.1 means only the tokens comprising the top 10% probability mass are considered.
-#'   We generally recommend altering this or temperature but not both.' (OPEN-AI).
+#'   We generally recommend altering this or temperature but not both.' (OPEN-AI). Default is 1.
 #'   Find documentation at
 #' \url{https://platform.openai.com/docs/api-reference/chat/create#chat/create-top_p}.
 #' @param time_info Logical indicating whether the run time of each
@@ -96,6 +96,7 @@
 #'  \bold{studyid} \tab \code{integer} \tab indicating the study ID of the reference. \cr
 #'  \bold{title} \tab \code{character} \tab indicating the title of the reference. \cr
 #'  \bold{abstract} \tab \code{character}   \tab indicating the abstract of the reference. \cr
+#'  \bold{promptid} \tab \code{integer} \tab indicating the prompt ID. \cr
 #'  \bold{prompt} \tab \code{character} \tab indicating the prompt. \cr
 #'  \bold{model} \tab \code{character}   \tab indicating the specific gpt-model used. \cr
 #'  \bold{question} \tab \code{character} \tab indicating the final question sent to ChatGPT. \cr
@@ -115,9 +116,12 @@
 #'  \bold{studyid} \tab \code{integer} \tab indicating the study ID of the reference. \cr
 #'  \bold{title} \tab \code{character} \tab indicating the title of the reference. \cr
 #'  \bold{abstract} \tab \code{character}   \tab indicating the abstract of the reference. \cr
+#'  \bold{promptid} \tab \code{integer} \tab indicating the prompt ID. \cr
 #'  \bold{prompt} \tab \code{character} \tab indicating the prompt. \cr
 #'  \bold{model} \tab \code{character}   \tab indicating the specific gpt-model used. \cr
+#'  \bold{iterations} \tab \code{numeric} \tab indicating the number of times the same question has been sent to ChatGPT. \cr
 #'  \bold{question} \tab \code{character} \tab indicating the final question sent to ChatGPT. \cr
+#'  \bold{top_p}  \tab \code{numeric} \tab indicating the applied top_p. \cr
 #'  \bold{decision_gpt}  \tab \code{character} \tab indicating the raw gpt decision - either \code{"1", "0", "1.1"} for inclusion, exclusion, or uncertainty, respectively. \cr
 #'  \bold{detailed_description}  \tab \code{character} \tab indicating detailed description of the given decision made by ChatGPT.
 #'  Only included if the detailed function calling function is used. See 'Examples' below for how to use this function. \cr
@@ -126,10 +130,15 @@
 #'  \bold{prompt_tokens}  \tab \code{integer} \tab indicating the number of prompt tokens sent to the server for the given request. \cr
 #'  \bold{completion_tokens}  \tab \code{integer} \tab indicating the number of completion tokens sent to the server for the given request. \cr
 #'  \bold{run_time}  \tab \code{numeric} \tab indicating the time it took to obtain a response from the server for the given request. \cr
-#'  \bold{top_p}  \tab \code{numeric} \tab indicating the applied top_p. \cr
 #'  \bold{n} \tab \code{integer} \tab indicating request ID.  \cr
 #' }
 #' <br>
+#' If any requests failed to reach the server, the `chatgpt` object contains an
+#' error data set (`error_data`) having the same variables as `answer_data_all`
+#' but with failed request references only.
+#'
+#' <br>
+#'
 #' The \code{price_data} data contains the following variables:
 #' \tabular{lll}{
 #'  \bold{model} \tab \code{character} \tab gpt model. \cr
@@ -206,6 +215,16 @@ tabscreen_gpt <- function(
   incl_cutoff_lower = 0.4
   ){
 
+  # Stop warnings
+  if (length(rpm) > 1 && length(model) != length(rpm)){
+    stop("model and rpm must be of the same length.")
+  }
+
+  if (length(reps) > 1 && length(model) != length(reps)){
+    stop("model and reps must be of the same length.")
+  }
+
+
 
   ###############################################
   # Function to send a single request to ChatGPT
@@ -213,6 +232,7 @@ tabscreen_gpt <- function(
 
   ask_gpt_engine <- function(
     body,
+    RPM,
     timeinf = time_info,
     tokeninf = token_info,
     key = api_key,
@@ -220,11 +240,13 @@ tabscreen_gpt <- function(
     max_s = max_seconds,
     is_trans = is_transient,
     back = backoff,
-    aft = after,
-    RPM = rpm
+    aft = after
   ){
 
     detailed <- body$function_call$name == "inclusion_decision"
+
+
+    if(RPM > 200 && stringr::str_detect(body$model, "gpt-4")) RPM <- 200
 
     tictoc::tic()
 
@@ -352,11 +374,12 @@ tabscreen_gpt <- function(
   ask_gpt <- function(
     question,
     model_gpt,
+    topp,
+    iterations,
+    req_per_min,
     role_gpt = role,
     funcs = functions,
     func_call_name = function_call_name,
-    topp = top_p,
-    n_reps = reps,
     seeds = seed
   ){
 
@@ -374,18 +397,17 @@ tabscreen_gpt <- function(
       ...
     )
 
-    if(n_reps > 1) n_reps <- 1:n_reps
+    if(iterations > 1) iterations <- 1:iterations
 
     furrr_seed <- if (is.null(seeds)) TRUE else NULL
 
     final_res <-
       furrr::future_map_dfr(
-        n_reps, \(i) ask_gpt_engine(body = body),
+        iterations, \(i) ask_gpt_engine(body = body, RPM = req_per_min),
         .options = furrr::furrr_options(seed = furrr_seed)
-      ) |>
-      dplyr::mutate(top_p = topp)
+      )
 
-    final_res <- final_res |> dplyr::mutate(n = n_reps)
+    final_res <- final_res |> dplyr::mutate(n = iterations)
 
     final_res
 
@@ -406,7 +428,6 @@ tabscreen_gpt <- function(
             prompt_tokens = p_tokens,
             completion_tokens = c_tokens,
             run_time = t_info,
-            top_p = NA_real_,
             n = NA_integer_
           )
         )
@@ -425,7 +446,6 @@ tabscreen_gpt <- function(
             prompt_tokens = p_tokens,
             completion_tokens = c_tokens,
             run_time = t_info,
-            top_p = NA_real_,
             n = NA_integer_
           )
         )
@@ -460,6 +480,10 @@ tabscreen_gpt <- function(
 
   }
 
+
+  mp_reps <- if (length(reps) > 1) 1 else length(model)
+  mp_rpm <- if (length(rpm) > 1) 1 else length(model)
+
   question_dat <-
     dat |>
     dplyr::mutate(
@@ -467,14 +491,16 @@ tabscreen_gpt <- function(
         is.na(.x) | .x == "" | .x == " ", "No information", .x, missing = "No information")
       )
     ) |>
-    ## Make promptid variable
     dplyr::slice(rep(1:nrow(dat), length(prompt))) |>
     dplyr::mutate(
+      promptid = rep(1:length(prompt), each = dplyr::n_distinct(studyid)),
       prompt = rep(prompt, each = dplyr::n_distinct(studyid))
     ) |>
     dplyr::slice(rep(1:dplyr::n(), each = length(model))) |>
     dplyr::mutate(
       model = rep(model, dplyr::n_distinct(studyid)*dplyr::n_distinct(prompt)),
+      iterations = rep(reps, dplyr::n_distinct(studyid)*dplyr::n_distinct(prompt)*mp_reps),
+      req_per_min = rep(rpm, dplyr::n_distinct(studyid)*dplyr::n_distinct(prompt)*mp_rpm),
       question_raw = paste0(
         prompt,
         " Now, evaluate the following title and abstract for",
@@ -486,44 +512,64 @@ tabscreen_gpt <- function(
       question = stringr::str_remove_all(question, "\n")
     ) |>
     dplyr::select(-question_raw) |>
-    dplyr::arrange(model, prompt, {{ arrange_var }})
+    dplyr::slice(rep(1:dplyr::n(), each = length(top_p))) |>
+    mutate(
+      topp = rep(top_p, n_distinct(studyid)*n_distinct(prompt)*n_distinct(model))
+    ) |>
+    dplyr::arrange(promptid, model, topp, {{ arrange_var }})
 
+  # Check if multiple reps are used with gpt4 models
+  max_reps_gpt4 <-
+    question_dat |>
+    filter(stringr::str_detect(model, "gpt-4")) |>
+    summarise(
+      max_reps = max(iterations)
+    ) |>
+    pull(max_reps)
+
+  # Approximate prize
 
   app_price_dat <-
     question_dat |>
     mutate(
       prompt_tokens = round(stringr::str_count(question, '\\w+') * 1.6),
       completion_tokens = 11 # Average number of completion tokens for the inclusion_decision_simple function
+
     ) |>
     filter(!is.na(prompt_tokens) | !is.na(completion_tokens)) |>
+    dplyr::rowwise() |>
+    mutate(
+
+      input_price = case_when(
+        any(c("gpt-3.5-turbo", "gpt-3.5-turbo-0613") %in% model) ~ round(prompt_tokens * (0.0015/1000) * iterations, 4),
+        any(c("gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613") %in% model) ~ round(prompt_tokens * (0.003/1000) * iterations, 4),
+        any(c("gpt-4", "gpt-4-0613") %in% model) ~ round(prompt_tokens * (0.03/1000) * iterations, 4),
+        any(c("gpt-4-32k", "gpt-4-32k-0613") %in% model) ~ round(prompt_tokens * (0.06/1000) * iterations, 4),
+        TRUE ~ NA_real_
+      ),
+
+      output_price = case_when(
+        any(c("gpt-3.5-turbo", "gpt-3.5-turbo-0613") %in% model) ~ completion_tokens * (0.002/1000) * iterations,
+        any(c("gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613") %in% model) ~ completion_tokens * (0.004/1000) * iterations,
+        any(c("gpt-4", "gpt-4-0613") %in% model) ~ completion_tokens * (0.06/1000) * iterations,
+        any(c("gpt-4-32k", "gpt-4-32k-0613") %in% model) ~ completion_tokens * (0.12/1000) * iterations,
+        TRUE ~ NA_real_
+      )
+
+    ) |>
+    ungroup() |>
     summarise(
 
-      input_price_dollar = case_when(
-        any(c("gpt-3.5-turbo", "gpt-3.5-turbo-0613") %in% model) ~ round(sum(prompt_tokens, na.rm = TRUE) * (0.0015/1000), 4),
-        any(c("gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613") %in% model) ~ round(sum(prompt_tokens, na.rm = TRUE) * (0.003/1000), 4),
-        any(c("gpt-4", "gpt-4-0613") %in% model) ~ round(sum(prompt_tokens, na.rm = TRUE) * (0.03/1000), 4),
-        any(c("gpt-4-32k", "gpt-4-32k-0613") %in% model) ~ round(sum(prompt_tokens, na.rm = TRUE) * (0.06/1000), 4),
-        TRUE ~ NA_real_
-      ),
-
-
-      output_price_dollar = case_when(
-        any(c("gpt-3.5-turbo", "gpt-3.5-turbo-0613") %in% model) ~ sum(completion_tokens, na.rm = TRUE) * (0.002/1000),
-        any(c("gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613") %in% model) ~ sum(completion_tokens, na.rm = TRUE) * (0.004/1000),
-        any(c("gpt-4", "gpt-4-0613") %in% model) ~ sum(completion_tokens, na.rm = TRUE) * (0.06/1000),
-        any(c("gpt-4-32k", "gpt-4-32k-0613") %in% model) ~ sum(completion_tokens, na.rm = TRUE) * (0.12/1000),
-        TRUE ~ NA_real_
-      ),
-
-      input_price_dollar = input_price_dollar * reps,
-      output_price_dollar = output_price_dollar * reps,
-      price_total_dollar = input_price_dollar + output_price_dollar,
+      iterations = unique(iterations),
+      input_price_dollar = sum(input_price, na.rm = TRUE),
+      output_price_dollar = sum(output_price, na.rm = TRUE),
+      total_price_dollor = round(input_price_dollar + output_price_dollar, 4),
 
       .by = model
 
     )
 
-  app_price <- round(sum(app_price_dat$price_total_dollar, na.rm = TRUE), 4)
+  app_price <- sum(app_price_dat$total_price_dollor, na.rm = TRUE)
 
 
   if (messages){
@@ -539,6 +585,11 @@ tabscreen_gpt <- function(
       )
     }
 
+    if (max_reps_gpt4 > 1 && any(stringr::str_detect(model, "gpt-4"))){
+      message("* Consider to reduce reps to 1 for gpt-4 models.")
+    }
+
+
     if ("No information" %in% unique(question_dat$abstract)) {
       message(
         paste0(
@@ -549,7 +600,7 @@ tabscreen_gpt <- function(
     }
   }
 
-  if (!messages && stringr::str_detect(model, "4")){
+  if (!messages && any(stringr::str_detect(model, "gpt-4"))){
 
     warn <- "* Be aware that using gpt-4 models cost at least 10 times more than gpt-3.5 models.\n"
     price <- paste0("* The approximate price of the current (simple) screening will be around $", app_price, ".")
@@ -563,7 +614,7 @@ tabscreen_gpt <- function(
       detail_mess <- NULL
     }
 
-    extra_mes <- if (reps > 1) "\n* Consider to reduce reps to 1." else NULL
+    extra_mes <- if (max_reps_gpt4 > 1) "\n* Consider to reduce reps to 1 for gpt-4 models." else NULL
 
     warn_message <- paste0(warn, price, detail_mess, extra_mes)
 
@@ -574,7 +625,8 @@ tabscreen_gpt <- function(
   # RUNNING QUESTIONS
   furrr_seed <- if (is.null(seed)) TRUE else NULL
 
-  params <- question_dat |> dplyr::select(question, model_gpt = model)
+  params <- question_dat |>
+    dplyr::select(question, model_gpt = model, topp, iterations, req_per_min)
 
   answer_dat <-
     question_dat |>
@@ -588,17 +640,6 @@ tabscreen_gpt <- function(
     ) |>
     tidyr::unnest(res)
 
-  #answer_dat <-
-  #  question_dat |>
-  #  dplyr::mutate(
-  #    res = furrr::future_map2(
-  #      .x = question, .y = model, ~ ask_gpt(question = .x, model_gpt = .y),
-  #      .options = furrr::furrr_options(seed = furrr_seed),
-  #      .progress = progress
-  #    )
-  #  ) |>
-  #  tidyr::unnest(res)
-
   n_error <- answer_dat |> dplyr::filter(is.na(decision_binary)) |> nrow()
 
   if (n_error > 0){
@@ -606,38 +647,41 @@ tabscreen_gpt <- function(
     succes_dat <- answer_dat |>
       dplyr::filter(!is.na(decision_binary))
 
+    # _mod = modified
+    params_mod <- params |> mutate(iterations = 1)
 
     error_dat <- answer_dat |>
       dplyr::filter(is.na(decision_binary)) |>
-      dplyr::select(1:question) |>
+      dplyr::select(1:topp) |>
       dplyr::mutate(
-        furrr::future_map_dfr(
-          .x = question, .y = model, ~ ask_gpt(
-            question = .x,
-            model_gpt = .y,
-            n_reps = 1
-          ),
-          ...,
+        res = furrr::future_pmap(
+          .l = params_mod,
+          .f = ask_gpt,
           .options = furrr::furrr_options(seed = furrr_seed),
           .progress = progress
         )
-      )
+      ) |>
+      tidyr::unnest(res)
 
     answer_dat <-
       dplyr::bind_rows(
         succes_dat,
         error_dat
       ) |>
-      dplyr::arrange(model, prompt, {{ arrange_var }})
+      dplyr::arrange(promptid, model, topp, {{ arrange_var }})
 
     still_error <- answer_dat |> dplyr::filter(is.na(decision_binary)) |> nrow()
 
     if (messages){
-      if (still_error > 0) message("* NOTE: Requests falied for some titles and abstracts.")
+      if (still_error == 1) message(paste("* NOTE: Requests falied for", still_error, "title and abstract."))
+      if (still_error > 1) message(paste("* NOTE: Requests falied for", still_error, "titles and abstracts."))
     }
+
+    if (still_error > 0) error_refs <- answer_dat |> dplyr::filter(is.na(decision_binary))
 
   }
 
+  n_error_refs <- answer_dat |> dplyr::filter(is.na(decision_binary)) |> nrow()
   answer_dat <- tibble::new_tibble(answer_dat, class = "chatgpt_tbl")
 
   if (token_info){
@@ -656,14 +700,14 @@ tabscreen_gpt <- function(
         ),
 
         output_price_dollar = case_when(
-          any(c("gpt-3.5-turbo", "gpt-3.5-turbo-0613") %in% model) ~ round(sum(completion_tokens, na.rm = TRUE) * (0.002/1000), 4),
-          any(c("gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613") %in% model) ~ round(sum(completion_tokens, na.rm = TRUE) * (0.004/1000), 4),
-          any(c("gpt-4", "gpt-4-0613") %in% model) ~ round(sum(completion_tokens, na.rm = TRUE) * (0.06/1000), 4),
-          any(c("gpt-4-32k", "gpt-4-32k-0613") %in% model) ~ round(sum(completion_tokens, na.rm = TRUE) * (0.12/1000), 4),
+          any(c("gpt-3.5-turbo", "gpt-3.5-turbo-0613") %in% model) ~ sum(completion_tokens, na.rm = TRUE) * (0.002/1000),
+          any(c("gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613") %in% model) ~ sum(completion_tokens, na.rm = TRUE) * (0.004/1000),
+          any(c("gpt-4", "gpt-4-0613") %in% model) ~ sum(completion_tokens, na.rm = TRUE) * (0.06/1000),
+          any(c("gpt-4-32k", "gpt-4-32k-0613") %in% model) ~ sum(completion_tokens, na.rm = TRUE) * (0.12/1000),
           TRUE ~ NA_real_
         ),
 
-        price_total_dollar = input_price_dollar + output_price_dollar,
+        price_total_dollar = round(input_price_dollar + output_price_dollar, 4),
 
         .by = model
 
@@ -698,11 +742,13 @@ tabscreen_gpt <- function(
 
       n_mis_answers = sum(is.na(decision_binary)),
 
-      .by = c(studyid:question, top_p)
+      .by = c(studyid:topp)
 
     )
 
   if ("detailed_description" %in% names(answer_dat)){
+
+    # CHECK THIS PART
 
     long_answer_dat_sum <-
       answer_dat |>
@@ -718,15 +764,15 @@ tabscreen_gpt <- function(
 
         n_words_answer = stringr::str_count(detailed_description, '\\w+'),
 
-        .by = c(studyid:question, top_p)
+        .by = c(studyid:topp)
 
       ) |>
       filter(decision_binary == final_decision_gpt_num) |>
-      arrange(studyid, model, question, top_p, desc(n_words_answer)) |>
+      arrange(promptid, model, topp, {{ arrange_var }}, desc(n_words_answer)) |>
       summarise(
         longest_answer = detailed_description[1],
 
-        .by = c(studyid:question, top_p)
+        .by = c(studyid:topp)
 
       )
 
@@ -744,16 +790,52 @@ tabscreen_gpt <- function(
 
   }
 
+  # Final data all
+  answer_dat <-
+    answer_dat |>
+    select(-req_per_min) |>
+    rename(top_p = topp)
+
+
+  # Final data sum
+  answer_dat_sum <-
+    answer_dat_sum |>
+    select(-c(iterations, req_per_min)) |>
+    rename(top_p = topp)
+
+
   if (token_info){
-    res <- list(price_data = price_dat, price_dollar = price, answer_data_all = answer_dat, answer_data_sum = answer_dat_sum)
+
+    if (n_error_refs > 0) {
+      res <- list(
+        price_data = price_dat,
+        price_dollar = price,
+        answer_data_all = answer_dat,
+        answer_data_sum = answer_dat_sum,
+        error_data = error_refs
+      )
+    } else {
+      res <- list(
+        price_data = price_dat,
+        price_dollar = price,
+        answer_data_all = answer_dat,
+        answer_data_sum = answer_dat_sum
+      )
+    }
+
   } else {
-    res <- list(answer_data_all = answer_dat, answer_data_sum = answer_dat_sum)
+
+    if (n_error_refs > 0) {
+      res <- list(answer_data_all = answer_dat, answer_data_sum = answer_dat_sum, error_data = error_refs)
+    } else {
+      res <- list(answer_data_all = answer_dat, answer_data_sum = answer_dat_sum)
+    }
+
   }
 
   class(res) <- c("list", "chatgpt")
 
   res
-
 
 }
 
