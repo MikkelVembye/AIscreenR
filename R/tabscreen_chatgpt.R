@@ -530,7 +530,7 @@ tabscreen_gpt <- function(
     question_dat |>
     filter(stringr::str_detect(model, "gpt-4")) |>
     summarise(
-      max_reps = max(iterations)
+      max_reps = max(iterations, na.rm = TRUE)
     ) |>
     pull(max_reps)
 
@@ -655,10 +655,16 @@ tabscreen_gpt <- function(
       dplyr::filter(!is.na(decision_binary))
 
     # _mod = modified
-    params_mod <- params |> mutate(iterations = 1)
+    failed_dat <- answer_dat |>
+      dplyr::filter(is.na(decision_binary))
 
-    error_dat <- answer_dat |>
-      dplyr::filter(is.na(decision_binary)) |>
+    params_mod <-
+      failed_dat |>
+      mutate(iterations = 1) |>
+      select(question, model_gpt = model, topp, iterations, req_per_min)
+
+    error_dat <-
+      failed_dat |>
       dplyr::select(1:topp) |>
       dplyr::mutate(
         res = furrr::future_pmap(
