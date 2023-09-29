@@ -15,7 +15,7 @@ AIscreenR:::set_api_key()
 #  top_p = 1
 #)
 models <- c("gpt-3.5-turbo-0613", "gpt-4")
-rate_limits_per_minute(model = models)
+rl <- rate_limits_per_minute(model = models)
 
 prompt <- "Evaluate the following study based on the selection criteria
 for a systematic review on the effects of family-based interventions on drug abuse
@@ -91,17 +91,17 @@ plan(multisession)
 
 
 test_obj <- tabscreen_gpt(
-  data = FFT_dat[c(149:150),],
-  prompt = c(prompt, prompt2),
+  data = FFT_dat[c(147:150),],
+  prompt = c(prompt),
   studyid = studyid,
   title = title,
   abstract = abstract,
-  model = c("gpt-3.5-turbo-0613", "gpt-4"), # "gpt-3.5-turbo-16k-0613", "gpt-4"
-  reps = c(10, 1),
-  rpm = c(3500, 200),
+  model = c("gpt-3.5-turbo-0613"), # "gpt-3.5-turbo-16k-0613", "gpt-4"
+  reps = c(10),
+  rpm = 3500,
   #functions = AIscreenR:::incl_function,
   #function_call_name = list(name = "inclusion_decision"),
-  top_p = c(0.2, 1),
+  top_p = c(1),
   max_tries = 1,
   messages = TRUE
 
@@ -141,10 +141,10 @@ plan(sequential)
 #  stop("model and rpm must be of the same length.")
 #}
 
-model <- c("gpt-3.5-turbo", "gpt-4")
-reps <- c(10, 2)
+model <- c("gpt-3.5-turbo")
+reps <- c(10)
 prompt <- paste("Dette er prompt", 1:5)
-rpm <- c(3500, 200)
+rpm <- c(3500)
 top_p <- c(0.5, 1)
 dat <- FFT_dat[1:5,]
 
@@ -191,11 +191,16 @@ question_dat <-
 
 question_dat
 
-max_reps_gpt4 <-
+gpt4_nrow <-
   question_dat |>
   filter(stringr::str_detect(model, "gpt-4")) |>
+  nrow()
+
+
+
+
   summarise(
-    max_reps = max(iterations)
+    max_reps = max(iterations, na.rm = TRUE)
   ) |>
   pull(max_reps)
 

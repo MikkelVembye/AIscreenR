@@ -526,14 +526,22 @@ tabscreen_gpt <- function(
     dplyr::arrange(promptid, model, topp, {{ arrange_var }})
 
   # Check if multiple reps are used with gpt4 models
-  max_reps_gpt4 <-
+
+  gpt4_nrow <-
     question_dat |>
     filter(stringr::str_detect(model, "gpt-4")) |>
-    summarise(
-      max_reps = max(iterations, na.rm = TRUE)
-    ) |>
-    pull(max_reps)
+    nrow()
 
+
+  if (gpt4_nrow > 0){
+    max_reps_gpt4 <-
+      question_dat |>
+      filter(stringr::str_detect(model, "gpt-4")) |>
+      summarise(
+        max_reps = max(iterations, na.rm = TRUE)
+      ) |>
+      pull(max_reps)
+  }
   # Approximate prize
 
   app_price_dat <-
@@ -592,7 +600,7 @@ tabscreen_gpt <- function(
       )
     }
 
-    if (max_reps_gpt4 > 1){
+    if (gpt4_nrow > 0 && max_reps_gpt4 > 1){
       message("* Consider to reduce reps to 1 for gpt-4 models.")
     }
 
@@ -621,7 +629,7 @@ tabscreen_gpt <- function(
       detail_mess <- NULL
     }
 
-    extra_mes <- if (max_reps_gpt4 > 1) "\n* Consider to reduce reps to 1 for gpt-4 models." else NULL
+    extra_mes <- if (gpt4_nrow > 0 && max_reps_gpt4 > 1) "\n* Consider to reduce reps to 1 for gpt-4 models." else NULL
 
     warn_message <- paste0(warn, price, detail_mess, extra_mes)
 
