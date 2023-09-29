@@ -412,9 +412,9 @@ tabscreen_gpt <- function(
       furrr::future_map_dfr(
         iterations, \(i) ask_gpt_engine(body = body, RPM = req_per_min),
         .options = furrr::furrr_options(seed = furrr_seed)
-      )
+      ) |>
+      dplyr::mutate(n = iterations)
 
-    final_res <- final_res |> dplyr::mutate(n = iterations)
 
     final_res
 
@@ -665,7 +665,7 @@ tabscreen_gpt <- function(
 
     error_dat <-
       failed_dat |>
-      dplyr::select(1:topp) |>
+      dplyr::select(1:topp, id = n) |>
       dplyr::mutate(
         res = furrr::future_pmap(
           .l = params_mod,
@@ -674,7 +674,10 @@ tabscreen_gpt <- function(
           .progress = progress
         )
       ) |>
-      tidyr::unnest(res)
+      tidyr::unnest(res) |>
+      mutate(n = id) |>
+      select(-id) |>
+      relocate(n, .after = last_col())
 
     answer_dat <-
       dplyr::bind_rows(
