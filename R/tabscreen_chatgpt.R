@@ -527,13 +527,12 @@ tabscreen_gpt <- function(
 
   # Check if multiple reps are used with gpt4 models
 
-  gpt4_nrow <-
-    question_dat |>
-    filter(stringr::str_detect(model, "gpt-4")) |>
-    nrow()
+  #gpt4_nrow <-
+  #  question_dat |>
+  #  filter(stringr::str_detect(model, "gpt-4")) |>
+  #  nrow()
 
-
-  if (gpt4_nrow > 0){
+  if (any(stringr::str_detect(model, "gpt-4"))){
     max_reps_gpt4 <-
       question_dat |>
       filter(stringr::str_detect(model, "gpt-4")) |>
@@ -600,7 +599,7 @@ tabscreen_gpt <- function(
       )
     }
 
-    if (gpt4_nrow > 0 && max_reps_gpt4 > 1){
+    if (any(stringr::str_detect(model, "gpt-4")) && max_reps_gpt4 > 1){
       message("* Consider to reduce reps to 1 for gpt-4 models.")
     }
 
@@ -629,8 +628,7 @@ tabscreen_gpt <- function(
       detail_mess <- NULL
     }
 
-    extra_mes <- if (gpt4_nrow > 0 && max_reps_gpt4 > 1) "\n* Consider to reduce reps to 1 for gpt-4 models." else NULL
-
+    extra_mes <- if (max_reps_gpt4 > 1) "\n* Consider to reduce reps to 1 for gpt-4 models." else NULL
     warn_message <- paste0(warn, price, detail_mess, extra_mes)
 
     message(warn_message)
