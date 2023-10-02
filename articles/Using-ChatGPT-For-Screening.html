@@ -77,7 +77,30 @@
 
     
     
-<p>[INSERT NOTE ABOUT RETROSPECTIVE CAVEAT]</p>
+<div class="warning" style="margin-left:6em; margin-right:6em; padding:0.1em; background-color: #d7dbdd; border: solid #bdc3c7 3px">
+<span>
+<p style="text-align:center">
+<b>Important note</b>
+</p>
+<p style="margin:1em">
+This vignette represent tentative work-in-progress only. The general
+efficacy of using LLMs including ChatGPT for title and abstract
+screening in literature reviews are still unknown. Our first results
+suggest that ChatGPT can be a reliable second screener when reviewing
+specific and well defined interventions. The first evidence of this is
+shown in this vignette. However, be aware our first results are based on
+a retrospective analysis which might not generalize to prospective
+screenings where ChatGPT potentially has not been train on that
+reference data. We are starting to test the AIscreenR on more complex
+reviews. Here it seems to be harder to make concise prompts that can
+make ChatGPT emulating a reliable human second screener. Yet, the first
+tentative evidence for complex reviews suggest that ChatGPT can function
+well to reduce the total number of references that has to be screened by
+humans.
+</p>
+<p></p></span>
+</div>
+<p> </p>
 <p>Loading relevant packages.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mikkelvembye.github.io/AIscreenR/">AIscreenR</a></span><span class="op">)</span></span>
@@ -91,7 +114,7 @@
 </h2>
 </div>
 <div class="section level2">
-<h2 id="handling-the-api-key-with-aiscreenr">Handling the API key with <code>AIscreenR</code><a class="anchor" aria-label="anchor" href="#handling-the-api-key-with-aiscreenr"></a>
+<h2 id="getting-api-key-openai">Getting API key OpenAI<a class="anchor" aria-label="anchor" href="#getting-api-key-openai"></a>
 </h2>
 <p>Before you can use the function from <code>AIscreenR</code>, you must
 generate your own secret API key. To do so you must first ensure that
@@ -105,6 +128,10 @@ below) and give your key a name.</p>
 <p>When you have generate your secret API key, remember to store it
 safely since you will not be able see it again. <strong>NOTE</strong>:
 <em>If you lose your API key, you can just generate a new one</em>.</p>
+</div>
+<div class="section level2">
+<h2 id="handling-your-api-key-with-aiscreenr">Handling your API key with <code>AIscreenR</code><a class="anchor" aria-label="anchor" href="#handling-your-api-key-with-aiscreenr"></a>
+</h2>
 <div class="section level3">
 <h3 id="temporary-solution">Temporary solution<a class="anchor" aria-label="anchor" href="#temporary-solution"></a>
 </h3>
@@ -124,8 +151,8 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <h2 id="retrieve-rate-limit-information">Retrieve rate limit information<a class="anchor" aria-label="anchor" href="#retrieve-rate-limit-information"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Rate limits across one model</span></span>
-<span><span class="va">rate_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"gpt-3.5-turbo-0613"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Rate limits across one model (Default is "gpt-3.5-turbo-0613")</span></span>
+<span><span class="va">rate_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">rate_limits</span></span>
 <span><span class="co">#&gt; # A tibble: 1 × 3</span></span>
 <span><span class="co">#&gt;   model              requests_per_minute tokens_per_minute</span></span>
@@ -134,19 +161,14 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span></span>
 <span></span>
 <span><span class="co"># Rate limits overview across multiple models</span></span>
-<span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-3.5-turbo-16k-0613"</span>, <span class="st">"gpt-4"</span><span class="op">)</span> <span class="co"># Add further models if necessary</span></span>
-<span></span>
-<span><span class="va">models_rate_limits</span> <span class="op">&lt;-</span> </span>
-<span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">models</span>, <span class="op">~</span> <span class="fu"><a href="../reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">.x</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/list_c.html" class="external-link">list_rbind</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
+<span><span class="va">gpt_models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-4"</span><span class="op">)</span></span>
+<span><span class="va">models_rate_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">gpt_models</span><span class="op">)</span> <span class="co"># Add further models if necessary</span></span>
 <span><span class="va">models_rate_limits</span></span>
-<span><span class="co">#&gt; # A tibble: 3 × 3</span></span>
-<span><span class="co">#&gt;   model                  requests_per_minute tokens_per_minute</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;                                &lt;dbl&gt;             &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 gpt-3.5-turbo-0613                    3500             90000</span></span>
-<span><span class="co">#&gt; 2 gpt-3.5-turbo-16k-0613                3500            180000</span></span>
-<span><span class="co">#&gt; 3 gpt-4                                  200             10000</span></span></code></pre></div>
+<span><span class="co">#&gt; # A tibble: 2 × 3</span></span>
+<span><span class="co">#&gt;   model              requests_per_minute tokens_per_minute</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;                            &lt;dbl&gt;             &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 gpt-3.5-turbo-0613                3500             90000</span></span>
+<span><span class="co">#&gt; 2 gpt-4                              200             10000</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="approximate-price-of-screening">Approximate price of screening<a class="anchor" aria-label="anchor" href="#approximate-price-of-screening"></a>
@@ -189,20 +211,25 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span>    studyid <span class="op">=</span> <span class="va">studyid</span>, <span class="co"># indicate the variable with the studyid in the data</span></span>
 <span>    title <span class="op">=</span> <span class="va">title</span>, <span class="co"># indicate the variable with the titles in the data</span></span>
 <span>    abstract <span class="op">=</span> <span class="va">abstract</span>, <span class="co"># indicate the variable with the abstracts in the data</span></span>
-<span>    model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span><span class="op">)</span>,</span>
-<span>    rep <span class="op">=</span> <span class="fl">10</span> </span>
+<span>    model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-4"</span><span class="op">)</span>,</span>
+<span>    rep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">)</span> </span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="va">app_obj</span></span>
-<span><span class="co">#&gt; The approximate price of the (simple) screening will be around $2.5168.</span></span>
+<span><span class="co">#&gt; The approximate price of the (simple) screening will be around $7.583.</span></span>
 <span></span>
 <span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_dollar</span></span>
-<span><span class="co">#&gt; [1] 2.5168</span></span>
+<span><span class="co">#&gt; [1] 7.583</span></span>
 <span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_data</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 5</span></span></span>
 <span><span class="co">#&gt;   model     iterations input_price_dollar output_price_dollar total_price_dollor</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> gpt-3.5-…         10               2.48               0.033               2.52</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> gpt-3.5-…         10               2.48               0.033               2.52</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> gpt-4              1               4.97               0.099               5.07</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="screen-titles-and-abstracts">Screen titles and abstracts<a class="anchor" aria-label="anchor" href="#screen-titles-and-abstracts"></a>
+</h2>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
