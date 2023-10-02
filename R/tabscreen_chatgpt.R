@@ -255,6 +255,8 @@ tabscreen_gpt <- function(
     if (RPM > 3500) RPM <- 3500
     if (RPM > 200 && stringr::str_detect(body$model, "gpt-4")) RPM <- 200
 
+    if (max_t == 0) max_t <- NULL
+
     tictoc::tic()
 
     url <- "https://api.openai.com/v1/chat/completions"
