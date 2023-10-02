@@ -6,11 +6,12 @@
 #' included references, respectively.
 #'
 #'
-#' @format A tibble with 150 rows/studies and 4 variables/columns
+#' @format A tibble with 150 rows/studies and 6 variables/columns
 #'
 #' \tabular{lll}{
-#'  \bold{studyid} \tab \code{numeric} \tab indicating a unique study-ID
-#'  for each study \cr
+#'  \bold{author} \tab \code{character} \tab indicating the authors of the reference \cr
+#'  \bold{eppi_id} \tab \code{numeric} \tab indicating a unique eppi-ID for each study \cr
+#'  \bold{studyid} \tab \code{numeric} \tab indicating a unique study-ID for each study \cr
 #'  \bold{title} \tab \code{character} \tab with the title of the study \cr
 #'  \bold{abstract}  \tab \code{character} \tab with the study abstract \cr
 #'  \bold{human_code} \tab \code{numeric} \tab indicating the human screening decision.
