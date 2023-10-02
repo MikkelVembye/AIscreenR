@@ -27,7 +27,7 @@ exclude_ris_100 <- sample_ref(exclude_ris, 100)
 # Revert back to ris used for vignettte
 #tutorial_ris_dat_excl <-
 #  exclude_ris_raw |>
-#  filter(eppi_id %in% exclude_ris_100$studyid)
+#  filter(eppi_id %in% exclude_ris_100$eppi_id)
 #
 #write_bibliography(tutorial_ris_dat_excl, "data-raw/raw data/excl_tutorial.ris", format = "ris")
 
@@ -47,7 +47,7 @@ include_ris_50 <- sample_ref(include_ris, 50)
 # Revert back to ris used for vignette
 #tutorial_ris_dat_incl <-
 #  include_ris_raw |>
-#  filter(eppi_id %in% include_ris_50$studyid)
+#  filter(eppi_id %in% include_ris_50$eppi_id)
 #
 #write_bibliography(tutorial_ris_dat_incl, "data-raw/raw data/incl_tutorial.ris", format = "ris")
 
