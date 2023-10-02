@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 ```
 
-<div class="warning" style='margin-left:6em; margin-right:6em; padding:0.1em; background-color: #d7dbdd; border: solid #bdc3c7 3px'>
+<div class="warning" style='margin-left:6em; margin-right:6em; margin-bottom:2em; margin-top:2em; padding:0.1em; background-color: #d7dbdd; border: solid #bdc3c7 3px'>
 <span>
 <p style='text-align:center'>
 <b>Important note</b></p>
@@ -24,7 +24,7 @@ knitr::opts_chunk$set(
 This vignette represent tentative work-in-progress only. The general efficacy of using LLMs including ChatGPT for title and abstract screening in literature reviews are still unknown. Our first results suggest that ChatGPT can be a reliable second screener when reviewing specific and well defined interventions. The first evidence of this is shown in this vignette. However, be aware our first results are based on a retrospective analysis which might not generalize to prospective screenings where ChatGPT potentially has not been train on that reference data. We are starting to test the AIscreenR on more complex reviews. Here it seems to be harder to make concise prompts that can make ChatGPT emulating a reliable human second screener. Yet, the first tentative evidence for complex reviews suggest that ChatGPT can function well to reduce the total number of references that has to be screened by humans.
 </p></span>
 </div>
-\ 
+
 
 Loading relevant packages. 
 ```{r setup, message=FALSE, warning=FALSE}
