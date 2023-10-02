@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 ```
 
-<div class="warning" style='margin-left:6em; margin-right:6em; margin-bottom:2em; margin-top:2em; padding:0.1em; background-color: #d7dbdd; border: solid #bdc3c7 3px'>
+<div class="warning" style='margin-left:3em; margin-right:3em; margin-bottom:2em; margin-top:2em; padding:0.1em; background-color: #d7dbdd; border: solid #bdc3c7 3px'>
 <span>
 <p style='margin-top:1em; text-align:center'>
 <b>Important note</b></p>
