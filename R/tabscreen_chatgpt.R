@@ -386,6 +386,7 @@ tabscreen_gpt <- function(
     topp,
     iterations,
     req_per_min,
+    ...,
     role_gpt = role,
     funcs = functions,
     func_call_name = function_call_name,
