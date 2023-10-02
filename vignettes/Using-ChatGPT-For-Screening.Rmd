@@ -16,7 +16,15 @@ knitr::opts_chunk$set(
 
 ```
 
-[INSERT NOTE ABOUT RETROSPECTIVE CAVEAT]
+<div class="warning" style='margin-left:6em; margin-right:6em; padding:0.1em; background-color: #d7dbdd; border: solid #bdc3c7 3px'>
+<span>
+<p style='text-align:center'>
+<b>Important note</b></p>
+<p style='margin:1em'>
+This vignette represent tentative work-in-progress only. The general efficacy of using LLMs including ChatGPT for title and abstract screening in literature reviews are still unknown. Our first results suggest that ChatGPT can be a reliable second screener when reviewing specific and well defined interventions. The first evidence of this is shown in this vignette. However, be aware our first results are based on a retrospective analysis which might not generalize to prospective screenings where ChatGPT potentially has not been train on that reference data. We are starting to test the AIscreenR on more complex reviews. Here it seems to be harder to make concise prompts that can make ChatGPT emulating a reliable human second screener. Yet, the first tentative evidence for complex reviews suggest that ChatGPT can function well to reduce the total number of references that has to be screened by humans.
+</p></span>
+</div>
+\ 
 
 Loading relevant packages. 
 ```{r setup, message=FALSE, warning=FALSE}
@@ -30,7 +38,7 @@ library(usethis)
 
 ## Loading relevant ris file data for screening
 
-## Handling the API key with `AIscreenR`
+## Getting API key OpenAI
 
 Before you can use the function from `AIscreenR`, you must generate your own secret
 API key. To do so you must first ensure that you have created an account at OpenAI (*if you have not done so at this stage, you can sign up [here](https://auth0.openai.com/u/login/identifier?state=hKFo2SBqQjNHSlc1ejIyREpUb01hdDF2OHEzQy12NnJwWlFUN6Fur3VuaXZlcnNhbC1sb2dpbqN0aWTZIEJSOWJaamdKLWswNGlfWDQ2NER1OXJmVUNpVmVzVjZfo2NpZNkgRFJpdnNubTJNdTQyVDNLT3BxZHR3QjNOWXZpSFl6d0Q)).* When having an account, go to [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys) and press the `+ Create new secret key` button (see picture below) and give your key a name. 
@@ -45,6 +53,8 @@ knitr::include_graphics("helper-stuff/API_key_pic.png")
 When you have generate your secret API key, remember to store it safely since
 you will not be able see it again. **NOTE**: *If you lose your API key, you can 
 just generate a new one*. 
+
+## Handling your API key with `AIscreenR`
 
 ### Temporary solution
 
@@ -65,8 +75,8 @@ After entering the API key, save the `.Renviron` document and restart `RStudio` 
 ## Retrieve rate limit information 
 
 ```{r, eval=FALSE}
-# Rate limits across one model
-rate_limits <- rate_limits_per_minute(model = "gpt-3.5-turbo-0613")
+# Rate limits across one model (Default is "gpt-3.5-turbo-0613")
+rate_limits <- rate_limits_per_minute()
 rate_limits
 #> # A tibble: 1 × 3
 #>   model              requests_per_minute tokens_per_minute
@@ -75,19 +85,14 @@ rate_limits
 
 
 # Rate limits overview across multiple models
-models <- c("gpt-3.5-turbo-0613", "gpt-3.5-turbo-16k-0613", "gpt-4") # Add further models if necessary
-
-models_rate_limits <- 
-  map(models, ~ rate_limits_per_minute(model = .x)) |> 
-  list_rbind()
-
+gpt_models <- c("gpt-3.5-turbo-0613", "gpt-4")
+models_rate_limits <- rate_limits_per_minute(model = gpt_models) # Add further models if necessary
 models_rate_limits
-#> # A tibble: 3 × 3
-#>   model                  requests_per_minute tokens_per_minute
-#>   <chr>                                <dbl>             <dbl>
-#> 1 gpt-3.5-turbo-0613                    3500             90000
-#> 2 gpt-3.5-turbo-16k-0613                3500            180000
-#> 3 gpt-4                                  200             10000
+#> # A tibble: 2 × 3
+#>   model              requests_per_minute tokens_per_minute
+#>   <chr>                            <dbl>             <dbl>
+#> 1 gpt-3.5-turbo-0613                3500             90000
+#> 2 gpt-4                              200             10000
 ```
 
 ## Approximate price of screening
@@ -134,8 +139,8 @@ app_obj <-
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
     abstract = abstract, # indicate the variable with the abstracts in the data
-    model = c("gpt-3.5-turbo-0613"),
-    rep = 10 
+    model = c("gpt-3.5-turbo-0613", "gpt-4"),
+    rep = c(10, 1) 
   )
 
 app_obj
@@ -144,6 +149,7 @@ app_obj$price_dollar
 app_obj$price_data
 
 ```
+## Screen titles and abstracts
 
 
 
