@@ -525,13 +525,7 @@ tabscreen_gpt <- function(
     ) |>
     dplyr::arrange(promptid, model, topp, {{ arrange_var }})
 
-  # Check if multiple reps are used with gpt4 models
-
-  #gpt4_nrow <-
-  #  question_dat |>
-  #  filter(stringr::str_detect(model, "gpt-4")) |>
-  #  nrow()
-
+  # For checks of whether multiple reps are used with gpt4 models
   if (any(stringr::str_detect(model, "gpt-4"))){
     max_reps_gpt4 <-
       question_dat |>
@@ -541,6 +535,7 @@ tabscreen_gpt <- function(
       ) |>
       pull(max_reps)
   }
+
   # Approximate prize
 
   app_price_dat <-
