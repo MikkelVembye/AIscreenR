@@ -46,10 +46,17 @@ library(revtools)
 library(tibble)
 library(dplyr)
 
+# Setting API
 set_api_key(AIscreenR:::testing_key_chatgpt())
 
-rate_limits <- rate_limits_per_minute(model = "gpt-3.5-turbo-0613")
+# Obtain rate limits info (Default is "gpt-3.5-turbo-0613")
+rate_limits <- rate_limits_per_minute()
 rate_limits
+
+# Obtain rate limits info across multiple models
+rate_limits <- rate_limits_per_minute(model = c("gpt-3.5-turbo-0613", "gpt-4"))
+rate_limits
+
 ```
 
 How to load ris files. In this example we have downloaded the ris files from 
@@ -75,12 +82,25 @@ ris_dat_incl <- revtools::read_bibliography("path/FFT_include.ris") |>
 
 FFT_dat <- bind_rows(ris_dat_excl, ris_dat_incl)
 head(FFT_dat, 10)
+#> # A tibble: 10 × 4
+#>    studyid title                                             abstract human_code
+#>    <chr>   <chr>                                             <chr>         <dbl>
+#>  1 9434957 Estimating and communicating prognosis in advanc… "Progno…          0
+#>  2 9433838 Self-Directed Behavioral Family Intervention: Do… "Behavi…          0
+#>  3 9431171 Frequency domain source localization shows state… "The to…          0
+#>  4 9433968 A Review of: 'Kearney, C. A. (2010). Helping Chi… "The ar…          0
+#>  5 9434460 Topographic differences in the adolescent matura… "STUDY …          0
+#>  6 9433554 BOOK REVIEW                                       "The ar…          0
+#>  7 9435130 Rapid improvement of depression and quality of l… "Backgr…          0
+#>  8 9432040 Pictorial cognitive task solving and dynamics of… "AIMS: …          0
+#>  9 9434093 Enhancing the Impact of Parent Training Through … "New an…          0
+#> 10 9431505 EEG spectrum as information carrier               "Sponta…          0
 ```
 ```{r, echo=FALSE}
 head(FFT_dat, 10)
 ```
 
-Example of how to enter a prompt. Can also be done in word.
+Example of how to enter a prompt. Can also be done in word (see vignette).
 
 ```{r}
 prompt <- "Evaluate the following study based on the selection criteria
@@ -139,7 +159,7 @@ Example of how to conduct simple screening, getting return 1 if a reference shou
 
 test_obj <- 
   tabscreen_gpt(
-    data = FFT_dat[c(149:150),],
+    data = FFT_dat[c(140:150),],
     prompt = prompt, 
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data

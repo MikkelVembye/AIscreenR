@@ -38,14 +38,25 @@ library(revtools)
 library(tibble)
 library(dplyr)
 
+# Setting API
 set_api_key(AIscreenR:::testing_key_chatgpt())
 
-rate_limits <- rate_limits_per_minute(model = "gpt-3.5-turbo-0613")
+# Obtain rate limits info (Default is "gpt-3.5-turbo-0613")
+rate_limits <- rate_limits_per_minute()
 rate_limits
 #> # A tibble: 1 × 3
 #>   model              requests_per_minute tokens_per_minute
 #>   <chr>                            <dbl>             <dbl>
 #> 1 gpt-3.5-turbo-0613                3500             90000
+
+# Obtain rate limits info across multiple models
+rate_limits <- rate_limits_per_minute(model = c("gpt-3.5-turbo-0613", "gpt-4"))
+rate_limits
+#> # A tibble: 2 × 3
+#>   model              requests_per_minute tokens_per_minute
+#>   <chr>                            <dbl>             <dbl>
+#> 1 gpt-3.5-turbo-0613                3500             90000
+#> 2 gpt-4                              200             10000
 ```
 
 How to load ris files. In this example we have downloaded the ris files
@@ -71,23 +82,37 @@ ris_dat_incl <- revtools::read_bibliography("path/FFT_include.ris") |>
 
 FFT_dat <- bind_rows(ris_dat_excl, ris_dat_incl)
 head(FFT_dat, 10)
+#> # A tibble: 10 × 4
+#>    studyid title                                             abstract human_code
+#>    <chr>   <chr>                                             <chr>         <dbl>
+#>  1 9434957 Estimating and communicating prognosis in advanc… "Progno…          0
+#>  2 9433838 Self-Directed Behavioral Family Intervention: Do… "Behavi…          0
+#>  3 9431171 Frequency domain source localization shows state… "The to…          0
+#>  4 9433968 A Review of: 'Kearney, C. A. (2010). Helping Chi… "The ar…          0
+#>  5 9434460 Topographic differences in the adolescent matura… "STUDY …          0
+#>  6 9433554 BOOK REVIEW                                       "The ar…          0
+#>  7 9435130 Rapid improvement of depression and quality of l… "Backgr…          0
+#>  8 9432040 Pictorial cognitive task solving and dynamics of… "AIMS: …          0
+#>  9 9434093 Enhancing the Impact of Parent Training Through … "New an…          0
+#> 10 9431505 EEG spectrum as information carrier               "Sponta…          0
 ```
 
     #> # A tibble: 10 × 4
     #>    studyid title                                             abstract human_code
-    #>      <int> <chr>                                             <chr>         <dbl>
-    #>  1       1 "The characteristics of monomorphic ventricular … Cardiac…          0
-    #>  2       2 "Signal-averaged ECG parameters in cardiac norma… There i…          0
-    #>  3       3 "Propofol and thiopental for refractory status e… To asse…          0
-    #>  4       4 "The effects of ethanol on EEG activity in males… The pre…          0
-    #>  5       5 "Temperature dependent physiological changes by … Footbat…          0
-    #>  6       6 "Evaluation of scalp and auricular acupuncture o… In this…          0
-    #>  7       7 "Experiments in dysarthric speech recognition us… In this…          0
-    #>  8       8 "Frequency domain source localization shows stat… The top…          0
-    #>  9       9 "Unexpected effects of cognitive-behavioural the… Backgro…          0
-    #> 10      10 "Accuracy and time efficiency of two ASSR analys… Backgro…          0
+    #>    <chr>   <chr>                                             <chr>         <dbl>
+    #>  1 9434957 Estimating and communicating prognosis in advanc… "Progno…          0
+    #>  2 9433838 Self-Directed Behavioral Family Intervention: Do… "Behavi…          0
+    #>  3 9431171 Frequency domain source localization shows state… "The to…          0
+    #>  4 9433968 A Review of: 'Kearney, C. A. (2010). Helping Chi… "The ar…          0
+    #>  5 9434460 Topographic differences in the adolescent matura… "STUDY …          0
+    #>  6 9433554 BOOK REVIEW                                       "The ar…          0
+    #>  7 9435130 Rapid improvement of depression and quality of l… "Backgr…          0
+    #>  8 9432040 Pictorial cognitive task solving and dynamics of… "AIMS: …          0
+    #>  9 9434093 Enhancing the Impact of Parent Training Through … "New an…          0
+    #> 10 9431505 EEG spectrum as information carrier               "Sponta…          0
 
-Example of how to enter a prompt. Can also be done in word.
+Example of how to enter a prompt. Can also be done in word (see
+vignette).
 
 ``` r
 prompt <- "Evaluate the following study based on the selection criteria
@@ -132,15 +157,15 @@ app_obj <-
   )
 
 app_obj
-#> The approximate price of the screening will be around $1.947
+#> The approximate price of the (simple) screening will be around $2.488.
 
 app_obj$price_dollar
-#> [1] 1.947
+#> [1] 2.488
 app_obj$price_data
-#> # A tibble: 1 × 4
-#>   model              input_price_dollar output_price_dollar price_total_dollar
-#>   <chr>                           <dbl>               <dbl>              <dbl>
-#> 1 gpt-3.5-turbo-0613               1.91               0.033               1.95
+#> # A tibble: 1 × 5
+#>   model     iterations input_price_dollar output_price_dollar total_price_dollor
+#>   <chr>          <dbl>              <dbl>               <dbl>              <dbl>
+#> 1 gpt-3.5-…         10               2.46               0.033               2.49
 ```
 
 Example of how to conduct simple screening, getting return 1 if a
@@ -152,7 +177,7 @@ cannot be reached.
 
 test_obj <- 
   tabscreen_gpt(
-    data = FFT_dat[c(149:150),],
+    data = FFT_dat[c(140:150),],
     prompt = prompt, 
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
@@ -160,7 +185,8 @@ test_obj <-
     model = c("gpt-3.5-turbo-0613"),
     reps = 2 # Number of times the same question is asked to ChatGPT
   ) 
-#> * The approximate price of the current (simple) screening will be around $0.0037.
+#> * The approximate price of the current (simple) screening will be around $0.0286.
+#> * Consider removing references that has no abstract since these can distort the accuracy of the screening
 
 test_obj
 #> Find data with all answers by executing
@@ -178,26 +204,41 @@ price_dat
 #> # A tibble: 1 × 4
 #>   model              input_price_dollar output_price_dollar price_total_dollar
 #>   <chr>                           <dbl>               <dbl>              <dbl>
-#> 1 gpt-3.5-turbo-0613             0.0037              0.0001             0.0038
+#> 1 gpt-3.5-turbo-0613             0.0263             0.00052             0.0268
 
 
 all_dat <- test_obj$answer_data_all
 all_dat |> select(decision_gpt:n)
-#> # A tibble: 4 × 7
-#>   decision_gpt decision_binary prompt_tokens completion_tokens run_time top_p
-#>   <chr>                  <dbl>         <int>             <int>    <dbl> <dbl>
-#> 1 1.1                        1           538                13      1.2     1
-#> 2 1.1                        1           538                13      1       1
-#> 3 1                          1           699                11      0.8     1
-#> 4 1                          1           699                11      0.9     1
-#> # ℹ 1 more variable: n <int>
+#> # A tibble: 22 × 6
+#>    decision_gpt decision_binary prompt_tokens completion_tokens run_time     n
+#>    <chr>                  <dbl>         <int>             <int>    <dbl> <int>
+#>  1 1                          1          1027                11      0.7     1
+#>  2 0                          0          1027                11      0.7     2
+#>  3 1.1                        1           535                13      0.9     1
+#>  4 1.1                        1           535                13      0.8     2
+#>  5 1.1                        1           528                13      0.8     1
+#>  6 1.1                        1           528                13      0.8     2
+#>  7 1                          1          1141                11      0.9     1
+#>  8 1.1                        1          1141                13      1.1     2
+#>  9 1                          1           833                11      0.8     1
+#> 10 1                          1           833                11      0.6     2
+#> # ℹ 12 more rows
 
 
 sum_dat <- test_obj$answer_data_sum
 sum_dat |> select(incl_p:n_mis_answers)
-#> # A tibble: 2 × 5
-#>   incl_p final_decision final_decision_num  reps n_mis_answers
-#>    <dbl> <chr>                       <dbl> <int>         <int>
-#> 1      1 Include                         1     2             0
-#> 2      1 Include                         1     2             0
+#> # A tibble: 11 × 5
+#>    incl_p final_decision_gpt final_decision_gpt_num  reps n_mis_answers
+#>     <dbl> <chr>                               <dbl> <int>         <int>
+#>  1    0.5 Include                                 1     2             0
+#>  2    1   Include                                 1     2             0
+#>  3    1   Include                                 1     2             0
+#>  4    1   Include                                 1     2             0
+#>  5    1   Include                                 1     2             0
+#>  6    1   Include                                 1     2             0
+#>  7    1   Include                                 1     2             0
+#>  8    0   Exclude                                 0     2             0
+#>  9    1   Include                                 1     2             0
+#> 10    1   Include                                 1     2             0
+#> 11    1   Include                                 1     2             0
 ```
