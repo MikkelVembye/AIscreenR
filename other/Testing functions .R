@@ -72,9 +72,10 @@ test_obj <- tabscreen_gpt(
   title = title,
   abstract = abstract,
   model = c("gpt-3.5-turbo-0613"), # "gpt-3.5-turbo-16k-0613", "gpt-4"
-  reps = 3,
+  reps = 5,
   #rpm = c(3500, 200),
-  temperature = 0.01,
+  temperature = 0.001,
+  #max_tokens = 100,
   functions = AIscreenR:::incl_function,
   function_call_name = list(name = "inclusion_decision")
 

@@ -428,6 +428,7 @@ tabscreen_gpt <- function(
   t_info <- if (time_info) NA_real_ else NULL
   p_tokens <- c_tokens <- if (token_info) NA_real_ else NULL
 
+  # error handling
   if (function_call_name$name == "inclusion_decision_simple"){
 
     ask_gpt <-
@@ -478,7 +479,9 @@ tabscreen_gpt <- function(
       dplyr::mutate(
         studyid = 1:nrow(data)
       ) |>
-      dplyr::relocate(studyid, .before = {{ title }})
+      dplyr::relocate(studyid, .before = {{ title }}) |>
+      dplyr::relocate({{ abstract }}, .after = {{ title }}) |>
+      dplyr::relocate(c(studyid, {{ title }}, {{ abstract }}), .after = last_col())
 
 
   } else {
@@ -488,7 +491,9 @@ tabscreen_gpt <- function(
       dplyr::mutate(
         studyid = {{ studyid }}
       ) |>
-      dplyr::relocate(studyid, .before = {{ title }})
+      dplyr::relocate(studyid, .before = {{ title }}) |>
+      dplyr::relocate({{ abstract }}, .after = {{ title }}) |>
+      dplyr::relocate(c(studyid, {{ title }}, {{ abstract }}), .after = last_col())
 
   }
 
@@ -823,7 +828,8 @@ tabscreen_gpt <- function(
 
   # Final data sum
   answer_dat_sum <-
-    answer_dat_sum |>
+    dplyr::left_join(question_dat, answer_dat_sum) |>
+    suppressMessages() |>
     select(-c(iterations, req_per_min)) |>
     rename(top_p = topp)
 
