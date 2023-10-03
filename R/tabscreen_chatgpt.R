@@ -393,6 +393,7 @@ tabscreen_gpt <- function(
     seeds = seed
   ){
 
+
     body <- list(
       model = model_gpt,
       messages = list(
@@ -406,6 +407,7 @@ tabscreen_gpt <- function(
       top_p = topp,
       ...
     )
+
 
     if(iterations > 1) iterations <- 1:iterations
 
@@ -645,6 +647,7 @@ tabscreen_gpt <- function(
       res = furrr::future_pmap(
         .l = params,
         .f = ask_gpt,
+        ...,
         .options = furrr::furrr_options(seed = furrr_seed),
         .progress = progress
       )
@@ -674,6 +677,7 @@ tabscreen_gpt <- function(
         res = furrr::future_pmap(
           .l = params_mod,
           .f = ask_gpt,
+          ...,
           .options = furrr::furrr_options(seed = furrr_seed),
           .progress = progress
         )
