@@ -13,7 +13,6 @@ knitr::opts_chunk$set(
   comment = "#>",
   out.width = "100%"
 )
-
 ```
 
 <div class="warning" style='margin-left:3em; margin-right:3em; margin-bottom:2em; margin-top:2em; padding:0.1em; background-color: #d7dbdd; border: solid #bdc3c7 3px'>
@@ -21,7 +20,7 @@ knitr::opts_chunk$set(
 <p style='margin-top:1em; text-align:center'>
 <b>Important note</b></p>
 <p style='margin:1em'>
-This vignette represent tentative work-in-progress only. The general applicability and efficacy of using large-language models (LLMS) including ChatGPT for title and abstract screening in literature reviews are still unknown. Our first results suggest that ChatGPT can be a reliable second screener when reviewing specific and well defined interventions. The first evidence of this is shown in this vignette. However, be aware that our first results are based on a retrospective analysis which might not generalize to prospective screenings where ChatGPT potentially has not been trained on that reference data, that is data added to the internet after 2021. We have started testing the AIscreenR on more complex reviews. Here it seems to be harder to make concise prompts that can make ChatGPT emulating a reliable human second screener. Yet, the first tentative evidence for complex reviews suggests that ChatGPT can function well to reduce the total number of references that has to be screened by humans.
+This vignette represent tentative work-in-progress only. The general applicability and efficacy of using large-language models (LLMs) including ChatGPT for title and abstract screening in literature reviews are still unknown. Our first results suggest that ChatGPT can be a reliable second screener when reviewing specific and well defined interventions. The first evidence of this is shown in this vignette. However, be aware that our first results are based on a retrospective analysis which might not generalize to prospective screenings where ChatGPT potentially has not been trained on that reference data, that is data added to the internet after 2021. We have started testing the AIscreenR on more complex reviews. Here it seems to be harder to make concise prompts that can make ChatGPT emulating a reliable human second screener. Yet, the first tentative evidence for complex reviews suggests that ChatGPT can function well to reduce the total number of references that has to be screened by humans.
 </p></span>
 </div>
 
@@ -37,6 +36,7 @@ library(tibble)
 library(dplyr)
 library(purrr)
 library(usethis)
+library(future)
 ```
 
 
@@ -87,8 +87,8 @@ rate_limits
 
 
 # Rate limits overview across multiple models
-gpt_models <- c("gpt-3.5-turbo-0613", "gpt-4")
-models_rate_limits <- rate_limits_per_minute(model = gpt_models) # Add further models if necessary
+models <- c("gpt-3.5-turbo-0613", "gpt-4")
+models_rate_limits <- rate_limits_per_minute(model = models) # Add further models if necessary
 models_rate_limits
 #> # A tibble: 2 × 3
 #>   model              requests_per_minute tokens_per_minute
@@ -133,16 +133,22 @@ for non-opioid drug use? 3) Are the participants within age 11–21?"
 
 Approximate price of screening
 
+```{r, echo = FALSE}
+models <- c("gpt-3.5-turbo-0613", "gpt-4")
+```
+
 ```{r}
+reps <- c(3, 1)
+
 app_obj <- 
   approximate_price_gpt(
-    data = FFT_dat, 
+    data = FFT_dat[c(1:2),], 
     prompt = prompt,
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
     abstract = abstract, # indicate the variable with the abstracts in the data
-    model = c("gpt-3.5-turbo-0613", "gpt-4"),
-    rep = c(10, 1) 
+    model = models,
+    reps = reps 
   )
 
 app_obj
@@ -151,7 +157,36 @@ app_obj$price_dollar
 app_obj$price_data
 
 ```
+
 ## Screen titles and abstracts
+```{r, message=FALSE, eval = FALSE}
+plan(multisession)
+
+FFT_screen_obj <- 
+  tabscreen_gpt(
+    data = FFT_dat[c(1:2),],
+    prompt = prompt,
+    studyid = studyid, # indicate the variable with the studyid in the data
+    title = title, # indicate the variable with the titles in the data
+    abstract = abstract, # indicate the variable with the abstracts in the data,
+    model = models,
+    reps = reps
+  )
+#> * The approximate price of the current (simple) screening will be around $0.0845.
+#>  Progress: ────────────────────────────────────────────────────────────────────────── 100%
+
+FFT_screen_obj
+#> Find data with all answers by executing
+#>  object_name$answer_data_all 
+#> 
+#> Find data with the result aggregated across multiple answers by executing
+#>  object_name$answer_data_sum
+#> 
+#> Find total price for the screening by executing
+#>  object_name$price_dollor
+
+plan(sequential)
+```
 
 
 
