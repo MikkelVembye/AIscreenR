@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">AIscreenR</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Unreleased version">0.0.0.9008</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Unreleased version">0.0.0.9009</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,33 +84,34 @@
 </p>
 <p style="margin:1em">
 This vignette represent tentative work-in-progress only. The general
-applicability and efficacy of using LLMs including ChatGPT for title and
-abstract screening in literature reviews are still unknown. Our first
-results suggest that ChatGPT can be a reliable second screener when
-reviewing specific and well defined interventions. The first evidence of
-this is shown in this vignette. However, be aware that our first results
-are based on a retrospective analysis which might not generalize to
-prospective screenings where ChatGPT potentially has not been trained on
-that reference data, that is data added to the internet after 2021. We
-have started testing the AIscreenR on more complex reviews. Here it
-seems to be harder to make concise prompts that can make ChatGPT
-emulating a reliable human second screener. Yet, the first tentative
-evidence for complex reviews suggests that ChatGPT can function well to
-reduce the total number of references that has to be screened by humans.
+applicability and efficacy of using large-language models (LLMS)
+including ChatGPT for title and abstract screening in literature reviews
+are still unknown. Our first results suggest that ChatGPT can be a
+reliable second screener when reviewing specific and well defined
+interventions. The first evidence of this is shown in this vignette.
+However, be aware that our first results are based on a retrospective
+analysis which might not generalize to prospective screenings where
+ChatGPT potentially has not been trained on that reference data, that is
+data added to the internet after 2021. We have started testing the
+AIscreenR on more complex reviews. Here it seems to be harder to make
+concise prompts that can make ChatGPT emulating a reliable human second
+screener. Yet, the first tentative evidence for complex reviews suggests
+that ChatGPT can function well to reduce the total number of references
+that has to be screened by humans.
 </p>
 <p></p></span>
 </div>
-<p>Loading relevant packages.</p>
+<div class="section level2">
+<h2 id="loading-relevant-ris-file-data-for-screening">Loading relevant ris file data for screening<a class="anchor" aria-label="anchor" href="#loading-relevant-ris-file-data-for-screening"></a>
+</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mikkelvembye.github.io/AIscreenR/">AIscreenR</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Loading packages </span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mikkelvembye.github.io/AIscreenR/">AIscreenR</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://revtools.net" class="external-link">revtools</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://purrr.tidyverse.org/" class="external-link">purrr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://usethis.r-lib.org" class="external-link">usethis</a></span><span class="op">)</span></span></code></pre></div>
-<div class="section level2">
-<h2 id="loading-relevant-ris-file-data-for-screening">Loading relevant ris file data for screening<a class="anchor" aria-label="anchor" href="#loading-relevant-ris-file-data-for-screening"></a>
-</h2>
 </div>
 <div class="section level2">
 <h2 id="getting-api-key-openai">Getting API key OpenAI<a class="anchor" aria-label="anchor" href="#getting-api-key-openai"></a>
