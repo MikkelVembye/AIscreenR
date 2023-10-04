@@ -66,16 +66,16 @@ plan(multisession)
 
 
 test_obj <- tabscreen_gpt(
-  data = FFT_dat[c(149:150),],
+  data = FFT_dat[c(141:150),],
   prompt = c(prompt),
   studyid = studyid,
   title = title,
   abstract = abstract,
   model = c("gpt-3.5-turbo-0613"), # "gpt-3.5-turbo-16k-0613", "gpt-4"
-  reps = 5,
+  reps = 2,
   #rpm = c(3500, 200),
-  temperature = 0.001,
-  #max_tokens = 100,
+  #temperature = 0.001,
+  max_tokens = 40,
   functions = AIscreenR:::incl_function,
   function_call_name = list(name = "inclusion_decision")
 

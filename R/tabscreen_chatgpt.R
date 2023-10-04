@@ -291,10 +291,24 @@ tabscreen_gpt <- function(
 
         resp <- resp |> httr2::resp_body_json()
 
+        resp_text <- resp$choices[[1]]$message$function_call$arguments
+
+        if (!stringr::str_detect(resp_text, '\"\n\\}')){
+
+          resp_text <- paste0(resp_text, '\"\n}')
+
+        }
+
+        if (!stringr::str_detect(resp_text, '\\}') && stringr::str_detect(resp_text, '\"\n')) {
+
+          resp_text <- paste0(resp_text, '}')
+
+        }
+
         if (detailed){
 
           res <-
-            tibble::as_tibble(jsonlite::fromJSON(resp$choices[[1]]$message$function_call$arguments)) |>
+            tibble::as_tibble(jsonlite::fromJSON(resp_text)) |>
             dplyr::mutate(
 
               decision_binary = as.numeric(
@@ -314,7 +328,7 @@ tabscreen_gpt <- function(
         } else {
 
           res <-
-            tibble::as_tibble(jsonlite::fromJSON(resp$choices[[1]]$message$function_call$arguments)) |>
+            tibble::as_tibble(jsonlite::fromJSON(resp_text)) |>
             dplyr::mutate(
 
               decision_binary = as.numeric(
