@@ -84,7 +84,7 @@
 </p>
 <p style="margin:1em">
 This vignette represent tentative work-in-progress only. The general
-applicability and efficacy of using large-language models (LLMS)
+applicability and efficacy of using large-language models (LLMs)
 including ChatGPT for title and abstract screening in literature reviews
 are still unknown. Our first results suggest that ChatGPT can be a
 reliable second screener when reviewing specific and well defined
@@ -111,7 +111,8 @@ that has to be screened by humans.
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://purrr.tidyverse.org/" class="external-link">purrr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://usethis.r-lib.org" class="external-link">usethis</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://usethis.r-lib.org" class="external-link">usethis</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://future.futureverse.org" class="external-link">future</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="getting-api-key-openai">Getting API key OpenAI<a class="anchor" aria-label="anchor" href="#getting-api-key-openai"></a>
@@ -161,8 +162,8 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span></span>
 <span></span>
 <span><span class="co"># Rate limits overview across multiple models</span></span>
-<span><span class="va">gpt_models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-4"</span><span class="op">)</span></span>
-<span><span class="va">models_rate_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">gpt_models</span><span class="op">)</span> <span class="co"># Add further models if necessary</span></span>
+<span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-4"</span><span class="op">)</span></span>
+<span><span class="va">models_rate_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">models</span><span class="op">)</span> <span class="co"># Add further models if necessary</span></span>
 <span><span class="va">models_rate_limits</span></span>
 <span><span class="co">#&gt; # A tibble: 2 × 3</span></span>
 <span><span class="co">#&gt;   model              requests_per_minute tokens_per_minute</span></span>
@@ -204,32 +205,61 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span><span class="st">for non-opioid drug use? 3) Are the participants within age 11–21?"</span></span></code></pre></div>
 <p>Approximate price of screening</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">app_obj</span> <span class="op">&lt;-</span> </span>
+<code class="sourceCode R"><span><span class="va">reps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">1</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">app_obj</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu"><a href="../reference/approximate_price_gpt.html">approximate_price_gpt</a></span><span class="op">(</span></span>
-<span>    data <span class="op">=</span> <span class="va">FFT_dat</span>, </span>
+<span>    data <span class="op">=</span> <span class="va">FFT_dat</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span>,<span class="op">]</span>, </span>
 <span>    prompt <span class="op">=</span> <span class="va">prompt</span>,</span>
 <span>    studyid <span class="op">=</span> <span class="va">studyid</span>, <span class="co"># indicate the variable with the studyid in the data</span></span>
 <span>    title <span class="op">=</span> <span class="va">title</span>, <span class="co"># indicate the variable with the titles in the data</span></span>
 <span>    abstract <span class="op">=</span> <span class="va">abstract</span>, <span class="co"># indicate the variable with the abstracts in the data</span></span>
-<span>    model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-4"</span><span class="op">)</span>,</span>
-<span>    rep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">)</span> </span>
+<span>    model <span class="op">=</span> <span class="va">models</span>,</span>
+<span>    reps <span class="op">=</span> <span class="va">reps</span> </span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="va">app_obj</span></span>
-<span><span class="co">#&gt; The approximate price of the (simple) screening will be around $7.583.</span></span>
+<span><span class="co">#&gt; The approximate price of the (simple) screening will be around $0.0845.</span></span>
 <span></span>
 <span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_dollar</span></span>
-<span><span class="co">#&gt; [1] 7.583</span></span>
+<span><span class="co">#&gt; [1] 0.0845</span></span>
 <span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_data</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 5</span></span></span>
 <span><span class="co">#&gt;   model     iterations input_price_dollar output_price_dollar total_price_dollor</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> gpt-3.5-…         10               2.48               0.033               2.52</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> gpt-4              1               4.97               0.099               5.07</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> gpt-3.5-…          3             0.010<span style="text-decoration: underline;">9</span>            0.000<span style="text-decoration: underline;">132</span>             0.011 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> gpt-4              1             0.072<span style="text-decoration: underline;">2</span>            0.001<span style="text-decoration: underline;">32</span>              0.073<span style="text-decoration: underline;">5</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="screen-titles-and-abstracts">Screen titles and abstracts<a class="anchor" aria-label="anchor" href="#screen-titles-and-abstracts"></a>
 </h2>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">FFT_screen_obj</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu"><a href="../reference/tabscreen_gpt.html">tabscreen_gpt</a></span><span class="op">(</span></span>
+<span>    data <span class="op">=</span> <span class="va">FFT_dat</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span>,<span class="op">]</span>,</span>
+<span>    prompt <span class="op">=</span> <span class="va">prompt</span>,</span>
+<span>    studyid <span class="op">=</span> <span class="va">studyid</span>, <span class="co"># indicate the variable with the studyid in the data</span></span>
+<span>    title <span class="op">=</span> <span class="va">title</span>, <span class="co"># indicate the variable with the titles in the data</span></span>
+<span>    abstract <span class="op">=</span> <span class="va">abstract</span>, <span class="co"># indicate the variable with the abstracts in the data,</span></span>
+<span>    model <span class="op">=</span> <span class="va">models</span>,</span>
+<span>    reps <span class="op">=</span> <span class="va">reps</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $0.0845.</span></span>
+<span><span class="co">#&gt;  Progress: ────────────────────────────────────────────────────────────────────────── 100%</span></span>
+<span></span>
+<span><span class="va">FFT_screen_obj</span></span>
+<span><span class="co">#&gt; Find data with all answers by executing</span></span>
+<span><span class="co">#&gt;  object_name$answer_data_all </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Find data with the result aggregated across multiple answers by executing</span></span>
+<span><span class="co">#&gt;  object_name$answer_data_sum</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Find total price for the screening by executing</span></span>
+<span><span class="co">#&gt;  object_name$price_dollor</span></span>
+<span></span>
+<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">sequential</span><span class="op">)</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
