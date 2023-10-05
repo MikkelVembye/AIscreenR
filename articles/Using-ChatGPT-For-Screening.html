@@ -205,12 +205,12 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span><span class="st">for non-opioid drug use? 3) Are the participants within age 11–21?"</span></span></code></pre></div>
 <p>Approximate price of screening</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">reps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">1</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">reps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">app_obj</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu"><a href="../reference/approximate_price_gpt.html">approximate_price_gpt</a></span><span class="op">(</span></span>
-<span>    data <span class="op">=</span> <span class="va">FFT_dat</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span>,<span class="op">]</span>, </span>
-<span>    prompt <span class="op">=</span> <span class="va">prompt</span>,</span>
+<span>    data <span class="op">=</span> <span class="va">FFT_dat</span>, <span class="co"># Tutorial data embedded in the package</span></span>
+<span>    prompt <span class="op">=</span> <span class="va">prompt</span>, </span>
 <span>    studyid <span class="op">=</span> <span class="va">studyid</span>, <span class="co"># indicate the variable with the studyid in the data</span></span>
 <span>    title <span class="op">=</span> <span class="va">title</span>, <span class="co"># indicate the variable with the titles in the data</span></span>
 <span>    abstract <span class="op">=</span> <span class="va">abstract</span>, <span class="co"># indicate the variable with the abstracts in the data</span></span>
@@ -219,16 +219,16 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="va">app_obj</span></span>
-<span><span class="co">#&gt; The approximate price of the (simple) screening will be around $0.0845.</span></span>
+<span><span class="co">#&gt; The approximate price of the (simple) screening will be around $7.583.</span></span>
 <span></span>
 <span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_dollar</span></span>
-<span><span class="co">#&gt; [1] 0.0845</span></span>
+<span><span class="co">#&gt; [1] 7.583</span></span>
 <span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_data</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 5</span></span></span>
 <span><span class="co">#&gt;   model     iterations input_price_dollar output_price_dollar total_price_dollor</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> gpt-3.5-…          3             0.010<span style="text-decoration: underline;">9</span>            0.000<span style="text-decoration: underline;">132</span>             0.011 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> gpt-4              1             0.072<span style="text-decoration: underline;">2</span>            0.001<span style="text-decoration: underline;">32</span>              0.073<span style="text-decoration: underline;">5</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> gpt-3.5-…         10               2.48               0.033               2.52</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> gpt-4              1               4.97               0.099               5.07</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="screen-titles-and-abstracts">Screen titles and abstracts<a class="anchor" aria-label="anchor" href="#screen-titles-and-abstracts"></a>
@@ -258,6 +258,10 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Find total price for the screening by executing</span></span>
 <span><span class="co">#&gt;  object_name$price_dollor</span></span>
+<span><span class="co">#&gt;  </span></span>
+<span><span class="co">#&gt; If some requests failed, find the error data by executing</span></span>
+<span><span class="co">#&gt;  object_name$error_data</span></span>
+<span>  </span>
 <span></span>
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">sequential</span><span class="op">)</span></span></code></pre></div>
 </div>
