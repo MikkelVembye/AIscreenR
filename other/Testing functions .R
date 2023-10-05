@@ -93,16 +93,16 @@ plan(multisession)
 
 
 test_obj <- tabscreen_gpt(
-  data = FFT_dat[c(1:10),],
-  prompt = c(prompt, prompt2),
+  data = FFT_dat[c(1:2),],
+  prompt = c(prompt),
   studyid = studyid, # indicate the variable with the studyid in the data
   title = title, # indicate the variable with the titles in the data
-  abstract = abstract, # indicate the variable with the abstracts in the data,
-  functions = AIscreenR:::incl_function,
-  function_call_name = list(name = "inclusion_decision"),
+  abstract = abstract # indicate the variable with the abstracts in the data,
+  #functions = AIscreenR:::incl_function,
+  #function_call_name = list(name = "inclusion_decision"),
   #max_tries = 0,
   #reps = 1 # Number of times the same question is asked to ChatGPT
-  max_tokens = 40
+  #max_tokens = 40
 ); test_obj
 
 price_in_dollar <- test_obj$price_dollar

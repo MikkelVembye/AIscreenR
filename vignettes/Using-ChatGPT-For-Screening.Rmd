@@ -138,12 +138,12 @@ models <- c("gpt-3.5-turbo-0613", "gpt-4")
 ```
 
 ```{r}
-reps <- c(3, 1)
+reps <- c(10, 1)
 
 app_obj <- 
   approximate_price_gpt(
-    data = FFT_dat[c(1:2),], 
-    prompt = prompt,
+    data = FFT_dat, # Tutorial data embedded in the package
+    prompt = prompt, 
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
     abstract = abstract, # indicate the variable with the abstracts in the data
@@ -184,6 +184,10 @@ FFT_screen_obj
 #> 
 #> Find total price for the screening by executing
 #>  object_name$price_dollor
+#>  
+#> If some requests failed, find the error data by executing
+#>  object_name$error_data
+  
 
 plan(sequential)
 ```
