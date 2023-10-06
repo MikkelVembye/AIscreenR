@@ -3,8 +3,10 @@ title: "Using ChatGPT for Title and Abstract Screening in Systematic Reviews"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Using ChatGPT for Title and Abstract Screening in Systematic Reviews}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r, include = FALSE}
@@ -37,6 +39,40 @@ library(dplyr)
 library(purrr)
 library(usethis)
 library(future)
+
+
+# Loading excluded studies
+# Consider making AIscreenR_example function as https://github.com/tidyverse/readxl/blob/HEAD/R/example.R 
+excl_path <- system.file("extdata", "excl_tutorial.ris", package = "AIscreenR")
+ris_dat_excl <- revtools::read_bibliography(excl_path) |> 
+  suppressWarnings() |> 
+  select(author, eppi_id, title, abstract) |> # Using only relevant variables
+  mutate(
+    human_code = 0
+  )
+
+# Loading included studies
+incl_path <- system.file("extdata", "incl_tutorial.ris", package = "AIscreenR")
+ris_dat_incl <- revtools::read_bibliography(incl_path) |> 
+  suppressWarnings() |> 
+  select(author, eppi_id, title, abstract) |>
+  mutate(
+    human_code = 1
+  )
+
+# Check why FFT_data and FFT_dat differs 
+FFT_data <- 
+  bind_rows(ris_dat_excl, ris_dat_incl) |> 
+  as_tibble() |> 
+  mutate(
+    studyid = 1:n()
+  ) |> 
+  relocate(studyid, .after = eppi_id)
+
+FFT_data
+
+FFT_dat
+
 ```
 
 
