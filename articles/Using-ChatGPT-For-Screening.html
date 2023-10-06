@@ -112,7 +112,68 @@ that has to be screened by humans.
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://purrr.tidyverse.org/" class="external-link">purrr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://usethis.r-lib.org" class="external-link">usethis</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://future.futureverse.org" class="external-link">future</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://future.futureverse.org" class="external-link">future</a></span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># Loading excluded studies</span></span>
+<span><span class="co"># Consider making AIscreenR_example function as https://github.com/tidyverse/readxl/blob/HEAD/R/example.R </span></span>
+<span><span class="va">excl_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"excl_tutorial.ris"</span>, package <span class="op">=</span> <span class="st">"AIscreenR"</span><span class="op">)</span></span>
+<span><span class="va">ris_dat_excl</span> <span class="op">&lt;-</span> <span class="fu">revtools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/revtools/man/read_bibliograpy.html" class="external-link">read_bibliography</a></span><span class="op">(</span><span class="va">excl_path</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">author</span>, <span class="va">eppi_id</span>, <span class="va">title</span>, <span class="va">abstract</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># Using only relevant variables</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>    human_code <span class="op">=</span> <span class="fl">0</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Loading included studies</span></span>
+<span><span class="va">incl_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"incl_tutorial.ris"</span>, package <span class="op">=</span> <span class="st">"AIscreenR"</span><span class="op">)</span></span>
+<span><span class="va">ris_dat_incl</span> <span class="op">&lt;-</span> <span class="fu">revtools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/revtools/man/read_bibliograpy.html" class="external-link">read_bibliography</a></span><span class="op">(</span><span class="va">incl_path</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">author</span>, <span class="va">eppi_id</span>, <span class="va">title</span>, <span class="va">abstract</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>    human_code <span class="op">=</span> <span class="fl">1</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Check why FFT_data and FFT_dat differs </span></span>
+<span><span class="va">FFT_data</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">ris_dat_excl</span>, <span class="va">ris_dat_incl</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>    studyid <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/relocate.html" class="external-link">relocate</a></span><span class="op">(</span><span class="va">studyid</span>, .after <span class="op">=</span> <span class="va">eppi_id</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">FFT_data</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 150 × 6</span></span></span>
+<span><span class="co">#&gt;    author                              eppi_id studyid title abstract human_code</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Egan D and Cole J and Twomey L      9431133       1 The … Objecti…          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Clifford G D and Tarassenko L       9431153       2 Segm… Inter-p…          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Levene J E and Newman F and Jeffer… 9431169       3 Foca… This pi…          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Michel C M and Pascual-Marqui R D … 9431171       4 Freq… The top…          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Subasi A and Alkan A and Koklukaya… 9431258       5 Wave… Since E…          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> NA                                  9431425       6 New … This pa…          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Daniels M Harry and Mines Robert a… 9431426       7 A Me… One of …          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Mroczka T and Lewandowski P and Ma… 9431441       8 Effe… INTRODU…          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Cassim F and Derambure P and Defeb… 9431469       9 [Neu… Tremor …          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Oki M and Taniguchi H and Ohyama T  9431504      10 Eval… Obturat…          0</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 140 more rows</span></span></span>
+<span></span>
+<span><span class="va">FFT_dat</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 150 × 6</span></span></span>
+<span><span class="co">#&gt;    author                              eppi_id studyid title abstract human_code</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Holloway R G and Gramling R and Ke… 9<span style="text-decoration: underline;">434</span>957       1 Esti… <span style="color: #949494;">"</span>Progno…          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Morawska Alina and Stallman Helen … 9<span style="text-decoration: underline;">433</span>838       2 Self… <span style="color: #949494;">"</span>Behavi…          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Michel C M and Pascual-Marqui R D … 9<span style="text-decoration: underline;">431</span>171       3 Freq… <span style="color: #949494;">"</span>The to…          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Paul Howard A                       9<span style="text-decoration: underline;">433</span>968       4 A Re… <span style="color: #949494;">"</span>The ar…          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Feinberg I and De Bie E and Davis … 9<span style="text-decoration: underline;">434</span>460       5 Topo… <span style="color: #949494;">"</span>STUDY …          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Hamburg Sam R                       9<span style="text-decoration: underline;">433</span>554       6 BOOK… <span style="color: #949494;">"</span>The ar…          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Park H Y and Lee B J and Kim J H a… 9<span style="text-decoration: underline;">435</span>130       7 Rapi… <span style="color: #949494;">"</span>Backgr…          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Petrek J                            9<span style="text-decoration: underline;">432</span>040       8 Pict… <span style="color: #949494;">"</span>AIMS: …          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Schwartzman Meredith P and Wahler … 9<span style="text-decoration: underline;">434</span>093       9 Enha… <span style="color: #949494;">"</span>New an…          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Faber J and Srutova L and Pilarova… 9<span style="text-decoration: underline;">431</span>505      10 EEG … <span style="color: #949494;">"</span>Sponta…          0</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 140 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="getting-api-key-openai">Getting API key OpenAI<a class="anchor" aria-label="anchor" href="#getting-api-key-openai"></a>
