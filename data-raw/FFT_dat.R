@@ -1,4 +1,4 @@
-## code to prepare `FFT_dat` dataset goes here
+## code to prepare `filges2015_dat` dataset goes here
 
 library(revtools)
 library(dplyr)
@@ -11,7 +11,12 @@ sample_ref <- function(dat, x, with_replacement = FALSE, prob_vec = rep(1/x, nro
   dat[sample(NROW(dat), size = x, replace = with_replacement, prob = prob_vec),]
 }
 
-exclude_ris_raw <- revtools::read_bibliography("data-raw/raw data/FFT_exclude.ris") |>
+#####################
+# Excluded references
+#####################
+
+exclude_ris_raw <-
+  revtools::read_bibliography("data-raw/raw data/FFT_exclude.ris") |>
   suppressWarnings()
 
 exclude_ris <-
@@ -19,18 +24,30 @@ exclude_ris <-
   select(author, eppi_id, title, abstract) |>
   as_tibble() |>
   mutate(
+    eppi_id = factor(eppi_id, levels = unique(eppi_id)),
     human_code = 0 # Indicating exclusion
   )
 
 exclude_ris_100 <- sample_ref(exclude_ris, 100)
 
-# Revert back to ris used for vignettte
-#tutorial_ris_dat_excl <-
-#  exclude_ris_raw |>
-#  filter(eppi_id %in% exclude_ris_100$eppi_id)
-#
-#write_bibliography(tutorial_ris_dat_excl, "data-raw/raw data/excl_tutorial.ris", format = "ris")
+# Revert back to ris format
+tutorial_ris_dat_excl <-
+  exclude_ris_raw |>
+  filter(eppi_id %in% exclude_ris_100$eppi_id) |>
+  mutate(
+    eppi_id = factor(eppi_id, levels = exclude_ris_100$eppi_id)
+  ) |>
+  arrange(eppi_id) |>
+  mutate(
+    eppi_id = as.character(eppi_id)
+  )
 
+# Creating example ris file data
+write_bibliography(tutorial_ris_dat_excl, "inst/extdata/excl_tutorial.ris", format = "ris")
+
+#####################
+# Included references
+#####################
 include_ris_raw <- revtools::read_bibliography("data-raw/raw data/FFT_include.ris") |>
   suppressWarnings()
 
@@ -39,25 +56,34 @@ include_ris <-
   select(author, eppi_id, title, abstract) |>
   as_tibble() |>
   mutate(
+    eppi_id = factor(eppi_id, levels = unique(eppi_id)),
     human_code = 1 # Indicating inclusion
   )
 
 include_ris_50 <- sample_ref(include_ris, 50)
 
 # Revert back to ris used for vignette
-#tutorial_ris_dat_incl <-
-#  include_ris_raw |>
-#  filter(eppi_id %in% include_ris_50$eppi_id)
-#
-#write_bibliography(tutorial_ris_dat_incl, "data-raw/raw data/incl_tutorial.ris", format = "ris")
+tutorial_ris_dat_incl <-
+  include_ris_raw |>
+  filter(eppi_id %in% include_ris_50$eppi_id) |>
+  mutate(
+    eppi_id = factor(eppi_id, levels = include_ris_50$eppi_id)
+  ) |>
+  arrange(eppi_id) |>
+  mutate(
+    eppi_id = as.character(eppi_id)
+  )
 
-FFT_dat <-
+# Creating example ris file data
+write_bibliography(tutorial_ris_dat_incl, "inst/extdata/incl_tutorial.ris", format = "ris")
+
+filges2015_dat <-
   dplyr::bind_rows(exclude_ris_100, include_ris_50) |>
   dplyr::mutate(
-    eppi_id = as.numeric(eppi_id),
+    eppi_id = as.character(eppi_id),
     studyid = 1:n()
   ) |>
   dplyr::relocate(studyid, .after = eppi_id)
 
-usethis::use_data(FFT_dat, overwrite = TRUE)
+usethis::use_data(filges2015_dat, overwrite = TRUE)
 

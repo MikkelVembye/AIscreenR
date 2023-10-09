@@ -26,8 +26,7 @@ This vignette represent tentative work-in-progress only. The general applicabili
 </p></span>
 </div>
 
-An all-important step to ensure the quality of systematic reviews involves detecting all relevant references related to the literature under review. Usually, this involves independent double screening of all references detected in relevant databases and literature with two human screeners. This procedure has shown pivotal since less experienced single screeners tend to miss around 13 % relavant studies (with 5 % for experienced screeners), which in most cases substantially change the main review findings (Waffenschmidt, 2019). Yet, double-screening is a costly and resource intensive procedure, excluding many researchers from using it. An alternative to human double-screening is to use automated tools to act as the second screener (Gartlehner et al., 2019; van de Schoot et al. 2021). Hereto, most evaluations of existing tools finds that most automated tools fail to reliably act as/imitating a human second screener. Meanwhile, it is still unknown how well or if the newly developed large-language models (LLMs) such as [ChatGPT](https://chat.openai.com/) can work and possibly emulate a human second screener. The aim of the `AIscreenR` package is to support the use and testing of the ChatGPT as a the second screener or alternatively to reduce research waste. Concretely the package allow user to apply the gpt models from the [https://api.openai.com/v1/chat/completions](https://platform.openai.com/docs/models/model-endpoint-compatibility) endpoint. In future developments, we expect to add further LLMs (such as Bard) when APIs are available for those LLMs. For now, we invite other researchers to test this software as that we as a review community grasps a better understand of the performance of the gpt models from OpenAI as second screeners. In this vignette, we show how a title and abstract screening with ChatGPT can be done in R. The advantages of conducting the screening with ChatGPT via R is 1) that reviewers can easily work with a large number of references, avoiding copy-paste procedures, 2) that the total screening time can be substantially increased relative to using the ChatGPT interface, and 3) that consistency between gpt answer for the same title and abstract can easily be tested. In this vignette, we also show the first proof of concept for the use of ChatGPT as a reliable second screener. This goes without saying that ChatGPT works in all cases, and we think the tool should be use carefully and should always assisted by a human (human-in-the-loop). Consequently, we do not recommend to use the the ChatGPT as a single screener.   
-
+An all-important step to ensure the quality of systematic reviews involves detecting all relevant references related to the literature under review. Usually, this involves independent double screening of all references detected in relevant databases and literature with two human screeners. This procedure has shown pivotal since less experienced single screeners tend to miss around 13 % relavant studies (with 5 % for experienced screeners), which in most cases substantially change the main review findings (Waffenschmidt, 2019). Yet, double-screening is a costly and resource intensive procedure, excluding many researchers from using it. An alternative to human double-screening is to use automated tools to act as the second screener (Gartlehner et al., 2019; van de Schoot et al. 2021). Hereto, most evaluations of existing tools finds that most automated tools fail to reliably act as/imitating a human second screener. Meanwhile, it is still unknown how well or if the newly developed large-language models (LLMs) such as [ChatGPT](https://chat.openai.com/) can work and possibly emulate a human second screener. The aim of the `AIscreenR` package is to support the use and testing of ChatGPT as a the second screener or alternatively to reduce research waste. Concretely the package allow user to apply the gpt models from the [https://api.openai.com/v1/chat/completions](https://platform.openai.com/docs/models/model-endpoint-compatibility) endpoint. In future developments, we expect to add further LLMs (such as Bard) when APIs are available for those LLMs. For now, we invite other researchers to test this software so that we as a review community can get a better understanding of the performance of the gpt models from OpenAI as second screeners. In this vignette, we show how a title and abstract screening with ChatGPT can be done in R. The advantages of conducting the screening with ChatGPT via R is 1) that reviewers can easily work with a large number of references, avoiding copy-paste procedures, 2) that the total screening time can be substantially increased relative to using the ChatGPT interface, and 3) that consistency between gpt answer for the same title and abstract can easily be tested. In this vignette, we also show the first proof of concept for the use of ChatGPT as a reliable second screener. This goes without saying that ChatGPT works in all cases, and we think the tool should be use carefully and should always assisted by a human (human-in-the-loop). Consequently, we do not recommend to use the the ChatGPT as a single screener.   
 
 ## Loading relevant ris file data for screening
 
@@ -47,6 +46,7 @@ library(future)
 excl_path <- system.file("extdata", "excl_tutorial.ris", package = "AIscreenR")
 ris_dat_excl <- revtools::read_bibliography(excl_path) |> 
   suppressWarnings() |> 
+  as_tibble() |>
   select(author, eppi_id, title, abstract) |> # Using only relevant variables
   mutate(
     human_code = 0
@@ -56,23 +56,22 @@ ris_dat_excl <- revtools::read_bibliography(excl_path) |>
 incl_path <- system.file("extdata", "incl_tutorial.ris", package = "AIscreenR")
 ris_dat_incl <- revtools::read_bibliography(incl_path) |> 
   suppressWarnings() |> 
+  as_tibble() |>
   select(author, eppi_id, title, abstract) |>
   mutate(
     human_code = 1
   )
 
-# Check why FFT_data and FFT_dat differs 
-FFT_data <- 
+# Check why filges2015_data and filges2015_dat differs 
+filges2015_dat <- 
   bind_rows(ris_dat_excl, ris_dat_incl) |> 
-  as_tibble() |> 
   mutate(
     studyid = 1:n()
   ) |> 
   relocate(studyid, .after = eppi_id)
 
-FFT_data
-
-FFT_dat
+#?filges2015_dat
+filges2015_dat
 
 ```
 
@@ -179,7 +178,7 @@ reps <- c(10, 1)
 
 app_obj <- 
   approximate_price_gpt(
-    data = FFT_dat, # Tutorial data embedded in the package
+    data = filges2015_dat, # Tutorial data embedded in the package
     prompt = prompt, 
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
@@ -201,7 +200,7 @@ plan(multisession)
 
 FFT_screen_obj <- 
   tabscreen_gpt(
-    data = FFT_dat[c(1:2),],
+    data = filges2015_dat[c(1:2),],
     prompt = prompt,
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
@@ -211,6 +210,8 @@ FFT_screen_obj <-
   )
 #> * The approximate price of the current (simple) screening will be around $0.0845.
 #>  Progress: ────────────────────────────────────────────────────────────────────────── 100%
+
+plan(sequential)
 
 FFT_screen_obj
 #> Find data with all answers by executing
@@ -225,8 +226,6 @@ FFT_screen_obj
 #> If some requests failed, find the error data by executing
 #>  object_name$error_data
   
-
-plan(sequential)
 ```
 
 

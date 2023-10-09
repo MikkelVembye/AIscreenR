@@ -159,7 +159,7 @@
 #' prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
 #'
 #' tabscreen_gpt(
-#'   data = FFT_dat[1:2,],
+#'   data = filges2015_dat[1:2,],
 #'   prompt = prompt,
 #'   studyid = studyid,
 #'   title = title,
@@ -172,7 +172,7 @@
 #'  # Get detailed descriptions of the gpt decisions by using the
 #'  # embedded function calling functions from the package. See example below.
 #'  tabscreen_gpt(
-#'    data = FFT_dat[1:2,],
+#'    data = filges2015_dat[1:2,],
 #'    prompt = prompt,
 #'    studyid = studyid,
 #'    title = title,

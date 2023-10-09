@@ -11,7 +11,7 @@
 #'
 #' \tabular{lll}{
 #'  \bold{author} \tab \code{character} \tab indicating the authors of the reference \cr
-#'  \bold{eppi_id} \tab \code{numeric} \tab indicating a unique eppi-ID for each study \cr
+#'  \bold{eppi_id} \tab \code{character} \tab indicating a unique eppi-ID for each study \cr
 #'  \bold{studyid} \tab \code{numeric} \tab indicating a unique study-ID for each study \cr
 #'  \bold{title} \tab \code{character} \tab with the title of the study \cr
 #'  \bold{abstract}  \tab \code{character} \tab with the study abstract \cr
@@ -25,4 +25,4 @@
 #' \emph{Campbell Systematic Reviews}, \doi{10.4073/csr.2015.14}
 #'
 
-"FFT_dat"
+"filges2015_dat"

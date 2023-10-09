@@ -24,7 +24,7 @@ reference:
   - title: "Datasets"
     desc: "Ris file data from systematic reviews"
     contents:
-      - FFT_dat
+      - filges2015_dat
 
   - title: "Coercion"
     contents:

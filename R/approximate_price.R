@@ -44,7 +44,7 @@
 #' prompt <- "This is a prompt"
 #'
 #' app_price <- approximate_price_gpt(
-#'   data = FFT_dat[1:2,],
+#'   data = filges2015_dat[1:2,],
 #'   prompt = prompt,
 #'   studyid = studyid,
 #'   title = title,

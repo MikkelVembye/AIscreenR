@@ -2,7 +2,7 @@
 % Please edit documentation in R/print.chatgpt.R
 \name{print.chatgpt}
 \alias{print.chatgpt}
-\title{Print methods for 'chatgpt' objects}
+\title{Print methods for \code{'chatgpt'} objects}
 \usage{
 \method{print}{chatgpt}(x, ...)
 }
@@ -15,7 +15,7 @@
 Information about how to find answer datasets and pricing information.
 }
 \description{
-Print methods for 'chatgpt' objects
+Print methods for \code{'chatgpt'} objects
 }
 \examples{
 \dontrun{

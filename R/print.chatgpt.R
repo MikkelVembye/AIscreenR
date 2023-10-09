@@ -1,4 +1,4 @@
-#' Print methods for 'chatgpt' objects
+#' Print methods for `'chatgpt'` objects
 #'
 #' @param x an object of class "chatgpt".
 #' @param ... other print arguments.

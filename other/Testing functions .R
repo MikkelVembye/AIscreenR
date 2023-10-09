@@ -72,7 +72,7 @@ for non-opioid drug use?"
 
 
 app_obj <- approximate_price_gpt(
-  data = FFT_dat[c(1:150),],
+  data = filges2015_dat[c(1:150),],
   prompt = prompt,
   studyid = studyid,
   title = title,
@@ -93,7 +93,7 @@ plan(multisession)
 
 
 test_obj <- tabscreen_gpt(
-  data = FFT_dat[c(1:2),],
+  data = filges2015_dat[c(1:2),],
   prompt = c(prompt),
   studyid = studyid, # indicate the variable with the studyid in the data
   title = title, # indicate the variable with the titles in the data
@@ -144,7 +144,7 @@ reps <- c(10)
 prompt <- paste("Dette er prompt", 1:5)
 rpm <- c(3500)
 top_p <- c(0.5, 1)
-dat <- FFT_dat[1:5,]
+dat <- filges2015_dat[1:5,]
 
 # mp = multiplier
 mp_reps <- if (length(reps) > 1) 1 else length(model)
