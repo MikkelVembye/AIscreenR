@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-<div class="warning" style='margin-left:3em; margin-right:3em; margin-bottom:2em; margin-top:2em; padding:0.1em; background-color: #d7dbdd; border: solid #bdc3c7 3px'>
+<div class="warning" style='margin-left:2em; margin-right:2em; margin-bottom:2em; margin-top:2em; padding:0.1em; background-color: #d7dbdd; border: solid #bdc3c7 3px'>
 <span>
 <p style='margin-top:1em; text-align:center'>
 <b>Important note</b></p>
@@ -26,9 +26,10 @@ This vignette represent tentative work-in-progress only. The general applicabili
 </p></span>
 </div>
 
+An all-important step to ensure the quality of systematic reviews involves detecting all relevant references related to the literature under review. Usually, this involves independent double screening of all references detected in relevant databases and literature with two human screeners. This procedure has shown pivotal since less experienced single screeners tend to miss around 13 % relavant studies (with 5 % for experienced screeners), which in most cases substantially change the main review findings (Waffenschmidt, 2019). Yet, double-screening is a costly and resource intensive procedure, excluding many researchers from using it. An alternative to human double-screening is to use automated tools to act as the second screener (Gartlehner et al., 2019; van de Schoot et al. 2021). Hereto, most evaluations of existing tools finds that most automated tools fail to reliably act as/imitating a human second screener. Meanwhile, it is still unknown how well or if the newly developed large-language models (LLMs) such as [ChatGPT](https://chat.openai.com/) can work and possibly emulate a human second screener. The aim of the `AIscreenR` package is to support the use and testing of the ChatGPT as a the second screener or alternatively to reduce research waste. Concretely the package allow user to apply the gpt models from the [https://api.openai.com/v1/chat/completions](https://platform.openai.com/docs/models/model-endpoint-compatibility) endpoint. In future developments, we expect to add further LLMs (such as Bard) when APIs are available for those LLMs. For now, we invite other researchers to test this software as that we as a review community grasps a better understand of the performance of the gpt models from OpenAI as second screeners. In this vignette, we show how a title and abstract screening with ChatGPT can be done in R. The advantages of conducting the screening with ChatGPT via R is 1) that reviewers can easily work with a large number of references, avoiding copy-paste procedures, 2) that the total screening time can be substantially increased relative to using the ChatGPT interface, and 3) that consistency between gpt answer for the same title and abstract can easily be tested. In this vignette, we also show the first proof of concept for the use of ChatGPT as a reliable second screener. This goes without saying that ChatGPT works in all cases, and we think the tool should be use carefully and should always assisted by a human (human-in-the-loop). Consequently, we do not recommend to use the the ChatGPT as a single screener.   
+
 
 ## Loading relevant ris file data for screening
-
 
 ```{r setup, message=FALSE, warning=FALSE}
 # Loading packages 
@@ -229,5 +230,9 @@ plan(sequential)
 ```
 
 
+# References
+Gartlehner, G., Wagner, G., Lux, L. et al. (2019). Assessing the accuracy of machine-assisted abstract screening with DistillerAI: a user study. *Systematic Reviews*. 8, 1-10. <https://doi.org/10.1186/s13643-019-1221-3>
 
+Waffenschmidt, S., Knelangen, M., Sieben, W., Bühn, S., & Pieper, D. (2019). Single screening versus conventional double screening for study selection in systematic reviews: a methodological systematic review. *BMC Medical Research Methodology* 19, 1-9. <https://doi.org/10.1186/s12874-019-0782-0>
 
+Westgate MJ (2019). revtools: An R package to support article screening for evidence synthesis. *Research Synthesis Methods*. doi:10.1002/jrsm.1374 <https://doi.org/10.1002/jrsm.1374>.
