@@ -77,7 +77,7 @@
 
     
     
-<div class="warning" style="margin-left:3em; margin-right:3em; margin-bottom:2em; margin-top:2em; padding:0.1em; background-color: #d7dbdd; border: solid #bdc3c7 3px">
+<div class="warning" style="margin-left:2em; margin-right:2em; margin-bottom:2em; margin-top:2em; padding:0.1em; background-color: #d7dbdd; border: solid #bdc3c7 3px">
 <span>
 <p style="margin-top:1em; text-align:center">
 <b>Important note</b>
@@ -101,9 +101,45 @@ that has to be screened by humans.
 </p>
 <p></p></span>
 </div>
-<div class="section level2">
-<h2 id="loading-relevant-ris-file-data-for-screening">Loading relevant ris file data for screening<a class="anchor" aria-label="anchor" href="#loading-relevant-ris-file-data-for-screening"></a>
-</h2>
+<p>An all-important step to ensure the quality of systematic reviews
+involves detecting all relevant references related to the literature
+under review. Usually, this involves independent double screening of all
+references detected in relevant databases and literature with two human
+screeners. This procedure has shown pivotal since less experienced
+single screeners tend to miss around 13 % relavant studies (with 5 % for
+experienced screeners), which in most cases substantially change the
+main review findings (Waffenschmidt, 2019). Yet, double-screening is a
+costly and resource intensive procedure, excluding many researchers from
+using it. An alternative to human double-screening is to use automated
+tools to act as the second screener (Gartlehner et al., 2019; van de
+Schoot et al. 2021). Hereto, most evaluations of existing tools finds
+that most automated tools fail to reliably act as/imitating a human
+second screener. Meanwhile, it is still unknown how well or if the newly
+developed large-language models (LLMs) such as <a href="https://chat.openai.com/" class="external-link">ChatGPT</a> can work and possibly
+emulate a human second screener. The aim of the <code>AIscreenR</code>
+package is to support the use and testing of the ChatGPT as a the second
+screener or alternatively to reduce research waste. Concretely the
+package allow user to apply the gpt models from the <a href="https://platform.openai.com/docs/models/model-endpoint-compatibility" class="external-link">https://api.openai.com/v1/chat/completions</a>
+endpoint. In future developments, we expect to add further LLMs (such as
+Bard) when APIs are available for those LLMs. For now, we invite other
+researchers to test this software as that we as a review community
+grasps a better understand of the performance of the gpt models from
+OpenAI as second screeners. In this vignette, we show how a title and
+abstract screening with ChatGPT can be done in R. The advantages of
+conducting the screening with ChatGPT via R is 1) that reviewers can
+easily work with a large number of references, avoiding copy-paste
+procedures, 2) that the total screening time can be substantially
+increased relative to using the ChatGPT interface, and 3) that
+consistency between gpt answer for the same title and abstract can
+easily be tested. In this vignette, we also show the first proof of
+concept for the use of ChatGPT as a reliable second screener. This goes
+without saying that ChatGPT works in all cases, and we think the tool
+should be use carefully and should always assisted by a human
+(human-in-the-loop). Consequently, we do not recommend to use the the
+ChatGPT as a single screener.</p>
+<div class="section level3">
+<h3 id="loading-relevant-ris-file-data-for-screening">Loading relevant ris file data for screening<a class="anchor" aria-label="anchor" href="#loading-relevant-ris-file-data-for-screening"></a>
+</h3>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Loading packages </span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mikkelvembye.github.io/AIscreenR/">AIscreenR</a></span><span class="op">)</span></span>
@@ -175,9 +211,9 @@ that has to be screened by humans.
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Faber J and Srutova L and Pilarova… 9<span style="text-decoration: underline;">431</span>505      10 EEG … <span style="color: #949494;">"</span>Sponta…          0</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 140 more rows</span></span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="getting-api-key-openai">Getting API key OpenAI<a class="anchor" aria-label="anchor" href="#getting-api-key-openai"></a>
-</h2>
+<div class="section level3">
+<h3 id="getting-api-key-openai">Getting API key OpenAI<a class="anchor" aria-label="anchor" href="#getting-api-key-openai"></a>
+</h3>
 <p>Before you can use the function from <code>AIscreenR</code>, you must
 generate your own secret API key. To do so you must first ensure that
 you have created an account at OpenAI (<em>if you have not done so at
@@ -191,16 +227,16 @@ below) and give your key a name.</p>
 safely since you will not be able see it again. <strong>NOTE</strong>:
 <em>If you lose your API key, you can just generate a new one</em>.</p>
 </div>
-<div class="section level2">
-<h2 id="handling-your-api-key-with-aiscreenr">Handling your API key with <code>AIscreenR</code><a class="anchor" aria-label="anchor" href="#handling-your-api-key-with-aiscreenr"></a>
-</h2>
 <div class="section level3">
-<h3 id="temporary-solution">Temporary solution<a class="anchor" aria-label="anchor" href="#temporary-solution"></a>
+<h3 id="handling-your-api-key-with-aiscreenr">Handling your API key with <code>AIscreenR</code><a class="anchor" aria-label="anchor" href="#handling-your-api-key-with-aiscreenr"></a>
 </h3>
+<div class="section level4">
+<h4 id="temporary-solution">Temporary solution<a class="anchor" aria-label="anchor" href="#temporary-solution"></a>
+</h4>
 </div>
-<div class="section level3">
-<h3 id="pemanent-solution">Pemanent solution<a class="anchor" aria-label="anchor" href="#pemanent-solution"></a>
-</h3>
+<div class="section level4">
+<h4 id="pemanent-solution">Pemanent solution<a class="anchor" aria-label="anchor" href="#pemanent-solution"></a>
+</h4>
 <p>To add your API key permanently as an environment variables, you can
 execute <code><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">usethis::edit_r_environ()</a></code>.</p>
 <p> </p>
@@ -209,9 +245,9 @@ execute <code><a href="https://usethis.r-lib.org/reference/edit.html" class="ext
 and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 </div>
 </div>
-<div class="section level2">
-<h2 id="retrieve-rate-limit-information">Retrieve rate limit information<a class="anchor" aria-label="anchor" href="#retrieve-rate-limit-information"></a>
-</h2>
+<div class="section level3">
+<h3 id="retrieve-rate-limit-information">Retrieve rate limit information<a class="anchor" aria-label="anchor" href="#retrieve-rate-limit-information"></a>
+</h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Rate limits across one model (Default is "gpt-3.5-turbo-0613")</span></span>
 <span><span class="va">rate_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -232,9 +268,9 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span><span class="co">#&gt; 1 gpt-3.5-turbo-0613                3500             90000</span></span>
 <span><span class="co">#&gt; 2 gpt-4                              200             10000</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="approximate-price-of-screening">Approximate price of screening<a class="anchor" aria-label="anchor" href="#approximate-price-of-screening"></a>
-</h2>
+<div class="section level3">
+<h3 id="approximate-price-of-screening">Approximate price of screening<a class="anchor" aria-label="anchor" href="#approximate-price-of-screening"></a>
+</h3>
 <p>Example of how to enter a prompt. Can also be done in word.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">prompt</span> <span class="op">&lt;-</span> <span class="st">"Evaluate the following study based on the selection criteria</span></span>
@@ -291,9 +327,9 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> gpt-3.5-…         10               2.48               0.033               2.52</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> gpt-4              1               4.97               0.099               5.07</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="screen-titles-and-abstracts">Screen titles and abstracts<a class="anchor" aria-label="anchor" href="#screen-titles-and-abstracts"></a>
-</h2>
+<div class="section level3">
+<h3 id="screen-titles-and-abstracts">Screen titles and abstracts<a class="anchor" aria-label="anchor" href="#screen-titles-and-abstracts"></a>
+</h3>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span><span class="op">)</span></span>
 <span></span>
@@ -325,6 +361,20 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span>  </span>
 <span></span>
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">sequential</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
+<p>Gartlehner, G., Wagner, G., Lux, L. et al. (2019). Assessing the
+accuracy of machine-assisted abstract screening with DistillerAI: a user
+study. <em>Systematic Reviews</em>. 8, 1-10. <a href="https://doi.org/10.1186/s13643-019-1221-3" class="external-link uri">https://doi.org/10.1186/s13643-019-1221-3</a></p>
+<p>Waffenschmidt, S., Knelangen, M., Sieben, W., Bühn, S., &amp; Pieper,
+D. (2019). Single screening versus conventional double screening for
+study selection in systematic reviews: a methodological systematic
+review. <em>BMC Medical Research Methodology</em> 19, 1-9. <a href="https://doi.org/10.1186/s12874-019-0782-0" class="external-link uri">https://doi.org/10.1186/s12874-019-0782-0</a></p>
+<p>Westgate MJ (2019). revtools: An R package to support article
+screening for evidence synthesis. <em>Research Synthesis Methods</em>.
+<a href="doi:10.1002/jrsm.1374" class="uri">doi:10.1002/jrsm.1374</a> <a href="https://doi.org/10.1002/jrsm.1374" class="external-link uri">https://doi.org/10.1002/jrsm.1374</a>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
