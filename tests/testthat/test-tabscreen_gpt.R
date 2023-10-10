@@ -74,7 +74,7 @@ test_that("tabscreen_gpt() works with single parameter values.",{
   )
 
   expect_s3_class(test_obj, "chatgpt")
-  print(test_obj) |> expect_output()
+  print(test_obj) |> expect_output("answer_data_all")
 
   expect_equal(nrow(test_obj$answer_data_all), 1L)
   expect_equal(nrow(test_obj$answer_data_sum), 1L)
@@ -226,7 +226,8 @@ test_that("Message behavior.", {
       abstract = abstract,
       model = "gpt-4",
       reps = 1,
-      messages = FALSE
+      messages = FALSE,
+      progress = FALSE
     )
 
   )
@@ -241,7 +242,8 @@ test_that("Message behavior.", {
       abstract = abstract,
       model = "gpt-3.5-turbo",
       reps = 1,
-      messages = FALSE
+      messages = FALSE,
+      progress = FALSE
     )
 
   )
@@ -311,7 +313,8 @@ test_that("API error.",{
       studyid = studyid,
       title = title,
       abstract = abstract,
-      api_key = 1234
+      api_key = 1234,
+      progress = FALSE
     )
 
   ) |>
@@ -329,7 +332,8 @@ test_that("API error.",{
       title = title,
       abstract = abstract,
       api_key = 1234,
-      messages = FALSE
+      messages = FALSE,
+      progress = FALSE
     )
 
   )

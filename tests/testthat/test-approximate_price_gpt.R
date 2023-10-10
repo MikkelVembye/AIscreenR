@@ -50,7 +50,7 @@ duration delivered to young people and their families). If not, exclude study.
 2) Are the participants in outpatient drug treatment primarily
 for non-opioid drug use?"
 
-test_that("approximate_price_gpt takes multiple inputs", {
+test_that("approximate_price_gpt() takes multiple inputs", {
 
   app_obj <- approximate_price_gpt(
     data = filges2015_dat,
@@ -63,7 +63,8 @@ test_that("approximate_price_gpt takes multiple inputs", {
     top_p = c(0.2, 1)
   )
 
-  expect_output(print(app_obj))
+
+  expect_output(print(app_obj), "29")
 
   gpt_price_ratio <- app_obj$price_data$input_price_dollar[2]/app_obj$price_data$input_price_dollar[1]
 
@@ -72,7 +73,7 @@ test_that("approximate_price_gpt takes multiple inputs", {
   app_obj <- approximate_price_gpt(
     data = filges2015_dat[c(1:20),],
     prompt = prompt,
-    studyid = studyid,
+    #studyid = studyid,
     title = title,
     abstract = abstract,
     model = c("gpt-3.5-turbo-0613", "gpt-4"),
@@ -86,3 +87,31 @@ test_that("approximate_price_gpt takes multiple inputs", {
   expect_equal(gpt_price_ratio, 20L, tolerance = .01)
 
 })
+
+test_that("approximate_price_gpt() error structure.", {
+
+  expect_error(
+    app_obj <- approximate_price_gpt(
+      data = filges2015_dat[c(1:20),],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      model = c("gpt-3.5turbo-0613", "gpt-4")
+    )
+  )
+
+  expect_error(
+    app_obj <- approximate_price_gpt(
+      data = filges2015_dat[c(1:20),],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      model = c("gpt-3.5-turbo-0613", "gpt-4"),
+      reps = c(10, 1, 2)
+    )
+  )
+
+})
+
