@@ -209,6 +209,83 @@ test_that("tabscreen_gpt() works with multiple parameter values.",{
 #
 #})
 
+
+test_that("tabscreen_gpt() works with detailed fucntions and ... .", {
+
+  skip_on_cran()
+
+  expect_message(
+
+    test_obj <- tabscreen_gpt(
+      data = filges2015_dat[1:2,],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      model = "gpt-3.5-turbo",
+      reps = 1,
+      functions = AIscreenR:::incl_function,
+      function_call_name = list(name = "inclusion_decision")
+    )
+
+  ) |>
+    suppressMessages()
+
+  expect_identical(nrow(test_obj$answer_data_all), nrow(test_obj$answer_data_sum))
+
+  complete_tokens <- mean(test_obj$answer_data_all$completion_tokens, na.rm = TRUE)
+  expect_gt(complete_tokens, 13)
+
+
+  # Working with max_tokens, i.e. ... calls
+  expect_message(
+
+    test_obj <- tabscreen_gpt(
+      data = filges2015_dat[1,],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      model = "gpt-3.5-turbo",
+      reps = 1,
+      functions = AIscreenR:::incl_function,
+      function_call_name = list(name = "inclusion_decision"),
+      max_tokens = 40
+    )
+
+  ) |>
+    suppressMessages()
+
+  complete_tokens <- test_obj$answer_data_all$completion_tokens
+  expect_lt(complete_tokens, 41)
+
+  # Working with temperature, i.e. ... calls
+
+  expect_message(
+
+    test_obj <- tabscreen_gpt(
+      data = filges2015_dat[1,],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      model = "gpt-3.5-turbo",
+      reps = 3,
+      functions = AIscreenR:::incl_function,
+      function_call_name = list(name = "inclusion_decision"),
+      progress = FALSE,
+      temperature = 0.001
+    )
+
+  ) |>
+    suppressMessages()
+
+  n_distinct_detailed_answers <- test_obj$answer_data_all$detailed_description |> dplyr::n_distinct()
+
+  expect_lt(n_distinct_detailed_answers, 3)
+
+})
+
 test_that("Message behavior.", {
 
   skip_on_cran()
@@ -245,6 +322,22 @@ test_that("Message behavior.", {
 
   )
 
+  expect_message(
+
+    test_obj <- tabscreen_gpt(
+      data = filges2015_dat[1,],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      model = "gpt-3.5-turbo",
+      reps = 1,
+      functions = AIscreenR:::incl_function,
+      function_call_name = list(name = "inclusion_decision")
+    )
+
+  ) |>
+    suppressMessages()
 
 })
 
