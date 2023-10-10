@@ -99,7 +99,7 @@ test_obj <- tabscreen_gpt(
   studyid = studyid, # indicate the variable with the studyid in the data
   title = title, # indicate the variable with the titles in the data
   abstract = abstract,
-  api_key = 21319
+  api_key = 1234
   #functions = AIscreenR:::incl_function,
   #function_call_name = list(name = "inclusion_decision"),
   #max_tries = 0,

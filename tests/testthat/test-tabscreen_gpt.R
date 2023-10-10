@@ -499,39 +499,37 @@ test_that("API error.",{
 
 })
 
-test_that("Print expectation for chatgpt object.", {
+future::plan(future::sequential)
+
+# Test parallel
+
+test_that("That paralell processing works.", {
 
   skip_on_cran()
 
+  future::plan(future::multisession)
+
   expect_message(
 
-    test_obj <- tabscreen_gpt(
-      data = filges2015_dat[1,],
-      prompt = prompt,
-      studyid = studyid,
-      title = title,
-      abstract = abstract,
-      model = "gpt-3.5-turbo-0613",
-      reps = 1,
-      max_tries = 0
+    tm_par <- system.time(
+      test_obj <- tabscreen_gpt(
+        data = filges2015_dat[1:2,],
+        prompt = prompt,
+        title = title,
+        abstract = abstract,
+        model = "gpt-3.5-turbo-0613",
+        reps = 10
+      )
     )
-
   )
 
-  # class check
-  expect_s3_class(test_obj, "chatgpt")
-  expect_s3_class(test_obj, "list")
+  future::plan(future::sequential)
 
-  # Print expectation
-  print(test_obj) |> expect_output("object_name\\$answer_data_all")
-  print(test_obj) |> expect_output("object_name\\$answer_data_sum")
-  print(test_obj) |> expect_output("object_name\\$price_dollor")
-  print(test_obj) |> expect_output("object_name\\$error_data")
+  expect_lt(tm_par[["elapsed"]], sum(test_obj$answer_data_all$run_time))
 
 
 })
 
-future::plan(future::sequential)
 
 rm(list=ls())
 

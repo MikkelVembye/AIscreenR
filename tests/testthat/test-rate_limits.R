@@ -14,6 +14,7 @@ test_that("General working of rate_limits_per_minute().", {
 
   rlpm <- rate_limits_per_minute(model = models)
   expect_equal(rlpm$requests_per_minute[1], 3500L)
+  expect_length(rlpm$requests_per_minute, 2)
   expect_equal(rlpm$tokens_per_minute[1], 90000L)
   expect_output(print(rlpm), "tibble")
 
@@ -32,6 +33,8 @@ test_that("rate_limits_per_minute() casts errors correctly.", {
   expect_error(
     rate_limits_per_minute(AI_tool = "Bard")
   )
+
+
 })
 
 

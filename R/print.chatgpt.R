@@ -14,10 +14,24 @@
 
 print.chatgpt <- function(x, ...){
 
-  cat("Find data with all answers by executing\n object_name$answer_data_all",
-      "\n\nFind data with the result aggregated across multiple answers by executing\n",
-      "object_name$answer_data_sum\n\nFind total price for the screening by executing\n",
-      "object_name$price_dollor\n\nIf some requests failed, find the error data by executing\n",
-      "object_name$error_data", ...)
+  if ("error_data" %in% names(x)){
+
+    cat("Find data with all answers by executing\n object_name$answer_data_all",
+        "\n\nFind data with the result aggregated across multiple answers by executing\n",
+        "object_name$answer_data_sum\n\nFind total price for the screening by executing\n",
+        "object_name$price_dollor\n\nIf some requests failed, find the error data by executing\n",
+        "object_name$error_data", ...)
+
+  } else {
+
+    cat("Find data with all answers by executing\n object_name$answer_data_all",
+        "\n\nFind data with the result aggregated across multiple answers by executing\n",
+        "object_name$answer_data_sum\n\nFind total price for the screening by executing\n",
+        "object_name$price_dollor", ...)
+
+
+  }
+
 
 }
+
