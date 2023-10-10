@@ -20,10 +20,10 @@ test_that("rate_limits_per_minute() casts errors correctly.", {
   skip_on_cran()
 
   rlpm <- rate_limits_per_minute(model = "gpt-3")
-  expect_identical(rlpm$model, "Error 404 [check gpt model]")
+  expect_identical(unique(rlpm$model), "Error 404 [check gpt model]")
 
   rlpm <- rate_limits_per_minute(api_key = 1234)
-  expect_identical(rlpm$model, "Error 401 Unauthorized [invalid api]")
+  expect_identical(unique(rlpm$model), "Error 401 Unauthorized [invalid api]")
 
 })
 
