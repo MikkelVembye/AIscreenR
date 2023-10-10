@@ -52,6 +52,8 @@ models <- c("gpt-3.5-turbo-0613", "gpt-4")
 reps <- c(10, 1)
 rpm <- c(3500, 200)
 
+future::plan(future::multisession)
+
 test_that("tabscreen_gpt() works with single parameter values.",{
 
   skip_on_cran()
@@ -297,6 +299,49 @@ test_that("tabscreen_gpt() expected errors.", {
 
 })
 
+test_that("API error.",{
+
+  skip_on_cran()
+
+  expect_message(
+
+    test_obj <- tabscreen_gpt(
+      data = filges2015_dat[1,],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      api_key = 1234
+    )
+
+  ) |>
+    suppressMessages()
+
+  error_text <- unique(test_obj$answer_data_all$decision_gpt)
+  expect_identical(error_text, "Error 401 Unauthorized [invalid api]")
+
+  expect_no_message(
+
+    test_obj <- tabscreen_gpt(
+      data = filges2015_dat[1,],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      api_key = 1234,
+      messages = FALSE
+    )
+
+  )
+
+  error_text <- unique(test_obj$answer_data_all$decision_gpt)
+  expect_identical(error_text, "Error 401 Unauthorized [invalid api]")
 
 
+})
+
+
+future::plan(future::sequential)
+
+rm(list=ls())
 
