@@ -63,7 +63,6 @@ test_that("tabscreen_gpt() works with single parameter values.",{
     test_obj <- tabscreen_gpt(
       data = filges2015_dat[1,],
       prompt = prompt,
-      studyid = studyid,
       title = title,
       abstract = abstract,
       model = "gpt-3.5-turbo-0613",
