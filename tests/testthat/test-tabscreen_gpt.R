@@ -143,6 +143,8 @@ test_that("tabscreen_gpt() works with multiple parameter values.",{
   expect_equal(nrow(test_obj$price_data), 2L)
   expect_length(test_obj$price_dollar, 1L)
 
+  expect_gt(nrow(test_obj$answer_data_all), nrow(test_obj$answer_data_sum))
+
   expect_message(
 
     test_obj <- tabscreen_gpt(
@@ -185,29 +187,74 @@ test_that("tabscreen_gpt() works with multiple parameter values.",{
 
 })
 
-#test_that("tabscreen_gpt() don't return time and token info."{
-#
-#  skip_on_cran()
-#
-#  expect_message(
-#
-#    test_obj <- tabscreen_gpt(
-#      data = filges2015_dat[1,],
-#      prompt = prompt,
-#      studyid = studyid,
-#      title = title,
-#      abstract = abstract,
-#      model = "gpt-3.5-turbo-0613",
-#      reps = 1,
-#      time_info = FALSE,
-#      token_info = FALSE
-#    )
-#
-#  )
-#
-#
-#})
+test_that("tabscreen_gpt() don't return time and token info.", {
 
+  skip_on_cran()
+
+  expect_message(
+
+    test_obj <- tabscreen_gpt(
+      data = filges2015_dat[1,],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      model = "gpt-3.5-turbo-0613",
+      reps = 1,
+      time_info = FALSE,
+      token_info = FALSE
+    )
+
+  )
+
+  time_token_not_include <- any(!stringr::str_detect(names(test_obj$answer_data_all), "time|token"))
+  expect_true(time_token_not_include)
+
+  expect_message(
+
+    test_obj <- tabscreen_gpt(
+      data = filges2015_dat[1,],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      model = "gpt-3.5-turbo-0613",
+      reps = 1,
+      time_info = TRUE,
+      token_info = FALSE
+    )
+
+  )
+
+  token_not_include <- any(!stringr::str_detect(names(test_obj$answer_data_all), "token"))
+  expect_true(token_not_include)
+
+  time_include <- any(stringr::str_detect(names(test_obj$answer_data_all), "time"))
+  expect_true(time_include)
+
+  expect_message(
+
+    test_obj <- tabscreen_gpt(
+      data = filges2015_dat[1,],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      model = "gpt-3.5-turbo-0613",
+      reps = 1,
+      time_info = FALSE,
+      token_info = TRUE
+    )
+
+  )
+
+  time_not_include <- any(!stringr::str_detect(names(test_obj$answer_data_all), "time"))
+  expect_true(time_not_include)
+
+  token_include <- any(stringr::str_detect(names(test_obj$answer_data_all), "token"))
+  expect_true(token_include)
+
+})
 
 test_that("tabscreen_gpt() works with detailed fucntions and ... .", {
 
@@ -496,6 +543,46 @@ test_that("API error.",{
   error_text <- unique(test_obj$answer_data_all$decision_gpt)
   expect_identical(error_text, "Error 401 Unauthorized [invalid api]")
 
+  expect_message(
+
+    test_obj <- tabscreen_gpt(
+      data = filges2015_dat[1,],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      api_key = 1234,
+      progress = FALSE,
+      functions = AIscreenR:::incl_function,
+      function_call_name = list(name = "inclusion_decision")
+    )
+
+  ) |>
+    suppressMessages()
+
+  error_text <- unique(test_obj$answer_data_all$decision_gpt)
+  expect_identical(error_text, "Error 401 Unauthorized [invalid api]")
+
+  expect_no_message(
+
+    test_obj <- tabscreen_gpt(
+      data = filges2015_dat[1,],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      api_key = 1234,
+      messages = FALSE,
+      progress = FALSE,
+      functions = AIscreenR:::incl_function,
+      function_call_name = list(name = "inclusion_decision")
+    )
+
+  )
+
+  error_text <- unique(test_obj$answer_data_all$decision_gpt)
+  expect_identical(error_text, "Error 401 Unauthorized [invalid api]")
+
 
 })
 
@@ -527,6 +614,31 @@ test_that("That paralell processing works.", {
 
   expect_lt(tm_par[["elapsed"]], sum(test_obj$answer_data_all$run_time))
 
+
+
+})
+
+test_that("max_tokens < 11 work",{
+
+  skip_on_cran()
+
+  expect_message(
+
+    test_obj <- tabscreen_gpt(
+      data = filges2015_dat[1,],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      model = "gpt-3.5-turbo",
+      reps = 1,
+      max_tokens = 9
+    )
+
+  ) |>
+    suppressMessages()
+
+  expect_false(is.na(test_obj$answer_data_all$decision_gpt))
 
 })
 
