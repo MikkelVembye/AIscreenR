@@ -56,5 +56,20 @@ test_that("tabscreen_gpt() expected errors.", {
 
   )
 
+  expect_error(
+
+    test_obj <- tabscreen_gpt(
+      data = filges2015_dat[c(1:2),],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      model = c("gpt-3.5turbo-0613", "gpt-4"),
+      reps = c(10, 1),
+      rpm = c(3500, 200)
+    )
+
+  )
+
 
 })
