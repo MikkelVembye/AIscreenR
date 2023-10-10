@@ -24,7 +24,12 @@ duration delivered to young people and their families). If not, exclude study.
 2) Are the participants in outpatient drug treatment primarily
 for non-opioid drug use? 3) Are the participants within age 11–21?"
 
+models <- c("gpt-3.5-turbo-0613", "gpt-4")
+reps <- c(10, 1)
+rpm <- c(3500, 200)
+
 test_that("tabscreen_gpt() expected errors.", {
+
   skip_on_cran()
 
   expect_error(
@@ -35,7 +40,7 @@ test_that("tabscreen_gpt() expected errors.", {
       studyid = studyid,
       title = title,
       abstract = abstract,
-      model = c("gpt-3.5-turbo-0613", "gpt-4"),
+      model = models,
       reps = c(10, 1, 1)
     )
 
@@ -49,7 +54,7 @@ test_that("tabscreen_gpt() expected errors.", {
       studyid = studyid,
       title = title,
       abstract = abstract,
-      model = c("gpt-3.5-turbo-0613", "gpt-4"),
+      model = models,
       reps = c(10, 1),
       rpm = c(3500, 200, 200)
     )
@@ -65,11 +70,122 @@ test_that("tabscreen_gpt() expected errors.", {
       title = title,
       abstract = abstract,
       model = c("gpt-3.5turbo-0613", "gpt-4"),
-      reps = c(10, 1),
-      rpm = c(3500, 200)
+      reps = reps,
+      rpm = rpm
     )
 
   )
 
+})
+
+test_that("tabscreen_gpt() works with single parameter values.",{
+
+  skip_on_cran()
+
+  expect_message(
+
+    test_obj <- tabscreen_gpt(
+      data = filges2015_dat[1,],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      model = "gpt-3.5-turbo-0613",
+      reps = 1
+    )
+
+  )
+
+  expect_output(print(test_obj))
+
+  expect_equal(nrow(test_obj$answer_data_all), 1L)
+  expect_equal(nrow(test_obj$answer_data_sum), 1L)
+  expect_equal(nrow(test_obj$price_data), 1L)
+  expect_length(test_obj$price_dollar, 1)
+
+
+  expect_message(
+
+    test_obj <- tabscreen_gpt(
+      data = filges2015_dat[1,],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      model = c("gpt-3.5-turbo-0613", "gpt-4"),
+      reps = 1
+    )
+
+  )
+
+  expect_equal(nrow(test_obj$answer_data_all), 2L)
+  expect_equal(nrow(test_obj$answer_data_sum), 2L)
+  expect_equal(nrow(test_obj$price_data), 2L)
+  expect_length(test_obj$price_dollar, 1)
+
+  expect_message(
+
+    test_obj <- tabscreen_gpt(
+      data = filges2015_dat[1,],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      model = c("gpt-3.5-turbo-0613", "gpt-4"),
+      reps = c(2, 1)
+    )
+
+  )
+
+  expect_equal(nrow(test_obj$answer_data_all), 3L)
+  expect_equal(nrow(test_obj$answer_data_sum), 2L)
+  expect_equal(nrow(test_obj$price_data), 2L)
+  expect_length(test_obj$price_dollar, 1)
+
+  expect_message(
+
+    test_obj <- tabscreen_gpt(
+      data = filges2015_dat[1:2,],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      model = c("gpt-3.5-turbo-0613", "gpt-4"),
+      reps = c(2, 1)
+    )
+
+  )
+
+  expect_equal(nrow(test_obj$answer_data_all), 6L)
+  expect_equal(nrow(test_obj$answer_data_sum), 4L)
+  expect_equal(nrow(test_obj$price_data), 2L)
+  expect_length(test_obj$price_dollar, 1)
+
+
+  expect_message(
+
+    test_obj <- tabscreen_gpt(
+      data = filges2015_dat[1:2,],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      model = c("gpt-3.5-turbo-0613", "gpt-4"),
+      reps = c(2, 1),
+      top_p = c(0.2, 1)
+    )
+
+  )
+
+  expect_equal(nrow(test_obj$answer_data_all), 12L)
+  expect_equal(nrow(test_obj$answer_data_sum), 2*2*2)
+  expect_equal(nrow(test_obj$price_data), 2L)
+  expect_length(test_obj$price_dollar, 1)
+
 
 })
+
+
+
+
+
