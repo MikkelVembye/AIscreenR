@@ -330,6 +330,20 @@ test_that("Message behavior.", {
       studyid = studyid,
       title = title,
       abstract = abstract,
+      model = "gpt-4",
+      reps = 2
+    )
+
+  )
+
+  expect_message(
+
+    test_obj <- tabscreen_gpt(
+      data = filges2015_dat[1,],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
       model = "gpt-3.5-turbo",
       reps = 1,
       functions = AIscreenR:::incl_function,
@@ -385,6 +399,58 @@ test_that("tabscreen_gpt() expected errors.", {
       model = c("gpt-3.5turbo-0613", "gpt-4"),
       reps = reps,
       rpm = rpm
+    )
+
+  )
+
+  # With detaled description functions
+
+  expect_error(
+
+    test_obj <- tabscreen_gpt(
+      data = filges2015_dat[c(1:2),],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      model = models,
+      reps = c(10, 1, 1),
+      functions = AIscreenR:::incl_function,
+      function_call_name = list(name = "inclusion_decision")
+    )
+
+  )
+
+  expect_error(
+
+    test_obj <- tabscreen_gpt(
+      data = filges2015_dat[c(1:2),],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      model = models,
+      reps = c(10, 1),
+      rpm = c(3500, 200, 200),
+      functions = AIscreenR:::incl_function,
+      function_call_name = list(name = "inclusion_decision")
+    )
+
+  )
+
+  expect_error(
+
+    test_obj <- tabscreen_gpt(
+      data = filges2015_dat[c(1:2),],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      model = c("gpt-3.5turbo-0613", "gpt-4"),
+      reps = reps,
+      rpm = rpm,
+      functions = AIscreenR:::incl_function,
+      function_call_name = list(name = "inclusion_decision")
     )
 
   )
