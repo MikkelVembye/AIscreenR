@@ -365,11 +365,11 @@ test_that("Print expectation for chatgpt object.", {
   expect_s3_class(test_obj, "list")
 
   # Print expectation
-  print(test_obj) |> expect_output("answer_data_all")
-  print(test_obj) |> expect_output("answer_data_sum")
-  print(test_obj) |> expect_output("price_dollor")
-  print(test_obj) |> expect_output("error_data")
-  print(test_obj) |> expect_output("object_name")
+  print(test_obj) |> expect_output("object_name\\$answer_data_all")
+  print(test_obj) |> expect_output("object_name\\$answer_data_sum")
+  print(test_obj) |> expect_output("object_name\\$price_dollor")
+  print(test_obj) |> expect_output("object_name\\$error_data")
+
 
 })
 

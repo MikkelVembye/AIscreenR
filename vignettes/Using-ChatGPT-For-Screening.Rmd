@@ -135,7 +135,7 @@ models_rate_limits
 
 ## Approximate price of screening
 
-Example of how to enter a prompt. Can also be done in word.
+Example of how to enter a prompt. 
 
 ```{r}
 prompt <- "Evaluate the following study based on the selection criteria
@@ -166,6 +166,46 @@ duration delivered to young people and their families). If not, exclude study.
 2) Are the participants in outpatient drug treatment primarily
 for non-opioid drug use? 3) Are the participants within age 11–21?"
 ```
+
+Can also be done in word
+
+\  
+
+```{r eval=TRUE, echo=FALSE}
+knitr::include_graphics("helper-stuff/wordprompt1.png")
+```
+\ 
+
+\  
+
+```{r eval=TRUE, echo=FALSE}
+knitr::include_graphics("helper-stuff/wordprompt2.png")
+```
+\ 
+
+```{r}
+word_path1 <-  system.file("extdata", "word_pormpt_1.docx", package = "AIscreenR")
+
+prompt_word <- 
+  readtext::readtext(word_path1)$text |> 
+      stringr::str_remove_all("\n")
+
+str(prompt_word)
+
+# Working with multiple prompts
+word_paths <- system.file("extdata", c("word_pormpt_1.docx", "word_pormpt_2.docx"), package = "AIscreenR")
+
+prompt_word2 <- 
+  purrr::map_chr(
+    word_paths, ~ {
+      readtext::readtext(.x)$text |> 
+        stringr::str_remove_all("\n")
+    } 
+  )
+
+str(prompt_word2)
+```
+
 
 Approximate price of screening
 
