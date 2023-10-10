@@ -78,6 +78,7 @@ test_that("tabscreen_gpt() expected errors.", {
 
 })
 
+
 test_that("tabscreen_gpt() works with single parameter values.",{
 
   skip_on_cran()
@@ -96,7 +97,8 @@ test_that("tabscreen_gpt() works with single parameter values.",{
 
   )
 
-  expect_output(print(test_obj))
+  expect_s3_class(test_obj, "chatgpt")
+  print(test_obj) |> expect_output()
 
   expect_equal(nrow(test_obj$answer_data_all), 1L)
   expect_equal(nrow(test_obj$answer_data_sum), 1L)
@@ -122,6 +124,13 @@ test_that("tabscreen_gpt() works with single parameter values.",{
   expect_equal(nrow(test_obj$answer_data_sum), 2L)
   expect_equal(nrow(test_obj$price_data), 2L)
   expect_length(test_obj$price_dollar, 1)
+
+
+})
+
+test_that("tabscreen_gpt() works with multiple parameter values.",{
+
+  skip_on_cran()
 
   expect_message(
 
@@ -182,9 +191,7 @@ test_that("tabscreen_gpt() works with single parameter values.",{
   expect_equal(nrow(test_obj$price_data), 2L)
   expect_length(test_obj$price_dollar, 1)
 
-
 })
-
 
 
 
