@@ -28,18 +28,16 @@ test_that("Print expectation for chatgpt object.", {
   expect_s3_class(test_obj, "chatgpt")
   expect_s3_class(test_obj, "list")
 
-  print(test_obj) |> expect_output("object_name\\$answer_data_all")
-  print(test_obj) |> expect_output("object_name\\$answer_data_sum")
-  print(test_obj) |> expect_output("object_name\\$price_dollor")
+  expect_output(print(test_obj), "object_name\\$answer_data_all")
+  expect_output(print(test_obj), "object_name\\$answer_data_sum")
+  expect_output(print(test_obj), "object_name\\$price_dollor")
 
+  # Make full test
   expect_equal(
     capture.output(test_obj)[8],
     " object_name$price_dollor"
   )
 
-  # Print expectation
-
-  #print(test_obj) |> expect_output("object_name\\$error_data")
 
   expect_message(
 
@@ -54,11 +52,13 @@ test_that("Print expectation for chatgpt object.", {
   ) |>
     suppressMessages()
 
-  print(test_obj) |> expect_output("object_name\\$error_data")
+  expect_output(print(test_obj), "object_name\\$error_data")
 
-  expect_equal(
-    capture.output(test_obj)[11],
-    " object_name$error_data"
+  output2 <- capture.output(test_obj)
+
+  expect_length(
+    output2,
+    11
   )
 
 
