@@ -9,6 +9,8 @@ test_that("General working of rate_limits_per_minute().", {
     expect_equal(2)
 
   rlpm <- rate_limits_per_minute(model = models)
+  expect_equal(rlpm$requests_per_minute[1], 3500L)
+  expect_equal(rlpm$tokens_per_minute[1], 90000L)
   expect_output(print(rlpm), "tibble")
 
 })

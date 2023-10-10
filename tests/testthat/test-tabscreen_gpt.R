@@ -76,7 +76,7 @@ test_that("tabscreen_gpt() works with single parameter values.",{
   expect_equal(nrow(test_obj$answer_data_all), 1L)
   expect_equal(nrow(test_obj$answer_data_sum), 1L)
   expect_equal(nrow(test_obj$price_data), 1L)
-  expect_length(test_obj$price_dollar, 1)
+  expect_length(test_obj$price_dollar, 1L)
 
 
   expect_message(
@@ -96,7 +96,7 @@ test_that("tabscreen_gpt() works with single parameter values.",{
   expect_equal(nrow(test_obj$answer_data_all), 2L)
   expect_equal(nrow(test_obj$answer_data_sum), 2L)
   expect_equal(nrow(test_obj$price_data), 2L)
-  expect_length(test_obj$price_dollar, 1)
+  expect_length(test_obj$price_dollar, 1L)
 
   expect_message(
 
@@ -115,7 +115,7 @@ test_that("tabscreen_gpt() works with single parameter values.",{
   expect_equal(nrow(test_obj$answer_data_all), 2L)
   expect_equal(nrow(test_obj$answer_data_sum), 2L)
   expect_equal(nrow(test_obj$price_data), 1L)
-  expect_length(test_obj$price_dollar, 1)
+  expect_length(test_obj$price_dollar, 1L)
 
 
 
@@ -142,7 +142,7 @@ test_that("tabscreen_gpt() works with multiple parameter values.",{
   expect_equal(nrow(test_obj$answer_data_all), 3L)
   expect_equal(nrow(test_obj$answer_data_sum), 2L)
   expect_equal(nrow(test_obj$price_data), 2L)
-  expect_length(test_obj$price_dollar, 1)
+  expect_length(test_obj$price_dollar, 1L)
 
   expect_message(
 
@@ -161,7 +161,7 @@ test_that("tabscreen_gpt() works with multiple parameter values.",{
   expect_equal(nrow(test_obj$answer_data_all), 6L)
   expect_equal(nrow(test_obj$answer_data_sum), 4L)
   expect_equal(nrow(test_obj$price_data), 2L)
-  expect_length(test_obj$price_dollar, 1)
+  expect_length(test_obj$price_dollar, 1L)
 
 
   expect_message(
@@ -182,7 +182,7 @@ test_that("tabscreen_gpt() works with multiple parameter values.",{
   expect_equal(nrow(test_obj$answer_data_all), 12L)
   expect_equal(nrow(test_obj$answer_data_sum), 2*2*2)
   expect_equal(nrow(test_obj$price_data), 2L)
-  expect_length(test_obj$price_dollar, 1)
+  expect_length(test_obj$price_dollar, 1L)
 
 })
 
