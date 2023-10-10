@@ -32,6 +32,10 @@ test_that("Print expectation for chatgpt object.", {
   print(test_obj) |> expect_output("object_name\\$answer_data_sum")
   print(test_obj) |> expect_output("object_name\\$price_dollor")
 
+  expect_equal(
+    capture.output(test_obj)[8],
+    " object_name$price_dollor"
+  )
 
   # Print expectation
 
@@ -51,5 +55,11 @@ test_that("Print expectation for chatgpt object.", {
     suppressMessages()
 
   print(test_obj) |> expect_output("object_name\\$error_data")
+
+  expect_equal(
+    capture.output(test_obj)[11],
+    " object_name$error_data"
+  )
+
 
 })
