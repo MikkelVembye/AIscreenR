@@ -73,9 +73,6 @@ test_that("tabscreen_gpt() works with single parameter values.",{
 
   )
 
-  expect_s3_class(test_obj, "chatgpt")
-  print(test_obj) |> expect_output("answer_data_all")
-
   expect_equal(nrow(test_obj$answer_data_all), 1L)
   expect_equal(nrow(test_obj$answer_data_sum), 1L)
   expect_equal(nrow(test_obj$price_data), 1L)
@@ -344,6 +341,37 @@ test_that("API error.",{
 
 })
 
+test_that("Print expectation for chatgpt object.", {
+
+  skip_on_cran()
+
+  expect_message(
+
+    test_obj <- tabscreen_gpt(
+      data = filges2015_dat[1,],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      model = "gpt-3.5-turbo-0613",
+      reps = 1,
+      max_tries = 0
+    )
+
+  )
+
+  # class check
+  expect_s3_class(test_obj, "chatgpt")
+  expect_s3_class(test_obj, "list")
+
+  # Print expectation
+  print(test_obj) |> expect_output("answer_data_all")
+  print(test_obj) |> expect_output("answer_data_sum")
+  print(test_obj) |> expect_output("price_dollor")
+  print(test_obj) |> expect_output("error_data")
+  print(test_obj) |> expect_output("object_name")
+
+})
 
 future::plan(future::sequential)
 
