@@ -4,9 +4,13 @@ test_that("General working of rate_limits_per_minute().", {
 
   skip_on_cran()
 
+  rate_limits_per_minute() |>
+    nrow() |>
+    expect_equal(1L)
+
   rate_limits_per_minute(model = models) |>
     nrow() |>
-    expect_equal(2)
+    expect_equal(2L)
 
   rlpm <- rate_limits_per_minute(model = models)
   expect_equal(rlpm$requests_per_minute[1], 3500L)
@@ -25,6 +29,9 @@ test_that("rate_limits_per_minute() casts errors correctly.", {
   rlpm <- rate_limits_per_minute(api_key = 1234)
   expect_identical(unique(rlpm$model), "Error 401 Unauthorized [invalid api]")
 
+  expect_error(
+    rate_limits_per_minute(AI_tool = "Bard")
+  )
 })
 
 
