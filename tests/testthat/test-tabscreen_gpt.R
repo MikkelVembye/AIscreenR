@@ -175,6 +175,28 @@ test_that("tabscreen_gpt() don't return time and token info.", {
   time_token_not_include <- any(!stringr::str_detect(names(test_obj$answer_data_all), "time|token"))
   expect_true(time_token_not_include)
 
+  expect_equal(length(test_obj), 2)
+
+  expect_message(
+
+    test_obj <- tabscreen_gpt(
+      data = filges2015_dat[1,],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      model = "gpt-3.5-turbo-0613",
+      reps = 2,
+      api_key = 1234,
+      time_info = FALSE,
+      token_info = FALSE
+    )
+
+  ) |>
+    suppressMessages()
+
+  expect_equal(length(test_obj), 3)
+
   expect_message(
 
     test_obj <- tabscreen_gpt(
