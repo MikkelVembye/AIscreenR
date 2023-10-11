@@ -12,7 +12,7 @@
 \item{...}{other print arguments.}
 }
 \value{
-Information about how to find answer datasets and pricing information.
+Information about how to find answer data sets and pricing information.
 }
 \description{
 Print methods for \code{'chatgpt'} objects

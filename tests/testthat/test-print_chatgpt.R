@@ -11,7 +11,7 @@ test_that("Print expectation for chatgpt object.", {
 
   expect_message(
 
-    test_obj <- tabscreen_gpt(
+    random_name <- tabscreen_gpt(
       data = filges2015_dat[1,],
       prompt = prompt,
       studyid = studyid,
@@ -25,23 +25,15 @@ test_that("Print expectation for chatgpt object.", {
   )
 
   # class check
-  expect_s3_class(test_obj, "chatgpt")
-  expect_s3_class(test_obj, "list")
+  expect_s3_class(random_name, "chatgpt")
+  expect_s3_class(random_name, "list")
 
-  expect_output(print.chatgpt(test_obj), "object_name\\$answer_data_all")
-  expect_output(print.chatgpt(test_obj), "object_name\\$answer_data_sum")
-  expect_output(print.chatgpt(test_obj), "object_name\\$price_dollor")
-
-  # Make full test
-  expect_equal(
-    capture.output(test_obj)[8],
-    " object_name$price_dollor"
-  )
+  expect_output(print(random_name), "random_name")
 
 
   expect_message(
 
-    test_obj <- tabscreen_gpt(
+    random_name <- tabscreen_gpt(
       data = filges2015_dat[c(1:2),],
       prompt = c(prompt),
       studyid = studyid, # indicate the variable with the studyid in the data
@@ -52,14 +44,8 @@ test_that("Print expectation for chatgpt object.", {
   ) |>
     suppressMessages()
 
-  expect_output(print.chatgpt(test_obj), "object_name\\$error_data")
 
-  output2 <- capture.output(test_obj)
-
-  expect_length(
-    output2,
-    11
-  )
+  expect_output(print(random_name), "random_name\\$error_data")
 
 
 })

@@ -3,7 +3,7 @@
 #' @param x an object of class "chatgpt".
 #' @param ... other print arguments.
 #'
-#' @return Information about how to find answer datasets and pricing information.
+#' @return Information about how to find answer data sets and pricing information.
 #' @export
 #'
 #' @examples
@@ -14,24 +14,33 @@
 
 print.chatgpt <- function(x, ...){
 
+  obj_name <- as.character(substitute(x))
+
+  all_data <- paste0(obj_name, "$answer_data_all\n\n")
+  sum_data <- paste0(obj_name, "$answer_data_sum\n\n")
+  price1 <- paste0(obj_name, "$price_dollor\n\n")
+  price2 <- paste0(obj_name, "$price_dollor")
+
+
   if ("error_data" %in% names(x)){
 
-    cat("Find data with all answers by executing\n object_name$answer_data_all",
-        "\n\nFind data with the result aggregated across multiple answers by executing\n",
-        "object_name$answer_data_sum\n\nFind total price for the screening by executing\n",
-        "object_name$price_dollor\n\nFind error data by executing\n",
-        "object_name$error_data", ...)
+    err_data <- paste0(obj_name, "$error_data")
+
+    out <- paste0("Find data with all answers by executing\n ", all_data,
+        "Find data with the result aggregated across multiple answers by executing\n ", sum_data,
+        "Find total price for the screening by executing\n ", price1,
+        "Find error data by executing\n ", err_data)
 
   } else {
 
-    cat("Find data with all answers by executing\n object_name$answer_data_all",
-        "\n\nFind data with the result aggregated across multiple answers by executing\n",
-        "object_name$answer_data_sum\n\nFind total price for the screening by executing\n",
-        "object_name$price_dollor", ...)
+    out <- paste0("Find data with all answers by executing\n ", all_data,
+        "Find data with the result aggregated across multiple answers by executing\n ", sum_data,
+        "Find total price for the screening by executing\n ", price2)
 
 
   }
 
+  cat(out, ...)
 
 }
 

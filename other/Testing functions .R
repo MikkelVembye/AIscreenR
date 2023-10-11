@@ -105,7 +105,7 @@ test_obj <- tabscreen_gpt(
   #max_tries = 0,
   #reps = 1 # Number of times the same question is asked to ChatGPT
   #max_tokens = 40
-); test_obj
+); print(test_obj)
 
 price_in_dollar <- test_obj$price_dollar
 price_in_dollar
