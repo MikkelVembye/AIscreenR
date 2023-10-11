@@ -7,7 +7,7 @@
 \method{print}{chatgpt}(x, ...)
 }
 \arguments{
-\item{x}{an object of class "chatgpt".}
+\item{x}{an object of class \code{'chatgpt'}.}
 
 \item{...}{other print arguments.}
 }
