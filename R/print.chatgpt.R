@@ -1,6 +1,6 @@
 #' Print methods for `'chatgpt'` objects
 #'
-#' @param x an object of class "chatgpt".
+#' @param x an object of class `'chatgpt'`.
 #' @param ... other print arguments.
 #'
 #' @return Information about how to find answer data sets and pricing information.

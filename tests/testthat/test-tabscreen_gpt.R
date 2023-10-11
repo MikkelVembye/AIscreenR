@@ -676,6 +676,13 @@ test_that("Print and class expectation for chatgpt object.", {
   expect_output(print.chatgpt(random_name), "random_name\\$answer_data_sum")
   expect_output(print.chatgpt(random_name), "random_name\\$price_dollor")
 
+  print_out1 <- paste0(
+    "Find data with all answers by executing\\n random_name\\$answer_data_all\\n\\nFind ",
+    "data with the result aggregated across multiple answers by executing\\n ",
+    "random_name\\$answer_data_sum\\n\\nFind total price for the screening by executing\\n random_name\\$price_dollor"
+  )
+  expect_output(print(random_name), print_out1)
+
   expect_message(
 
     random_name <- tabscreen_gpt(
@@ -694,6 +701,14 @@ test_that("Print and class expectation for chatgpt object.", {
   expect_output(print(random_name), "random_name\\$answer_data_sum")
   expect_output(print(random_name), "random_name\\$price_dollor")
   expect_output(print(random_name), "random_name\\$error_data")
+
+  print_out2 <- paste0(
+    "Find data with all answers by executing\\n random_name\\$answer_data_all\\n\\nFind ",
+    "data with the result aggregated across multiple answers by executing\\n ",
+    "random_name\\$answer_data_sum\\n\\nFind total price for the screening by executing\\n random_name\\$price_dollor"
+  )
+
+  expect_output(print(random_name), print_out2)
 
   output2 <- capture.output(random_name)
 
