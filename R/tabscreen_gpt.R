@@ -206,7 +206,7 @@ tabscreen_gpt <- function(
   is_transient = gpt_is_transient,
   backoff = NULL,
   after = NULL,
-  rpm = 3500,
+  rpm = 10000,
   reps = 1,
   seed = NULL,
   progress = TRUE,
@@ -252,7 +252,7 @@ tabscreen_gpt <- function(
 
     detailed <- body$function_call$name == "inclusion_decision"
 
-    if (RPM > 3500) RPM <- 3500
+    if (RPM > 10000) RPM <- 10000
     if (RPM > 200 && stringr::str_detect(body$model, "gpt-4")) RPM <- 200
 
     if (max_t == 0) max_t <- is_trans <- NULL

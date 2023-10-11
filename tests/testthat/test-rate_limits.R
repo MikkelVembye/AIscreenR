@@ -8,14 +8,17 @@ test_that("General working of rate_limits_per_minute().", {
     nrow() |>
     expect_equal(1L)
 
+  rlpm <- rate_limits_per_minute()
+
+  expect_equal(rlpm$requests_per_minute, 10000L)
+  expect_equal(rlpm$tokens_per_minute, 1000000L)
+
   rate_limits_per_minute(model = models) |>
     nrow() |>
     expect_equal(2L)
 
   rlpm <- rate_limits_per_minute(model = models)
-  expect_equal(rlpm$requests_per_minute[1], 3500L)
   expect_length(rlpm$requests_per_minute, 2)
-  expect_equal(rlpm$tokens_per_minute[1], 90000L)
   expect_output(print(rlpm), "tibble")
 
 })

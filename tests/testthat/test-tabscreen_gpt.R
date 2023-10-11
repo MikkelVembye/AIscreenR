@@ -594,7 +594,7 @@ test_that("That paralell processing works.", {
 
   skip_on_cran()
 
-  future::plan(future::multisession)
+  future::plan(future::multisession, workers = future::availableCores())
 
   expect_message(
 

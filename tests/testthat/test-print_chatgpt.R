@@ -5,7 +5,7 @@ prompt <-
   stringr::str_remove_all("\n")
 
 
-test_that("Print expectation for chatgpt object.", {
+test_that("Print and class expectation for chatgpt object.", {
 
   skip_on_cran()
 
@@ -30,6 +30,9 @@ test_that("Print expectation for chatgpt object.", {
 
   expect_output(print(random_name), "random_name")
 
+  expect_output(print.chatgpt(random_name), "random_name\\$answer_data_all")
+  expect_output(print.chatgpt(random_name), "random_name\\$answer_data_sum")
+  expect_output(print.chatgpt(random_name), "random_name\\$price_dollor")
 
   expect_message(
 
@@ -45,7 +48,16 @@ test_that("Print expectation for chatgpt object.", {
     suppressMessages()
 
 
+  expect_output(print(random_name), "random_name\\$answer_data_all")
+  expect_output(print(random_name), "random_name\\$answer_data_sum")
+  expect_output(print(random_name), "random_name\\$price_dollor")
   expect_output(print(random_name), "random_name\\$error_data")
 
+  output2 <- capture.output(random_name)
+
+  expect_length(
+    output2,
+    31
+  )
 
 })

@@ -25,7 +25,7 @@ tabscreen_gpt(
   is_transient = gpt_is_transient,
   backoff = NULL,
   after = NULL,
-  rpm = 3500,
+  rpm = 10000,
   reps = 1,
   seed = NULL,
   progress = TRUE,
