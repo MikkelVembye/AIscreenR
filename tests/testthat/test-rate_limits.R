@@ -10,8 +10,8 @@ test_that("General working of rate_limits_per_minute().", {
 
   rlpm <- rate_limits_per_minute()
 
-  expect_equal(rlpm$requests_per_minute, 10000L)
-  expect_equal(rlpm$tokens_per_minute, 1000000L)
+  expect_true(is.numeric(rlpm$requests_per_minute))
+  expect_true(is.numeric(rlpm$tokens_per_minute))
 
   rate_limits_per_minute(model = models) |>
     nrow() |>

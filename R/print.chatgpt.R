@@ -37,7 +37,6 @@ print.chatgpt <- function(x, ...){
         "Find data with the result aggregated across multiple answers by executing\n ", sum_data,
         "Find total price for the screening by executing\n ", price2, sep = "", ...)
 
-
   }
 
 
