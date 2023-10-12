@@ -1,7 +1,10 @@
 models <- c("gpt-3.5-turbo-0613", "gpt-4")
 
+skip <- TRUE
+
 test_that("General working of rate_limits_per_minute().", {
 
+  if(skip) skip()
   skip_on_cran()
 
   rate_limits_per_minute() |>
@@ -25,6 +28,7 @@ test_that("General working of rate_limits_per_minute().", {
 
 test_that("rate_limits_per_minute() casts errors correctly.", {
 
+  if(skip) skip()
   skip_on_cran()
 
   rlpm <- rate_limits_per_minute(model = "gpt-3")

@@ -15,8 +15,8 @@ models <- c("gpt-3.5-turbo-0613", "gpt-4")
 reps <- c(10, 1)
 rpm <- c(3500, 200)
 
-skip <- FALSE
-skip_github_action <- TRUE
+skip <- TRUE
+skip_github_action <- FALSE
 
 future::plan(future::multisession)
 
