@@ -32,7 +32,7 @@ An all-important step to ensure the quality of systematic reviews involves detec
 
 In order to start the screening you must first of all have a pile of ris-files, containing titles and abstract for the references you would like to screen. You can retrieve ris-files in several ways, either directly from research database, a Google Scholar search, or exported from your reference management tool, such as EndNote, Mendeley, and RefMan. Alternatively, you can export ris-file from systematic software tool such as [EPPI-reviewer](https://eppi.ioe.ac.uk/EPPIReviewer-Web/home), [Covidence](https://www.covidence.org/), [MetaReviewer](https://www.metareviewer.org/landing/index.html), and [`revtools`](https://revtools.net/), or whatever software you like. In the example given below, we load ris-files extracted from the EPPI-reviewer. A minor advantage of extracting ris-files from systematic software tools is that they add a unique study ID for each reference. This feature makes it easier to keep track of the screening. Yet, such ID can be generated in R as well, and is automatically generated in the `tabscreen_gpt()` function when unique IDs are not provided. When using ChatGPT as the second screener, we recommend that the human screening has been done before uploading to R. Thereby, it is possible to compare the screenings instantly after the computer screening has been done. In the below example we load ris-files separately for excluded and included ris-files, respectively, and add the `human_code` variable that tracks the human decision.   
 
-```{r not run setup, include = FALSE}
+```{r not included setup, include = FALSE}
 # Loading packages 
 library(AIscreenR)
 library(revtools)
@@ -153,7 +153,7 @@ When you have generate your secret API key, remember to store it safely since
 you will not be able see it again. **NOTE**: *If you lose your API key, you can 
 just generate a new one*. 
 
-## Handling your API key with `AIscreenR`
+## Handling your API key 
 
 ### Temporary solution
 
@@ -356,7 +356,7 @@ print(sum_dat_gpt3, width = 220)
 # gpt-4 results
 sum_dat_gpt4 <- 
   result_object$answer_data_sum |> 
-  filter(stringr::str_detect(model, "4"))
+  filter(stringr::str_detect(model, "4") & !is.na(final_decision_gpt))
 
 print(sum_dat_gpt4, width = 220)
 ```
@@ -409,10 +409,10 @@ print(sum_dat_gpt3, width = 220)
 # gpt-4 results
 sum_dat_gpt4 <- 
   result_object$answer_data_sum |> 
-  filter(stringr::str_detect(model, "4"))
+  filter(stringr::str_detect(model, "4") & !is.na(final_decision_gpt))
 
 print(sum_dat_gpt4, width = 220)
-#> # A tibble: 150 × 16
+#> # A tibble: 138 × 16
 #>    author                                                                       
 #>    <chr>                                                                        
 #>  1 Holloway R G and Gramling R and Kelly A G                                    
@@ -423,8 +423,8 @@ print(sum_dat_gpt4, width = 220)
 #>  6 Hamburg Sam R                                                                
 #>  7 Park H Y and Lee B J and Kim J H and Bae J N and Hahm B J                    
 #>  8 Petrek J                                                                     
-#>  9 Schwartzman Meredith P and Wahler Robert G                                   
-#> 10 Faber J and Srutova L and Pilarova M and Vuckova Z and Bohmova D and Dobosov…
+#>  9 Faber J and Srutova L and Pilarova M and Vuckova Z and Bohmova D and Dobosov…
+#> 10 McCauley E and Schloredt K and Gudmundsen G and Martell C and Dimidjian S    
 #>    eppi_id human_code studyid title      abstract promptid prompt model question
 #>      <dbl>      <dbl>   <int> <chr>      <chr>       <int> <chr>  <chr> <chr>   
 #>  1 9434957          0       1 Estimatin… "Progno…        1 "Eval… gpt-4 "Evalua…
@@ -435,8 +435,8 @@ print(sum_dat_gpt4, width = 220)
 #>  6 9433554          0       6 BOOK REVI… "The ar…        1 "Eval… gpt-4 "Evalua…
 #>  7 9435130          0       7 Rapid imp… "Backgr…        1 "Eval… gpt-4 "Evalua…
 #>  8 9432040          0       8 Pictorial… "AIMS: …        1 "Eval… gpt-4 "Evalua…
-#>  9 9434093          0       9 Enhancing… "New an…        1 "Eval… gpt-4 "Evalua…
-#> 10 9431505          0      10 EEG spect… "Sponta…        1 "Eval… gpt-4 "Evalua…
+#>  9 9431505          0      10 EEG spect… "Sponta…        1 "Eval… gpt-4 "Evalua…
+#> 10 9435281          0      11 Expanding… "Depres…        1 "Eval… gpt-4 "Evalua…
 #>    top_p incl_p final_decision_gpt final_decision_gpt_num  reps n_mis_answers
 #>    <dbl>  <dbl> <chr>                               <dbl> <int>         <int>
 #>  1     1      0 Exclude                                 0     1             0
@@ -447,32 +447,50 @@ print(sum_dat_gpt4, width = 220)
 #>  6     1      0 Exclude                                 0     1             0
 #>  7     1      0 Exclude                                 0     1             0
 #>  8     1      0 Exclude                                 0     1             0
-#>  9     1    NaN <NA>                                   NA     1             1
+#>  9     1      0 Exclude                                 0     1             0
 #> 10     1      0 Exclude                                 0     1             0
-#> # ℹ 140 more rows
 
 ```
 
 
 ## Analyzing the screening
 
-Simple table
+### Simple table
 ```{r}
 # gpt3.5 result
 table(gpt = sum_dat_gpt3$final_decision_gpt_num, human = sum_dat_gpt3$human_code)
-
+table(gpt = sum_dat_gpt4$final_decision_gpt_num, human = sum_dat_gpt4$human_code)
 ```
 
-False excluded (by gpt)
+### False included and excluded (by gpt)
 
 ```{r}
 
+result_object$answer_data_sum |>
+  summarise(
+    n_missing = sum(is.na(final_decision_gpt_num)),
+    n_false_in = sum(if_else(human_code == 1 & final_decision_gpt_num == 0, 1, 0, missing = NA), na.rm = TRUE),
+    n_false_ex = sum(if_else(human_code == 0 & final_decision_gpt_num == 1, 1, 0, missing = NA), na.rm = TRUE),
+    n_true_in = sum(if_else(human_code == 1 & final_decision_gpt_num == 1, 1, 0, missing = NA), na.rm = TRUE),
+    n_true_ex = sum(if_else(human_code == 0 & final_decision_gpt_num == 0, 1, 0, missing = NA), na.rm = TRUE),
+   
+    accuracy = 1- (n_false_in + n_false_ex)/n(),
+    
+    sensitivity = n_true_in / (n_true_in + n_false_in),
+    
+    specificity = n_true_ex / (n_true_ex + n_false_ex),
+    
+    .by = c(promptid, model, top_p) 
+  ) |> 
+  print(width = 200)
+  
+
 ```
 
-False included (by gpt)
+## Getting detailed descript
 
 ```{r}
-
+# Show example with gpt-4
 ```
 
 
