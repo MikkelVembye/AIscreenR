@@ -212,7 +212,7 @@ tabscreen_gpt <- function(
   progress = TRUE,
   messages = TRUE,
   incl_cutoff_upper = 0.5,
-  incl_cutoff_lower = 0.4
+  incl_cutoff_lower = incl_cutoff_upper - 0.1
   ){
 
   # Stop warnings
@@ -232,6 +232,10 @@ tabscreen_gpt <- function(
     "gpt-4-32k", "gpt-4-32k-0613"
   )))) stop("Unknown gpt model(s) used - check model name(s).")
 
+
+  if(incl_cutoff_upper < incl_cutoff_lower){
+    stop("incl_cutoff_lower must not exceed incl_cutoff_upper")
+  }
 
   ###############################################
   # Function to send a single request to ChatGPT

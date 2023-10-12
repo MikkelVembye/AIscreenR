@@ -543,6 +543,20 @@ test_that("tabscreen_gpt() expected errors.", {
 
   )
 
+  expect_error(
+
+    test_obj <- tabscreen_gpt(
+      data = filges2015_dat[1,],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      incl_cutoff_upper = 0.4,
+      incl_cutoff_lower = 0.5
+    )
+
+  )
+
 })
 
 test_that("API error.",{
