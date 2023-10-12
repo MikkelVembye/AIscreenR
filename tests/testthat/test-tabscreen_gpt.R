@@ -641,6 +641,16 @@ test_that("That paralell processing works.", {
 
   expect_lt(tm_par[["elapsed"]], sum(test_obj$answer_data_all$run_time))
 
+  gpt_answers <-
+    test_obj$answer_data_all |>
+    filter(!is.na(decision_gpt)) |>
+    pull(decision_gpt)
+
+  # Testing function call work
+  gpt_answers |>
+    stringr::str_detect("1|0|rror") |>
+    unique() |>
+    expect_true()
 
 
 
