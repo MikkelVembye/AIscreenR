@@ -92,12 +92,7 @@ interventions. The first evidence of this is shown in this vignette.
 However, be aware that our first results are based on a retrospective
 analysis which might not generalize to prospective screenings where
 ChatGPT potentially has not been trained on that reference data, that is
-data added to the internet after 2021. We have started testing the
-AIscreenR on more complex reviews. Here it seems to be harder to make
-concise prompts that can make ChatGPT emulating a reliable human second
-screener. Yet, the first tentative evidence for complex reviews suggests
-that ChatGPT can function well to reduce the total number of references
-that has to be screened by humans.
+data added to the internet after 2021.
 </p>
 <p></p></span>
 </div>
@@ -115,11 +110,12 @@ tools to act as the second screener (Gartlehner et al., 2019; van de
 Schoot et al. 2021). Hereto, most evaluations of existing tools finds
 that most automated tools fail to reliably act as/imitating a human
 second screener. Meanwhile, it is still unknown how well or if the newly
-developed large-language models (LLMs) such as <a href="https://chat.openai.com/" class="external-link">ChatGPT</a> can work and possibly
-emulate a human second screener. The aim of the <code>AIscreenR</code>
-package is to support the use and testing of ChatGPT as a the second
-screener or alternatively to reduce research waste. Concretely the
-package allow user to apply the gpt models from the <a href="https://platform.openai.com/docs/models/model-endpoint-compatibility" class="external-link">https://api.openai.com/v1/chat/completions</a>
+developed large-language models (LLMs) such as ChatGPT can work and
+possibly emulate a human second screener. The aim of the
+<code>AIscreenR</code> package is to support the use and testing of
+ChatGPT as a the second screener or alternatively to reduce research
+waste. Concretely the package allows user to apply the gpt models from
+the <a href="https://platform.openai.com/docs/models/model-endpoint-compatibility" class="external-link">https://api.openai.com/v1/chat/completions</a>
 endpoint. In future developments, we expect to add further LLMs (such as
 Bard) when APIs are available for those LLMs. For now, we invite other
 researchers to test this software so that we as a review community can
@@ -138,8 +134,30 @@ should be use carefully and should always assisted by a human
 (human-in-the-loop). Consequently, we do not recommend to use the the
 ChatGPT as a single screener.</p>
 <div class="section level3">
-<h3 id="loading-relevant-ris-file-data-for-screening">Loading relevant ris file data for screening<a class="anchor" aria-label="anchor" href="#loading-relevant-ris-file-data-for-screening"></a>
+<h3 id="getting-started-loading-relevant-ris-file-data-for-screening">Getting started: Loading relevant ris file data for screening<a class="anchor" aria-label="anchor" href="#getting-started-loading-relevant-ris-file-data-for-screening"></a>
 </h3>
+<p>In order to start the screening you must first of all have a pile of
+ris-files, containing titles and abstract for the references you would
+like to screen. You can retrieve ris-files in several ways, either
+directly from research database, a Google Scholar search, or exported
+from your reference management tool, such as EndNote, Mendeley, and
+RefMan. Alternatively, you can export ris-file from systematic software
+tool such as <a href="https://eppi.ioe.ac.uk/EPPIReviewer-Web/home" class="external-link">EPPI-reviewer</a>,
+<a href="https://www.covidence.org/" class="external-link">Covidence</a>, <a href="https://www.metareviewer.org/landing/index.html" class="external-link">MetaReviewer</a>,
+and <a href="https://revtools.net/" class="external-link"><code>revtools</code></a>, or
+whatever software you like. In the example given below, we load
+ris-files extracted from the EPPI-reviewer. A minor advantage of
+extracting ris-files from systematic software tools is that they add a
+unique study ID for each reference. This feature makes it easier to keep
+track of the screening. Yet, such ID can be generated in R as well, and
+is automatically generated in the <code><a href="../reference/tabscreen_gpt.html">tabscreen_gpt()</a></code> function
+when unique IDs are not provided. When using ChatGPT as the second
+screener, we recommend that the human screening has been done before
+uploading to R. Thereby, it is possible to compare the screenings
+instantly after the computer screening has been done. In the below
+example we load ris-files separately for excluded and included
+ris-files, respectively, and add the <code>human_code</code> variable
+that tracks the human decision.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Loading packages </span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mikkelvembye.github.io/AIscreenR/">AIscreenR</a></span><span class="op">)</span></span>
@@ -152,8 +170,9 @@ ChatGPT as a single screener.</p>
 <span></span>
 <span></span>
 <span><span class="co"># Loading excluded studies</span></span>
-<span><span class="co"># Consider making AIscreenR_example function as https://github.com/tidyverse/readxl/blob/HEAD/R/example.R </span></span>
+<span><span class="co"># Reading path to risfiles</span></span>
 <span><span class="va">excl_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"excl_tutorial.ris"</span>, package <span class="op">=</span> <span class="st">"AIscreenR"</span><span class="op">)</span></span>
+<span></span>
 <span><span class="va">ris_dat_excl</span> <span class="op">&lt;-</span> <span class="fu">revtools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/revtools/man/read_bibliograpy.html" class="external-link">read_bibliography</a></span><span class="op">(</span><span class="va">excl_path</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -164,6 +183,7 @@ ChatGPT as a single screener.</p>
 <span></span>
 <span><span class="co"># Loading included studies</span></span>
 <span><span class="va">incl_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"incl_tutorial.ris"</span>, package <span class="op">=</span> <span class="st">"AIscreenR"</span><span class="op">)</span></span>
+<span></span>
 <span><span class="va">ris_dat_incl</span> <span class="op">&lt;-</span> <span class="fu">revtools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/revtools/man/read_bibliograpy.html" class="external-link">read_bibliography</a></span><span class="op">(</span><span class="va">incl_path</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -172,7 +192,6 @@ ChatGPT as a single screener.</p>
 <span>    human_code <span class="op">=</span> <span class="fl">1</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Check why filges2015_data and filges2015_dat differs </span></span>
 <span><span class="va">filges2015_dat</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">ris_dat_excl</span>, <span class="va">ris_dat_incl</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
@@ -180,22 +199,21 @@ ChatGPT as a single screener.</p>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/relocate.html" class="external-link">relocate</a></span><span class="op">(</span><span class="va">studyid</span>, .after <span class="op">=</span> <span class="va">eppi_id</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">#?filges2015_dat</span></span>
+<span></span>
 <span><span class="va">filges2015_dat</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 150 × 6</span></span></span>
+<span><span class="co">#&gt; # A tibble: 150 × 6</span></span>
 <span><span class="co">#&gt;    author                              eppi_id studyid title abstract human_code</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Holloway R G and Gramling R and Ke… 9434957       1 Esti… <span style="color: #949494;">"</span>Progno…          0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Morawska Alina and Stallman Helen … 9433838       2 Self… <span style="color: #949494;">"</span>Behavi…          0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Michel C M and Pascual-Marqui R D … 9431171       3 Freq… <span style="color: #949494;">"</span>The to…          0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Paul Howard A                       9433968       4 A Re… <span style="color: #949494;">"</span>The ar…          0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Feinberg I and De Bie E and Davis … 9434460       5 Topo… <span style="color: #949494;">"</span>STUDY …          0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Hamburg Sam R                       9433554       6 BOOK… <span style="color: #949494;">"</span>The ar…          0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Park H Y and Lee B J and Kim J H a… 9435130       7 Rapi… <span style="color: #949494;">"</span>Backgr…          0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Petrek J                            9432040       8 Pict… <span style="color: #949494;">"</span>AIMS: …          0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Schwartzman Meredith P and Wahler … 9434093       9 Enha… <span style="color: #949494;">"</span>New an…          0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Faber J and Srutova L and Pilarova… 9431505      10 EEG … <span style="color: #949494;">"</span>Sponta…          0</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 140 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt;    &lt;chr&gt;                               &lt;chr&gt;     &lt;int&gt; &lt;chr&gt; &lt;chr&gt;         &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 Holloway R G and Gramling R and Ke… 9434957       1 Esti… "Progno…          0</span></span>
+<span><span class="co">#&gt;  2 Morawska Alina and Stallman Helen … 9433838       2 Self… "Behavi…          0</span></span>
+<span><span class="co">#&gt;  3 Michel C M and Pascual-Marqui R D … 9431171       3 Freq… "The to…          0</span></span>
+<span><span class="co">#&gt;  4 Paul Howard A                       9433968       4 A Re… "The ar…          0</span></span>
+<span><span class="co">#&gt;  5 Feinberg I and De Bie E and Davis … 9434460       5 Topo… "STUDY …          0</span></span>
+<span><span class="co">#&gt;  6 Hamburg Sam R                       9433554       6 BOOK… "The ar…          0</span></span>
+<span><span class="co">#&gt;  7 Park H Y and Lee B J and Kim J H a… 9435130       7 Rapi… "Backgr…          0</span></span>
+<span><span class="co">#&gt;  8 Petrek J                            9432040       8 Pict… "AIMS: …          0</span></span>
+<span><span class="co">#&gt;  9 Schwartzman Meredith P and Wahler … 9434093       9 Enha… "New an…          0</span></span>
+<span><span class="co">#&gt; 10 Faber J and Srutova L and Pilarova… 9431505      10 EEG … "Sponta…          0</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="getting-api-key-openai">Getting API key OpenAI<a class="anchor" aria-label="anchor" href="#getting-api-key-openai"></a>
@@ -219,6 +237,7 @@ safely since you will not be able see it again. <strong>NOTE</strong>:
 <div class="section level4">
 <h4 id="temporary-solution">Temporary solution<a class="anchor" aria-label="anchor" href="#temporary-solution"></a>
 </h4>
+<p>TO BE DONE</p>
 </div>
 <div class="section level4">
 <h4 id="pemanent-solution">Pemanent solution<a class="anchor" aria-label="anchor" href="#pemanent-solution"></a>
@@ -241,21 +260,23 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span><span class="co">#&gt; # A tibble: 1 × 3</span></span>
 <span><span class="co">#&gt;   model              requests_per_minute tokens_per_minute</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;                            &lt;dbl&gt;             &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 gpt-3.5-turbo-0613                3500             90000</span></span>
+<span><span class="co">#&gt; 1 gpt-3.5-turbo-0613               10000           1000000</span></span>
 <span></span>
 <span></span>
 <span><span class="co"># Rate limits overview across multiple models</span></span>
+<span><span class="co"># Add further models if necessary</span></span>
 <span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-4"</span><span class="op">)</span></span>
-<span><span class="va">models_rate_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">models</span><span class="op">)</span> <span class="co"># Add further models if necessary</span></span>
+<span></span>
+<span><span class="va">models_rate_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">models</span><span class="op">)</span> </span>
 <span><span class="va">models_rate_limits</span></span>
 <span><span class="co">#&gt; # A tibble: 2 × 3</span></span>
 <span><span class="co">#&gt;   model              requests_per_minute tokens_per_minute</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;                            &lt;dbl&gt;             &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 gpt-3.5-turbo-0613                3500             90000</span></span>
+<span><span class="co">#&gt; 1 gpt-3.5-turbo-0613               10000           1000000</span></span>
 <span><span class="co">#&gt; 2 gpt-4                              200             10000</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="approximate-price-of-screening">Approximate price of screening<a class="anchor" aria-label="anchor" href="#approximate-price-of-screening"></a>
+<h3 id="working-with-prompts-in-r">Working with prompts in R<a class="anchor" aria-label="anchor" href="#working-with-prompts-in-r"></a>
 </h3>
 <p>Example of how to enter a prompt.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -288,17 +309,27 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span><span class="st">for non-opioid drug use? 3) Are the participants within age 11–21?"</span></span></code></pre></div>
 <p>Can also be done in word</p>
 <p> </p>
-<p><img src="helper-stuff/wordprompt1.png" width="100%">  </p>
+<div class="figure">
+<img src="helper-stuff/wordprompt1.png" alt="*Figure 3 - Prompt 1: With three inclusion critera.*" width="100%"><p class="caption">
+<em>Figure 3 - Prompt 1: With three inclusion critera.</em>
+</p>
+</div>
 <p> </p>
-<p><img src="helper-stuff/wordprompt2.png" width="100%">  </p>
+<p> </p>
+<div class="figure">
+<img src="helper-stuff/wordprompt2.png" alt="*Figure 4 - Prompt 2: With one inclusion criterion only.*" width="100%"><p class="caption">
+<em>Figure 4 - Prompt 2: With one inclusion criterion only.</em>
+</p>
+</div>
+<p> </p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">word_path1</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"word_pormpt_1.docx"</span>, package <span class="op">=</span> <span class="st">"AIscreenR"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">prompt_word</span> <span class="op">&lt;-</span> </span>
+<span><span class="va">prompt</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu">readtext</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/readtext/man/readtext.html" class="external-link">readtext</a></span><span class="op">(</span><span class="va">word_path1</span><span class="op">)</span><span class="op">$</span><span class="va">text</span> <span class="op">|&gt;</span> </span>
 <span>      <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove_all</a></span><span class="op">(</span><span class="st">"\n"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">prompt_word</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">prompt</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  chr "Evaluate the following study based on the selection criteria for a systematic review on the effects of family-b"| __truncated__</span></span>
 <span></span>
 <span><span class="co"># Working with multiple prompts</span></span>
@@ -314,9 +345,14 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">prompt_word2</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  chr [1:2] "Evaluate the following study based on the selection criteria for a systematic review on the effects of family-b"| __truncated__ ...</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="approximate-price-of-screening">Approximate price of screening<a class="anchor" aria-label="anchor" href="#approximate-price-of-screening"></a>
+</h3>
 <p>Approximate price of screening</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">reps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-4"</span><span class="op">)</span></span>
+<span><span class="va">reps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">app_obj</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu"><a href="../reference/approximate_price_gpt.html">approximate_price_gpt</a></span><span class="op">(</span></span>
@@ -326,55 +362,168 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span>    title <span class="op">=</span> <span class="va">title</span>, <span class="co"># indicate the variable with the titles in the data</span></span>
 <span>    abstract <span class="op">=</span> <span class="va">abstract</span>, <span class="co"># indicate the variable with the abstracts in the data</span></span>
 <span>    model <span class="op">=</span> <span class="va">models</span>,</span>
-<span>    reps <span class="op">=</span> <span class="va">reps</span> </span>
+<span>    reps <span class="op">=</span> <span class="va">reps</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="va">app_obj</span></span>
-<span><span class="co">#&gt; The approximate price of the (simple) screening will be around $7.5449.</span></span>
+<span><span class="co">#&gt; The approximate price of the (simple) screening will be around $7.6544.</span></span>
 <span></span>
 <span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_dollar</span></span>
-<span><span class="co">#&gt; [1] 7.5449</span></span>
+<span><span class="co">#&gt; [1] 7.6544</span></span>
 <span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_data</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 5</span></span></span>
 <span><span class="co">#&gt;   model     iterations input_price_dollar output_price_dollar total_price_dollor</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> gpt-3.5-…         10               2.47               0.033               2.50</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> gpt-4              1               4.94               0.099               5.04</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> gpt-3.5-…         10               2.51               0.033               2.54</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> gpt-4              1               5.01               0.099               5.11</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="screen-titles-and-abstracts">Screen titles and abstracts<a class="anchor" aria-label="anchor" href="#screen-titles-and-abstracts"></a>
+<h3 id="screening-titles-and-abstracts">Screening titles and abstracts<a class="anchor" aria-label="anchor" href="#screening-titles-and-abstracts"></a>
 </h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-4"</span><span class="op">)</span></span>
+<span><span class="va">reps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">rpm</span> <span class="op">&lt;-</span> <span class="va">models_rate_limits</span><span class="op">$</span><span class="va">requests_per_minute</span></span>
 <span></span>
-<span><span class="va">FFT_screen_obj</span> <span class="op">&lt;-</span> </span>
+<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">result_object</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu"><a href="../reference/tabscreen_gpt.html">tabscreen_gpt</a></span><span class="op">(</span></span>
-<span>    data <span class="op">=</span> <span class="va">filges2015_dat</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span>,<span class="op">]</span>,</span>
-<span>    prompt <span class="op">=</span> <span class="va">prompt</span>,</span>
+<span>    data <span class="op">=</span> <span class="va">filges2015_dat</span>, <span class="co"># ris-file data generated with </span></span>
+<span>    prompt <span class="op">=</span> <span class="va">prompt</span>, <span class="co"># indicate name of the loaded prompt object</span></span>
 <span>    studyid <span class="op">=</span> <span class="va">studyid</span>, <span class="co"># indicate the variable with the studyid in the data</span></span>
 <span>    title <span class="op">=</span> <span class="va">title</span>, <span class="co"># indicate the variable with the titles in the data</span></span>
 <span>    abstract <span class="op">=</span> <span class="va">abstract</span>, <span class="co"># indicate the variable with the abstracts in the data,</span></span>
 <span>    model <span class="op">=</span> <span class="va">models</span>,</span>
-<span>    reps <span class="op">=</span> <span class="va">reps</span></span>
+<span>    reps <span class="op">=</span> <span class="va">reps</span>,</span>
+<span>    rpm <span class="op">=</span> <span class="va">rpm</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $0.0845.</span></span>
-<span><span class="co">#&gt;  Progress: ────────────────────────────────────────────────────────────────────────── 100%</span></span>
+<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $7.6544.</span></span>
+<span><span class="co">#&gt; * Consider removing references that has no abstract since these can distort the accuracy of the screening</span></span>
+<span><span class="co">#&gt;  Progress: ──────────────────────────────────────────────────────────────────────────────────────────── 100%</span></span>
+<span><span class="co">#&gt;  * NOTE: Requests falied for 12 titles and abstracts."</span></span>
 <span></span>
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">sequential</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">FFT_screen_obj</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">result_object</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Find data with all answers by executing</span></span>
-<span><span class="co">#&gt;  object_name$answer_data_all </span></span>
+<span><span class="co">#&gt;  result_object$answer_data_all</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Find data with the result aggregated across multiple answers by executing</span></span>
-<span><span class="co">#&gt;  object_name$answer_data_sum</span></span>
+<span><span class="co">#&gt;  result_object$answer_data_sum</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Find total price for the screening by executing</span></span>
-<span><span class="co">#&gt;  object_name$price_dollor</span></span>
-<span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt; If some requests failed, find the error data by executing</span></span>
-<span><span class="co">#&gt;  object_name$error_data</span></span>
-<span>  </span></code></pre></div>
+<span><span class="co">#&gt;  result_object$price_dollor</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Find error data by executing</span></span>
+<span><span class="co">#&gt;  result_object$error_data</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="getting-the-results-from-the-screening">Getting the results from the screening<a class="anchor" aria-label="anchor" href="#getting-the-results-from-the-screening"></a>
+</h3>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sum_dat_gpt3</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">result_object</span><span class="op">$</span><span class="va">answer_data_sum</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html" class="external-link">str_detect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"3"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sum_dat_gpt3</span>, width <span class="op">=</span> <span class="fl">220</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 150 × 16</span></span>
+<span><span class="co">#&gt;    author                                                                       </span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;                                                                        </span></span>
+<span><span class="co">#&gt;  1 Holloway R G and Gramling R and Kelly A G                                    </span></span>
+<span><span class="co">#&gt;  2 Morawska Alina and Stallman Helen M and Sanders Matthew R and Ralph Alan     </span></span>
+<span><span class="co">#&gt;  3 Michel C M and Pascual-Marqui R D and Strik W K and Koenig T and Lehmann D   </span></span>
+<span><span class="co">#&gt;  4 Paul Howard A                                                                </span></span>
+<span><span class="co">#&gt;  5 Feinberg I and De Bie E and Davis N M and Campbell I G                       </span></span>
+<span><span class="co">#&gt;  6 Hamburg Sam R                                                                </span></span>
+<span><span class="co">#&gt;  7 Park H Y and Lee B J and Kim J H and Bae J N and Hahm B J                    </span></span>
+<span><span class="co">#&gt;  8 Petrek J                                                                     </span></span>
+<span><span class="co">#&gt;  9 Schwartzman Meredith P and Wahler Robert G                                   </span></span>
+<span><span class="co">#&gt; 10 Faber J and Srutova L and Pilarova M and Vuckova Z and Bohmova D and Dobosov…</span></span>
+<span><span class="co">#&gt;    eppi_id human_code studyid title      abstract promptid prompt model question</span></span>
+<span><span class="co">#&gt;      &lt;dbl&gt;      &lt;dbl&gt;   &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   </span></span>
+<span><span class="co">#&gt;  1 9434957          0       1 Estimatin… "Progno…        1 "Eval… gpt-… "Evalua…</span></span>
+<span><span class="co">#&gt;  2 9433838          0       2 Self-Dire… "Behavi…        1 "Eval… gpt-… "Evalua…</span></span>
+<span><span class="co">#&gt;  3 9431171          0       3 Frequency… "The to…        1 "Eval… gpt-… "Evalua…</span></span>
+<span><span class="co">#&gt;  4 9433968          0       4 A Review … "The ar…        1 "Eval… gpt-… "Evalua…</span></span>
+<span><span class="co">#&gt;  5 9434460          0       5 Topograph… "STUDY …        1 "Eval… gpt-… "Evalua…</span></span>
+<span><span class="co">#&gt;  6 9433554          0       6 BOOK REVI… "The ar…        1 "Eval… gpt-… "Evalua…</span></span>
+<span><span class="co">#&gt;  7 9435130          0       7 Rapid imp… "Backgr…        1 "Eval… gpt-… "Evalua…</span></span>
+<span><span class="co">#&gt;  8 9432040          0       8 Pictorial… "AIMS: …        1 "Eval… gpt-… "Evalua…</span></span>
+<span><span class="co">#&gt;  9 9434093          0       9 Enhancing… "New an…        1 "Eval… gpt-… "Evalua…</span></span>
+<span><span class="co">#&gt; 10 9431505          0      10 EEG spect… "Sponta…        1 "Eval… gpt-… "Evalua…</span></span>
+<span><span class="co">#&gt;    top_p incl_p final_decision_gpt final_decision_gpt_num  reps n_mis_answers</span></span>
+<span><span class="co">#&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;                               &lt;dbl&gt; &lt;int&gt;         &lt;int&gt;</span></span>
+<span><span class="co">#&gt;  1     1    0   Exclude                                 0    10             0</span></span>
+<span><span class="co">#&gt;  2     1    0.8 Include                                 1    10             0</span></span>
+<span><span class="co">#&gt;  3     1    0   Exclude                                 0    10             0</span></span>
+<span><span class="co">#&gt;  4     1    0   Exclude                                 0    10             0</span></span>
+<span><span class="co">#&gt;  5     1    0.2 Exclude                                 0    10             0</span></span>
+<span><span class="co">#&gt;  6     1    0   Exclude                                 0    10             0</span></span>
+<span><span class="co">#&gt;  7     1    0   Exclude                                 0    10             0</span></span>
+<span><span class="co">#&gt;  8     1    0   Exclude                                 0    10             0</span></span>
+<span><span class="co">#&gt;  9     1    0   Exclude                                 0    10             0</span></span>
+<span><span class="co">#&gt; 10     1    0   Exclude                                 0    10             0</span></span>
+<span><span class="co">#&gt; # ℹ 140 more rows</span></span>
+<span></span>
+<span><span class="co"># gpt-4 results</span></span>
+<span><span class="va">sum_dat_gpt4</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">result_object</span><span class="op">$</span><span class="va">answer_data_sum</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html" class="external-link">str_detect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"4"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sum_dat_gpt4</span>, width <span class="op">=</span> <span class="fl">220</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 150 × 16</span></span>
+<span><span class="co">#&gt;    author                                                                       </span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;                                                                        </span></span>
+<span><span class="co">#&gt;  1 Holloway R G and Gramling R and Kelly A G                                    </span></span>
+<span><span class="co">#&gt;  2 Morawska Alina and Stallman Helen M and Sanders Matthew R and Ralph Alan     </span></span>
+<span><span class="co">#&gt;  3 Michel C M and Pascual-Marqui R D and Strik W K and Koenig T and Lehmann D   </span></span>
+<span><span class="co">#&gt;  4 Paul Howard A                                                                </span></span>
+<span><span class="co">#&gt;  5 Feinberg I and De Bie E and Davis N M and Campbell I G                       </span></span>
+<span><span class="co">#&gt;  6 Hamburg Sam R                                                                </span></span>
+<span><span class="co">#&gt;  7 Park H Y and Lee B J and Kim J H and Bae J N and Hahm B J                    </span></span>
+<span><span class="co">#&gt;  8 Petrek J                                                                     </span></span>
+<span><span class="co">#&gt;  9 Schwartzman Meredith P and Wahler Robert G                                   </span></span>
+<span><span class="co">#&gt; 10 Faber J and Srutova L and Pilarova M and Vuckova Z and Bohmova D and Dobosov…</span></span>
+<span><span class="co">#&gt;    eppi_id human_code studyid title      abstract promptid prompt model question</span></span>
+<span><span class="co">#&gt;      &lt;dbl&gt;      &lt;dbl&gt;   &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   </span></span>
+<span><span class="co">#&gt;  1 9434957          0       1 Estimatin… "Progno…        1 "Eval… gpt-4 "Evalua…</span></span>
+<span><span class="co">#&gt;  2 9433838          0       2 Self-Dire… "Behavi…        1 "Eval… gpt-4 "Evalua…</span></span>
+<span><span class="co">#&gt;  3 9431171          0       3 Frequency… "The to…        1 "Eval… gpt-4 "Evalua…</span></span>
+<span><span class="co">#&gt;  4 9433968          0       4 A Review … "The ar…        1 "Eval… gpt-4 "Evalua…</span></span>
+<span><span class="co">#&gt;  5 9434460          0       5 Topograph… "STUDY …        1 "Eval… gpt-4 "Evalua…</span></span>
+<span><span class="co">#&gt;  6 9433554          0       6 BOOK REVI… "The ar…        1 "Eval… gpt-4 "Evalua…</span></span>
+<span><span class="co">#&gt;  7 9435130          0       7 Rapid imp… "Backgr…        1 "Eval… gpt-4 "Evalua…</span></span>
+<span><span class="co">#&gt;  8 9432040          0       8 Pictorial… "AIMS: …        1 "Eval… gpt-4 "Evalua…</span></span>
+<span><span class="co">#&gt;  9 9434093          0       9 Enhancing… "New an…        1 "Eval… gpt-4 "Evalua…</span></span>
+<span><span class="co">#&gt; 10 9431505          0      10 EEG spect… "Sponta…        1 "Eval… gpt-4 "Evalua…</span></span>
+<span><span class="co">#&gt;    top_p incl_p final_decision_gpt final_decision_gpt_num  reps n_mis_answers</span></span>
+<span><span class="co">#&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;                               &lt;dbl&gt; &lt;int&gt;         &lt;int&gt;</span></span>
+<span><span class="co">#&gt;  1     1      0 Exclude                                 0     1             0</span></span>
+<span><span class="co">#&gt;  2     1      0 Exclude                                 0     1             0</span></span>
+<span><span class="co">#&gt;  3     1      0 Exclude                                 0     1             0</span></span>
+<span><span class="co">#&gt;  4     1      0 Exclude                                 0     1             0</span></span>
+<span><span class="co">#&gt;  5     1      0 Exclude                                 0     1             0</span></span>
+<span><span class="co">#&gt;  6     1      0 Exclude                                 0     1             0</span></span>
+<span><span class="co">#&gt;  7     1      0 Exclude                                 0     1             0</span></span>
+<span><span class="co">#&gt;  8     1      0 Exclude                                 0     1             0</span></span>
+<span><span class="co">#&gt;  9     1    NaN &lt;NA&gt;                                   NA     1             1</span></span>
+<span><span class="co">#&gt; 10     1      0 Exclude                                 0     1             0</span></span>
+<span><span class="co">#&gt; # ℹ 140 more rows</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="analyzing-the-screening">Analyzing the screening<a class="anchor" aria-label="anchor" href="#analyzing-the-screening"></a>
+</h3>
+<p>Simple table</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># gpt3.5 result</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span>gpt <span class="op">=</span> <span class="va">sum_dat_gpt3</span><span class="op">$</span><span class="va">final_decision_gpt_num</span>, human <span class="op">=</span> <span class="va">sum_dat_gpt3</span><span class="op">$</span><span class="va">human_code</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    human</span></span>
+<span><span class="co">#&gt; gpt  0  1</span></span>
+<span><span class="co">#&gt;   0 88  5</span></span>
+<span><span class="co">#&gt;   1 12 45</span></span></code></pre></div>
+<p>False excluded (by gpt)</p>
+<p>False included (by gpt)</p>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
@@ -388,7 +537,7 @@ study selection in systematic reviews: a methodological systematic
 review. <em>BMC Medical Research Methodology</em> 19, 1-9. <a href="https://doi.org/10.1186/s12874-019-0782-0" class="external-link uri">https://doi.org/10.1186/s12874-019-0782-0</a></p>
 <p>Westgate MJ (2019). revtools: An R package to support article
 screening for evidence synthesis. <em>Research Synthesis Methods</em>.
-<a href="doi:10.1002/jrsm.1374" class="uri">doi:10.1002/jrsm.1374</a> <a href="https://doi.org/10.1002/jrsm.1374" class="external-link uri">https://doi.org/10.1002/jrsm.1374</a>.</p>
+<a href="https://doi.org/10.1002/jrsm.1374" class="external-link uri">https://doi.org/10.1002/jrsm.1374</a>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
