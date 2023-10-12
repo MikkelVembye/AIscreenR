@@ -519,7 +519,7 @@ tabscreen_gpt <- function(
     dat |>
     dplyr::mutate(
       dplyr::across(c({{ title }}, {{ abstract }}), ~ dplyr::if_else(
-        is.na(.x) | .x == "" | .x == " ", "No information", .x, missing = "No information")
+        is.na(.x) | .x == "" | .x == " " | .x == "NA", "No information", .x, missing = "No information")
       )
     ) |>
     dplyr::slice(rep(1:nrow(dat), length(prompt))) |>
