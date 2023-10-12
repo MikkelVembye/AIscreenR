@@ -232,7 +232,7 @@ safely since you will not be able see it again. <strong>NOTE</strong>:
 <em>If you lose your API key, you can just generate a new one</em>.</p>
 </div>
 <div class="section level3">
-<h3 id="handling-your-api-key-with-aiscreenr">Handling your API key with <code>AIscreenR</code><a class="anchor" aria-label="anchor" href="#handling-your-api-key-with-aiscreenr"></a>
+<h3 id="handling-your-api-key">Handling your API key<a class="anchor" aria-label="anchor" href="#handling-your-api-key"></a>
 </h3>
 <div class="section level4">
 <h4 id="temporary-solution">Temporary solution<a class="anchor" aria-label="anchor" href="#temporary-solution"></a>
@@ -469,10 +469,10 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span><span class="co"># gpt-4 results</span></span>
 <span><span class="va">sum_dat_gpt4</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">result_object</span><span class="op">$</span><span class="va">answer_data_sum</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html" class="external-link">str_detect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"4"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html" class="external-link">str_detect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"4"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">final_decision_gpt</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sum_dat_gpt4</span>, width <span class="op">=</span> <span class="fl">220</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 150 × 16</span></span>
+<span><span class="co">#&gt; # A tibble: 138 × 16</span></span>
 <span><span class="co">#&gt;    author                                                                       </span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;                                                                        </span></span>
 <span><span class="co">#&gt;  1 Holloway R G and Gramling R and Kelly A G                                    </span></span>
@@ -483,8 +483,8 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span><span class="co">#&gt;  6 Hamburg Sam R                                                                </span></span>
 <span><span class="co">#&gt;  7 Park H Y and Lee B J and Kim J H and Bae J N and Hahm B J                    </span></span>
 <span><span class="co">#&gt;  8 Petrek J                                                                     </span></span>
-<span><span class="co">#&gt;  9 Schwartzman Meredith P and Wahler Robert G                                   </span></span>
-<span><span class="co">#&gt; 10 Faber J and Srutova L and Pilarova M and Vuckova Z and Bohmova D and Dobosov…</span></span>
+<span><span class="co">#&gt;  9 Faber J and Srutova L and Pilarova M and Vuckova Z and Bohmova D and Dobosov…</span></span>
+<span><span class="co">#&gt; 10 McCauley E and Schloredt K and Gudmundsen G and Martell C and Dimidjian S    </span></span>
 <span><span class="co">#&gt;    eppi_id human_code studyid title      abstract promptid prompt model question</span></span>
 <span><span class="co">#&gt;      &lt;dbl&gt;      &lt;dbl&gt;   &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   </span></span>
 <span><span class="co">#&gt;  1 9434957          0       1 Estimatin… "Progno…        1 "Eval… gpt-4 "Evalua…</span></span>
@@ -495,8 +495,8 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span><span class="co">#&gt;  6 9433554          0       6 BOOK REVI… "The ar…        1 "Eval… gpt-4 "Evalua…</span></span>
 <span><span class="co">#&gt;  7 9435130          0       7 Rapid imp… "Backgr…        1 "Eval… gpt-4 "Evalua…</span></span>
 <span><span class="co">#&gt;  8 9432040          0       8 Pictorial… "AIMS: …        1 "Eval… gpt-4 "Evalua…</span></span>
-<span><span class="co">#&gt;  9 9434093          0       9 Enhancing… "New an…        1 "Eval… gpt-4 "Evalua…</span></span>
-<span><span class="co">#&gt; 10 9431505          0      10 EEG spect… "Sponta…        1 "Eval… gpt-4 "Evalua…</span></span>
+<span><span class="co">#&gt;  9 9431505          0      10 EEG spect… "Sponta…        1 "Eval… gpt-4 "Evalua…</span></span>
+<span><span class="co">#&gt; 10 9435281          0      11 Expanding… "Depres…        1 "Eval… gpt-4 "Evalua…</span></span>
 <span><span class="co">#&gt;    top_p incl_p final_decision_gpt final_decision_gpt_num  reps n_mis_answers</span></span>
 <span><span class="co">#&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;                               &lt;dbl&gt; &lt;int&gt;         &lt;int&gt;</span></span>
 <span><span class="co">#&gt;  1     1      0 Exclude                                 0     1             0</span></span>
@@ -507,23 +507,66 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span><span class="co">#&gt;  6     1      0 Exclude                                 0     1             0</span></span>
 <span><span class="co">#&gt;  7     1      0 Exclude                                 0     1             0</span></span>
 <span><span class="co">#&gt;  8     1      0 Exclude                                 0     1             0</span></span>
-<span><span class="co">#&gt;  9     1    NaN &lt;NA&gt;                                   NA     1             1</span></span>
-<span><span class="co">#&gt; 10     1      0 Exclude                                 0     1             0</span></span>
-<span><span class="co">#&gt; # ℹ 140 more rows</span></span></code></pre></div>
+<span><span class="co">#&gt;  9     1      0 Exclude                                 0     1             0</span></span>
+<span><span class="co">#&gt; 10     1      0 Exclude                                 0     1             0</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="analyzing-the-screening">Analyzing the screening<a class="anchor" aria-label="anchor" href="#analyzing-the-screening"></a>
 </h3>
-<p>Simple table</p>
+<div class="section level4">
+<h4 id="simple-table">Simple table<a class="anchor" aria-label="anchor" href="#simple-table"></a>
+</h4>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># gpt3.5 result</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span>gpt <span class="op">=</span> <span class="va">sum_dat_gpt3</span><span class="op">$</span><span class="va">final_decision_gpt_num</span>, human <span class="op">=</span> <span class="va">sum_dat_gpt3</span><span class="op">$</span><span class="va">human_code</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    human</span></span>
 <span><span class="co">#&gt; gpt  0  1</span></span>
 <span><span class="co">#&gt;   0 88  5</span></span>
-<span><span class="co">#&gt;   1 12 45</span></span></code></pre></div>
-<p>False excluded (by gpt)</p>
-<p>False included (by gpt)</p>
+<span><span class="co">#&gt;   1 12 45</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span>gpt <span class="op">=</span> <span class="va">sum_dat_gpt4</span><span class="op">$</span><span class="va">final_decision_gpt_num</span>, human <span class="op">=</span> <span class="va">sum_dat_gpt4</span><span class="op">$</span><span class="va">human_code</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    human</span></span>
+<span><span class="co">#&gt; gpt  0  1</span></span>
+<span><span class="co">#&gt;   0 81  5</span></span>
+<span><span class="co">#&gt;   1 10 42</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="false-included-and-excluded-by-gpt">False included and excluded (by gpt)<a class="anchor" aria-label="anchor" href="#false-included-and-excluded-by-gpt"></a>
+</h4>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">result_object</span><span class="op">$</span><span class="va">answer_data_sum</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
+<span>    n_missing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">final_decision_gpt_num</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    n_false_in <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">human_code</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">final_decision_gpt_num</span> <span class="op">==</span> <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span>, missing <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    n_false_ex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">human_code</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">final_decision_gpt_num</span> <span class="op">==</span> <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, missing <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    n_true_in <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">human_code</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">final_decision_gpt_num</span> <span class="op">==</span> <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, missing <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    n_true_ex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">human_code</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">final_decision_gpt_num</span> <span class="op">==</span> <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span>, missing <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>   </span>
+<span>    accuracy <span class="op">=</span> <span class="fl">1</span><span class="op">-</span> <span class="op">(</span><span class="va">n_false_in</span> <span class="op">+</span> <span class="va">n_false_ex</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    </span>
+<span>    sensitivity <span class="op">=</span> <span class="va">n_true_in</span> <span class="op">/</span> <span class="op">(</span><span class="va">n_true_in</span> <span class="op">+</span> <span class="va">n_false_in</span><span class="op">)</span>,</span>
+<span>    </span>
+<span>    specificity <span class="op">=</span> <span class="va">n_true_ex</span> <span class="op">/</span> <span class="op">(</span><span class="va">n_true_ex</span> <span class="op">+</span> <span class="va">n_false_ex</span><span class="op">)</span>,</span>
+<span>    </span>
+<span>    .by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">promptid</span>, <span class="va">model</span>, <span class="va">top_p</span><span class="op">)</span> </span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 11</span></span></span>
+<span><span class="co">#&gt;   promptid model              top_p n_missing n_false_in n_false_ex n_true_in</span></span>
+<span><span class="co">#&gt;      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>        1 gpt-3.5-turbo-0613     1         0          5         12        45</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>        1 gpt-4                  1        12          5         10        42</span></span>
+<span><span class="co">#&gt;   n_true_ex accuracy sensitivity specificity</span></span>
+<span><span class="co">#&gt;       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>        88    0.887       0.9         0.88 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>        81    0.9         0.894       0.890</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level3">
+<h3 id="getting-detailed-descript">Getting detailed descript<a class="anchor" aria-label="anchor" href="#getting-detailed-descript"></a>
+</h3>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Show example with gpt-4</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
