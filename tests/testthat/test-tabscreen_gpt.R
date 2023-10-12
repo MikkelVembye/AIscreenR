@@ -15,13 +15,15 @@ models <- c("gpt-3.5-turbo-0613", "gpt-4")
 reps <- c(10, 1)
 rpm <- c(3500, 200)
 
-skip <- TRUE
+skip <- FALSE
+skip_github_action <- TRUE
 
 future::plan(future::multisession)
 
 test_that("tabscreen_gpt() works with single parameter values.",{
 
   if(skip) skip()
+  if(skip_github_action) skip_on_ci()
   skip_on_cran()
 
   expect_message(
@@ -91,6 +93,7 @@ test_that("tabscreen_gpt() works with single parameter values.",{
 test_that("tabscreen_gpt() works with multiple parameter values.",{
 
   if(skip) skip()
+  if(skip_github_action) skip_on_ci()
   skip_on_cran()
 
   expect_message(
@@ -159,6 +162,7 @@ test_that("tabscreen_gpt() works with multiple parameter values.",{
 test_that("tabscreen_gpt() don't return time and token info.", {
 
   if(skip) skip()
+  if(skip_github_action) skip_on_ci()
   skip_on_cran()
 
   expect_message(
@@ -251,6 +255,7 @@ test_that("tabscreen_gpt() don't return time and token info.", {
 test_that("tabscreen_gpt() works with detailed fucntions and ... .", {
 
   if(skip) skip()
+  if(skip_github_action) skip_on_ci()
   skip_on_cran()
 
   expect_message(
@@ -330,6 +335,7 @@ test_that("tabscreen_gpt() works with detailed fucntions and ... .", {
 test_that("Message behavior.", {
 
   if(skip) skip()
+  if(skip_github_action) skip_on_ci()
   skip_on_cran()
 
   expect_message(
@@ -438,6 +444,7 @@ test_that("Message behavior.", {
 test_that("tabscreen_gpt() expected errors.", {
 
   if(skip) skip()
+  if(skip_github_action) skip_on_ci()
   skip_on_cran()
 
   expect_error(
@@ -541,6 +548,7 @@ test_that("tabscreen_gpt() expected errors.", {
 test_that("API error.",{
 
   if(skip) skip()
+  if(skip_github_action) skip_on_ci()
   skip_on_cran()
 
   expect_message(
@@ -629,6 +637,7 @@ future::plan(future::sequential)
 test_that("That paralell processing works.", {
 
   if(skip) skip()
+  if(skip_github_action) skip_on_ci()
   skip_on_cran()
 
   future::plan(future::multisession, workers = future::availableCores())
@@ -669,6 +678,7 @@ test_that("That paralell processing works.", {
 test_that("max_tokens < 11 work",{
 
   if(skip) skip()
+  if(skip_github_action) skip_on_ci()
   skip_on_cran()
 
   expect_message(
@@ -694,7 +704,7 @@ test_that("max_tokens < 11 work",{
 test_that("Print and class expectation for chatgpt object.", {
 
   if(skip) skip()
-
+  if(skip_github_action) skip_on_ci()
   skip_on_cran()
 
   expect_message(
