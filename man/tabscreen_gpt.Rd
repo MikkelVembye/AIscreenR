@@ -31,7 +31,7 @@ tabscreen_gpt(
   progress = TRUE,
   messages = TRUE,
   incl_cutoff_upper = 0.5,
-  incl_cutoff_lower = 0.4
+  incl_cutoff_lower = incl_cutoff_upper - 0.1
 )
 }
 \arguments{
@@ -214,6 +214,8 @@ Find current token pricing at \url{https://openai.com/pricing}.
 }
 \examples{
 \dontrun{
+
+set_api_key()
 
 prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
 

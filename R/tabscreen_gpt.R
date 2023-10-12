@@ -156,6 +156,8 @@
 #' @examples
 #' \dontrun{
 #'
+#' set_api_key()
+#'
 #' prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
 #'
 #' tabscreen_gpt(
