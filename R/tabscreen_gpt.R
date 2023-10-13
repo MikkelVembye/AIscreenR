@@ -203,7 +203,7 @@ tabscreen_gpt <- function(
   time_info = TRUE,
   token_info = TRUE,
   api_key = get_api_key(),
-  max_tries = 8,
+  max_tries = 16,
   max_seconds = NULL,
   is_transient = gpt_is_transient,
   backoff = NULL,
@@ -567,7 +567,7 @@ tabscreen_gpt <- function(
   }
 
   # Approximate prize
-
+  # ADD reps see approximate function
   app_price_dat <-
     question_dat |>
     mutate(
@@ -681,56 +681,65 @@ tabscreen_gpt <- function(
 
   n_error <- answer_dat |> dplyr::filter(is.na(decision_binary)) |> nrow()
 
-  if (n_error > 0){
+  if (messages){
 
-    succes_dat <- answer_dat |>
-      dplyr::filter(!is.na(decision_binary))
-
-    # _mod = modified
-    failed_dat <- answer_dat |>
-      dplyr::filter(is.na(decision_binary))
-
-    params_mod <-
-      failed_dat |>
-      mutate(iterations = 1) |>
-      select(question, model_gpt = model, topp, iterations, req_per_min)
-
-    error_dat <-
-      failed_dat |>
-      dplyr::select(1:topp, id = n) |>
-      dplyr::mutate(
-        res = furrr::future_pmap(
-          .l = params_mod,
-          .f = ask_gpt,
-          ...,
-          .options = furrr::furrr_options(seed = furrr_seed),
-          .progress = progress
-        )
-      ) |>
-      tidyr::unnest(res) |>
-      mutate(n = id) |>
-      select(-id) |>
-      relocate(n, .after = last_col())
-
-    answer_dat <-
-      dplyr::bind_rows(
-        succes_dat,
-        error_dat
-      ) |>
-      dplyr::arrange(promptid, model, topp, {{ arrange_var }})
-
-    still_error <- answer_dat |> dplyr::filter(is.na(decision_binary)) |> nrow()
-
-    if (messages){
-      if (still_error == 1) message(paste("* NOTE: Requests falied for 1 title and abstract."))
-      if (still_error > 1) message(paste("* NOTE: Requests falied for", still_error, "titles and abstracts."))
-    }
-
-    if (still_error > 0) error_refs <- answer_dat |> dplyr::filter(is.na(decision_binary))
+    if (n_error == 1) message(paste("* NOTE: Requests falied for 1 title and abstract."))
+    if (n_error > 1) message(paste("* NOTE: Requests falied", n_error, "times."))
 
   }
 
-  n_error_refs <- answer_dat |> dplyr::filter(is.na(decision_binary)) |> nrow()
+  if (n_error > 0) error_refs <- answer_dat |> dplyr::filter(is.na(decision_binary))
+
+#  if (n_error > 0){
+#
+#    succes_dat <- answer_dat |>
+#      dplyr::filter(!is.na(decision_binary))
+#
+#    # _mod = modified
+#    failed_dat <- answer_dat |>
+#      dplyr::filter(is.na(decision_binary))
+#
+#    params_mod <-
+#      failed_dat |>
+#      mutate(iterations = 1) |>
+#      select(question, model_gpt = model, topp, iterations, req_per_min)
+#
+#    error_dat <-
+#      failed_dat |>
+#      dplyr::select(1:topp, id = n) |>
+#      dplyr::mutate(
+#        res = furrr::future_pmap(
+#          .l = params_mod,
+#          .f = ask_gpt,
+#          ...,
+#          .options = furrr::furrr_options(seed = furrr_seed),
+#          .progress = progress
+#        )
+#      ) |>
+#      tidyr::unnest(res) |>
+#      mutate(n = id) |>
+#      select(-id) |>
+#      relocate(n, .after = last_col())
+#
+#    answer_dat <-
+#      dplyr::bind_rows(
+#        succes_dat,
+#        error_dat
+#      ) |>
+#      dplyr::arrange(promptid, model, topp, {{ arrange_var }})
+#
+#    still_error <- answer_dat |> dplyr::filter(is.na(decision_binary)) |> nrow()
+#
+#    if (messages){
+#      if (still_error == 1) message(paste("* NOTE: Requests falied for 1 title and abstract."))
+#      if (still_error > 1) message(paste("* NOTE: Requests falied for", still_error, "titles and abstracts."))
+#    }
+#
+#    if (still_error > 0) error_refs <- answer_dat |> dplyr::filter(is.na(decision_binary))
+#
+#  }
+#
+#  n_error_refs <- answer_dat |> dplyr::filter(is.na(decision_binary)) |> nrow()
   answer_dat <- tibble::new_tibble(answer_dat, class = "chatgpt_tbl")
 
   if (token_info){
@@ -797,7 +806,6 @@ tabscreen_gpt <- function(
 
   if ("detailed_description" %in% names(answer_dat)){
 
-    # CHECK THIS PART
 
     long_answer_dat_sum <-
       answer_dat |>
@@ -839,11 +847,11 @@ tabscreen_gpt <- function(
 
   }
 
-  # Final data all
-  answer_dat <-
-    answer_dat |>
-    select(-req_per_min) |>
-    rename(top_p = topp)
+#  # Final data all
+#  answer_dat <-
+#    answer_dat |>
+#    select(-req_per_min) |>
+#    rename(top_p = topp)
 
 
   # Final data sum
@@ -856,7 +864,7 @@ tabscreen_gpt <- function(
 
   if (token_info){
 
-    if (n_error_refs > 0) {
+    if (n_error > 0) {
       res <- list(
         price_data = price_dat,
         price_dollar = price,
@@ -875,7 +883,7 @@ tabscreen_gpt <- function(
 
   } else {
 
-    if (n_error_refs > 0) {
+    if (n_error > 0) {
       res <- list(answer_data_all = answer_dat, answer_data_sum = answer_dat_sum, error_data = error_refs)
     } else {
       res <- list(answer_data_all = answer_dat, answer_data_sum = answer_dat_sum)

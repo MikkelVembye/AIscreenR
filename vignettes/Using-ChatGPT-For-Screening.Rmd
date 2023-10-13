@@ -343,7 +343,7 @@ print(result_object)
 
 ## Getting the results from the screening
 
-```{r, include = FALSE}
+```{r, include = FALSE, eval=FALSE}
 result_object <- AIscreenR:::result_object
 
 # gpt-3.5 results
@@ -456,7 +456,7 @@ print(sum_dat_gpt4, width = 220)
 ## Analyzing the screening
 
 ### Simple table
-```{r}
+```{r, eval = FALSE}
 # gpt3.5 result
 table(gpt = sum_dat_gpt3$final_decision_gpt_num, human = sum_dat_gpt3$human_code)
 table(gpt = sum_dat_gpt4$final_decision_gpt_num, human = sum_dat_gpt4$human_code)
@@ -464,7 +464,7 @@ table(gpt = sum_dat_gpt4$final_decision_gpt_num, human = sum_dat_gpt4$human_code
 
 ### False included and excluded (by gpt)
 
-```{r}
+```{r, eval = FALSE}
 
 result_object$answer_data_sum |>
   summarise(

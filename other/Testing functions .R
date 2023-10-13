@@ -94,12 +94,14 @@ plan(multisession)
 
 
 test_obj <- tabscreen_gpt(
-  data = filges2015_dat[c(1:2),],
-  prompt = c(prompt),
+  data = filges2015_dat[c(1:3),],
+  prompt = c(prompt, prompt2),
   studyid = studyid, # indicate the variable with the studyid in the data
   title = title, # indicate the variable with the titles in the data
   abstract = abstract,
-  api_key = 1234
+  reps = c(2, 1),
+  model = c("gpt-3.5-turbo-0613", "gpt-4"),
+  token_info = FALSE
   #functions = AIscreenR:::incl_function,
   #function_call_name = list(name = "inclusion_decision"),
   #max_tries = 0,
@@ -118,6 +120,11 @@ all_dat
 
 sum_dat <- test_obj$answer_data_sum
 sum_dat
+
+if ("error_data" %in% names(test_obj)){
+error_dat <- test_obj$error_data
+error_dat
+}
 
 plan(sequential)
 

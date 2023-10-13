@@ -4,24 +4,38 @@ library(AIscreenR)
 library(dplyr)
 library(future)
 
-path <-  system.file("extdata", "word_pormpt_1.docx", package = "AIscreenR")
-prompt <-
-  readtext::readtext(path)$text |>
-  stringr::str_remove_all("\n")
+paths <-  system.file("extdata", c("word_pormpt_1.docx", "word_pormpt_2.docx"), package = "AIscreenR")
+prompts <-
+  purrr::map_chr(
+    paths, ~ {
+      readtext::readtext(.x)$text |>
+        stringr::str_remove_all("\n")
+    }
+  )
+
+approximate_price_gpt(
+  data = filges2015_dat[1:125,],
+  prompt = prompts,
+  studyid = studyid,
+  title = title,
+  abstract = abstract,
+  model = c("gpt-3.5-turbo-0613", "gpt-4"),
+  reps = c(10, 1)
+)
 
 plan(multisession)
 
 system.time(
-  result_object <-
+  result_object2 <-
     tabscreen_gpt(
-      data = filges2015_dat,
-      prompt = prompt,
+      data = filges2015_dat[1:125,],
+      prompt = prompts,
       studyid = studyid,
       title = title,
       abstract = abstract,
       model = c("gpt-3.5-turbo-0613", "gpt-4"),
-      reps = c(10, 1), # Number of times the same question is asked to ChatGPT
-      rpm = c(3500, 200),
+      reps = c(10, 1),
+      rpm = c(10000, 200),
       max_tries = 6
 
     )
@@ -29,4 +43,4 @@ system.time(
 
 plan(sequential)
 
-usethis::use_data(result_object, overwrite = TRUE, internal = TRUE)
+usethis::use_data(result_object2, overwrite = TRUE, internal = TRUE)
