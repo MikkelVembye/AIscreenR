@@ -519,15 +519,7 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># gpt3.5 result</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span>gpt <span class="op">=</span> <span class="va">sum_dat_gpt3</span><span class="op">$</span><span class="va">final_decision_gpt_num</span>, human <span class="op">=</span> <span class="va">sum_dat_gpt3</span><span class="op">$</span><span class="va">human_code</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    human</span></span>
-<span><span class="co">#&gt; gpt  0  1</span></span>
-<span><span class="co">#&gt;   0 88  5</span></span>
-<span><span class="co">#&gt;   1 12 45</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span>gpt <span class="op">=</span> <span class="va">sum_dat_gpt4</span><span class="op">$</span><span class="va">final_decision_gpt_num</span>, human <span class="op">=</span> <span class="va">sum_dat_gpt4</span><span class="op">$</span><span class="va">human_code</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    human</span></span>
-<span><span class="co">#&gt; gpt  0  1</span></span>
-<span><span class="co">#&gt;   0 81  5</span></span>
-<span><span class="co">#&gt;   1 10 42</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span>gpt <span class="op">=</span> <span class="va">sum_dat_gpt4</span><span class="op">$</span><span class="va">final_decision_gpt_num</span>, human <span class="op">=</span> <span class="va">sum_dat_gpt4</span><span class="op">$</span><span class="va">human_code</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="false-included-and-excluded-by-gpt">False included and excluded (by gpt)<a class="anchor" aria-label="anchor" href="#false-included-and-excluded-by-gpt"></a>
@@ -569,19 +561,7 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">rm1</span><span class="op">:</span><span class="va">pe</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 18</span></span></span>
-<span><span class="co">#&gt;   promptid model              top_p n_missing n_screened     n n_false_ex</span></span>
-<span><span class="co">#&gt;      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>        1 gpt-3.5-turbo-0613     1         0        150   150          5</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>        1 gpt-4                  1        12        150   138          5</span></span>
-<span><span class="co">#&gt;   n_false_in n_true_in n_true_ex accuracy p_agreement sensitivity specificity</span></span>
-<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>         12        45        88    0.113       0.887       0.9         0.88 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>         10        42        81    0.109       0.891       0.894       0.890</span></span>
-<span><span class="co">#&gt;   kappa SE_kappa CL_kappa CU_kappa</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 0.754   0.011<span style="text-decoration: underline;">9</span>    0.730    0.777</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 0.764   0.012<span style="text-decoration: underline;">2</span>    0.740    0.788</span></span></code></pre></div>
+<span>  </span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
