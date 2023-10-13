@@ -139,7 +139,7 @@ filges2015_dat
 
 ## Getting API key OpenAI
 
-Before you can use the function from `AIscreenR`, you must generate your own secret
+Before you can use the functions from `AIscreenR`, you must generate your own secret
 API key. To do so you must first ensure that you have created an account at OpenAI (*if you have not done so at this stage, you can sign up [here](https://auth0.openai.com/u/login/identifier?state=hKFo2SBqQjNHSlc1ejIyREpUb01hdDF2OHEzQy12NnJwWlFUN6Fur3VuaXZlcnNhbC1sb2dpbqN0aWTZIEJSOWJaamdKLWswNGlfWDQ2NER1OXJmVUNpVmVzVjZfo2NpZNkgRFJpdnNubTJNdTQyVDNLT3BxZHR3QjNOWXZpSFl6d0Q)).* When having an account, go to [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys) and press the `+ Create new secret key` button (see picture below) and give your key a name. 
 
 \  
@@ -469,19 +469,37 @@ table(gpt = sum_dat_gpt4$final_decision_gpt_num, human = sum_dat_gpt4$human_code
 result_object$answer_data_sum |>
   summarise(
     n_missing = sum(is.na(final_decision_gpt_num)),
-    n_false_in = sum(if_else(human_code == 1 & final_decision_gpt_num == 0, 1, 0, missing = NA), na.rm = TRUE),
-    n_false_ex = sum(if_else(human_code == 0 & final_decision_gpt_num == 1, 1, 0, missing = NA), na.rm = TRUE),
+    n_screened = n(),
+    n = n_screened - n_missing,
+    n_false_ex = sum(if_else(human_code == 1 & final_decision_gpt_num == 0, 1, 0, missing = NA), na.rm = TRUE),
+    n_false_in = sum(if_else(human_code == 0 & final_decision_gpt_num == 1, 1, 0, missing = NA), na.rm = TRUE),
     n_true_in = sum(if_else(human_code == 1 & final_decision_gpt_num == 1, 1, 0, missing = NA), na.rm = TRUE),
     n_true_ex = sum(if_else(human_code == 0 & final_decision_gpt_num == 0, 1, 0, missing = NA), na.rm = TRUE),
    
-    accuracy = 1- (n_false_in + n_false_ex)/n(),
+    accuracy = (n_false_in + n_false_ex)/n,
+    p_agreement = 1 - accuracy,
+    sensitivity = n_true_in / (n_true_in + n_false_ex),
     
-    sensitivity = n_true_in / (n_true_in + n_false_in),
+    specificity = n_true_ex / (n_true_ex + n_false_in),
     
-    specificity = n_true_ex / (n_true_ex + n_false_ex),
+    rm1 = n_true_ex + n_false_ex,
+    rm2 = n_false_in + n_true_in,
+    cm1 = n_true_ex + n_false_in,
+    cm2 = n_false_ex + n_true_in,
+    
+    pe = 1/n * ((cm1*rm1)/n + (cm2*rm2)/n),
+    
+    
+    kappa = (p_agreement - pe)/(1-pe),
+    
+    
+    SE_kappa = sqrt( (p_agreement*(1-p_agreement)) / n*(1-pe)^2),
+    CL_kappa = kappa - 1.96 *SE_kappa,
+    CU_kappa = kappa + 1.96 *SE_kappa,
     
     .by = c(promptid, model, top_p) 
   ) |> 
+  select(-c(rm1:pe)) |> 
   print(width = 200)
   
 
