@@ -239,7 +239,7 @@ tabscreen_gpt <- function(
     stop("incl_cutoff_lower must not exceed incl_cutoff_upper")
   }
 
-  if (n_distinct(prompt) != length(prompt)) stop("Do not add same prompt twice.")
+  if (n_distinct(prompt) != length(prompt)) stop("Do not add the same prompt twice.")
 
 
   if (n_distinct(reps) == 1 && n_distinct(model) != length(model)){
