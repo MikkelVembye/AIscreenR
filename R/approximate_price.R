@@ -82,6 +82,8 @@ approximate_price_gpt <-
       "gpt-4-32k", "gpt-4-32k-0613"
     )))) stop("Unknown gpt model(s) used - check model name(s).")
 
+    if (n_distinct(prompt) != length(prompt)) stop("Do not add same prompt twice.")
+
     ###############################################
     # Data manipulation
     ###############################################
@@ -108,7 +110,12 @@ approximate_price_gpt <-
 
     }
 
+
     mp_reps <- if (length(reps) > 1) 1 else length(model)
+
+    model_length <- length(model)
+    prompt_length <- length(prompt)
+    studyid_length <- dplyr::n_distinct(dat$studyid)
 
     question_dat <-
       dat |>
@@ -117,16 +124,16 @@ approximate_price_gpt <-
           is.na(.x) | .x == "" | .x == " ", "No information", .x, missing = "No information")
         )
       ) |>
-      dplyr::slice(rep(1:nrow(dat), length(prompt))) |>
+      dplyr::slice(rep(1:nrow(dat), prompt_length)) |>
       dplyr::mutate(
-        promptid = rep(paste("Prompt", 1:length(prompt)), each = dplyr::n_distinct(studyid)),
-        prompt = rep(prompt, each = dplyr::n_distinct(studyid))
+        promptid = rep(paste("Prompt", 1:prompt_length), each = studyid_length),
+        prompt = rep(prompt, each = studyid_length)
       ) |>
-      dplyr::slice(rep(1:dplyr::n(), each = length(model))) |>
+      dplyr::slice(rep(1:dplyr::n(), each = model_length)) |>
       dplyr::mutate(
-        model = rep(model, dplyr::n_distinct(studyid)*dplyr::n_distinct(prompt)),
-        iterations = rep(reps, dplyr::n_distinct(studyid)*dplyr::n_distinct(prompt)*mp_reps),
-        #req_per_min = rep(rpm, dplyr::n_distinct(studyid)*dplyr::n_distinct(prompt)*mp_rpm),
+        model = rep(model, studyid_length*prompt_length),
+        iterations = rep(reps, studyid_length*prompt_length*mp_reps),
+        #req_per_min = rep(rpm, studyid_length*dplyr::n_distinct(prompt)*mp_rpm),
         question_raw = paste0(
           prompt,
           " Now, evaluate the following title and abstract for",
@@ -140,7 +147,7 @@ approximate_price_gpt <-
       dplyr::select(-question_raw) |>
       dplyr::slice(rep(1:dplyr::n(), each = length(top_p))) |>
       mutate(
-        topp = rep(top_p, n_distinct(studyid)*n_distinct(prompt)*n_distinct(model))
+        topp = rep(top_p, studyid_length*prompt_length*model_length)
       )
 
 
@@ -151,7 +158,6 @@ approximate_price_gpt <-
       mutate(
         prompt_tokens = round(stringr::str_count(question, '\\w+') * 1.6),
         completion_tokens = 11 # Average number of completion tokens for the inclusion_decision_simple function
-
       ) |>
       filter(!is.na(prompt_tokens) | !is.na(completion_tokens)) |>
       dplyr::rowwise() |>
@@ -182,7 +188,7 @@ approximate_price_gpt <-
         output_price_dollar = sum(output_price, na.rm = TRUE),
         total_price_dollor = round(input_price_dollar + output_price_dollar, 4),
 
-        .by = model
+        .by = c(model, iterations)
 
       )
 
