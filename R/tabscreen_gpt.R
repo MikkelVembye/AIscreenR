@@ -463,7 +463,7 @@ tabscreen_gpt <- function(
         purrr::possibly(
           ask_gpt,
           otherwise = tibble::tibble(
-            decision_gpt = NA_character_,
+            decision_gpt = "future_map failied",
             decision_binary = NA_real_,
             prompt_tokens = p_tokens,
             completion_tokens = c_tokens,
@@ -480,7 +480,7 @@ tabscreen_gpt <- function(
         purrr::possibly(
           ask_gpt,
           otherwise = tibble::tibble(
-            decision_gpt = NA_character_,
+            decision_gpt = "future_map failied",
             detailed_description = NA_character_,
             decision_binary = NA_real_,
             prompt_tokens = p_tokens,
