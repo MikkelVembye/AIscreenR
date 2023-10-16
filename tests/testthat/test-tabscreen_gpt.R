@@ -766,6 +766,7 @@ test_that("Print and class expectation for chatgpt object.", {
   ) |>
     suppressMessages()
 
+  expect_identical(names(random_name$answer_data_all), names(random_name$error_data))
 
   expect_output(print(random_name), "random_name\\$answer_data_all")
   expect_output(print(random_name), "random_name\\$answer_data_sum")
@@ -780,10 +781,54 @@ test_that("Print and class expectation for chatgpt object.", {
 
   expect_output(print(random_name), print_out2)
 
-  output2 <- capture.output(random_name)
+  #############
+  expect_message(
 
-  expect_length(output2, 23)
-  expect_equal(output2[20], "value$price_dollor")
+    random_name <- tabscreen_gpt(
+      data = filges2015_dat[1,],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      model = "gpt-3.5-turbo-0613",
+      reps = 1,
+      token_info = FALSE
+    )
+
+  )
+
+  # class check
+  expect_s3_class(random_name, "chatgpt")
+  expect_s3_class(random_name, "list")
+
+  expect_output(print(random_name), "random_name")
+
+  expect_output(print.chatgpt(random_name), "random_name\\$answer_data_all")
+  expect_output(print.chatgpt(random_name), "random_name\\$answer_data_sum")
+
+  expect_false("price_dollor" %in% names(random_name))
+
+  expect_message(
+
+    random_name <- tabscreen_gpt(
+      data = filges2015_dat[c(1:2),],
+      prompt = c(prompt),
+      studyid = studyid, # indicate the variable with the studyid in the data
+      title = title, # indicate the variable with the titles in the data
+      abstract = abstract,
+      api_key = 1234,
+      token_info = FALSE
+    )
+  ) |>
+    suppressMessages()
+
+
+  expect_output(print(random_name), "random_name\\$answer_data_all")
+  expect_output(print(random_name), "random_name\\$answer_data_sum")
+  expect_output(print(random_name), "random_name\\$error_data")
+
+  expect_false("price_dollor" %in% names(random_name))
+
 
 })
 

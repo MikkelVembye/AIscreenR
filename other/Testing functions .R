@@ -73,13 +73,13 @@ for non-opioid drug use?"
 
 app_obj <- approximate_price_gpt(
   data = filges2015_dat[c(1:150),],
-  prompt = prompt,
+  prompt = c(prompt),
   studyid = studyid,
   title = title,
   abstract = abstract,
-  model = c("gpt-3.5-turbo-0613", "gpt-4"),
-  reps = c(10, 1),
-  top_p = c(0.2, 1)
+  model = c("gpt-3.5-turbo-0613", "gpt-3.5-turbo-0613", "gpt-4"),
+  reps = c(10, 1, 1),
+  top_p = c(1)
 )
 
 app_obj
@@ -94,17 +94,18 @@ plan(multisession)
 
 
 test_obj <- tabscreen_gpt(
-  data = filges2015_dat[c(1:3),],
-  prompt = c(prompt, prompt2),
+  data = filges2015_dat[c(1:20),],
+  prompt = c(prompt),
   studyid = studyid, # indicate the variable with the studyid in the data
   title = title, # indicate the variable with the titles in the data
   abstract = abstract,
-  reps = c(2, 1),
-  model = c("gpt-3.5-turbo-0613", "gpt-4"),
-  token_info = FALSE
-  #functions = AIscreenR:::incl_function,
-  #function_call_name = list(name = "inclusion_decision"),
-  #max_tries = 0,
+  model = c("gpt-4"),
+  reps = 1,
+  #reps = c(2, 1, 1),
+  #top_p = c(0.2, 1),
+  functions = AIscreenR:::incl_function,
+  function_call_name = list(name = "inclusion_decision"),
+  max_tries = 12
   #reps = 1 # Number of times the same question is asked to ChatGPT
   #max_tokens = 40
 ); print(test_obj)
@@ -148,18 +149,21 @@ plan(sequential)
 #  stop("model and rpm must be of the same length.")
 #}
 
-model <- c("gpt-3.5-turbo")
-reps <- c(10)
-prompt <- paste("Dette er prompt", 1:5)
-rpm <- c(3500)
-top_p <- c(0.5, 1)
+model <- c("gpt-3.5-turbo", "gpt-3.5-turbo", "gpt-4")
+reps <- c(10, 1, 1)
+prompt <- paste("Dette er prompt", 1:2)
+rpm <- c(10000, 10000, 200)
+top_p <- c(0.2, 1)
 dat <- filges2015_dat[1:5,]
 
 # mp = multiplier
 mp_reps <- if (length(reps) > 1) 1 else length(model)
 mp_rpm <- if (length(rpm) > 1) 1 else length(model)
 
-reps_models <- tibble::tibble(model = model, reps = reps)
+
+model_length <- length(model)
+prompt_length <- length(prompt)
+studyid_length <- n_distinct(dat$studyid)
 
 question_dat <-
   dat |>
@@ -168,17 +172,16 @@ question_dat <-
       is.na(.x) | .x == "" | .x == " ", "No information", .x, missing = "No information")
     )
   ) |>
-  ## Make promptid variable
-  dplyr::slice(rep(1:nrow(dat), length(prompt))) |>
+  dplyr::slice(rep(1:nrow(dat), prompt_length)) |>
   dplyr::mutate(
-    promptid = rep(1:length(prompt), each = dplyr::n_distinct(studyid)),
-    prompt = rep(prompt, each = dplyr::n_distinct(studyid))
+    promptid = rep(1:prompt_length, each = studyid_length),
+    prompt = rep(prompt, each = studyid_length)
   ) |>
-  dplyr::slice(rep(1:dplyr::n(), each = length(model))) |>
+  dplyr::slice(rep(1:dplyr::n(), each = model_length)) |>
   dplyr::mutate(
-    model = rep(model, dplyr::n_distinct(studyid)*dplyr::n_distinct(prompt)),
-    iterations = rep(reps, dplyr::n_distinct(studyid)*dplyr::n_distinct(prompt)*mp_reps),
-    req_per_min = rep(rpm, dplyr::n_distinct(studyid)*dplyr::n_distinct(prompt)*mp_rpm),
+    model = rep(model, studyid_length*prompt_length),
+    iterations = rep(reps, studyid_length*prompt_length*mp_reps),
+    req_per_min = rep(rpm, studyid_length*prompt_length*mp_rpm),
     question_raw = paste0(
       prompt,
       " Now, evaluate the following title and abstract for",
@@ -192,11 +195,48 @@ question_dat <-
   dplyr::select(-question_raw) |>
   dplyr::slice(rep(1:dplyr::n(), each = length(top_p))) |>
   mutate(
-    topp = rep(top_p, n_distinct(studyid)*n_distinct(prompt)*n_distinct(model))
-  ) |>
-  dplyr::arrange(prompt, model, topp, studyid)
+    topp = rep(top_p, studyid_length*prompt_length*model_length)
+  )
 
-question_dat
+price_dat <-
+  question_dat |>
+  mutate(
+    prompt_tokens = round(stringr::str_count(question, '\\w+') * 1.6),
+    completion_tokens = 11 # Average number of completion tokens for the inclusion_decision_simple function
+  ) |>
+  filter(!is.na(prompt_tokens) | !is.na(completion_tokens)) |>
+  dplyr::rowwise() |>
+  mutate(
+
+    input_price = case_when(
+      any(c("gpt-3.5-turbo", "gpt-3.5-turbo-0613") %in% model) ~ round(prompt_tokens * (0.0015/1000) * iterations, 4),
+      any(c("gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613") %in% model) ~ round(prompt_tokens * (0.003/1000) * iterations, 4),
+      any(c("gpt-4", "gpt-4-0613") %in% model) ~ round(prompt_tokens * (0.03/1000) * iterations, 4),
+      any(c("gpt-4-32k", "gpt-4-32k-0613") %in% model) ~ round(prompt_tokens * (0.06/1000) * iterations, 4),
+      TRUE ~ NA_real_
+    ),
+
+    output_price = case_when(
+      any(c("gpt-3.5-turbo", "gpt-3.5-turbo-0613") %in% model) ~ completion_tokens * (0.002/1000) * iterations,
+      any(c("gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613") %in% model) ~ completion_tokens * (0.004/1000) * iterations,
+      any(c("gpt-4", "gpt-4-0613") %in% model) ~ completion_tokens * (0.06/1000) * iterations,
+      any(c("gpt-4-32k", "gpt-4-32k-0613") %in% model) ~ completion_tokens * (0.12/1000) * iterations,
+      TRUE ~ NA_real_
+    )
+
+  ) |>
+  ungroup() |>
+  summarise(
+
+    iterations = unique(iterations),
+    input_price_dollar = sum(input_price, na.rm = TRUE),
+    output_price_dollar = sum(output_price, na.rm = TRUE),
+    total_price_dollor = round(input_price_dollar + output_price_dollar, 4),
+
+    .by = c(model, iterations)
+
+  )
+
 
 gpt4_nrow <-
   question_dat |>

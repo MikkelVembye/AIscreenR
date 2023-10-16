@@ -239,6 +239,13 @@ tabscreen_gpt <- function(
     stop("incl_cutoff_lower must not exceed incl_cutoff_upper")
   }
 
+  if (n_distinct(prompt) != length(prompt)) stop("Do not add same prompt twice.")
+
+
+  if (n_distinct(reps) == 1 && n_distinct(model) != length(model)){
+    model <- unique(model)
+  }
+
   ###############################################
   # Function to send a single request to ChatGPT
   ###############################################
@@ -299,13 +306,13 @@ tabscreen_gpt <- function(
 
         resp_text <- resp$choices[[1]]$message$function_call$arguments
 
-        if (!stringr::str_detect(resp_text, '\"\n\\}')){
+        if (!stringr::str_detect(resp_text, '\"\n\\}|\" \n\\}|\"  \n\\}|\n\\}')){
 
           resp_text <- paste0(resp_text, '\"\n}')
 
         }
 
-        if (!stringr::str_detect(resp_text, '\\}') && stringr::str_detect(resp_text, '\"\n')) {
+        if (!stringr::str_detect(resp_text, '\\}') && stringr::str_detect(resp_text, '\"\n|\" \n|\"  \n')) {
 
           resp_text <- paste0(resp_text, '}')
 
@@ -521,6 +528,10 @@ tabscreen_gpt <- function(
   mp_reps <- if (length(reps) > 1) 1 else length(model)
   mp_rpm <- if (length(rpm) > 1) 1 else length(model)
 
+  model_length <- length(model)
+  prompt_length <- length(prompt)
+  studyid_length <- dplyr::n_distinct(dat$studyid)
+
   question_dat <-
     dat |>
     dplyr::mutate(
@@ -528,16 +539,16 @@ tabscreen_gpt <- function(
         is.na(.x) | .x == "" | .x == " " | .x == "NA", "No information", .x, missing = "No information")
       )
     ) |>
-    dplyr::slice(rep(1:nrow(dat), length(prompt))) |>
+    dplyr::slice(rep(1:nrow(dat), prompt_length)) |>
     dplyr::mutate(
-      promptid = rep(1:length(prompt), each = dplyr::n_distinct(studyid)),
-      prompt = rep(prompt, each = dplyr::n_distinct(studyid))
+      promptid = rep(1:prompt_length, each = studyid_length),
+      prompt = rep(prompt, each = studyid_length)
     ) |>
-    dplyr::slice(rep(1:dplyr::n(), each = length(model))) |>
+    dplyr::slice(rep(1:dplyr::n(), each = model_length)) |>
     dplyr::mutate(
-      model = rep(model, dplyr::n_distinct(studyid)*dplyr::n_distinct(prompt)),
-      iterations = rep(reps, dplyr::n_distinct(studyid)*dplyr::n_distinct(prompt)*mp_reps),
-      req_per_min = rep(rpm, dplyr::n_distinct(studyid)*dplyr::n_distinct(prompt)*mp_rpm),
+      model = rep(model, studyid_length*prompt_length),
+      iterations = rep(reps, studyid_length*prompt_length*mp_reps),
+      req_per_min = rep(rpm, studyid_length*prompt_length*mp_rpm),
       question_raw = paste0(
         prompt,
         " Now, evaluate the following title and abstract for",
@@ -551,9 +562,9 @@ tabscreen_gpt <- function(
     dplyr::select(-question_raw) |>
     dplyr::slice(rep(1:dplyr::n(), each = length(top_p))) |>
     mutate(
-      topp = rep(top_p, n_distinct(studyid)*n_distinct(prompt)*n_distinct(model))
+      topp = rep(top_p, studyid_length*prompt_length*model_length)
     ) |>
-    dplyr::arrange(promptid, model, topp, {{ arrange_var }})
+    dplyr::arrange(promptid, model, topp, iterations, {{ arrange_var }})
 
   # For checks of whether multiple reps are used with gpt4 models
   if (any(stringr::str_detect(model, "gpt-4"))){
@@ -567,13 +578,11 @@ tabscreen_gpt <- function(
   }
 
   # Approximate prize
-  # ADD reps see approximate function
   app_price_dat <-
     question_dat |>
     mutate(
       prompt_tokens = round(stringr::str_count(question, '\\w+') * 1.6),
       completion_tokens = 11 # Average number of completion tokens for the inclusion_decision_simple function
-
     ) |>
     filter(!is.na(prompt_tokens) | !is.na(completion_tokens)) |>
     dplyr::rowwise() |>
@@ -604,7 +613,7 @@ tabscreen_gpt <- function(
       output_price_dollar = sum(output_price, na.rm = TRUE),
       total_price_dollor = round(input_price_dollar + output_price_dollar, 4),
 
-      .by = model
+      .by = c(model, iterations)
 
     )
 
@@ -677,7 +686,8 @@ tabscreen_gpt <- function(
         .progress = progress
       )
     ) |>
-    tidyr::unnest(res)
+    tidyr::unnest(res) |>
+    tibble::new_tibble(class = "chatgpt_tbl")
 
   n_error <- answer_dat |> dplyr::filter(is.na(decision_binary)) |> nrow()
 
@@ -690,57 +700,7 @@ tabscreen_gpt <- function(
 
   if (n_error > 0) error_refs <- answer_dat |> dplyr::filter(is.na(decision_binary))
 
-#  if (n_error > 0){
-#
-#    succes_dat <- answer_dat |>
-#      dplyr::filter(!is.na(decision_binary))
-#
-#    # _mod = modified
-#    failed_dat <- answer_dat |>
-#      dplyr::filter(is.na(decision_binary))
-#
-#    params_mod <-
-#      failed_dat |>
-#      mutate(iterations = 1) |>
-#      select(question, model_gpt = model, topp, iterations, req_per_min)
-#
-#    error_dat <-
-#      failed_dat |>
-#      dplyr::select(1:topp, id = n) |>
-#      dplyr::mutate(
-#        res = furrr::future_pmap(
-#          .l = params_mod,
-#          .f = ask_gpt,
-#          ...,
-#          .options = furrr::furrr_options(seed = furrr_seed),
-#          .progress = progress
-#        )
-#      ) |>
-#      tidyr::unnest(res) |>
-#      mutate(n = id) |>
-#      select(-id) |>
-#      relocate(n, .after = last_col())
-#
-#    answer_dat <-
-#      dplyr::bind_rows(
-#        succes_dat,
-#        error_dat
-#      ) |>
-#      dplyr::arrange(promptid, model, topp, {{ arrange_var }})
-#
-#    still_error <- answer_dat |> dplyr::filter(is.na(decision_binary)) |> nrow()
-#
-#    if (messages){
-#      if (still_error == 1) message(paste("* NOTE: Requests falied for 1 title and abstract."))
-#      if (still_error > 1) message(paste("* NOTE: Requests falied for", still_error, "titles and abstracts."))
-#    }
-#
-#    if (still_error > 0) error_refs <- answer_dat |> dplyr::filter(is.na(decision_binary))
-#
-#  }
-#
-#  n_error_refs <- answer_dat |> dplyr::filter(is.na(decision_binary)) |> nrow()
-  answer_dat <- tibble::new_tibble(answer_dat, class = "chatgpt_tbl")
+  #answer_dat <- tibble::new_tibble(answer_dat, class = "chatgpt_tbl")
 
   if (token_info){
 
@@ -767,7 +727,7 @@ tabscreen_gpt <- function(
 
         price_total_dollar = round(input_price_dollar + output_price_dollar, 4),
 
-        .by = model
+        .by = c(model, iterations)
 
       )
 
@@ -825,7 +785,7 @@ tabscreen_gpt <- function(
 
       ) |>
       filter(decision_binary == final_decision_gpt_num) |>
-      arrange(promptid, model, topp, {{ arrange_var }}, desc(n_words_answer)) |>
+      arrange(promptid, model, topp, iterations, {{ arrange_var }}, desc(n_words_answer)) |>
       summarise(
         longest_answer = detailed_description[1],
 
@@ -1032,12 +992,12 @@ status_code_text <- function(){
 }
 
 
-gpt_is_transient <- function(resp){
-  status_code() == 400 ||  status_code() == 429 || status_code() == 500 || status_code() ==  503
-}
+#gpt_is_transient <- function(resp){
+#  status_code() == 400 ||  status_code() == 429 || status_code() == 500 || status_code() ==  503
+#}
 
-gpt_is_transient2 <- function(resp){
-  status_code() %in% c(400, 429, 500, 502:503)
+gpt_is_transient <- function(resp){
+  status_code() %in% c(400, 429, 500:503)
 }
 
 
