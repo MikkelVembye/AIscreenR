@@ -15,6 +15,13 @@ knitr::opts_chunk$set(
   comment = "#>",
   out.width = "100%"
 )
+
+# Add options
+options(pillar.sigfig = 4) # ensure tibble include 4 digits
+options(tibble.width = Inf)
+options(dplyr.print_min = 10)
+options(scipen = 20)
+options(dplyr.summarise.inform = FALSE) # Avoids summarize info from tidyverse
 ```
 
 <div class="warning" style='margin-left:2em; margin-right:2em; margin-bottom:2em; margin-top:2em; padding:0.1em; background-color: #d7dbdd; border: solid #bdc3c7 3px'>
@@ -255,7 +262,7 @@ prompt1 <-
   readtext::readtext(word_path)$text |> 
       stringr::str_remove_all("\n")
 
-str(prompt)
+prompt1
 
 # Working with multiple prompts
 word_paths <- system.file("extdata", c("word_pormpt_1.docx", "word_pormpt_2.docx"), package = "AIscreenR")
@@ -355,15 +362,12 @@ result_object <- AIscreenR:::result_object
 sum_dat_gpt3 <- 
   result_object$answer_data_sum |> 
   filter(stringr::str_detect(model, "3") & promptid == 1 & reps == 10)
-  
-print(sum_dat_gpt3, width = 220)
 
 # gpt-4 results (prompt 1)
 sum_dat_gpt4 <- 
   result_object$answer_data_sum |> 
   filter(stringr::str_detect(model, "4") & promptid == 1)
 
-print(sum_dat_gpt4, width = 220)
 ```
 
 ```{r, include = FALSE, eval = FALSE}
@@ -475,7 +479,7 @@ screen_perform <-
   result_object |> 
   screen_analyzer() 
 
-print(screen_perform, width = 200)
+screen_perform
 
 ```
 
