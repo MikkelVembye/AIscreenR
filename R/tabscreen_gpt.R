@@ -965,7 +965,7 @@ status_code_text <- function(){
 
   resp_last <- httr2::last_response()
 
-  check_string <- "[check https://platform.openai.com/docs/guides/error-codes]"
+  check_string <- "[possibly overload on server - check https://platform.openai.com/docs/guides/error-codes]"
 
   if (!is.null(resp_last)){
 

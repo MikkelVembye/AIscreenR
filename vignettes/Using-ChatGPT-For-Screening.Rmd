@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 <p style='margin-top:1em; text-align:center'>
 <b>Important note</b></p>
 <p style='margin:1em'>
-This vignette represent tentative work-in-progress only. The general applicability and efficacy of using large-language models (LLMs) including ChatGPT for title and abstract screening in literature reviews are still unknown. Our first results suggest that ChatGPT can be a reliable second screener when reviewing specific and well defined interventions. The first evidence of this is shown in this vignette. However, be aware that our first results are based on a retrospective analysis which might not generalize to prospective screenings where ChatGPT potentially has not been trained on that reference data, that is data added to the internet after 2021. 
+This vignette represent tentative work-in-progress only. The general applicability and efficacy of using large-language models (LLMs) including ChatGPT for title and abstract screening in literature reviews are still unknown. Our first results suggest that ChatGPT can be a reliable second screener when reviewing specific and well defined interventions. The first evidence of this is shown in this vignette. However, be aware that our first results are based on a retrospective analysis which might not generalize to prospective screenings where ChatGPT potentially has not been trained on that reference data, that is data added to the internet after 2021. Also note that the result presented here are for tutorial purposes only. Hard inference about the relative efficacy of the used gpt models should be avoided. 
 </p></span>
 </div>
 
@@ -249,10 +249,10 @@ knitr::include_graphics("helper-stuff/wordprompt2.png")
 \ 
 
 ```{r}
-word_path1 <-  system.file("extdata", "word_pormpt_1.docx", package = "AIscreenR")
+word_path <-  system.file("extdata", "word_pormpt_1.docx", package = "AIscreenR")
 
-prompt <- 
-  readtext::readtext(word_path1)$text |> 
+prompt1 <- 
+  readtext::readtext(word_path)$text |> 
       stringr::str_remove_all("\n")
 
 str(prompt)
@@ -260,7 +260,7 @@ str(prompt)
 # Working with multiple prompts
 word_paths <- system.file("extdata", c("word_pormpt_1.docx", "word_pormpt_2.docx"), package = "AIscreenR")
 
-prompt_word2 <- 
+prompts <- 
   purrr::map_chr(
     word_paths, ~ {
       readtext::readtext(.x)$text |> 
@@ -268,7 +268,7 @@ prompt_word2 <-
     } 
   )
 
-str(prompt_word2)
+prompts 
 ```
 
 ## Approximate price of screening
@@ -276,17 +276,17 @@ str(prompt_word2)
 Approximate price of screening
 
 ```{r, echo = FALSE}
-models <- c("gpt-3.5-turbo-0613", "gpt-4")
+models <- c("gpt-3.5-turbo-0613", "gpt-3.5-turbo-0613", "gpt-4")
 ```
 
 ```{r}
-models <- c("gpt-3.5-turbo-0613", "gpt-4")
-reps <- c(10, 1)
+models <- c("gpt-3.5-turbo-0613", "gpt-3.5-turbo-0613", "gpt-4")
+reps <- c(1, 10, 1)
 
 app_obj <- 
   approximate_price_gpt(
     data = filges2015_dat, # Tutorial data embedded in the package
-    prompt = prompt, 
+    prompt = prompts, 
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
     abstract = abstract, # indicate the variable with the abstracts in the data
@@ -303,15 +303,15 @@ app_obj$price_data
 
 ## Screening titles and abstracts
 ```{r, message=FALSE, eval=FALSE}
-models <- c("gpt-3.5-turbo-0613", "gpt-4")
-reps <- c(10, 1)
-rpm <- models_rate_limits$requests_per_minute
+models <- c("gpt-3.5-turbo-0613", "gpt-3.5-turbo-0613", "gpt-4")
+reps <- c(1, 10, 1)
+rpm <- c(10000, 10000, 200)
 
 plan(multisession)
 
 result_object <- 
   tabscreen_gpt(
-    data = filges2015_dat, # ris-file data generated with 
+    data = filges2015_dat, # ris-file data create above 
     prompt = prompt, # indicate name of the loaded prompt object
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
@@ -320,10 +320,10 @@ result_object <-
     reps = reps,
     rpm = rpm
   )
-#> * The approximate price of the current (simple) screening will be around $7.6544.
+#> * The approximate price of the current (simple) screening will be around $15.6473.
 #> * Consider removing references that has no abstract since these can distort the accuracy of the screening
 #>  Progress: ──────────────────────────────────────────────────────────────────────────────────────────── 100%
-#>  * NOTE: Requests falied for 12 titles and abstracts."
+#>  * NOTE: Requests falied 6 times."
 
 plan(sequential)
 
@@ -343,25 +343,30 @@ print(result_object)
 
 ## Getting the results from the screening
 
-```{r, include = FALSE, eval=FALSE}
+```{r result_object, echo = FALSE}
 result_object <- AIscreenR:::result_object
+```
 
-# gpt-3.5 results
+
+```{r}
+# gpt-3.5 results (prompt 1 - 10 replications)
+# studyid = 21 is not included since it failed during the loop
+# I show how to recover this in another 
 sum_dat_gpt3 <- 
   result_object$answer_data_sum |> 
-  filter(stringr::str_detect(model, "3"))
+  filter(stringr::str_detect(model, "3") & promptid == 1 & reps == 10)
   
 print(sum_dat_gpt3, width = 220)
 
-# gpt-4 results
+# gpt-4 results (prompt 1)
 sum_dat_gpt4 <- 
   result_object$answer_data_sum |> 
-  filter(stringr::str_detect(model, "4") & !is.na(final_decision_gpt))
+  filter(stringr::str_detect(model, "4") & promptid == 1)
 
 print(sum_dat_gpt4, width = 220)
 ```
 
-```{r, eval = FALSE}
+```{r, include = FALSE, eval = FALSE}
 sum_dat_gpt3 <- 
   result_object$answer_data_sum |> 
   filter(stringr::str_detect(model, "3"))
@@ -456,7 +461,7 @@ print(sum_dat_gpt4, width = 220)
 ## Analyzing the screening
 
 ### Simple table
-```{r, eval = FALSE}
+```{r tables}
 # gpt3.5 result
 table(gpt = sum_dat_gpt3$final_decision_gpt_num, human = sum_dat_gpt3$human_code)
 table(gpt = sum_dat_gpt4$final_decision_gpt_num, human = sum_dat_gpt4$human_code)
@@ -464,19 +469,21 @@ table(gpt = sum_dat_gpt4$final_decision_gpt_num, human = sum_dat_gpt4$human_code
 
 ### False included and excluded (by gpt)
 
-```{r, eval = FALSE}
+```{r screen_stats}
 
 result_object$answer_data_sum |>
+  mutate(n_ref = n_distinct(studyid)) |> 
+  filter(!is.na(final_decision_gpt_num)) |> 
   summarise(
-    n_missing = sum(is.na(final_decision_gpt_num)),
     n_screened = n(),
-    n = n_screened - n_missing,
+    n_missing = unique(n_ref) - n_screened,
+    n_refs = unique(n_ref),
     n_false_ex = sum(if_else(human_code == 1 & final_decision_gpt_num == 0, 1, 0, missing = NA), na.rm = TRUE),
     n_false_in = sum(if_else(human_code == 0 & final_decision_gpt_num == 1, 1, 0, missing = NA), na.rm = TRUE),
     n_true_in = sum(if_else(human_code == 1 & final_decision_gpt_num == 1, 1, 0, missing = NA), na.rm = TRUE),
     n_true_ex = sum(if_else(human_code == 0 & final_decision_gpt_num == 0, 1, 0, missing = NA), na.rm = TRUE),
    
-    accuracy = (n_false_in + n_false_ex)/n,
+    accuracy = (n_false_in + n_false_ex)/n_refs,
     p_agreement = 1 - accuracy,
     sensitivity = n_true_in / (n_true_in + n_false_ex),
     
@@ -487,17 +494,27 @@ result_object$answer_data_sum |>
     cm1 = n_true_ex + n_false_in,
     cm2 = n_false_ex + n_true_in,
     
-    pe = 1/n * ((cm1*rm1)/n + (cm2*rm2)/n),
+    pe = 1/n_refs * ((cm1*rm1)/n_refs + (cm2*rm2)/n_refs),
     
     
     kappa = (p_agreement - pe)/(1-pe),
+    # Add interpreation of kappa her
+    level_of_agreement = case_when(
+      kappa <= .2 ~ "None",
+      kappa > .2 & kappa <= .39 ~ "Minimal",
+      kappa > .39 & kappa <= .59 ~ "Weak",
+      kappa > .59 & kappa <= .79 ~ "Moderate",
+      kappa > .79 & kappa <= .90 ~ "Strong",
+      kappa > .9 ~ "Almost perfect",
+      TRUE ~ NA_character_
+      
+    ),
     
-    
-    SE_kappa = sqrt( (p_agreement*(1-p_agreement)) / n*(1-pe)^2),
+    SE_kappa = sqrt( (p_agreement*(1-p_agreement)) / n_refs*(1-pe)^2),
     CL_kappa = kappa - 1.96 *SE_kappa,
     CU_kappa = kappa + 1.96 *SE_kappa,
     
-    .by = c(promptid, model, top_p) 
+    .by = c(promptid, model, reps, top_p) 
   ) |> 
   select(-c(rm1:pe)) |> 
   print(width = 200)
@@ -514,6 +531,8 @@ result_object$answer_data_sum |>
 
 # References
 Gartlehner, G., Wagner, G., Lux, L. et al. (2019). Assessing the accuracy of machine-assisted abstract screening with DistillerAI: a user study. *Systematic Reviews*. 8, 1-10. <https://doi.org/10.1186/s13643-019-1221-3>
+
+McHugh, M. L. (2012). Interrater reliability: The kappa statistic. *Biochemia Medica*, 22(3), 276–282.
 
 Waffenschmidt, S., Knelangen, M., Sieben, W., Bühn, S., & Pieper, D. (2019). Single screening versus conventional double screening for study selection in systematic reviews: a methodological systematic review. *BMC Medical Research Methodology* 19, 1-9. <https://doi.org/10.1186/s12874-019-0782-0>
 
