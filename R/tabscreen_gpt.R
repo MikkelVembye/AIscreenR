@@ -819,7 +819,8 @@ tabscreen_gpt <- function(
     dplyr::left_join(question_dat, answer_dat_sum) |>
     suppressMessages() |>
     select(-c(iterations, req_per_min)) |>
-    rename(top_p = topp)
+    rename(top_p = topp) |>
+    tibble::new_tibble(class = "chatgpt_tbl")
 
 
   if (token_info){
@@ -1025,7 +1026,7 @@ testing_key_chatgpt <- function() {
 #
 #----------------------------------------------------------------
 
-#' Test if the object is a chatgpt object
+#' Test if the object is a `'chatgpt'` object
 #'
 #' This function returns `TRUE` for `chatgpt` objects,
 #' and `FALSE` for all other objects.
@@ -1038,6 +1039,18 @@ is_chatgpt <- function(x){
   inherits(x, "chatgpt")
 }
 
+#' Test if the object is a `'chatgpt_tbl'` object
+#'
+#' This function returns `TRUE` for `chatgpt_tbl` objects,
+#' and `FALSE` for all other objects.
+#'
+#' @param x An object
+#' @return `TRUE` if the object inherits from the `chatgpt_tbl` class.
+#' @export
+
+is_chatgpt_tbl <- function(x){
+  inherits(x, "chatgpt_tbl")
+}
 
 
 

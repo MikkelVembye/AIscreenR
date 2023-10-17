@@ -11,5 +11,7 @@ utils::globalVariables(
     "decision_gpt", "decision_binary", "detailed_description",
     "final_decision_gpt_num", "n_words_answer", "longest_answer", "final_decision_gpt",
     "req_per_min", "topp", "iterations", "input_price", "output_price", "max_reps",
-    "promptid")
+    "promptid", "SE_kappa", "accuracy", "cm1", "cm2", "human_code", "n_false_ex", "n_false_in", "n_ref",
+    "n_refs", "n_screened", "n_true_ex", "n_true_in", "p_agreement", "pe", "reps", "rm1", "rm2",
+    "studyid", "top_p")
 )

@@ -10,6 +10,11 @@ reference:
     contents:
       - tabscreen_gpt
 
+  - title: "Analyze screening performance"
+    desc: "R functions to analyze agreement between humans and AI"
+    contents:
+      - screen_analyzer
+
   - title: "API management"
     desc: "R functions to ease and automate API management"
     contents:
@@ -29,6 +34,7 @@ reference:
   - title: "Coercion"
     contents:
       - is_chatgpt
+      - is_chatgpt_tbl
 
   - title: "Print methods"
     contents:

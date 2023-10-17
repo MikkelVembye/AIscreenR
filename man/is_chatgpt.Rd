@@ -2,7 +2,7 @@
 % Please edit documentation in R/tabscreen_gpt.R
 \name{is_chatgpt}
 \alias{is_chatgpt}
-\title{Test if the object is a chatgpt object}
+\title{Test if the object is a \code{'chatgpt'} object}
 \usage{
 is_chatgpt(x)
 }
