@@ -312,7 +312,7 @@ tabscreen_gpt <- function(
 
         }
 
-        if (!stringr::str_detect(resp_text, '\\}') && stringr::str_detect(resp_text, '\"\n|\" \n|\"  \n')) {
+        if (!stringr::str_detect(resp_text, '\\}') && stringr::str_detect(resp_text, '\"\n|\" \n|\"  \n') || stringr::str_ends(resp_text, '\n')) {
 
           resp_text <- paste0(resp_text, '}')
 
