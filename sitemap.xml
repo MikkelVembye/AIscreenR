@@ -37,6 +37,9 @@
     <loc>https://mikkelvembye.github.io/AIscreenR/reference/is_chatgpt.html</loc>
   </url>
   <url>
+    <loc>https://mikkelvembye.github.io/AIscreenR/reference/is_chatgpt_tbl.html</loc>
+  </url>
+  <url>
     <loc>https://mikkelvembye.github.io/AIscreenR/reference/print.chatgpt.html</loc>
   </url>
   <url>
@@ -44,6 +47,9 @@
   </url>
   <url>
     <loc>https://mikkelvembye.github.io/AIscreenR/reference/rate_limits_per_minute.html</loc>
+  </url>
+  <url>
+    <loc>https://mikkelvembye.github.io/AIscreenR/reference/screen_analyzer.html</loc>
   </url>
   <url>
     <loc>https://mikkelvembye.github.io/AIscreenR/reference/set_api_key.html</loc>
