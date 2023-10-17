@@ -92,7 +92,9 @@ interventions. The first evidence of this is shown in this vignette.
 However, be aware that our first results are based on a retrospective
 analysis which might not generalize to prospective screenings where
 ChatGPT potentially has not been trained on that reference data, that is
-data added to the internet after 2021.
+data added to the internet after 2021. Also note that the result
+presented here are for tutorial purposes only. Hard inference about the
+relative efficacy of the used gpt models should be avoided.
 </p>
 <p></p></span>
 </div>
@@ -323,19 +325,19 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 </div>
 <p> </p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">word_path1</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"word_pormpt_1.docx"</span>, package <span class="op">=</span> <span class="st">"AIscreenR"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">word_path</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"word_pormpt_1.docx"</span>, package <span class="op">=</span> <span class="st">"AIscreenR"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">prompt</span> <span class="op">&lt;-</span> </span>
-<span>  <span class="fu">readtext</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/readtext/man/readtext.html" class="external-link">readtext</a></span><span class="op">(</span><span class="va">word_path1</span><span class="op">)</span><span class="op">$</span><span class="va">text</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">prompt1</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">readtext</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/readtext/man/readtext.html" class="external-link">readtext</a></span><span class="op">(</span><span class="va">word_path</span><span class="op">)</span><span class="op">$</span><span class="va">text</span> <span class="op">|&gt;</span> </span>
 <span>      <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove_all</a></span><span class="op">(</span><span class="st">"\n"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">prompt</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  chr "Evaluate the following study based on the selection criteria for a systematic review on the effects of family-b"| __truncated__</span></span>
+<span><span class="co">#&gt; function (object, filename = NULL, name = NULL, ...)</span></span>
 <span></span>
 <span><span class="co"># Working with multiple prompts</span></span>
 <span><span class="va">word_paths</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"word_pormpt_1.docx"</span>, <span class="st">"word_pormpt_2.docx"</span><span class="op">)</span>, package <span class="op">=</span> <span class="st">"AIscreenR"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">prompt_word2</span> <span class="op">&lt;-</span> </span>
+<span><span class="va">prompts</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_chr</a></span><span class="op">(</span></span>
 <span>    <span class="va">word_paths</span>, <span class="op">~</span> <span class="op">{</span></span>
 <span>      <span class="fu">readtext</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/readtext/man/readtext.html" class="external-link">readtext</a></span><span class="op">(</span><span class="va">.x</span><span class="op">)</span><span class="op">$</span><span class="va">text</span> <span class="op">|&gt;</span> </span>
@@ -343,21 +345,22 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span>    <span class="op">}</span> </span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">prompt_word2</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  chr [1:2] "Evaluate the following study based on the selection criteria for a systematic review on the effects of family-b"| __truncated__ ...</span></span></code></pre></div>
+<span><span class="va">prompts</span> </span>
+<span><span class="co">#&gt; [1] "Evaluate the following study based on the selection criteria for a systematic review on the effects of family-based interventions on drug abuse reduction for young people in treatment for non-opioid drug use. A family-based intervention (FFT) is equivalent to a behavior focused family therapy, where young people’s drug use is understood in relation to family behavior problems. Family-based interventions also include manual-based family therapies as it target young people and their families as a system throughout treatment, and thereby recognize the important role of the family system in the development and treatment of young people’s drug use problems. FFT was developed in the late 1980s on request from the US National Institute on Drug Abuse (NIDA). The development of FFT was initially heavily inspired by the alcohol abuse program Community Reinforcement Approach (CRA), which was aimed at restructuring the environment to reinforce non-alcohol associated activities. FFT was developed to have more emphasis on contingency contracting, impulse control strategies specific to drug use, and increased emphasis on the involvement of family members in treatment. FFT is designed to accommodate diverse populations of youths with a variety of behavioral, cultural and individual preferences. FFT has evolved for use in severe behavioral disturbances known to co-exist with substance use and dependence, and the core interventions have been enhanced to address several mental health related problems commonly occurring as comorbid conditions in drug use treatment participant.  For each study, I would like you to assess:  1) Is the study about a family-based intervention, such as Functional Family Therapy, Multidimensional Family Therapy, or Behavioral Family Therapy? (Outpatient manual-based interventions of any duration delivered to young people and their families). If not, exclude study. 2) Are the participants in outpatient drug treatment primarily for non-opioid drug use? 3) Are the participants within age 11–21?"</span></span>
+<span><span class="co">#&gt; [2] "Evaluate the following study based on the selection criteria for a systematic review on the effects of family-based interventions on drug abuse reduction for young people in treatment for non-opioid drug use. A family-based intervention (FFT) is equivalent to a behavior focused family therapy, where young people’s drug use is understood in relation to family behavior problems. Family-based interventions also include manual-based family therapies as it target young people and their families as a system throughout treatment, and thereby recognize the important role of the family system in the development and treatment of young people’s drug use problems. FFT was developed in the late 1980s on request from the US National Institute on Drug Abuse (NIDA). The development of FFT was initially heavily inspired by the alcohol abuse program Community Reinforcement Approach (CRA), which was aimed at restructuring the environment to reinforce non-alcohol associated activities. FFT was developed to have more emphasis on contingency contracting, impulse control strategies specific to drug use, and increased emphasis on the involvement of family members in treatment. FFT is designed to accommodate diverse populations of youths with a variety of behavioral, cultural and individual preferences. FFT has evolved for use in severe behavioral disturbances known to co-exist with substance use and dependence, and the core interventions have been enhanced to address several mental health related problems commonly occurring as comorbid conditions in drug use treatment participant.  For each study, I would like you to assess:  1) Is the study about a family-based intervention, such as Functional Family Therapy, Multidimensional Family Therapy, or Behavioral Family Therapy? (Outpatient manual-based interventions of any duration delivered to young people and their families). If not, exclude study. "</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="approximate-price-of-screening">Approximate price of screening<a class="anchor" aria-label="anchor" href="#approximate-price-of-screening"></a>
 </h3>
 <p>Approximate price of screening</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-4"</span><span class="op">)</span></span>
-<span><span class="va">reps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-4"</span><span class="op">)</span></span>
+<span><span class="va">reps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">app_obj</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu"><a href="../reference/approximate_price_gpt.html">approximate_price_gpt</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">filges2015_dat</span>, <span class="co"># Tutorial data embedded in the package</span></span>
-<span>    prompt <span class="op">=</span> <span class="va">prompt</span>, </span>
+<span>    prompt <span class="op">=</span> <span class="va">prompts</span>, </span>
 <span>    studyid <span class="op">=</span> <span class="va">studyid</span>, <span class="co"># indicate the variable with the studyid in the data</span></span>
 <span>    title <span class="op">=</span> <span class="va">title</span>, <span class="co"># indicate the variable with the titles in the data</span></span>
 <span>    abstract <span class="op">=</span> <span class="va">abstract</span>, <span class="co"># indicate the variable with the abstracts in the data</span></span>
@@ -366,30 +369,31 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="va">app_obj</span></span>
-<span><span class="co">#&gt; The approximate price of the (simple) screening will be around $7.6544.</span></span>
+<span><span class="co">#&gt; The approximate price of the (simple) screening will be around $15.5704.</span></span>
 <span></span>
 <span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_dollar</span></span>
-<span><span class="co">#&gt; [1] 7.6544</span></span>
+<span><span class="co">#&gt; [1] 15.5704</span></span>
 <span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_data</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 5</span></span></span>
 <span><span class="co">#&gt;   model     iterations input_price_dollar output_price_dollar total_price_dollor</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> gpt-3.5-…         10               2.51               0.033               2.54</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> gpt-4              1               5.01               0.099               5.11</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> gpt-3.5-…          1              0.493              0.006<span style="text-decoration: underline;">6</span>              0.500</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> gpt-3.5-…         10              4.94               0.066               5.00 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> gpt-4              1              9.87               0.198              10.1</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="screening-titles-and-abstracts">Screening titles and abstracts<a class="anchor" aria-label="anchor" href="#screening-titles-and-abstracts"></a>
 </h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-4"</span><span class="op">)</span></span>
-<span><span class="va">reps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="va">rpm</span> <span class="op">&lt;-</span> <span class="va">models_rate_limits</span><span class="op">$</span><span class="va">requests_per_minute</span></span>
+<code class="sourceCode R"><span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-4"</span><span class="op">)</span></span>
+<span><span class="va">reps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span>, <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">rpm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10000</span>, <span class="fl">10000</span>, <span class="fl">200</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">result_object</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu"><a href="../reference/tabscreen_gpt.html">tabscreen_gpt</a></span><span class="op">(</span></span>
-<span>    data <span class="op">=</span> <span class="va">filges2015_dat</span>, <span class="co"># ris-file data generated with </span></span>
+<span>    data <span class="op">=</span> <span class="va">filges2015_dat</span>, <span class="co"># ris-file data create above </span></span>
 <span>    prompt <span class="op">=</span> <span class="va">prompt</span>, <span class="co"># indicate name of the loaded prompt object</span></span>
 <span>    studyid <span class="op">=</span> <span class="va">studyid</span>, <span class="co"># indicate the variable with the studyid in the data</span></span>
 <span>    title <span class="op">=</span> <span class="va">title</span>, <span class="co"># indicate the variable with the titles in the data</span></span>
@@ -398,10 +402,10 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span>    reps <span class="op">=</span> <span class="va">reps</span>,</span>
 <span>    rpm <span class="op">=</span> <span class="va">rpm</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $7.6544.</span></span>
+<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $15.6473.</span></span>
 <span><span class="co">#&gt; * Consider removing references that has no abstract since these can distort the accuracy of the screening</span></span>
 <span><span class="co">#&gt;  Progress: ──────────────────────────────────────────────────────────────────────────────────────────── 100%</span></span>
-<span><span class="co">#&gt;  * NOTE: Requests falied for 12 titles and abstracts."</span></span>
+<span><span class="co">#&gt;  * NOTE: Requests falied 6 times."</span></span>
 <span></span>
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">sequential</span><span class="op">)</span></span>
 <span></span>
@@ -422,93 +426,97 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <h3 id="getting-the-results-from-the-screening">Getting the results from the screening<a class="anchor" aria-label="anchor" href="#getting-the-results-from-the-screening"></a>
 </h3>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sum_dat_gpt3</span> <span class="op">&lt;-</span> </span>
+<code class="sourceCode R"><span><span class="co"># gpt-3.5 results (prompt 1 - 10 replications)</span></span>
+<span><span class="co"># studyid = 21 is not included since it failed during the loop</span></span>
+<span><span class="co"># I show how to recover this in another </span></span>
+<span><span class="va">sum_dat_gpt3</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">result_object</span><span class="op">$</span><span class="va">answer_data_sum</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html" class="external-link">str_detect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"3"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html" class="external-link">str_detect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"3"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">promptid</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">reps</span> <span class="op">==</span> <span class="fl">10</span><span class="op">)</span></span>
 <span>  </span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sum_dat_gpt3</span>, width <span class="op">=</span> <span class="fl">220</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 150 × 16</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 149 × 16</span></span></span>
 <span><span class="co">#&gt;    author                                                                       </span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;                                                                        </span></span>
-<span><span class="co">#&gt;  1 Holloway R G and Gramling R and Kelly A G                                    </span></span>
-<span><span class="co">#&gt;  2 Morawska Alina and Stallman Helen M and Sanders Matthew R and Ralph Alan     </span></span>
-<span><span class="co">#&gt;  3 Michel C M and Pascual-Marqui R D and Strik W K and Koenig T and Lehmann D   </span></span>
-<span><span class="co">#&gt;  4 Paul Howard A                                                                </span></span>
-<span><span class="co">#&gt;  5 Feinberg I and De Bie E and Davis N M and Campbell I G                       </span></span>
-<span><span class="co">#&gt;  6 Hamburg Sam R                                                                </span></span>
-<span><span class="co">#&gt;  7 Park H Y and Lee B J and Kim J H and Bae J N and Hahm B J                    </span></span>
-<span><span class="co">#&gt;  8 Petrek J                                                                     </span></span>
-<span><span class="co">#&gt;  9 Schwartzman Meredith P and Wahler Robert G                                   </span></span>
-<span><span class="co">#&gt; 10 Faber J and Srutova L and Pilarova M and Vuckova Z and Bohmova D and Dobosov…</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                                        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Holloway R G and Gramling R and Kelly A G                                    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Morawska Alina and Stallman Helen M and Sanders Matthew R and Ralph Alan     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Michel C M and Pascual-Marqui R D and Strik W K and Koenig T and Lehmann D   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Paul Howard A                                                                </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Feinberg I and De Bie E and Davis N M and Campbell I G                       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Hamburg Sam R                                                                </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Park H Y and Lee B J and Kim J H and Bae J N and Hahm B J                    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Petrek J                                                                     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Schwartzman Meredith P and Wahler Robert G                                   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Faber J and Srutova L and Pilarova M and Vuckova Z and Bohmova D and Dobosov…</span></span>
 <span><span class="co">#&gt;    eppi_id human_code studyid title      abstract promptid prompt model question</span></span>
-<span><span class="co">#&gt;      &lt;dbl&gt;      &lt;dbl&gt;   &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   </span></span>
-<span><span class="co">#&gt;  1 9434957          0       1 Estimatin… "Progno…        1 "Eval… gpt-… "Evalua…</span></span>
-<span><span class="co">#&gt;  2 9433838          0       2 Self-Dire… "Behavi…        1 "Eval… gpt-… "Evalua…</span></span>
-<span><span class="co">#&gt;  3 9431171          0       3 Frequency… "The to…        1 "Eval… gpt-… "Evalua…</span></span>
-<span><span class="co">#&gt;  4 9433968          0       4 A Review … "The ar…        1 "Eval… gpt-… "Evalua…</span></span>
-<span><span class="co">#&gt;  5 9434460          0       5 Topograph… "STUDY …        1 "Eval… gpt-… "Evalua…</span></span>
-<span><span class="co">#&gt;  6 9433554          0       6 BOOK REVI… "The ar…        1 "Eval… gpt-… "Evalua…</span></span>
-<span><span class="co">#&gt;  7 9435130          0       7 Rapid imp… "Backgr…        1 "Eval… gpt-… "Evalua…</span></span>
-<span><span class="co">#&gt;  8 9432040          0       8 Pictorial… "AIMS: …        1 "Eval… gpt-… "Evalua…</span></span>
-<span><span class="co">#&gt;  9 9434093          0       9 Enhancing… "New an…        1 "Eval… gpt-… "Evalua…</span></span>
-<span><span class="co">#&gt; 10 9431505          0      10 EEG spect… "Sponta…        1 "Eval… gpt-… "Evalua…</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 9434957          0       1 Estimatin… <span style="color: #949494;">"</span>Progno…        1 Evalu… gpt-… <span style="color: #949494;">"</span>Evalua…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 9433838          0       2 Self-Dire… <span style="color: #949494;">"</span>Behavi…        1 Evalu… gpt-… <span style="color: #949494;">"</span>Evalua…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 9431171          0       3 Frequency… <span style="color: #949494;">"</span>The to…        1 Evalu… gpt-… <span style="color: #949494;">"</span>Evalua…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 9433968          0       4 A Review … <span style="color: #949494;">"</span>The ar…        1 Evalu… gpt-… <span style="color: #949494;">"</span>Evalua…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 9434460          0       5 Topograph… <span style="color: #949494;">"</span>STUDY …        1 Evalu… gpt-… <span style="color: #949494;">"</span>Evalua…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 9433554          0       6 BOOK REVI… <span style="color: #949494;">"</span>The ar…        1 Evalu… gpt-… <span style="color: #949494;">"</span>Evalua…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 9435130          0       7 Rapid imp… <span style="color: #949494;">"</span>Backgr…        1 Evalu… gpt-… <span style="color: #949494;">"</span>Evalua…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 9432040          0       8 Pictorial… <span style="color: #949494;">"</span>AIMS: …        1 Evalu… gpt-… <span style="color: #949494;">"</span>Evalua…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 9434093          0       9 Enhancing… <span style="color: #949494;">"</span>New an…        1 Evalu… gpt-… <span style="color: #949494;">"</span>Evalua…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 9431505          0      10 EEG spect… <span style="color: #949494;">"</span>Sponta…        1 Evalu… gpt-… <span style="color: #949494;">"</span>Evalua…</span></span>
 <span><span class="co">#&gt;    top_p incl_p final_decision_gpt final_decision_gpt_num  reps n_mis_answers</span></span>
-<span><span class="co">#&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;                               &lt;dbl&gt; &lt;int&gt;         &lt;int&gt;</span></span>
-<span><span class="co">#&gt;  1     1    0   Exclude                                 0    10             0</span></span>
-<span><span class="co">#&gt;  2     1    0.8 Include                                 1    10             0</span></span>
-<span><span class="co">#&gt;  3     1    0   Exclude                                 0    10             0</span></span>
-<span><span class="co">#&gt;  4     1    0   Exclude                                 0    10             0</span></span>
-<span><span class="co">#&gt;  5     1    0.2 Exclude                                 0    10             0</span></span>
-<span><span class="co">#&gt;  6     1    0   Exclude                                 0    10             0</span></span>
-<span><span class="co">#&gt;  7     1    0   Exclude                                 0    10             0</span></span>
-<span><span class="co">#&gt;  8     1    0   Exclude                                 0    10             0</span></span>
-<span><span class="co">#&gt;  9     1    0   Exclude                                 0    10             0</span></span>
-<span><span class="co">#&gt; 10     1    0   Exclude                                 0    10             0</span></span>
-<span><span class="co">#&gt; # ℹ 140 more rows</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>     1    0   Exclude                                 0    10             0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     1    0.6 Include                                 1    10             0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     1    0   Exclude                                 0    10             0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     1    0   Exclude                                 0    10             0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     1    0.1 Exclude                                 0    10             0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     1    0   Exclude                                 0    10             0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     1    0   Exclude                                 0    10             0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     1    0   Exclude                                 0    10             0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     1    0   Exclude                                 0    10             0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>     1    0   Exclude                                 0    10             0</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 139 more rows</span></span></span>
 <span></span>
-<span><span class="co"># gpt-4 results</span></span>
+<span><span class="co"># gpt-4 results (prompt 1)</span></span>
 <span><span class="va">sum_dat_gpt4</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">result_object</span><span class="op">$</span><span class="va">answer_data_sum</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html" class="external-link">str_detect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"4"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">final_decision_gpt</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html" class="external-link">str_detect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"4"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">promptid</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sum_dat_gpt4</span>, width <span class="op">=</span> <span class="fl">220</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 138 × 16</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 150 × 16</span></span></span>
 <span><span class="co">#&gt;    author                                                                       </span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;                                                                        </span></span>
-<span><span class="co">#&gt;  1 Holloway R G and Gramling R and Kelly A G                                    </span></span>
-<span><span class="co">#&gt;  2 Morawska Alina and Stallman Helen M and Sanders Matthew R and Ralph Alan     </span></span>
-<span><span class="co">#&gt;  3 Michel C M and Pascual-Marqui R D and Strik W K and Koenig T and Lehmann D   </span></span>
-<span><span class="co">#&gt;  4 Paul Howard A                                                                </span></span>
-<span><span class="co">#&gt;  5 Feinberg I and De Bie E and Davis N M and Campbell I G                       </span></span>
-<span><span class="co">#&gt;  6 Hamburg Sam R                                                                </span></span>
-<span><span class="co">#&gt;  7 Park H Y and Lee B J and Kim J H and Bae J N and Hahm B J                    </span></span>
-<span><span class="co">#&gt;  8 Petrek J                                                                     </span></span>
-<span><span class="co">#&gt;  9 Faber J and Srutova L and Pilarova M and Vuckova Z and Bohmova D and Dobosov…</span></span>
-<span><span class="co">#&gt; 10 McCauley E and Schloredt K and Gudmundsen G and Martell C and Dimidjian S    </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                                        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Holloway R G and Gramling R and Kelly A G                                    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Morawska Alina and Stallman Helen M and Sanders Matthew R and Ralph Alan     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Michel C M and Pascual-Marqui R D and Strik W K and Koenig T and Lehmann D   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Paul Howard A                                                                </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Feinberg I and De Bie E and Davis N M and Campbell I G                       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Hamburg Sam R                                                                </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Park H Y and Lee B J and Kim J H and Bae J N and Hahm B J                    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Petrek J                                                                     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Schwartzman Meredith P and Wahler Robert G                                   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Faber J and Srutova L and Pilarova M and Vuckova Z and Bohmova D and Dobosov…</span></span>
 <span><span class="co">#&gt;    eppi_id human_code studyid title      abstract promptid prompt model question</span></span>
-<span><span class="co">#&gt;      &lt;dbl&gt;      &lt;dbl&gt;   &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   </span></span>
-<span><span class="co">#&gt;  1 9434957          0       1 Estimatin… "Progno…        1 "Eval… gpt-4 "Evalua…</span></span>
-<span><span class="co">#&gt;  2 9433838          0       2 Self-Dire… "Behavi…        1 "Eval… gpt-4 "Evalua…</span></span>
-<span><span class="co">#&gt;  3 9431171          0       3 Frequency… "The to…        1 "Eval… gpt-4 "Evalua…</span></span>
-<span><span class="co">#&gt;  4 9433968          0       4 A Review … "The ar…        1 "Eval… gpt-4 "Evalua…</span></span>
-<span><span class="co">#&gt;  5 9434460          0       5 Topograph… "STUDY …        1 "Eval… gpt-4 "Evalua…</span></span>
-<span><span class="co">#&gt;  6 9433554          0       6 BOOK REVI… "The ar…        1 "Eval… gpt-4 "Evalua…</span></span>
-<span><span class="co">#&gt;  7 9435130          0       7 Rapid imp… "Backgr…        1 "Eval… gpt-4 "Evalua…</span></span>
-<span><span class="co">#&gt;  8 9432040          0       8 Pictorial… "AIMS: …        1 "Eval… gpt-4 "Evalua…</span></span>
-<span><span class="co">#&gt;  9 9431505          0      10 EEG spect… "Sponta…        1 "Eval… gpt-4 "Evalua…</span></span>
-<span><span class="co">#&gt; 10 9435281          0      11 Expanding… "Depres…        1 "Eval… gpt-4 "Evalua…</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 9434957          0       1 Estimatin… <span style="color: #949494;">"</span>Progno…        1 Evalu… gpt-4 <span style="color: #949494;">"</span>Evalua…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 9433838          0       2 Self-Dire… <span style="color: #949494;">"</span>Behavi…        1 Evalu… gpt-4 <span style="color: #949494;">"</span>Evalua…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 9431171          0       3 Frequency… <span style="color: #949494;">"</span>The to…        1 Evalu… gpt-4 <span style="color: #949494;">"</span>Evalua…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 9433968          0       4 A Review … <span style="color: #949494;">"</span>The ar…        1 Evalu… gpt-4 <span style="color: #949494;">"</span>Evalua…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 9434460          0       5 Topograph… <span style="color: #949494;">"</span>STUDY …        1 Evalu… gpt-4 <span style="color: #949494;">"</span>Evalua…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 9433554          0       6 BOOK REVI… <span style="color: #949494;">"</span>The ar…        1 Evalu… gpt-4 <span style="color: #949494;">"</span>Evalua…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 9435130          0       7 Rapid imp… <span style="color: #949494;">"</span>Backgr…        1 Evalu… gpt-4 <span style="color: #949494;">"</span>Evalua…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 9432040          0       8 Pictorial… <span style="color: #949494;">"</span>AIMS: …        1 Evalu… gpt-4 <span style="color: #949494;">"</span>Evalua…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 9434093          0       9 Enhancing… <span style="color: #949494;">"</span>New an…        1 Evalu… gpt-4 <span style="color: #949494;">"</span>Evalua…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 9431505          0      10 EEG spect… <span style="color: #949494;">"</span>Sponta…        1 Evalu… gpt-4 <span style="color: #949494;">"</span>Evalua…</span></span>
 <span><span class="co">#&gt;    top_p incl_p final_decision_gpt final_decision_gpt_num  reps n_mis_answers</span></span>
-<span><span class="co">#&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;                               &lt;dbl&gt; &lt;int&gt;         &lt;int&gt;</span></span>
-<span><span class="co">#&gt;  1     1      0 Exclude                                 0     1             0</span></span>
-<span><span class="co">#&gt;  2     1      0 Exclude                                 0     1             0</span></span>
-<span><span class="co">#&gt;  3     1      0 Exclude                                 0     1             0</span></span>
-<span><span class="co">#&gt;  4     1      0 Exclude                                 0     1             0</span></span>
-<span><span class="co">#&gt;  5     1      0 Exclude                                 0     1             0</span></span>
-<span><span class="co">#&gt;  6     1      0 Exclude                                 0     1             0</span></span>
-<span><span class="co">#&gt;  7     1      0 Exclude                                 0     1             0</span></span>
-<span><span class="co">#&gt;  8     1      0 Exclude                                 0     1             0</span></span>
-<span><span class="co">#&gt;  9     1      0 Exclude                                 0     1             0</span></span>
-<span><span class="co">#&gt; 10     1      0 Exclude                                 0     1             0</span></span></code></pre></div>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>     1      0 Exclude                                 0     1             0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     1      0 Exclude                                 0     1             0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     1      0 Exclude                                 0     1             0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     1      0 Exclude                                 0     1             0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     1      0 Exclude                                 0     1             0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     1      0 Exclude                                 0     1             0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     1      0 Exclude                                 0     1             0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     1      0 Exclude                                 0     1             0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     1      0 Exclude                                 0     1             0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>     1      0 Exclude                                 0     1             0</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 140 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="analyzing-the-screening">Analyzing the screening<a class="anchor" aria-label="anchor" href="#analyzing-the-screening"></a>
@@ -519,7 +527,15 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># gpt3.5 result</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span>gpt <span class="op">=</span> <span class="va">sum_dat_gpt3</span><span class="op">$</span><span class="va">final_decision_gpt_num</span>, human <span class="op">=</span> <span class="va">sum_dat_gpt3</span><span class="op">$</span><span class="va">human_code</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span>gpt <span class="op">=</span> <span class="va">sum_dat_gpt4</span><span class="op">$</span><span class="va">final_decision_gpt_num</span>, human <span class="op">=</span> <span class="va">sum_dat_gpt4</span><span class="op">$</span><span class="va">human_code</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">#&gt;    human</span></span>
+<span><span class="co">#&gt; gpt  0  1</span></span>
+<span><span class="co">#&gt;   0 90  8</span></span>
+<span><span class="co">#&gt;   1  9 42</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span>gpt <span class="op">=</span> <span class="va">sum_dat_gpt4</span><span class="op">$</span><span class="va">final_decision_gpt_num</span>, human <span class="op">=</span> <span class="va">sum_dat_gpt4</span><span class="op">$</span><span class="va">human_code</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    human</span></span>
+<span><span class="co">#&gt; gpt  0  1</span></span>
+<span><span class="co">#&gt;   0 90  4</span></span>
+<span><span class="co">#&gt;   1  9 46</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="false-included-and-excluded-by-gpt">False included and excluded (by gpt)<a class="anchor" aria-label="anchor" href="#false-included-and-excluded-by-gpt"></a>
@@ -527,16 +543,18 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">result_object</span><span class="op">$</span><span class="va">answer_data_sum</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>n_ref <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/n_distinct.html" class="external-link">n_distinct</a></span><span class="op">(</span><span class="va">studyid</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">final_decision_gpt_num</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
-<span>    n_missing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">final_decision_gpt_num</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    n_screened <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>    n <span class="op">=</span> <span class="va">n_screened</span> <span class="op">-</span> <span class="va">n_missing</span>,</span>
+<span>    n_missing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">n_ref</span><span class="op">)</span> <span class="op">-</span> <span class="va">n_screened</span>,</span>
+<span>    n_refs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">n_ref</span><span class="op">)</span>,</span>
 <span>    n_false_ex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">human_code</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">final_decision_gpt_num</span> <span class="op">==</span> <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span>, missing <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    n_false_in <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">human_code</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">final_decision_gpt_num</span> <span class="op">==</span> <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, missing <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    n_true_in <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">human_code</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">final_decision_gpt_num</span> <span class="op">==</span> <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, missing <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    n_true_ex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">human_code</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">final_decision_gpt_num</span> <span class="op">==</span> <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span>, missing <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>   </span>
-<span>    accuracy <span class="op">=</span> <span class="op">(</span><span class="va">n_false_in</span> <span class="op">+</span> <span class="va">n_false_ex</span><span class="op">)</span><span class="op">/</span><span class="va">n</span>,</span>
+<span>    accuracy <span class="op">=</span> <span class="op">(</span><span class="va">n_false_in</span> <span class="op">+</span> <span class="va">n_false_ex</span><span class="op">)</span><span class="op">/</span><span class="va">n_refs</span>,</span>
 <span>    p_agreement <span class="op">=</span> <span class="fl">1</span> <span class="op">-</span> <span class="va">accuracy</span>,</span>
 <span>    sensitivity <span class="op">=</span> <span class="va">n_true_in</span> <span class="op">/</span> <span class="op">(</span><span class="va">n_true_in</span> <span class="op">+</span> <span class="va">n_false_ex</span><span class="op">)</span>,</span>
 <span>    </span>
@@ -547,21 +565,55 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span>    cm1 <span class="op">=</span> <span class="va">n_true_ex</span> <span class="op">+</span> <span class="va">n_false_in</span>,</span>
 <span>    cm2 <span class="op">=</span> <span class="va">n_false_ex</span> <span class="op">+</span> <span class="va">n_true_in</span>,</span>
 <span>    </span>
-<span>    pe <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="va">n</span> <span class="op">*</span> <span class="op">(</span><span class="op">(</span><span class="va">cm1</span><span class="op">*</span><span class="va">rm1</span><span class="op">)</span><span class="op">/</span><span class="va">n</span> <span class="op">+</span> <span class="op">(</span><span class="va">cm2</span><span class="op">*</span><span class="va">rm2</span><span class="op">)</span><span class="op">/</span><span class="va">n</span><span class="op">)</span>,</span>
+<span>    pe <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="va">n_refs</span> <span class="op">*</span> <span class="op">(</span><span class="op">(</span><span class="va">cm1</span><span class="op">*</span><span class="va">rm1</span><span class="op">)</span><span class="op">/</span><span class="va">n_refs</span> <span class="op">+</span> <span class="op">(</span><span class="va">cm2</span><span class="op">*</span><span class="va">rm2</span><span class="op">)</span><span class="op">/</span><span class="va">n_refs</span><span class="op">)</span>,</span>
 <span>    </span>
 <span>    </span>
 <span>    kappa <span class="op">=</span> <span class="op">(</span><span class="va">p_agreement</span> <span class="op">-</span> <span class="va">pe</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">pe</span><span class="op">)</span>,</span>
+<span>    <span class="co"># Add interpreation of kappa her</span></span>
+<span>    level_of_agreement <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
+<span>      <span class="va">kappa</span> <span class="op">&lt;=</span> <span class="fl">.2</span> <span class="op">~</span> <span class="st">"None"</span>,</span>
+<span>      <span class="va">kappa</span> <span class="op">&gt;</span> <span class="fl">.2</span> <span class="op">&amp;</span> <span class="va">kappa</span> <span class="op">&lt;=</span> <span class="fl">.39</span> <span class="op">~</span> <span class="st">"Minimal"</span>,</span>
+<span>      <span class="va">kappa</span> <span class="op">&gt;</span> <span class="fl">.39</span> <span class="op">&amp;</span> <span class="va">kappa</span> <span class="op">&lt;=</span> <span class="fl">.59</span> <span class="op">~</span> <span class="st">"Weak"</span>,</span>
+<span>      <span class="va">kappa</span> <span class="op">&gt;</span> <span class="fl">.59</span> <span class="op">&amp;</span> <span class="va">kappa</span> <span class="op">&lt;=</span> <span class="fl">.79</span> <span class="op">~</span> <span class="st">"Moderate"</span>,</span>
+<span>      <span class="va">kappa</span> <span class="op">&gt;</span> <span class="fl">.79</span> <span class="op">&amp;</span> <span class="va">kappa</span> <span class="op">&lt;=</span> <span class="fl">.90</span> <span class="op">~</span> <span class="st">"Strong"</span>,</span>
+<span>      <span class="va">kappa</span> <span class="op">&gt;</span> <span class="fl">.9</span> <span class="op">~</span> <span class="st">"Almost perfect"</span>,</span>
+<span>      <span class="cn">TRUE</span> <span class="op">~</span> <span class="cn">NA_character_</span></span>
+<span>      </span>
+<span>    <span class="op">)</span>,</span>
 <span>    </span>
-<span>    </span>
-<span>    SE_kappa <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span> <span class="op">(</span><span class="va">p_agreement</span><span class="op">*</span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">p_agreement</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="va">n</span><span class="op">*</span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">pe</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>,</span>
+<span>    SE_kappa <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span> <span class="op">(</span><span class="va">p_agreement</span><span class="op">*</span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">p_agreement</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="va">n_refs</span><span class="op">*</span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">pe</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>,</span>
 <span>    CL_kappa <span class="op">=</span> <span class="va">kappa</span> <span class="op">-</span> <span class="fl">1.96</span> <span class="op">*</span><span class="va">SE_kappa</span>,</span>
 <span>    CU_kappa <span class="op">=</span> <span class="va">kappa</span> <span class="op">+</span> <span class="fl">1.96</span> <span class="op">*</span><span class="va">SE_kappa</span>,</span>
 <span>    </span>
-<span>    .by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">promptid</span>, <span class="va">model</span>, <span class="va">top_p</span><span class="op">)</span> </span>
+<span>    .by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">promptid</span>, <span class="va">model</span>, <span class="va">reps</span>, <span class="va">top_p</span><span class="op">)</span> </span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">rm1</span><span class="op">:</span><span class="va">pe</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
-<span>  </span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 20</span></span></span>
+<span><span class="co">#&gt;   promptid model               reps top_p n_screened n_missing n_refs n_false_ex</span></span>
+<span><span class="co">#&gt;      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>        1 gpt-3.5-turbo-0613     1     1        150         0    150         12</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>        1 gpt-3.5-turbo-0613    10     1        149         1    150          8</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>        1 gpt-4                  1     1        149         1    150          4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>        2 gpt-3.5-turbo-0613     1     1        150         0    150         15</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>        2 gpt-3.5-turbo-0613    10     1        149         1    150         12</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>        2 gpt-4                  1     1        147         3    150          4</span></span>
+<span><span class="co">#&gt;   n_false_in n_true_in n_true_ex accuracy p_agreement sensitivity specificity</span></span>
+<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>          8        38        92   0.133        0.867       0.76        0.92 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>          9        42        90   0.113        0.887       0.84        0.909</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>          9        46        90   0.086<span style="text-decoration: underline;">7</span>       0.913       0.92        0.909</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>          8        35        92   0.153        0.847       0.7         0.92 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>          7        38        92   0.127        0.873       0.76        0.929</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>          7        45        91   0.073<span style="text-decoration: underline;">3</span>       0.927       0.918       0.929</span></span>
+<span><span class="co">#&gt;   kappa level_of_agreement SE_kappa CL_kappa CU_kappa</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 0.694 Moderate             0.012<span style="text-decoration: underline;">1</span>    0.670    0.718</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 0.751 Moderate             0.011<span style="text-decoration: underline;">8</span>    0.728    0.774</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 0.813 Strong               0.010<span style="text-decoration: underline;">7</span>    0.792    0.834</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 0.642 Moderate             0.012<span style="text-decoration: underline;">6</span>    0.618    0.667</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 0.714 Moderate             0.012<span style="text-decoration: underline;">0</span>    0.690    0.737</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 0.845 Strong               0.010<span style="text-decoration: underline;">1</span>    0.825    0.865</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
@@ -576,6 +628,8 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <p>Gartlehner, G., Wagner, G., Lux, L. et al. (2019). Assessing the
 accuracy of machine-assisted abstract screening with DistillerAI: a user
 study. <em>Systematic Reviews</em>. 8, 1-10. <a href="https://doi.org/10.1186/s13643-019-1221-3" class="external-link uri">https://doi.org/10.1186/s13643-019-1221-3</a></p>
+<p>McHugh, M. L. (2012). Interrater reliability: The kappa statistic.
+<em>Biochemia Medica</em>, 22(3), 276–282.</p>
 <p>Waffenschmidt, S., Knelangen, M., Sieben, W., Bühn, S., &amp; Pieper,
 D. (2019). Single screening versus conventional double screening for
 study selection in systematic reviews: a methodological systematic
