@@ -13,8 +13,11 @@ prompts <-
     }
   )
 
+dat1 <- filges2015_dat[c(1:90, 181:225),]
+dat2 <- filges2015_dat[c(91:180, 226:270),]
+
 approximate_price_gpt(
-  data = filges2015_dat,
+  data = dat1,
   prompt = prompts,
   studyid = studyid,
   title = title,
@@ -27,9 +30,9 @@ approximate_price_gpt(
 plan(multisession)
 
 system.time(
-  result_object <-
+  res_object1 <-
     tabscreen_gpt(
-      data = filges2015_dat,
+      data = dat1[1:2,],
       prompt = prompts,
       studyid = studyid,
       title = title,
@@ -37,11 +40,10 @@ system.time(
       model = c("gpt-3.5-turbo-0613", "gpt-3.5-turbo-0613", "gpt-4"),
       reps = c(1, 10, 1),
       rpm = c(10000, 10000, 200),
-      max_tries = 12
-
+      max_tries = 11
     )
 )
 
 plan(sequential)
 
-usethis::use_data(result_object, internal = TRUE)
+usethis::use_data(result_object, overwrite = TRUE, internal = TRUE)

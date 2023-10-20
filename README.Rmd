@@ -4,7 +4,7 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-<img src="man/figures/AIscreenR_hex.png" align="right" width="180"/>
+<img src="man/figures/AIscreenR_hex.png" align="right" width="170" height = "170"/>
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -80,8 +80,8 @@ ris_dat_incl <- revtools::read_bibliography("path/FFT_include.ris") |>
     human_code = 1 # Indicating inclusion
   )
 
-FFT_dat <- bind_rows(ris_dat_excl, ris_dat_incl)
-head(FFT_dat, 10)
+filges2015_dat<- bind_rows(ris_dat_excl, ris_dat_incl)
+head(filges2015_dat, 10)
 #> # A tibble: 10 × 4
 #>    studyid title                                             abstract human_code
 #>    <chr>   <chr>                                             <chr>         <dbl>
@@ -97,7 +97,7 @@ head(FFT_dat, 10)
 #> 10 9431505 EEG spectrum as information carrier               "Sponta…          0
 ```
 ```{r, echo=FALSE}
-head(FFT_dat, 10)
+head(filges2015_dat, 10)
 ```
 
 Example of how to enter a prompt. Can also be done in word (see vignette).
@@ -135,7 +135,7 @@ Approximate price of screening
 ```{r}
 app_obj <- 
   approximate_price_gpt(
-    data = FFT_dat,
+    data = filges2015_dat,
     prompt = prompt,
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
@@ -159,7 +159,7 @@ Example of how to conduct simple screening, getting return 1 if a reference shou
 
 test_obj <- 
   tabscreen_gpt(
-    data = FFT_dat[c(140:150),],
+    data = filges2015_dat[c(140:150),],
     prompt = prompt, 
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
@@ -176,10 +176,10 @@ price_dat
 
 
 all_dat <- test_obj$answer_data_all
-all_dat |> select(decision_gpt:n)
+all_dat |> select(human_code, decision_binary)
 
 
 sum_dat <- test_obj$answer_data_sum
-sum_dat |> select(incl_p:n_mis_answers)
+sum_dat |> select(human_code, final_decision_gpt:final_decision_gpt_num)
 ```
 

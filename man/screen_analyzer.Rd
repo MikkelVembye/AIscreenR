@@ -2,7 +2,7 @@
 % Please edit documentation in R/screen_analyzer.R
 \name{screen_analyzer}
 \alias{screen_analyzer}
-\title{Analyzing screening performance between the human and AI screening.}
+\title{Analyze performance between the human and AI screening.}
 \usage{
 screen_analyzer(x, human_decision = human_code)
 }
@@ -13,7 +13,29 @@ screen_analyzer(x, human_decision = human_code)
 This variable must be numeric containing 1 (for included references) and 0 (for excluded references) only.}
 }
 \value{
-An \code{tibble} with performance measures
+A \code{tibble} with screening performance measures. The \code{tibble} includes the following variables:
+\tabular{lll}{
+\bold{promptid} \tab \code{integer} \tab indicating the prompt ID. \cr
+\bold{model} \tab \code{character}   \tab indicating the specific gpt-model used. \cr
+\bold{reps}  \tab \code{integer}  \tab indicating the number of times the same question was sent to ChatGPT. \cr
+\bold{top_p} \tab \code{numeric}  \tab indicating the applied top_p. \cr
+\bold{n_screened} \tab \code{integer} \tab indicating the number of screened references. \cr
+\bold{n_missing} \tab \code{numeric} \tab indicating the number of missing responses. \cr
+\bold{n_refs} \tab \code{integer} \tab indicating the number of references expected to be screened for the given condition. \cr
+\bold{human_in_gpt_ex} \tab \code{numeric}  \tab indicating the number of references included by humans and excluded by gpt. \cr
+\bold{human_ex_gpt_in} \tab \code{numeric}  \tab indicating the number of references excluded by humans and included by gpt. \cr
+\bold{human_in_gpt_in} \tab \code{numeric}  \tab indicating the number of references included by humans and included by gpt. \cr
+\bold{human_ex_gpt_ex} \tab \code{numeric}  \tab indicating the number of references excluded by humans and excluded by gpt. \cr
+\bold{accuracy} \tab \code{numeric}  \tab indicating the overall percent disagreement between human and gpt (Gartlehner et al., 2019). \cr
+\bold{p_agreement} \tab \code{numeric} \tab indicating the overall percent agreement between human and gpt. \cr
+\bold{sensitivity}  \tab \code{numeric}  \tab indicating percent agreement for included references (Gartlehner et al., 2019). \cr
+\bold{specificity}  \tab \code{numeric} \tab indicating percent agreement for excluded references (Gartlehner et al., 2019). \cr
+\bold{IRR}  \tab \code{numeric}  \tab indicating the interrater reliability as described in McHugh (2012). \cr
+\bold{SE_IRR} \tab \code{numeric} \tab indicating standard error for the interrater reliability. \cr
+\bold{CL_IRR} \tab \code{numeric} \tab indicating lower confidence interval for the interrater reliability. \cr
+\bold{CU_IRR} \tab \code{numeric} \tab indicating upper confidence interval for the interrater reliability. \cr
+\bold{level_of_agreement} \tab \code{character} \tab interpretation of the interrater reliability as suggested by McHugh (2012). \cr
+}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}\if{html}{\out{<br>}}
@@ -24,8 +46,15 @@ accuracy, specificity and sensitivity of the screening, as well as
 interrater reliability kappa statistics.
 }
 \examples{
-\dontrun{
 x <- AIscreenR:::result_object
-screen_analyzer(x)
+x |> screen_analyzer()
 }
+\references{
+Gartlehner, G., Wagner, G., Lux, L., Affengruber, L., Dobrescu, A., Kaminski-Hartenthaler, A., & Viswanathan, M. (2019).
+Assessing the accuracy of machine-assisted abstract screening with DistillerAI: a user study.
+\emph{Systematic Reviews}, 8(1), 277. \url{https://doi.org/10.1186/s13643-019-1221-3}
+
+McHugh, M. L. (2012).
+Interrater reliability: The kappa statistic.
+\emph{Biochemia Medica}, 22(3), 276-282. \url{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3900052/}
 }

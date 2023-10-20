@@ -28,14 +28,14 @@ exclude_ris <-
     human_code = 0 # Indicating exclusion
   )
 
-exclude_ris_100 <- sample_ref(exclude_ris, 100)
+exclude_ris_180 <- sample_ref(exclude_ris, 180)
 
 # Revert back to ris format
 tutorial_ris_dat_excl <-
   exclude_ris_raw |>
-  filter(eppi_id %in% exclude_ris_100$eppi_id) |>
+  filter(eppi_id %in% exclude_ris_180$eppi_id) |>
   mutate(
-    eppi_id = factor(eppi_id, levels = exclude_ris_100$eppi_id)
+    eppi_id = factor(eppi_id, levels = exclude_ris_180$eppi_id)
   ) |>
   arrange(eppi_id) |>
   mutate(
@@ -60,25 +60,25 @@ include_ris <-
     human_code = 1 # Indicating inclusion
   )
 
-include_ris_50 <- sample_ref(include_ris, 50)
-
-# Revert back to ris used for vignette
-tutorial_ris_dat_incl <-
-  include_ris_raw |>
-  filter(eppi_id %in% include_ris_50$eppi_id) |>
-  mutate(
-    eppi_id = factor(eppi_id, levels = include_ris_50$eppi_id)
-  ) |>
-  arrange(eppi_id) |>
-  mutate(
-    eppi_id = as.character(eppi_id)
-  )
+#include_ris_90 <- include_ris
+#
+## Revert back to ris used for vignette
+#tutorial_ris_dat_incl <-
+#  include_ris_raw |>
+#  filter(eppi_id %in% include_ris_90$eppi_id) |>
+#  mutate(
+#    eppi_id = factor(eppi_id, levels = include_ris_90$eppi_id)
+#  ) |>
+#  arrange(eppi_id) |>
+#  mutate(
+#    eppi_id = as.character(eppi_id)
+#  )
 
 # Creating example ris file data
-write_bibliography(tutorial_ris_dat_incl, "inst/extdata/incl_tutorial.ris", format = "ris")
+write_bibliography(include_ris_raw, "inst/extdata/incl_tutorial.ris", format = "ris")
 
 filges2015_dat <-
-  dplyr::bind_rows(exclude_ris_100, include_ris_50) |>
+  dplyr::bind_rows(exclude_ris_180, include_ris) |>
   dplyr::mutate(
     eppi_id = as.character(eppi_id),
     studyid = 1:n()

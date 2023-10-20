@@ -2,12 +2,12 @@
 #'
 #' Bibliometric toy data from a systematic review regarding
 #' Functional Family Therapy (FFT) for Young People in Treatment for
-#' Non-opioid Drug Use (Filges et al., 2015). The data includes 100 excluded and 50
-#' included randomly sampled references from the literature search of the
+#' Non-opioid Drug Use (Filges et al., 2015). The data includes all 90 included and 180 excluded
+#' randomly sampled references from the literature search of the
 #' systematic review.
 #'
 #'
-#' @format A tibble with 150 rows/studies and 6 variables/columns
+#' @format A tibble with 270 rows/studies and 6 variables/columns
 #'
 #' \tabular{lll}{
 #'  \bold{author} \tab \code{character} \tab indicating the authors of the reference \cr

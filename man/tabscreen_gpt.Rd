@@ -11,7 +11,6 @@ tabscreen_gpt(
   title,
   abstract,
   ...,
-  arrange_var = studyid,
   model = "gpt-3.5-turbo-0613",
   role = "user",
   functions = incl_function_simple,
@@ -48,9 +47,6 @@ automatically.}
 
 \item{...}{Further argument to pass to the request body.
 See \url{https://platform.openai.com/docs/api-reference/chat/create}.}
-
-\item{arrange_var}{Function indicating the variables determining the arrangement
-of the data. Default is \code{studyid}.}
 
 \item{model}{Character string with the name of the completion model. Can take
 multiple models, including gpt-4 models. Default = \code{"gpt-3.5-turbo-0613"}.
@@ -170,7 +166,7 @@ The \code{answer_data_sum} data contains the following mandatory variables:
 across multiple repeated responses on the same title and abstract. Only included if the detailed function calling
 function is used. See 'Examples' below for how to use this function. \cr
 \bold{reps}  \tab \code{integer}  \tab indicating the number of times the same question has been sent to ChatGPT. \cr
-\bold{n_mis_answers} \tab \code{integer} \tab indicating the number of missing responses \cr
+\bold{n_mis_answers} \tab \code{integer} \tab indicating the number of missing responses. \cr
 }
 \if{html}{\out{<br>}}
 The \code{answer_data_all} data contains the following mandatory variables:

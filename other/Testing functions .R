@@ -72,14 +72,13 @@ for non-opioid drug use?"
 
 
 app_obj <- approximate_price_gpt(
-  data = filges2015_dat[c(1:150),],
+  data = filges2015_dat[c(2),],
   prompt = c(prompt),
   studyid = studyid,
   title = title,
   abstract = abstract,
-  model = c("gpt-3.5-turbo-0613", "gpt-4"),
-  reps = c(11, 1),
-  top_p = c(1)
+  model = c("gpt-4"),
+  reps = c(100)
 )
 
 app_obj
@@ -99,16 +98,17 @@ test_obj <- tabscreen_gpt(
   studyid = studyid, # indicate the variable with the studyid in the data
   title = title, # indicate the variable with the titles in the data
   abstract = abstract,
-  model = c("gpt-3.5-turbo"),
-  reps = 2
+  model = c("gpt-3.5-turbo-0613"),
+  reps = 10,
   #reps = c(2, 1, 1),
   #top_p = c(0.2, 1),
-  #functions = AIscreenR:::incl_function,
-  #function_call_name = list(name = "inclusion_decision"),
+  functions = AIscreenR:::incl_function,
+  function_call_name = list(name = "inclusion_decision")
   #max_tries = 12
   #reps = 1 # Number of times the same question is asked to ChatGPT
   #max_tokens = 40
-); print(test_obj)
+) |>
+  screen_errors(); print(test_obj)
 
 price_in_dollar <- test_obj$price_dollar
 price_in_dollar
@@ -137,12 +137,27 @@ plan(sequential)
 
 x <- AIscreenR:::result_object
 
-class(x$answer_data_sum) <- c("chatgpt_tbl", "tbl_df", "tbl", "data.frame")
-class(x$answer_data_sum)
+library(future)
+plan(multisession)
+rescreening <- x |> screen_errors()
+plan(sequential)
 
-x |> screen_analyzer(human_decision = human_code) |> print(width = 200)
+x |> screen_analyzer() |> print(width = 200)
+
+#error_test_dat <- x$error_data |> dplyr::filter(stringr::str_detect(decision_gpt, "future_map failied") | is.na(n))
+#is_chatgpt_tbl(error_test_dat)
+
+#plan(multisession)
+test_err_dat <- screen_errors(x)
+#plan(sequential)
+test_err_dat
+
+error_test_dat2 <- x$error_data |> dplyr::filter(stringr::str_detect(decision_gpt, "rror") & !is.na(n))
+is_chatgpt_tbl(error_test_dat2)
 
 
+test_error_obj <- tabscreen_gpt(error_test_dat2, api_key = 1234)
+test_error_obj
 
 
 

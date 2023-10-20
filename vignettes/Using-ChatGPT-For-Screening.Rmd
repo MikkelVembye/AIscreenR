@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 
 # Add options
 options(pillar.sigfig = 4) # ensure tibble include 4 digits
-options(tibble.width = Inf)
+options(tibble.width = 220)
 options(dplyr.print_min = 10)
 options(scipen = 20)
 options(dplyr.summarise.inform = FALSE) # Avoids summarize info from tidyverse
@@ -37,7 +37,7 @@ An all-important step to ensure the quality of systematic reviews involves detec
 
 ## Getting started: Loading relevant ris file data for screening
 
-At this stage, we expect that you have a pile of ris-files, containing titles and abstract for the references you would like to screen. You can retrieve ris-files in several ways, either directly from research database, a Google Scholar search, or exported from your reference management tool, such as EndNote, Mendeley, and RefMan. Alternatively, you can export ris-file from systematic software tool such as [EPPI-reviewer](https://eppi.ioe.ac.uk/EPPIReviewer-Web/home), [Covidence](https://www.covidence.org/), [MetaReviewer](https://www.metareviewer.org/landing/index.html), and [`revtools`](https://revtools.net/), or whatever software you like. In the example given below, we load ris-files extracted from the EPPI-reviewer. A minor advantage of extracting ris-files from systematic software tools is that they add a unique study ID for each reference. This feature makes it easier to keep track of the screening. Yet, such ID can be generated in R as well, and is automatically generated in the `tabscreen_gpt()` function when unique IDs are not provided. When using ChatGPT as the second screener, we recommend that the human screening has been done before uploading to R. Thereby, it is possible to compare the screenings instantly after the computer screening has been done. In the below example we load ris-files separately for excluded and included ris-files, respectively, and add the `human_code` variable that tracks the human decision.   
+At this stage, we expect that you have a pile of ris-files, containing titles and abstract for the references you would like to screen. You can retrieve ris-files in several ways, either directly from research database, a Google Scholar search, or exported from your reference management tool, such as EndNote, Mendeley, and RefMan. Alternatively, you can export ris-file from systematic software tool such as [EPPI-reviewer](https://eppi.ioe.ac.uk/EPPIReviewer-Web/home), [Covidence](https://www.covidence.org/), [MetaReviewer](https://www.metareviewer.org/landing/index.html), [`revtools`](https://revtools.net/), or whatever software you use. In the example given below, we load ris-files extracted from the EPPI-reviewer. A minor advantage of extracting ris-files from systematic software tools is that they add a unique study ID for each reference. This feature makes it easier to keep track of the screening. Yet, such ID can be generated in R as well, and is automatically generated in the `tabscreen_gpt()` function when unique IDs are not provided. When using ChatGPT as the second screener, we recommend that the human screening has been done before uploading to R. Thereby, it is possible to compare the screenings instantly after the computer screening has been done. In the below example we load ris-files separately for excluded and included ris-files, respectively, and add the `human_code` variable that tracks the human decision.   
 
 ```{r not included setup, include = FALSE}
 # Loading packages 
@@ -83,10 +83,14 @@ filges2015_dat <-
   relocate(studyid, .after = eppi_id)
 
 
-filges2015_dat
+filges2015_dat 
 ```
 
 ```{r setup, eval = FALSE}
+# Installation
+# install.packages("devtools")
+# devtools::install_github("MikkelVembye/AIscreenR")
+
 # Loading packages 
 library(AIscreenR)
 library(revtools)
@@ -129,7 +133,7 @@ filges2015_dat <-
 
 
 filges2015_dat
-#> # A tibble: 150 × 6
+#> # A tibble: 270 × 6
 #>    author                              eppi_id studyid title abstract human_code
 #>    <chr>                               <chr>     <int> <chr> <chr>         <dbl>
 #>  1 Holloway R G and Gramling R and Ke… 9434957       1 Esti… "Progno…          0
@@ -327,10 +331,10 @@ result_object <-
     reps = reps,
     rpm = rpm
   )
-#> * The approximate price of the current (simple) screening will be around $15.6473.
+#> * The approximate price of the current (simple) screening will be around $28.0678.
 #> * Consider removing references that has no abstract since these can distort the accuracy of the screening
 #>  Progress: ──────────────────────────────────────────────────────────────────────────────────────────── 100%
-#>  * NOTE: Requests falied 6 times."
+#>  * NOTE: Requests failed 6 times."
 
 plan(sequential)
 
@@ -375,89 +379,10 @@ sum_dat_gpt3 <-
   result_object$answer_data_sum |> 
   filter(stringr::str_detect(model, "3"))
   
-print(sum_dat_gpt3, width = 220)
-#> # A tibble: 150 × 16
-#>    author                                                                       
-#>    <chr>                                                                        
-#>  1 Holloway R G and Gramling R and Kelly A G                                    
-#>  2 Morawska Alina and Stallman Helen M and Sanders Matthew R and Ralph Alan     
-#>  3 Michel C M and Pascual-Marqui R D and Strik W K and Koenig T and Lehmann D   
-#>  4 Paul Howard A                                                                
-#>  5 Feinberg I and De Bie E and Davis N M and Campbell I G                       
-#>  6 Hamburg Sam R                                                                
-#>  7 Park H Y and Lee B J and Kim J H and Bae J N and Hahm B J                    
-#>  8 Petrek J                                                                     
-#>  9 Schwartzman Meredith P and Wahler Robert G                                   
-#> 10 Faber J and Srutova L and Pilarova M and Vuckova Z and Bohmova D and Dobosov…
-#>    eppi_id human_code studyid title      abstract promptid prompt model question
-#>      <dbl>      <dbl>   <int> <chr>      <chr>       <int> <chr>  <chr> <chr>   
-#>  1 9434957          0       1 Estimatin… "Progno…        1 "Eval… gpt-… "Evalua…
-#>  2 9433838          0       2 Self-Dire… "Behavi…        1 "Eval… gpt-… "Evalua…
-#>  3 9431171          0       3 Frequency… "The to…        1 "Eval… gpt-… "Evalua…
-#>  4 9433968          0       4 A Review … "The ar…        1 "Eval… gpt-… "Evalua…
-#>  5 9434460          0       5 Topograph… "STUDY …        1 "Eval… gpt-… "Evalua…
-#>  6 9433554          0       6 BOOK REVI… "The ar…        1 "Eval… gpt-… "Evalua…
-#>  7 9435130          0       7 Rapid imp… "Backgr…        1 "Eval… gpt-… "Evalua…
-#>  8 9432040          0       8 Pictorial… "AIMS: …        1 "Eval… gpt-… "Evalua…
-#>  9 9434093          0       9 Enhancing… "New an…        1 "Eval… gpt-… "Evalua…
-#> 10 9431505          0      10 EEG spect… "Sponta…        1 "Eval… gpt-… "Evalua…
-#>    top_p incl_p final_decision_gpt final_decision_gpt_num  reps n_mis_answers
-#>    <dbl>  <dbl> <chr>                               <dbl> <int>         <int>
-#>  1     1    0   Exclude                                 0    10             0
-#>  2     1    0.8 Include                                 1    10             0
-#>  3     1    0   Exclude                                 0    10             0
-#>  4     1    0   Exclude                                 0    10             0
-#>  5     1    0.2 Exclude                                 0    10             0
-#>  6     1    0   Exclude                                 0    10             0
-#>  7     1    0   Exclude                                 0    10             0
-#>  8     1    0   Exclude                                 0    10             0
-#>  9     1    0   Exclude                                 0    10             0
-#> 10     1    0   Exclude                                 0    10             0
-#> # ℹ 140 more rows
-
 # gpt-4 results
 sum_dat_gpt4 <- 
   result_object$answer_data_sum |> 
   filter(stringr::str_detect(model, "4") & !is.na(final_decision_gpt))
-
-print(sum_dat_gpt4, width = 220)
-#> # A tibble: 138 × 16
-#>    author                                                                       
-#>    <chr>                                                                        
-#>  1 Holloway R G and Gramling R and Kelly A G                                    
-#>  2 Morawska Alina and Stallman Helen M and Sanders Matthew R and Ralph Alan     
-#>  3 Michel C M and Pascual-Marqui R D and Strik W K and Koenig T and Lehmann D   
-#>  4 Paul Howard A                                                                
-#>  5 Feinberg I and De Bie E and Davis N M and Campbell I G                       
-#>  6 Hamburg Sam R                                                                
-#>  7 Park H Y and Lee B J and Kim J H and Bae J N and Hahm B J                    
-#>  8 Petrek J                                                                     
-#>  9 Faber J and Srutova L and Pilarova M and Vuckova Z and Bohmova D and Dobosov…
-#> 10 McCauley E and Schloredt K and Gudmundsen G and Martell C and Dimidjian S    
-#>    eppi_id human_code studyid title      abstract promptid prompt model question
-#>      <dbl>      <dbl>   <int> <chr>      <chr>       <int> <chr>  <chr> <chr>   
-#>  1 9434957          0       1 Estimatin… "Progno…        1 "Eval… gpt-4 "Evalua…
-#>  2 9433838          0       2 Self-Dire… "Behavi…        1 "Eval… gpt-4 "Evalua…
-#>  3 9431171          0       3 Frequency… "The to…        1 "Eval… gpt-4 "Evalua…
-#>  4 9433968          0       4 A Review … "The ar…        1 "Eval… gpt-4 "Evalua…
-#>  5 9434460          0       5 Topograph… "STUDY …        1 "Eval… gpt-4 "Evalua…
-#>  6 9433554          0       6 BOOK REVI… "The ar…        1 "Eval… gpt-4 "Evalua…
-#>  7 9435130          0       7 Rapid imp… "Backgr…        1 "Eval… gpt-4 "Evalua…
-#>  8 9432040          0       8 Pictorial… "AIMS: …        1 "Eval… gpt-4 "Evalua…
-#>  9 9431505          0      10 EEG spect… "Sponta…        1 "Eval… gpt-4 "Evalua…
-#> 10 9435281          0      11 Expanding… "Depres…        1 "Eval… gpt-4 "Evalua…
-#>    top_p incl_p final_decision_gpt final_decision_gpt_num  reps n_mis_answers
-#>    <dbl>  <dbl> <chr>                               <dbl> <int>         <int>
-#>  1     1      0 Exclude                                 0     1             0
-#>  2     1      0 Exclude                                 0     1             0
-#>  3     1      0 Exclude                                 0     1             0
-#>  4     1      0 Exclude                                 0     1             0
-#>  5     1      0 Exclude                                 0     1             0
-#>  6     1      0 Exclude                                 0     1             0
-#>  7     1      0 Exclude                                 0     1             0
-#>  8     1      0 Exclude                                 0     1             0
-#>  9     1      0 Exclude                                 0     1             0
-#> 10     1      0 Exclude                                 0     1             0
 
 ```
 
@@ -483,7 +408,7 @@ screen_perform
 
 ```
 
-## Getting detailed descript [WILL BECOME A SEPARATE VIGNETTE]
+## Getting detailed descriptions [WILL BECOME A SEPARATE VIGNETTE]
 
 ```{r}
 # Show example with gpt-4

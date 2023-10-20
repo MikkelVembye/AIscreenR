@@ -48,3 +48,44 @@
 #  }
 #
 #  n_error_refs <- answer_dat |> dplyr::filter(is.na(decision_binary)) |> nrow()
+#  if (all(!is.na(unique(data$n)))){
+#
+#    org_n <- data |> pull(n)
+#
+#    params <- data |>
+#      mutate(iterations = 1) |>
+#      dplyr::select(question, model_gpt = model, topp, iterations, req_per_min)
+#
+#    question_dat <-
+#      data |>
+#      dplyr::select(1:topp)
+#
+#    answer_dat <-
+#      question_dat |>
+#      dplyr::mutate(
+#        res = furrr::future_pmap(
+#          .l = params,
+#          .f = ask_gpt,
+#          ...,
+#          .options = furrr::furrr_options(seed = furrr_seed),
+#          .progress = progress
+#        )
+#      ) |>
+#      tidyr::unnest(res) |>
+#      mutate(n = org_n) |>
+#      tibble::new_tibble(class = "chatgpt_tbl")
+#
+#  }
+#
+#  n_error <- answer_dat |> dplyr::filter(is.na(decision_binary)) |> nrow()
+#
+#  if (messages){
+#
+#    if (n_error == 1) message(paste("* NOTE: Re-screening requests failed for 1 title and abstract."))
+#    if (n_error > 1) message(paste("* NOTE: Re-screening requests failed", n_error, "times."))
+#
+#  }
+#
+#  if (n_error > 0) error_refs <- answer_dat |> dplyr::filter(is.na(decision_binary))
+#
+#  }

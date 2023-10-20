@@ -11,7 +11,8 @@ utils::globalVariables(
     "decision_gpt", "decision_binary", "detailed_description",
     "final_decision_gpt_num", "n_words_answer", "longest_answer", "final_decision_gpt",
     "req_per_min", "topp", "iterations", "input_price", "output_price", "max_reps",
-    "promptid", "SE_kappa", "accuracy", "cm1", "cm2", "human_code", "n_false_ex", "n_false_in", "n_ref",
-    "n_refs", "n_screened", "n_true_ex", "n_true_in", "p_agreement", "pe", "reps", "rm1", "rm2",
-    "studyid", "top_p")
+    "promptid", "SE_kappa", "accuracy", "cm1", "cm2", "human_code", "human_in_gpt_ex", "human_ex_gpt_in", "n_ref",
+    "n_refs", "n_screened", "human_ex_gpt_ex", "human_in_gpt_in", "p_agreement", "pe", "reps", "rm1", "rm2",
+    "studyid", "top_p", "n_mis_answers", "screen_errros", "max_tries", "max_seconds", "IRR", "SE_IRR", "CL_IRR", "CU_IRR",
+    "level_of_agreement")
 )
