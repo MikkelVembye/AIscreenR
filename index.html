@@ -66,9 +66,9 @@
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9"><p><img src="reference/figures/AIscreenR_hex.png" align="right" height="150/"></p>
-<div class="section level1">
-<div class="page-header"><h1 id="aiscreenr-ai-screening-tools-in-r-for-systematic-reviewing">AIscreenR: AI screening tools in R for systematic reviewing<a class="anchor" aria-label="anchor" href="#aiscreenr-ai-screening-tools-in-r-for-systematic-reviewing"></a>
+  <main id="main" class="col-md-9"><div class="section level1">
+<div class="page-header"><h1 id="aiscreenr-ai-screening-tools-in-r-for-systematic-reviewing-">AIscreenR: AI screening tools in R for systematic reviewing <a href="https://mikkelvembye.github.io/AIscreenR/"><img src="reference/figures/AIscreenR_hex.png" align="right" width="180"></a>
+<a class="anchor" aria-label="anchor" href="#aiscreenr-ai-screening-tools-in-r-for-systematic-reviewing-"></a>
 </h1></div>
 <!-- badges: start -->
 
@@ -221,23 +221,63 @@
 <span>    model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span><span class="op">)</span>,</span>
 <span>    reps <span class="op">=</span> <span class="fl">2</span> <span class="co"># Number of times the same question is asked to ChatGPT</span></span>
 <span>  <span class="op">)</span> </span>
+<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $0.036.</span></span>
 <span></span>
 <span><span class="va">test_obj</span></span>
+<span><span class="co">#&gt; Find data with all answers by executing</span></span>
+<span><span class="co">#&gt;  x$answer_data_all</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Find data with the result aggregated across multiple answers by executing</span></span>
+<span><span class="co">#&gt;  x$answer_data_sum</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Find total price for the screening by executing</span></span>
+<span><span class="co">#&gt;  x$price_dollor</span></span>
 <span></span>
 <span><span class="co"># Data sets in object</span></span>
 <span><span class="va">price_dat</span> <span class="op">&lt;-</span> <span class="va">test_obj</span><span class="op">$</span><span class="va">price_dat</span></span>
 <span><span class="va">price_dat</span></span>
+<span><span class="co">#&gt; # A tibble: 1 × 5</span></span>
+<span><span class="co">#&gt;   model     iterations input_price_dollar output_price_dollar price_total_dollar</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;          &lt;dbl&gt;              &lt;dbl&gt;               &lt;dbl&gt;              &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 gpt-3.5-…          2             0.0323            0.000476             0.0328</span></span>
 <span></span>
 <span></span>
 <span><span class="va">all_dat</span> <span class="op">&lt;-</span> <span class="va">test_obj</span><span class="op">$</span><span class="va">answer_data_all</span></span>
 <span><span class="va">all_dat</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">human_code</span>, <span class="va">decision_binary</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 22 × 2</span></span>
+<span><span class="co">#&gt;    human_code decision_binary</span></span>
+<span><span class="co">#&gt;         &lt;dbl&gt;           &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1          0               0</span></span>
+<span><span class="co">#&gt;  2          0               0</span></span>
+<span><span class="co">#&gt;  3          0               0</span></span>
+<span><span class="co">#&gt;  4          0               0</span></span>
+<span><span class="co">#&gt;  5          0               0</span></span>
+<span><span class="co">#&gt;  6          0               0</span></span>
+<span><span class="co">#&gt;  7          0               0</span></span>
+<span><span class="co">#&gt;  8          0               0</span></span>
+<span><span class="co">#&gt;  9          0               0</span></span>
+<span><span class="co">#&gt; 10          0               0</span></span>
+<span><span class="co">#&gt; # ℹ 12 more rows</span></span>
 <span></span>
 <span></span>
 <span><span class="va">sum_dat</span> <span class="op">&lt;-</span> <span class="va">test_obj</span><span class="op">$</span><span class="va">answer_data_sum</span></span>
-<span><span class="va">sum_dat</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">human_code</span>, <span class="va">final_decision_gpt</span><span class="op">:</span><span class="va">final_decision_gpt_num</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">sum_dat</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">human_code</span>, <span class="va">final_decision_gpt</span><span class="op">:</span><span class="va">final_decision_gpt_num</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 11 × 3</span></span>
+<span><span class="co">#&gt;    human_code final_decision_gpt final_decision_gpt_num</span></span>
+<span><span class="co">#&gt;         &lt;dbl&gt; &lt;chr&gt;                               &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1          0 Exclude                                 0</span></span>
+<span><span class="co">#&gt;  2          0 Exclude                                 0</span></span>
+<span><span class="co">#&gt;  3          0 Exclude                                 0</span></span>
+<span><span class="co">#&gt;  4          0 Exclude                                 0</span></span>
+<span><span class="co">#&gt;  5          0 Exclude                                 0</span></span>
+<span><span class="co">#&gt;  6          0 Exclude                                 0</span></span>
+<span><span class="co">#&gt;  7          0 Exclude                                 0</span></span>
+<span><span class="co">#&gt;  8          0 Exclude                                 0</span></span>
+<span><span class="co">#&gt;  9          0 Exclude                                 0</span></span>
+<span><span class="co">#&gt; 10          0 Exclude                                 0</span></span>
+<span><span class="co">#&gt; 11          0 Exclude                                 0</span></span></code></pre></div>
 </div>
 </div>
-
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
