@@ -46,4 +46,7 @@ system.time(
 
 plan(sequential)
 
-usethis::use_data(result_object, overwrite = TRUE, internal = TRUE)
+result_object <- res_object1
+result_object_no_err <- result_object |> screen_errors()
+
+usethis::use_data(result_object, result_object_no_err, overwrite = TRUE, internal = TRUE)

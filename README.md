@@ -1,9 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-<img src="man/figures/AIscreenR_hex.png" align="right" height = 150/>
-
-# AIscreenR: AI screening tools in R for systematic reviewing
+# AIscreenR: AI screening tools in R for systematic reviewing <a href="https://mikkelvembye.github.io/AIscreenR/"><img src="man/figures/AIscreenR_hex.png" align="right" width="180" /></a>
 
 <!-- badges: start -->
 
@@ -185,18 +183,59 @@ test_obj <-
     model = c("gpt-3.5-turbo-0613"),
     reps = 2 # Number of times the same question is asked to ChatGPT
   ) 
+#> * The approximate price of the current (simple) screening will be around $0.036.
 
 test_obj
+#> Find data with all answers by executing
+#>  x$answer_data_all
+#> 
+#> Find data with the result aggregated across multiple answers by executing
+#>  x$answer_data_sum
+#> 
+#> Find total price for the screening by executing
+#>  x$price_dollor
 
 # Data sets in object
 price_dat <- test_obj$price_dat
 price_dat
+#> # A tibble: 1 × 5
+#>   model     iterations input_price_dollar output_price_dollar price_total_dollar
+#>   <chr>          <dbl>              <dbl>               <dbl>              <dbl>
+#> 1 gpt-3.5-…          2             0.0323            0.000476             0.0328
 
 
 all_dat <- test_obj$answer_data_all
 all_dat |> select(human_code, decision_binary)
+#> # A tibble: 22 × 2
+#>    human_code decision_binary
+#>         <dbl>           <dbl>
+#>  1          0               0
+#>  2          0               0
+#>  3          0               0
+#>  4          0               0
+#>  5          0               0
+#>  6          0               0
+#>  7          0               0
+#>  8          0               0
+#>  9          0               0
+#> 10          0               0
+#> # ℹ 12 more rows
 
 
 sum_dat <- test_obj$answer_data_sum
 sum_dat |> select(human_code, final_decision_gpt:final_decision_gpt_num)
+#> # A tibble: 11 × 3
+#>    human_code final_decision_gpt final_decision_gpt_num
+#>         <dbl> <chr>                               <dbl>
+#>  1          0 Exclude                                 0
+#>  2          0 Exclude                                 0
+#>  3          0 Exclude                                 0
+#>  4          0 Exclude                                 0
+#>  5          0 Exclude                                 0
+#>  6          0 Exclude                                 0
+#>  7          0 Exclude                                 0
+#>  8          0 Exclude                                 0
+#>  9          0 Exclude                                 0
+#> 10          0 Exclude                                 0
+#> 11          0 Exclude                                 0
 ```

@@ -47,7 +47,7 @@ interrater reliability kappa statistics.
 }
 \examples{
 x <- AIscreenR:::result_object
-x |> screen_analyzer()
+x |> screen_analyzer() |> print(width=220)
 }
 \references{
 Gartlehner, G., Wagner, G., Lux, L., Affengruber, L., Dobrescu, A., Kaminski-Hartenthaler, A., & Viswanathan, M. (2019).

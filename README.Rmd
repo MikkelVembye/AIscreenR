@@ -4,8 +4,6 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-<img src="man/figures/AIscreenR_hex.png" align="right" height = 150/>
-
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -16,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# AIscreenR: AI screening tools in R for systematic reviewing
+# AIscreenR: AI screening tools in R for systematic reviewing <a href="https://mikkelvembye.github.io/AIscreenR/"><img src="man/figures/AIscreenR_hex.png" align="right" width="180" /></a>
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml)
@@ -154,7 +152,7 @@ app_obj$price_data
 Example of how to conduct simple screening, getting return 1 if a reference should be included,
 0 if excluded, and 1.1 if a firm decision cannot be reached. 
 
-```{r, warning=FALSE, eval = FALSE}
+```{r, warning=FALSE, eval = TRUE}
 # Subsetting the number of references to speed up the tutorial screening
 
 test_obj <- 

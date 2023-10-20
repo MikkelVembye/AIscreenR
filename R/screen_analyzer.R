@@ -51,7 +51,7 @@
 #'
 #' @examples
 #' x <- AIscreenR:::result_object
-#' x |> screen_analyzer()
+#' x |> screen_analyzer() |> print(width=220)
 
 
 screen_analyzer <- function(x, human_decision = human_code){
