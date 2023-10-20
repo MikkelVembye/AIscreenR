@@ -20,7 +20,7 @@ on the newly developed function calling to better steer the output of the respon
     
     <a class="navbar-brand me-2" href="../index.html">AIscreenR</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Unreleased version">0.0.0.9010</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Unreleased version">0.0.0.9999</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,6 +36,9 @@ on the newly developed function calling to better steer the output of the respon
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/Using-ChatGPT-For-Screening.html">Using ChatGPT for Title and Abstract Screening in Systematic Reviews</a>
   </div>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
@@ -75,7 +78,6 @@ on the newly developed function calling to better steer the output of the respon
 <span>  <span class="va">title</span>,</span>
 <span>  <span class="va">abstract</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>  arrange_var <span class="op">=</span> <span class="va">studyid</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"gpt-3.5-turbo-0613"</span>,</span>
 <span>  role <span class="op">=</span> <span class="st">"user"</span>,</span>
 <span>  functions <span class="op">=</span> <span class="va">incl_function_simple</span>,</span>
@@ -125,11 +127,6 @@ automatically.</p></dd>
 <dt>...</dt>
 <dd><p>Further argument to pass to the request body.
 See <a href="https://platform.openai.com/docs/api-reference/chat/create" class="external-link">https://platform.openai.com/docs/api-reference/chat/create</a>.</p></dd>
-
-
-<dt>arrange_var</dt>
-<dd><p>Function indicating the variables determining the arrangement
-of the data. Default is <code>studyid</code>.</p></dd>
 
 
 <dt>model</dt>
@@ -277,7 +274,7 @@ for each title and abstract across multiple repeated questions.</p></dd>
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
     <p>The <code>answer_data_sum</code> data contains the following mandatory variables:</p><table class="table table"><tr><td><b>studyid</b></td><td><code>integer</code></td><td>indicating the study ID of the reference.</td></tr><tr><td><b>title</b></td><td><code>character</code></td><td>indicating the title of the reference.</td></tr><tr><td><b>abstract</b></td><td><code>character</code></td><td>indicating the abstract of the reference.</td></tr><tr><td><b>promptid</b></td><td><code>integer</code></td><td>indicating the prompt ID.</td></tr><tr><td><b>prompt</b></td><td><code>character</code></td><td>indicating the prompt.</td></tr><tr><td><b>model</b></td><td><code>character</code></td><td>indicating the specific gpt-model used.</td></tr><tr><td><b>question</b></td><td><code>character</code></td><td>indicating the final question sent to ChatGPT.</td></tr><tr><td><b>top_p</b></td><td><code>numeric</code></td><td>indicating the applied top_p.</td></tr><tr><td><b>incl_p</b></td><td><code>numeric</code></td><td>indicating the probability of inclusion calculated across multiple repeated responses on the same title and abstract.</td></tr><tr><td><b>final_decision_gpt</b></td><td><code>character</code></td><td>indicating the final decision reached by gpt - either 'Include', 'Exclude', or 'Check'.</td></tr><tr><td><b>final_decision_gpt_num</b></td><td><code>integer</code></td><td>indicating the final numeric decision reached by gpt - either 1 or 0.</td></tr><tr><td><b>longest_answer</b></td><td><code>character</code></td><td>indicating the longest gpt response obtained
 across multiple repeated responses on the same title and abstract. Only included if the detailed function calling
-function is used. See 'Examples' below for how to use this function.</td></tr><tr><td><b>reps</b></td><td><code>integer</code></td><td>indicating the number of times the same question has been sent to ChatGPT.</td></tr><tr><td><b>n_mis_answers</b></td><td><code>integer</code></td><td>indicating the number of missing responses</td></tr></table><p><br>
+function is used. See 'Examples' below for how to use this function.</td></tr><tr><td><b>reps</b></td><td><code>integer</code></td><td>indicating the number of times the same question has been sent to ChatGPT.</td></tr><tr><td><b>n_mis_answers</b></td><td><code>integer</code></td><td>indicating the number of missing responses.</td></tr></table><p><br>
 The <code>answer_data_all</code> data contains the following mandatory variables:</p><table class="table table"><tr><td><b>studyid</b></td><td><code>integer</code></td><td>indicating the study ID of the reference.</td></tr><tr><td><b>title</b></td><td><code>character</code></td><td>indicating the title of the reference.</td></tr><tr><td><b>abstract</b></td><td><code>character</code></td><td>indicating the abstract of the reference.</td></tr><tr><td><b>promptid</b></td><td><code>integer</code></td><td>indicating the prompt ID.</td></tr><tr><td><b>prompt</b></td><td><code>character</code></td><td>indicating the prompt.</td></tr><tr><td><b>model</b></td><td><code>character</code></td><td>indicating the specific gpt-model used.</td></tr><tr><td><b>iterations</b></td><td><code>numeric</code></td><td>indicating the number of times the same question has been sent to ChatGPT.</td></tr><tr><td><b>question</b></td><td><code>character</code></td><td>indicating the final question sent to ChatGPT.</td></tr><tr><td><b>top_p</b></td><td><code>numeric</code></td><td>indicating the applied top_p.</td></tr><tr><td><b>decision_gpt</b></td><td><code>character</code></td><td>indicating the raw gpt decision - either <code>"1", "0", "1.1"</code> for inclusion, exclusion, or uncertainty, respectively.</td></tr><tr><td><b>detailed_description</b></td><td><code>character</code></td><td>indicating detailed description of the given decision made by ChatGPT.
 Only included if the detailed function calling function is used. See 'Examples' below for how to use this function.</td></tr><tr><td><b>decision_binary</b></td><td><code>integer</code></td><td>indicating the binary gpt decision,
 that is 1 for inclusion and 0 for exclusion. 1.1 decision are coded equal to 1 in this case.</td></tr><tr><td><b>prompt_tokens</b></td><td><code>integer</code></td><td>indicating the number of prompt tokens sent to the server for the given request.</td></tr><tr><td><b>completion_tokens</b></td><td><code>integer</code></td><td>indicating the number of completion tokens sent to the server for the given request.</td></tr><tr><td><b>run_time</b></td><td><code>numeric</code></td><td>indicating the time it took to obtain a response from the server for the given request.</td></tr><tr><td><b>n</b></td><td><code>integer</code></td><td>indicating request ID.</td></tr></table><p><br>

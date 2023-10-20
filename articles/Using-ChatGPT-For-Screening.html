@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">AIscreenR</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Unreleased version">0.0.0.9010</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Unreleased version">0.0.0.9999</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,6 +43,9 @@
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/Using-ChatGPT-For-Screening.html">Using ChatGPT for Title and Abstract Screening in Systematic Reviews</a>
   </div>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
@@ -146,13 +149,13 @@ reference management tool, such as EndNote, Mendeley, and RefMan.
 Alternatively, you can export ris-file from systematic software tool
 such as <a href="https://eppi.ioe.ac.uk/EPPIReviewer-Web/home" class="external-link">EPPI-reviewer</a>,
 <a href="https://www.covidence.org/" class="external-link">Covidence</a>, <a href="https://www.metareviewer.org/landing/index.html" class="external-link">MetaReviewer</a>,
-and <a href="https://revtools.net/" class="external-link"><code>revtools</code></a>, or
-whatever software you like. In the example given below, we load
-ris-files extracted from the EPPI-reviewer. A minor advantage of
-extracting ris-files from systematic software tools is that they add a
-unique study ID for each reference. This feature makes it easier to keep
-track of the screening. Yet, such ID can be generated in R as well, and
-is automatically generated in the <code><a href="../reference/tabscreen_gpt.html">tabscreen_gpt()</a></code> function
+<a href="https://revtools.net/" class="external-link"><code>revtools</code></a>, or whatever
+software you use. In the example given below, we load ris-files
+extracted from the EPPI-reviewer. A minor advantage of extracting
+ris-files from systematic software tools is that they add a unique study
+ID for each reference. This feature makes it easier to keep track of the
+screening. Yet, such ID can be generated in R as well, and is
+automatically generated in the <code><a href="../reference/tabscreen_gpt.html">tabscreen_gpt()</a></code> function
 when unique IDs are not provided. When using ChatGPT as the second
 screener, we recommend that the human screening has been done before
 uploading to R. Thereby, it is possible to compare the screenings
@@ -161,7 +164,11 @@ example we load ris-files separately for excluded and included
 ris-files, respectively, and add the <code>human_code</code> variable
 that tracks the human decision.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Loading packages </span></span>
+<code class="sourceCode R"><span><span class="co"># Installation</span></span>
+<span><span class="co"># install.packages("devtools")</span></span>
+<span><span class="co"># devtools::install_github("MikkelVembye/AIscreenR")</span></span>
+<span></span>
+<span><span class="co"># Loading packages </span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mikkelvembye.github.io/AIscreenR/">AIscreenR</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://revtools.net" class="external-link">revtools</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span></span>
@@ -203,7 +210,7 @@ that tracks the human decision.</p>
 <span></span>
 <span></span>
 <span><span class="va">filges2015_dat</span></span>
-<span><span class="co">#&gt; # A tibble: 150 × 6</span></span>
+<span><span class="co">#&gt; # A tibble: 270 × 6</span></span>
 <span><span class="co">#&gt;    author                              eppi_id studyid title abstract human_code</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;                               &lt;chr&gt;     &lt;int&gt; &lt;chr&gt; &lt;chr&gt;         &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt;  1 Holloway R G and Gramling R and Ke… 9434957       1 Esti… "Progno…          0</span></span>
@@ -369,22 +376,22 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="va">app_obj</span></span>
-<span><span class="co">#&gt; The approximate price of the (simple) screening will be around $15.5704.</span></span>
+<span><span class="co">#&gt; The approximate price of the (simple) screening will be around $28.0678.</span></span>
 <span></span>
 <span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_dollar</span></span>
-<span><span class="co">#&gt; [1] 15.5704</span></span>
+<span><span class="co">#&gt; [1] 28.0678</span></span>
 <span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_data</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 5</span></span></span>
 <span><span class="co">#&gt;   model              iterations input_price_dollar output_price_dollar</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> gpt-3.5-turbo-0613          1              0.493              0.006<span style="text-decoration: underline;">6</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> gpt-3.5-turbo-0613         10              4.936              0.066 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> gpt-4                       1              9.871              0.198 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> gpt-3.5-turbo-0613          1             0.889<span style="text-decoration: underline;">2</span>             0.011<span style="text-decoration: underline;">88</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> gpt-3.5-turbo-0613         10             8.898              0.118<span style="text-decoration: underline;">8</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> gpt-4                       1            17.79               0.356<span style="text-decoration: underline;">4</span> </span></span>
 <span><span class="co">#&gt;   total_price_dollor</span></span>
 <span><span class="co">#&gt;                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>             0.499<span style="text-decoration: underline;">6</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>             5.002 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>            10.07</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>             0.901<span style="text-decoration: underline;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>             9.017 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>            18.15</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="screening-titles-and-abstracts">Screening titles and abstracts<a class="anchor" aria-label="anchor" href="#screening-titles-and-abstracts"></a>
@@ -407,10 +414,10 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span>    reps <span class="op">=</span> <span class="va">reps</span>,</span>
 <span>    rpm <span class="op">=</span> <span class="va">rpm</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $15.6473.</span></span>
+<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $28.0678.</span></span>
 <span><span class="co">#&gt; * Consider removing references that has no abstract since these can distort the accuracy of the screening</span></span>
 <span><span class="co">#&gt;  Progress: ──────────────────────────────────────────────────────────────────────────────────────────── 100%</span></span>
-<span><span class="co">#&gt;  * NOTE: Requests falied 6 times."</span></span>
+<span><span class="co">#&gt;  * NOTE: Requests failed 6 times."</span></span>
 <span></span>
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">sequential</span><span class="op">)</span></span>
 <span></span>
@@ -454,13 +461,13 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span>gpt <span class="op">=</span> <span class="va">sum_dat_gpt3</span><span class="op">$</span><span class="va">final_decision_gpt_num</span>, human <span class="op">=</span> <span class="va">sum_dat_gpt3</span><span class="op">$</span><span class="va">human_code</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    human</span></span>
 <span><span class="co">#&gt; gpt  0  1</span></span>
-<span><span class="co">#&gt;   0 90  8</span></span>
-<span><span class="co">#&gt;   1  9 42</span></span>
+<span><span class="co">#&gt;   0 82  4</span></span>
+<span><span class="co">#&gt;   1  8 41</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span>gpt <span class="op">=</span> <span class="va">sum_dat_gpt4</span><span class="op">$</span><span class="va">final_decision_gpt_num</span>, human <span class="op">=</span> <span class="va">sum_dat_gpt4</span><span class="op">$</span><span class="va">human_code</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    human</span></span>
 <span><span class="co">#&gt; gpt  0  1</span></span>
-<span><span class="co">#&gt;   0 90  4</span></span>
-<span><span class="co">#&gt;   1  9 46</span></span></code></pre></div>
+<span><span class="co">#&gt;   0 83  0</span></span>
+<span><span class="co">#&gt;   1  6 45</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="false-included-and-excluded-by-gpt">False included and excluded (by gpt)<a class="anchor" aria-label="anchor" href="#false-included-and-excluded-by-gpt"></a>
@@ -473,34 +480,34 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span></span>
 <span><span class="va">screen_perform</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 20</span></span></span>
-<span><span class="co">#&gt;   promptid model               reps top_p n_screened n_missing n_refs n_false_ex</span></span>
-<span><span class="co">#&gt;      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>        1 gpt-3.5-turbo-0613     1     1        150         0    150         12</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>        1 gpt-3.5-turbo-0613    10     1        149         1    150          8</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>        1 gpt-4                  1     1        149         1    150          4</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>        2 gpt-3.5-turbo-0613     1     1        150         0    150         15</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>        2 gpt-3.5-turbo-0613    10     1        149         1    150         12</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>        2 gpt-4                  1     1        147         3    150          4</span></span>
-<span><span class="co">#&gt;   n_false_in n_true_in n_true_ex accuracy p_agreement sensitivity specificity</span></span>
-<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>          8        38        92  0.133<span style="text-decoration: underline;">3</span>       0.866<span style="text-decoration: underline;">7</span>      0.76        0.92  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>          9        42        90  0.113<span style="text-decoration: underline;">3</span>       0.886<span style="text-decoration: underline;">7</span>      0.84        0.909<span style="text-decoration: underline;">1</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>          9        46        90  0.086<span style="text-decoration: underline;">67</span>      0.913<span style="text-decoration: underline;">3</span>      0.92        0.909<span style="text-decoration: underline;">1</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>          8        35        92  0.153<span style="text-decoration: underline;">3</span>       0.846<span style="text-decoration: underline;">7</span>      0.7         0.92  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>          7        38        92  0.126<span style="text-decoration: underline;">7</span>       0.873<span style="text-decoration: underline;">3</span>      0.76        0.929<span style="text-decoration: underline;">3</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>          7        45        91  0.073<span style="text-decoration: underline;">33</span>      0.926<span style="text-decoration: underline;">7</span>      0.918<span style="text-decoration: underline;">4</span>      0.928<span style="text-decoration: underline;">6</span></span></span>
-<span><span class="co">#&gt;    kappa level_of_agreement SE_kappa CL_kappa CU_kappa</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 0.693<span style="text-decoration: underline;">9</span> Moderate            0.012<span style="text-decoration: underline;">09</span>   0.670<span style="text-decoration: underline;">2</span>   0.717<span style="text-decoration: underline;">6</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 0.751<span style="text-decoration: underline;">2</span> Moderate            0.011<span style="text-decoration: underline;">79</span>   0.728<span style="text-decoration: underline;">1</span>   0.774<span style="text-decoration: underline;">3</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 0.813<span style="text-decoration: underline;">3</span> Strong              0.010<span style="text-decoration: underline;">66</span>   0.792<span style="text-decoration: underline;">4</span>   0.834<span style="text-decoration: underline;">2</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 0.642<span style="text-decoration: underline;">5</span> Moderate            0.012<span style="text-decoration: underline;">62</span>   0.617<span style="text-decoration: underline;">8</span>   0.667<span style="text-decoration: underline;">2</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 0.713<span style="text-decoration: underline;">7</span> Moderate            0.012<span style="text-decoration: underline;">01</span>   0.690<span style="text-decoration: underline;">1</span>   0.737<span style="text-decoration: underline;">2</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 0.845<span style="text-decoration: underline;">0</span> Strong              0.010<span style="text-decoration: underline;">07</span>   0.825<span style="text-decoration: underline;">2</span>   0.864<span style="text-decoration: underline;">7</span></span></span></code></pre></div>
+<span><span class="co">#&gt;   promptid model          reps top_p n_screened n_missing n_refs human_in_gpt_ex</span></span>
+<span><span class="co">#&gt;      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>        1 gpt-3.5-turb…     1     1        135         0    135              11</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>        1 gpt-3.5-turb…    10     1        135         1    135               4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>        1 gpt-4             1     1        134         1    135               0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>        2 gpt-3.5-turb…     1     1        135         0    135              10</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>        2 gpt-3.5-turb…    10     1        135         0    135               7</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>        2 gpt-4             1     1        133         2    135               2</span></span>
+<span><span class="co">#&gt;   human_ex_gpt_in human_in_gpt_in human_ex_gpt_ex accuracy p_agreement</span></span>
+<span><span class="co">#&gt;             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>               8              34              82  0.140<span style="text-decoration: underline;">7</span>       0.859<span style="text-decoration: underline;">3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>               8              41              82  0.088<span style="text-decoration: underline;">89</span>      0.911<span style="text-decoration: underline;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>               6              45              83  0.044<span style="text-decoration: underline;">44</span>      0.955<span style="text-decoration: underline;">6</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>               6              35              84  0.118<span style="text-decoration: underline;">5</span>       0.881<span style="text-decoration: underline;">5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>               7              38              83  0.103<span style="text-decoration: underline;">7</span>       0.896<span style="text-decoration: underline;">3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>               7              43              81  0.066<span style="text-decoration: underline;">67</span>      0.933<span style="text-decoration: underline;">3</span></span></span>
+<span><span class="co">#&gt;   sensitivity specificity    IRR   SE_IRR CL_IRR CU_IRR level_of_agreement</span></span>
+<span><span class="co">#&gt;         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>      0.755<span style="text-decoration: underline;">6</span>      0.911<span style="text-decoration: underline;">1</span> 0.678<span style="text-decoration: underline;">0</span> 0.013<span style="text-decoration: underline;">08</span>  0.652<span style="text-decoration: underline;">3</span> 0.703<span style="text-decoration: underline;">6</span> Moderate          </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>      0.911<span style="text-decoration: underline;">1</span>      0.911<span style="text-decoration: underline;">1</span> 0.804<span style="text-decoration: underline;">3</span> 0.011<span style="text-decoration: underline;">13</span>  0.782<span style="text-decoration: underline;">5</span> 0.826<span style="text-decoration: underline;">2</span> Strong            </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>      1           0.932<span style="text-decoration: underline;">6</span> 0.905<span style="text-decoration: underline;">2</span> 0.008<span style="text-decoration: underline;">314</span> 0.888<span style="text-decoration: underline;">9</span> 0.921<span style="text-decoration: underline;">5</span> Almost perfect    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>      0.777<span style="text-decoration: underline;">8</span>      0.933<span style="text-decoration: underline;">3</span> 0.727<span style="text-decoration: underline;">3</span> 0.012<span style="text-decoration: underline;">09</span>  0.703<span style="text-decoration: underline;">6</span> 0.751<span style="text-decoration: underline;">0</span> Moderate          </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>      0.844<span style="text-decoration: underline;">4</span>      0.922<span style="text-decoration: underline;">2</span> 0.766<span style="text-decoration: underline;">7</span> 0.011<span style="text-decoration: underline;">66</span>  0.743<span style="text-decoration: underline;">8</span> 0.789<span style="text-decoration: underline;">5</span> Moderate          </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>      0.955<span style="text-decoration: underline;">6</span>      0.920<span style="text-decoration: underline;">5</span> 0.859<span style="text-decoration: underline;">9</span> 0.010<span style="text-decoration: underline;">21</span>  0.839<span style="text-decoration: underline;">9</span> 0.879<span style="text-decoration: underline;">9</span> Strong</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
-<h3 id="getting-detailed-descript-will-become-a-separate-vignette">Getting detailed descript [WILL BECOME A SEPARATE VIGNETTE]<a class="anchor" aria-label="anchor" href="#getting-detailed-descript-will-become-a-separate-vignette"></a>
+<h3 id="getting-detailed-descriptions-will-become-a-separate-vignette">Getting detailed descriptions [WILL BECOME A SEPARATE VIGNETTE]<a class="anchor" aria-label="anchor" href="#getting-detailed-descriptions-will-become-a-separate-vignette"></a>
 </h3>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Show example with gpt-4</span></span></code></pre></div>
