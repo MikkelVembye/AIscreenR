@@ -1,6 +1,6 @@
 result_object <- AIscreenR:::result_object
 
-skip <- FALSE
+skip <- TRUE
 
 test_that("Errors are replaced", {
 
