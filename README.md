@@ -1,7 +1,9 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# AIscreenR: AI screening tools in R for systematic reviewing <a href="https://mikkelvembye.github.io/AIscreenR/"><img src="man/figures/AIscreenR_hex.png" align="right" width="180" /></a>
+<a href="https://mikkelvembye.github.io/AIscreenR/"><img src="man/figures/AIscreenR_hex.png" align="right" width="180" /></a>
+
+# AIscreenR: AI screening tools in R for systematic reviewing
 
 <!-- badges: start -->
 
@@ -35,6 +37,7 @@ library(AIscreenR)
 library(revtools)
 library(tibble)
 library(dplyr)
+library(future)
 
 # Setting API
 set_api_key(AIscreenR:::testing_key_chatgpt())
@@ -172,7 +175,7 @@ cannot be reached.
 
 ``` r
 # Subsetting the number of references to speed up the tutorial screening
-
+plan(multisession)
 test_obj <- 
   tabscreen_gpt(
     data = filges2015_dat[c(140:150),],
@@ -184,7 +187,7 @@ test_obj <-
     reps = 2 # Number of times the same question is asked to ChatGPT
   ) 
 #> * The approximate price of the current (simple) screening will be around $0.036.
-
+plan(sequential)
 test_obj
 #> Find data with all answers by executing
 #>  x$answer_data_all
@@ -201,7 +204,7 @@ price_dat
 #> # A tibble: 1 × 5
 #>   model     iterations input_price_dollar output_price_dollar price_total_dollar
 #>   <chr>          <dbl>              <dbl>               <dbl>              <dbl>
-#> 1 gpt-3.5-…          2             0.0323            0.000476             0.0328
+#> 1 gpt-3.5-…          2             0.0323             0.00048             0.0328
 
 
 all_dat <- test_obj$answer_data_all
