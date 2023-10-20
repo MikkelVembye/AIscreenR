@@ -66,9 +66,9 @@
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="aiscreenr-ai-screening-tools-in-r-for-systematic-reviewing-">AIscreenR: AI screening tools in R for systematic reviewing <a href="https://mikkelvembye.github.io/AIscreenR/"><img src="reference/figures/AIscreenR_hex.png" align="right" width="180"></a>
-<a class="anchor" aria-label="anchor" href="#aiscreenr-ai-screening-tools-in-r-for-systematic-reviewing-"></a>
+  <main id="main" class="col-md-9"><p><a href="https://mikkelvembye.github.io/AIscreenR/"><img src="reference/figures/AIscreenR_hex.png" align="right" width="180"></a></p>
+<div class="section level1">
+<div class="page-header"><h1 id="aiscreenr-ai-screening-tools-in-r-for-systematic-reviewing">AIscreenR: AI screening tools in R for systematic reviewing<a class="anchor" aria-label="anchor" href="#aiscreenr-ai-screening-tools-in-r-for-systematic-reviewing"></a>
 </h1></div>
 <!-- badges: start -->
 
@@ -90,6 +90,7 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://revtools.net" class="external-link">revtools</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://future.futureverse.org" class="external-link">future</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Setting API</span></span>
 <span><span class="fu"><a href="reference/set_api_key.html">set_api_key</a></span><span class="op">(</span><span class="fu">AIscreenR</span><span class="fu">:::</span><span class="fu">testing_key_chatgpt</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
@@ -210,7 +211,7 @@
 <p>Example of how to conduct simple screening, getting return 1 if a reference should be included, 0 if excluded, and 1.1 if a firm decision cannot be reached.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Subsetting the number of references to speed up the tutorial screening</span></span>
-<span></span>
+<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span><span class="op">)</span></span>
 <span><span class="va">test_obj</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu"><a href="reference/tabscreen_gpt.html">tabscreen_gpt</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">filges2015_dat</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">140</span><span class="op">:</span><span class="fl">150</span><span class="op">)</span>,<span class="op">]</span>,</span>
@@ -222,7 +223,7 @@
 <span>    reps <span class="op">=</span> <span class="fl">2</span> <span class="co"># Number of times the same question is asked to ChatGPT</span></span>
 <span>  <span class="op">)</span> </span>
 <span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $0.036.</span></span>
-<span></span>
+<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">sequential</span><span class="op">)</span></span>
 <span><span class="va">test_obj</span></span>
 <span><span class="co">#&gt; Find data with all answers by executing</span></span>
 <span><span class="co">#&gt;  x$answer_data_all</span></span>
@@ -239,7 +240,7 @@
 <span><span class="co">#&gt; # A tibble: 1 × 5</span></span>
 <span><span class="co">#&gt;   model     iterations input_price_dollar output_price_dollar price_total_dollar</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;          &lt;dbl&gt;              &lt;dbl&gt;               &lt;dbl&gt;              &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 gpt-3.5-…          2             0.0323            0.000476             0.0328</span></span>
+<span><span class="co">#&gt; 1 gpt-3.5-…          2             0.0323             0.00048             0.0328</span></span>
 <span></span>
 <span></span>
 <span><span class="va">all_dat</span> <span class="op">&lt;-</span> <span class="va">test_obj</span><span class="op">$</span><span class="va">answer_data_all</span></span>
@@ -278,6 +279,7 @@
 <span><span class="co">#&gt; 11          0 Exclude                                 0</span></span></code></pre></div>
 </div>
 </div>
+
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
