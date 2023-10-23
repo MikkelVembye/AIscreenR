@@ -269,6 +269,9 @@ tabscreen_gpt <- function(
     if (arg_list$max_tokens < 11) stop("Cannot retrieve results from server with tokens below 11.")
   }
 
+
+  if (is_chatgpt_tbl(data) && !"decision_gpt" %in% names(data)) data <- data |> tibble::as_tibble()
+
   ###############################################
   # Function to send a single request to ChatGPT
   ###############################################
