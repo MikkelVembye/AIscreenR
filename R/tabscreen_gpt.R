@@ -270,7 +270,7 @@ tabscreen_gpt <- function(
   }
 
 
-  if (is_chatgpt_tbl(data) && !"decision_gpt" %in% names(data)) data <- data |> tibble::as_tibble()
+  if (is_chatgpt_tbl(data) && !"topp" %in% names(data)) data <- data |> tibble::as_tibble()
 
   ###############################################
   # Function to send a single request to ChatGPT
