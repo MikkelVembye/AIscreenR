@@ -17,6 +17,10 @@
 #' Interrater reliability: The kappa statistic.
 #' *Biochemia Medica*, 22(3), 276-282. <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3900052/>
 #'
+#' Syriani, E., David, I., & Kumar, G. (2023).
+#' Assessing the Ability of ChatGPT to Screen Articles for Systematic Reviews.
+#' *ArXiv Preprint ArXiv:2307.06464*.
+#'
 #' @param x Either an object of class `'chatgpt'` or a data set of class `'chatgpt_tbl'`
 #' @param human_decision Indicate the variable in the data that contains the human_decision.
 #' This variable must be numeric containing 1 (for included references) and 0 (for excluded references) only.
@@ -36,12 +40,17 @@
 #'  \bold{human_ex_gpt_ex} \tab \code{numeric}  \tab indicating the number of references excluded by humans and excluded by gpt. \cr
 #'  \bold{accuracy} \tab \code{numeric}  \tab indicating the overall percent disagreement between human and gpt (Gartlehner et al., 2019). \cr
 #'  \bold{p_agreement} \tab \code{numeric} \tab indicating the overall percent agreement between human and gpt. \cr
-#'  \bold{sensitivity}  \tab \code{numeric}  \tab indicating percent agreement for included references (Gartlehner et al., 2019). \cr
-#'  \bold{specificity}  \tab \code{numeric} \tab indicating percent agreement for excluded references (Gartlehner et al., 2019). \cr
-#'  \bold{IRR}  \tab \code{numeric}  \tab indicating the interrater reliability as described in McHugh (2012). \cr
-#'  \bold{SE_IRR} \tab \code{numeric} \tab indicating standard error for the interrater reliability. \cr
-#'  \bold{CL_IRR} \tab \code{numeric} \tab indicating lower confidence interval for the interrater reliability. \cr
-#'  \bold{CU_IRR} \tab \code{numeric} \tab indicating upper confidence interval for the interrater reliability. \cr
+#'  \bold{precision}  \tab \code{numeric}  \tab "measures the ability to include only articles that should be included" (Syriani et al., 2023). \cr
+#'  \bold{recall}  \tab \code{numeric} \tab "measures the ability to include all articles that should be included" (Syriani et al., 2023). \cr
+#'  \bold{npv}  \tab \code{numeric}  \tab Negative predictive value (NPV) "measures the ability to exclude only articles that should be excluded" (Syriani et al., 2023). \cr
+#'  \bold{specificity}  \tab \code{numeric} \tab "measures the ability to exclude all articles that should be excluded" (Syriani et al., 2023). \cr
+#'  \bold{bacc}  \tab \code{numeric}  \tab "capture the accuracy of deciding both inclusion and exclusion classes" (Syriani et al., 2023). \cr
+#'  \bold{F2}  \tab \code{numeric} \tab F-measure that "consider the cost of getting false negatives twice as costly as getting false positives" (Syriani et al., 2023). \cr
+#'  \bold{mcc}  \tab \code{numeric} \tab indicating percent agreement for excluded references (Gartlehner et al., 2019). \cr
+#'  \bold{irr}  \tab \code{numeric}  \tab indicating the interrater reliability as described in McHugh (2012). \cr
+#'  \bold{SE_irr} \tab \code{numeric} \tab indicating standard error for the interrater reliability. \cr
+#'  \bold{CL_irr} \tab \code{numeric} \tab indicating lower confidence interval for the interrater reliability. \cr
+#'  \bold{CU_irr} \tab \code{numeric} \tab indicating upper confidence interval for the interrater reliability. \cr
 #'  \bold{level_of_agreement} \tab \code{character} \tab interpretation of the interrater reliability as suggested by McHugh (2012). \cr
 #' }
 #'
@@ -51,7 +60,7 @@
 #'
 #' @examples
 #' x <- AIscreenR:::result_object
-#' x |> screen_analyzer() |> print(width=220)
+#' x |> screen_analyzer() |> print(width=240)
 
 
 screen_analyzer <- function(x, human_decision = human_code){
@@ -80,9 +89,26 @@ screen_analyzer <- function(x, human_decision = human_code){
 
       accuracy = (human_ex_gpt_in + human_in_gpt_ex)/n_refs,
       p_agreement = 1 - accuracy,
-      sensitivity = human_in_gpt_in / (human_in_gpt_in + human_in_gpt_ex),
 
+      # Eq. 2 (Syriani et al., 2023)
+      precision = human_in_gpt_in/(human_in_gpt_in + human_ex_gpt_in),
+      # Eq. 3 (Syriani et al., 2023)
+      recall = human_in_gpt_in / (human_in_gpt_in + human_in_gpt_ex),
+      # Eq. 4 (Syriani et al., 2023)
+      npv = human_ex_gpt_ex/(human_ex_gpt_ex + human_in_gpt_ex),
+      # Eq. 5 (Syriani et al., 2023)
       specificity = human_ex_gpt_ex / (human_ex_gpt_ex + human_ex_gpt_in),
+
+      # Eq. 6 (Syriani et al., 2023)
+      bacc = (recall + specificity)/2,
+      # Eq. 7 (Syriani et al., 2023)
+      F2 = 5 * ((precision*recall)/(4*(precision+recall))),
+      # Eq. 8 (Syriani et al., 2023)
+      nominator = (human_in_gpt_in*human_ex_gpt_ex)-(human_ex_gpt_in*human_in_gpt_ex),
+      denominator = (2*sqrt((human_in_gpt_in+human_ex_gpt_in)*(human_in_gpt_in+human_in_gpt_ex)*(human_ex_gpt_ex+human_ex_gpt_in)*(human_ex_gpt_ex+human_in_gpt_ex))),
+
+      mcc = nominator/denominator + 0.5,
+
 
       rm1 = human_ex_gpt_ex + human_in_gpt_ex,
       rm2 = human_ex_gpt_in + human_in_gpt_in,
@@ -92,25 +118,25 @@ screen_analyzer <- function(x, human_decision = human_code){
       pe = 1/n_refs * ((cm1*rm1)/n_refs + (cm2*rm2)/n_refs),
 
 
-      IRR = (p_agreement - pe)/(1-pe),
-      SE_IRR = sqrt( (p_agreement*(1-p_agreement)) / n_refs*(1-pe)^2),
-      CL_IRR = IRR - 1.96 *SE_IRR,
-      CU_IRR = IRR + 1.96 *SE_IRR,
+      irr = (p_agreement - pe)/(1-pe),
+      SE_irr = sqrt( (p_agreement*(1-p_agreement)) / n_refs*(1-pe)^2),
+      CL_irr = irr - 1.96 *SE_irr,
+      CU_irr = irr + 1.96 *SE_irr,
 
       level_of_agreement = case_when(
-        IRR <= .2 ~ "None",
-        IRR > .2 & IRR <= .39 ~ "Minimal",
-        IRR > .39 & IRR <= .59 ~ "Weak",
-        IRR > .59 & IRR <= .79 ~ "Moderate",
-        IRR > .79 & IRR <= .90 ~ "Strong",
-        IRR > .9 ~ "Almost perfect",
+        irr <= .2 ~ "None",
+        irr > .2 & irr <= .39 ~ "Minimal",
+        irr > .39 & irr <= .59 ~ "Weak",
+        irr > .59 & irr <= .79 ~ "Moderate",
+        irr > .79 & irr <= .90 ~ "Strong",
+        irr > .9 ~ "Almost perfect",
         TRUE ~ NA_character_
 
       ),
 
       .by = c(promptid, model, reps, top_p)
     ) |>
-    select(-c(rm1:pe))
+    select(-c(rm1:pe, nominator:denominator))
 
 
   res

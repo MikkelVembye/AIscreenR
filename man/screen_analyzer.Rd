@@ -28,12 +28,17 @@ A \code{tibble} with screening performance measures. The \code{tibble} includes 
 \bold{human_ex_gpt_ex} \tab \code{numeric}  \tab indicating the number of references excluded by humans and excluded by gpt. \cr
 \bold{accuracy} \tab \code{numeric}  \tab indicating the overall percent disagreement between human and gpt (Gartlehner et al., 2019). \cr
 \bold{p_agreement} \tab \code{numeric} \tab indicating the overall percent agreement between human and gpt. \cr
-\bold{sensitivity}  \tab \code{numeric}  \tab indicating percent agreement for included references (Gartlehner et al., 2019). \cr
-\bold{specificity}  \tab \code{numeric} \tab indicating percent agreement for excluded references (Gartlehner et al., 2019). \cr
-\bold{IRR}  \tab \code{numeric}  \tab indicating the interrater reliability as described in McHugh (2012). \cr
-\bold{SE_IRR} \tab \code{numeric} \tab indicating standard error for the interrater reliability. \cr
-\bold{CL_IRR} \tab \code{numeric} \tab indicating lower confidence interval for the interrater reliability. \cr
-\bold{CU_IRR} \tab \code{numeric} \tab indicating upper confidence interval for the interrater reliability. \cr
+\bold{precision}  \tab \code{numeric}  \tab "measures the ability to include only articles that should be included" (Syriani et al., 2023). \cr
+\bold{recall}  \tab \code{numeric} \tab "measures the ability to include all articles that should be included" (Syriani et al., 2023). \cr
+\bold{npv}  \tab \code{numeric}  \tab Negative predictive value (NPV) "measures the ability to exclude only articles that should be excluded" (Syriani et al., 2023). \cr
+\bold{specificity}  \tab \code{numeric} \tab "measures the ability to exclude all articles that should be excluded" (Syriani et al., 2023). \cr
+\bold{bacc}  \tab \code{numeric}  \tab "capture the accuracy of deciding both inclusion and exclusion classes" (Syriani et al., 2023). \cr
+\bold{F2}  \tab \code{numeric} \tab F-measure that "consider the cost of getting false negatives twice as costly as getting false positives" (Syriani et al., 2023). \cr
+\bold{mcc}  \tab \code{numeric} \tab indicating percent agreement for excluded references (Gartlehner et al., 2019). \cr
+\bold{irr}  \tab \code{numeric}  \tab indicating the interrater reliability as described in McHugh (2012). \cr
+\bold{SE_irr} \tab \code{numeric} \tab indicating standard error for the interrater reliability. \cr
+\bold{CL_irr} \tab \code{numeric} \tab indicating lower confidence interval for the interrater reliability. \cr
+\bold{CU_irr} \tab \code{numeric} \tab indicating upper confidence interval for the interrater reliability. \cr
 \bold{level_of_agreement} \tab \code{character} \tab interpretation of the interrater reliability as suggested by McHugh (2012). \cr
 }
 }
@@ -47,7 +52,7 @@ interrater reliability kappa statistics.
 }
 \examples{
 x <- AIscreenR:::result_object
-x |> screen_analyzer() |> print(width=220)
+x |> screen_analyzer() |> print(width=240)
 }
 \references{
 Gartlehner, G., Wagner, G., Lux, L., Affengruber, L., Dobrescu, A., Kaminski-Hartenthaler, A., & Viswanathan, M. (2019).
@@ -57,4 +62,8 @@ Assessing the accuracy of machine-assisted abstract screening with DistillerAI: 
 McHugh, M. L. (2012).
 Interrater reliability: The kappa statistic.
 \emph{Biochemia Medica}, 22(3), 276-282. \url{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3900052/}
+
+Syriani, E., David, I., & Kumar, G. (2023).
+Assessing the Ability of ChatGPT to Screen Articles for Systematic Reviews.
+\emph{ArXiv Preprint ArXiv:2307.06464}.
 }
