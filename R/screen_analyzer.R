@@ -48,9 +48,9 @@
 #'  \bold{F2}  \tab \code{numeric} \tab F-measure that "consider the cost of getting false negatives twice as costly as getting false positives" (Syriani et al., 2023). \cr
 #'  \bold{mcc}  \tab \code{numeric} \tab indicating percent agreement for excluded references (Gartlehner et al., 2019). \cr
 #'  \bold{irr}  \tab \code{numeric}  \tab indicating the interrater reliability as described in McHugh (2012). \cr
-#'  \bold{SE_irr} \tab \code{numeric} \tab indicating standard error for the interrater reliability. \cr
-#'  \bold{CL_irr} \tab \code{numeric} \tab indicating lower confidence interval for the interrater reliability. \cr
-#'  \bold{CU_irr} \tab \code{numeric} \tab indicating upper confidence interval for the interrater reliability. \cr
+#'  \bold{se_irr} \tab \code{numeric} \tab indicating standard error for the interrater reliability. \cr
+#'  \bold{cl_irr} \tab \code{numeric} \tab indicating lower confidence interval for the interrater reliability. \cr
+#'  \bold{cu_irr} \tab \code{numeric} \tab indicating upper confidence interval for the interrater reliability. \cr
 #'  \bold{level_of_agreement} \tab \code{character} \tab interpretation of the interrater reliability as suggested by McHugh (2012). \cr
 #' }
 #'
@@ -60,7 +60,7 @@
 #'
 #' @examples
 #' x <- AIscreenR:::result_object
-#' x |> screen_analyzer() |> print(width=240)
+#' x |> screen_analyzer() |> print(width=260)
 
 
 screen_analyzer <- function(x, human_decision = human_code){
@@ -119,9 +119,9 @@ screen_analyzer <- function(x, human_decision = human_code){
 
 
       irr = (p_agreement - pe)/(1-pe),
-      SE_irr = sqrt( (p_agreement*(1-p_agreement)) / n_refs*(1-pe)^2),
-      CL_irr = irr - 1.96 *SE_irr,
-      CU_irr = irr + 1.96 *SE_irr,
+      se_irr = sqrt( (p_agreement*(1-p_agreement)) / n_refs*(1-pe)^2),
+      cl_irr = irr - 1.96 * se_irr,
+      cu_irr = irr + 1.96 * se_irr,
 
       level_of_agreement = case_when(
         irr <= .2 ~ "None",
