@@ -89,60 +89,48 @@
 This vignette represent tentative work-in-progress only. The general
 applicability and efficacy of using large-language models (LLMs)
 including ChatGPT for title and abstract screening in literature reviews
-are still unknown. Our first results suggest that ChatGPT can be a
-reliable second screener when reviewing specific and well defined
-interventions. The first evidence of this is shown in this vignette.
-However, be aware that our first results are based on a retrospective
-analysis which might not generalize to prospective screenings where
-ChatGPT potentially has not been trained on that reference data, that is
-data added to the internet after 2021. Also note that the result
-presented here are for tutorial purposes only. Hard inferences about the
-relative efficacy of the used gpt models should be avoided.
+are still rather limited (Syriani et al., 2023). Our first results
+suggest that ChatGPT can be a reliable second screener when reviewing
+specific and well defined interventions. The first evidence of this is
+shown in this vignette. However, be aware that our first results are
+based on a retrospective analysis which might not generalize to
+prospective screenings where ChatGPT potentially has not been trained on
+that reference data, that is data added to the internet after 2021. Also
+note that the result presented here are for tutorial purposes only. Hard
+inferences about the relative efficacy of the used gpt models should be
+avoided.
 </p>
 <p></p></span>
 </div>
-<p>An all-important step to ensure the quality of systematic reviews
-involves detecting all relevant references related to the literature
-under review. Usually, this involves independent double screening of all
-references detected in relevant databases and literature with two human
-screeners. This procedure has shown pivotal since less experienced
-single screeners tend to miss around 13% relavant studies (with 3% for
-experienced screeners), which in most cases substantially change the
-main review findings (Waffenschmidt, 2019). Yet, double-screening is a
-costly and resource intensive procedure, excluding many researchers from
-using it. An alternative to human double-screening is to use automated
-tools to act as the second screener (Gartlehner et al., 2019; van de
-Schoot et al. 2021). Hereto, most evaluations of existing tools finds
-that most automated tools fail to reliably act as/imitating a human
-second screener. Meanwhile, it is still unknown how well or if the newly
-developed large-language models (LLMs) such as ChatGPT can work and
-possibly emulate a human second screener. The aim of the
-<code>AIscreenR</code> package is to support the use and testing of
-ChatGPT as a the second screener or alternatively to reduce research
-waste. Concretely the package allows user to apply the gpt models from
-the <a href="https://platform.openai.com/docs/models/model-endpoint-compatibility" class="external-link">https://api.openai.com/v1/chat/completions</a>
-endpoint. In future developments, we expect to add further LLMs (such as
-Bard) when APIs are available for those LLMs. For now, we invite other
+<p>The aim of the <code>AIscreenR</code> package is to support the use
+and testing of ChatGPT as a the second screener or alternatively to
+reduce research waste, i.e., the number of references needed to be
+screened by humans. At the current stage, the package allows user to
+apply OpenAI’s gpt models from the <a href="https://platform.openai.com/docs/models/model-endpoint-compatibility" class="external-link">https://api.openai.com/v1/chat/completions</a>
+endpoint. In future developments, we expect to add further LLMs when
+APIs become available for other models. For now, we invite other
 researchers to test this software so that we as a review community can
-get a better understanding of the performance of the gpt models from
-OpenAI as second screeners. In this vignette, we show how a title and
-abstract screening with ChatGPT can be done in R. The advantages of
-conducting the screening with ChatGPT via R is 1) that reviewers can
-easily work with a large number of references, avoiding copy-paste
-procedures, 2) that the total screening time can be substantially
-increased relative to using the ChatGPT interface, and 3) that
-consistency between gpt answer for the same title and abstract can
+get a better understanding of the performance of the gpt models. In this
+vignette, we show how a title and abstract screening with ChatGPT can be
+done in R. The advantages of conducting the screening with ChatGPT via R
+is 1) that reviewers can easily work with a large number of references,
+avoiding copy-paste procedures, 2) that the total screening time can be
+substantially increased relative to using the ChatGPT interface, and 3)
+that consistency between gpt answer for the same title and abstract can
 easily be tested. In this vignette, we also show the first proof of
-concept for the use of ChatGPT as a reliable second screener. This goes
-without saying that ChatGPT works in all cases, and we think the tool
-should be use carefully and should always assisted by a human
-(human-in-the-loop). Consequently, we do not recommend to use the the
-ChatGPT as a single screener.</p>
+concept for the use of ChatGPT as a reliable second screener (see also
+Syriani et al., 2023). This goes without saying that ChatGPT works in
+all cases, and we think the tool should be use carefully and should
+always assisted by a human (human-in-the-loop). Consequently, we do not
+recommend to use ChatGPT as a single screener per se. If used to reduced
+the overall number of references needed to be screened, our tentative
+recommendation is to random sample approximately 10% of the studies
+excluded by gpt to check the accuracy of the screening.</p>
 <div class="section level3">
 <h3 id="getting-started-loading-relevant-ris-file-data-for-screening">Getting started: Loading relevant ris file data for screening<a class="anchor" aria-label="anchor" href="#getting-started-loading-relevant-ris-file-data-for-screening"></a>
 </h3>
 <p>At this stage, we expect that you have a pile of ris-files,
-containing titles and abstract for the references you would like to
+containing titles and abstracts for the references you would like to
 screen. You can retrieve ris-files in several ways, either directly from
 research database, a Google Scholar search, or exported from your
 reference management tool, such as EndNote, Mendeley, and RefMan.
@@ -225,70 +213,88 @@ that tracks the human decision.</p>
 <span><span class="co">#&gt; 10 Faber J and Srutova L and Pilarova… 9431505      10 EEG … "Sponta…          0</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="getting-api-key-openai">Getting API key OpenAI<a class="anchor" aria-label="anchor" href="#getting-api-key-openai"></a>
+<h3 id="getting-api-key-openai">Getting API key (OpenAI)<a class="anchor" aria-label="anchor" href="#getting-api-key-openai"></a>
 </h3>
-<p>Before you can use the functions from <code>AIscreenR</code>, you
-must generate your own secret API key. To do so you must first ensure
-that you have created an account at OpenAI (<em>if you have not done so
-at this stage, you can sign up <a href="https://auth0.openai.com/u/login/identifier?state=hKFo2SBqQjNHSlc1ejIyREpUb01hdDF2OHEzQy12NnJwWlFUN6Fur3VuaXZlcnNhbC1sb2dpbqN0aWTZIEJSOWJaamdKLWswNGlfWDQ2NER1OXJmVUNpVmVzVjZfo2NpZNkgRFJpdnNubTJNdTQyVDNLT3BxZHR3QjNOWXZpSFl6d0Q" class="external-link">here</a>).</em>
+<p>Before you can use the functions from <code>AIscreenR</code> to
+screen your references, you must generate your own secret API key from
+OpenAI. To do so you must first ensure that you have created an account
+at OpenAI (<em>if you have not done so at this stage, you can sign up <a href="https://auth0.openai.com/u/login/identifier?state=hKFo2SBqQjNHSlc1ejIyREpUb01hdDF2OHEzQy12NnJwWlFUN6Fur3VuaXZlcnNhbC1sb2dpbqN0aWTZIEJSOWJaamdKLWswNGlfWDQ2NER1OXJmVUNpVmVzVjZfo2NpZNkgRFJpdnNubTJNdTQyVDNLT3BxZHR3QjNOWXZpSFl6d0Q" class="external-link">here</a>).</em>
 When having an account, go to <a href="https://platform.openai.com/account/api-keys" class="external-link">https://platform.openai.com/account/api-keys</a>
-and press the <code>+ Create new secret key</code> button (see picture
+and press the <code>+ Create new secret key</code> button (see Figure 1
 below) and give your key a name.</p>
 <p> </p>
-<p><img src="helper-stuff/API_key_pic.png" width="100%">  </p>
-<p>When you have generate your secret API key, remember to store it
+<div class="figure">
+<img src="helper-stuff/API_key_pic.png" alt="*Figure 1 - Generate API key from OpenAI*" width="100%"><p class="caption">
+<em>Figure 1 - Generate API key from OpenAI</em>
+</p>
+</div>
+<p> </p>
+<p>When you have generated your secret API key, remember to store it
 safely since you will not be able see it again. <strong>NOTE</strong>:
 <em>If you lose your API key, you can just generate a new one</em>.</p>
 </div>
 <div class="section level3">
 <h3 id="handling-your-api-key">Handling your API key<a class="anchor" aria-label="anchor" href="#handling-your-api-key"></a>
 </h3>
-<div class="section level4">
-<h4 id="temporary-solution">Temporary solution<a class="anchor" aria-label="anchor" href="#temporary-solution"></a>
-</h4>
-<p>TO BE DONE</p>
-</div>
+<p>When you have retrieved your API, you could in theory add it directly
+to the <code>AIscreenR</code> functions via the <code>api_key</code>
+argument. Yet, this would be an improper way to work the API key since
+you would easily compromise your secret key. For example, your API key
+would be disclosed when sharing your codes with others which in turn
+would be able to draw on your OpenAI account. Also OpenAI will cancel
+the API key if they recognize that your API key has been compromised,
+e.g., by pushing it to a public GitHub page. To overcome this issue you
+have several options. You can either work with what we call permanent or
+temporary solutions.</p>
 <div class="section level4">
 <h4 id="pemanent-solution">Pemanent solution<a class="anchor" aria-label="anchor" href="#pemanent-solution"></a>
 </h4>
-<p>To add your API key permanently as an environment variables, you can
-execute <code><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">usethis::edit_r_environ()</a></code>.</p>
+<p>The easiest way to work with your API key is to permanently added it
+to your R environment as an environment variable. This can be achieved
+with <code><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">usethis::edit_r_environ()</a></code>. In the
+<code>.Renviron</code> file, write <code>CHAT_GPT=your_key</code> as
+depicted in Figure 2. After entering the API key, close and save the
+<code>.Renviron</code> file and restart <code>RStudio</code> (ctrl +
+shift + F10). From now on, the <code>AIscreenR</code> functions will use
+the <code><a href="../reference/get_api_key.html">get_api_key()</a></code> function to get your API key from your R
+environment automatically. By using this approach you don’t have to
+worry more about you API key (unless you update RStudio, deliberately
+delete the key, or get a new computer. Then you must repeat this
+procedure).  </p>
+<div class="figure">
+<img src="helper-stuff/Renviron.png" alt="*Figure 2 - R environment file*" width="100%"><p class="caption">
+<em>Figure 2 - R environment file</em>
+</p>
+</div>
 <p> </p>
-<p><img src="helper-stuff/Renviron.png" width="100%">  </p>
-<p>After entering the API key, save the <code>.Renviron</code> document
-and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 </div>
+<div class="section level4">
+<h4 id="temporary-solution">Temporary solution<a class="anchor" aria-label="anchor" href="#temporary-solution"></a>
+</h4>
+<p>If you do not want to add you API key permanently to your R
+environment, you can use <code><a href="../reference/set_api_key.html">set_api_key()</a></code>. When executing
+<code><a href="../reference/set_api_key.html">set_api_key()</a></code>, you will see a pop-up window in which you
+can enter your API key. This will add your API key as temporary
+environment variable. Consequently, when you restart RStudio, you will
+no longer be able to find your API key in your R environment.
+Alternatively, you can pass a decrypted key to the
+<code><a href="../reference/set_api_key.html">set_api_key()</a></code>, like
+<code>set_api_key(key = secret_decrypt(encrypt_key, "YOUR_SECRET_KEY_FOR_DECRYTING"))</code>.
+See the <a href="https://httr2.r-lib.org/articles/wrapping-apis.html#basics" class="external-link"><code>HTTR2</code></a>
+pacakge for further details about this solution.  </p>
+<div class="figure">
+<img src="helper-stuff/set_api.png" alt="*Figure 3 - Set API key*" width="100%"><p class="caption">
+<em>Figure 3 - Set API key</em>
+</p>
 </div>
-<div class="section level3">
-<h3 id="retrieve-rate-limit-information">Retrieve rate limit information<a class="anchor" aria-label="anchor" href="#retrieve-rate-limit-information"></a>
-</h3>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Rate limits across one model (Default is "gpt-3.5-turbo-0613")</span></span>
-<span><span class="va">rate_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">rate_limits</span></span>
-<span><span class="co">#&gt; # A tibble: 1 × 3</span></span>
-<span><span class="co">#&gt;   model              requests_per_minute tokens_per_minute</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;                            &lt;dbl&gt;             &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 gpt-3.5-turbo-0613               10000           1000000</span></span>
-<span></span>
-<span></span>
-<span><span class="co"># Rate limits overview across multiple models</span></span>
-<span><span class="co"># Add further models if necessary</span></span>
-<span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-4"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">models_rate_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">models</span><span class="op">)</span> </span>
-<span><span class="va">models_rate_limits</span></span>
-<span><span class="co">#&gt; # A tibble: 2 × 3</span></span>
-<span><span class="co">#&gt;   model              requests_per_minute tokens_per_minute</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;                            &lt;dbl&gt;             &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 gpt-3.5-turbo-0613               10000           1000000</span></span>
-<span><span class="co">#&gt; 2 gpt-4                              200             10000</span></span></code></pre></div>
+<p> </p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="working-with-prompts-in-r">Working with prompts in R<a class="anchor" aria-label="anchor" href="#working-with-prompts-in-r"></a>
 </h3>
 <p>Example of how to enter a prompt.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">prompt</span> <span class="op">&lt;-</span> <span class="st">"Evaluate the following study based on the selection criteria</span></span>
 <span><span class="st">for a systematic review on the effects of family-based interventions on drug </span></span>
 <span><span class="st">abuse reduction for young people in treatment for non-opioid drug use.</span></span>
@@ -319,19 +325,19 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <p>Can also be done in word</p>
 <p> </p>
 <div class="figure">
-<img src="helper-stuff/wordprompt1.png" alt="*Figure 3 - Prompt 1: With three inclusion critera.*" width="100%"><p class="caption">
-<em>Figure 3 - Prompt 1: With three inclusion critera.</em>
+<img src="helper-stuff/wordprompt1.png" alt="*Figure 4 - Prompt 1: With three inclusion critera.*" width="100%"><p class="caption">
+<em>Figure 4 - Prompt 1: With three inclusion critera.</em>
 </p>
 </div>
 <p> </p>
 <p> </p>
 <div class="figure">
-<img src="helper-stuff/wordprompt2.png" alt="*Figure 4 - Prompt 2: With one inclusion criterion only.*" width="100%"><p class="caption">
-<em>Figure 4 - Prompt 2: With one inclusion criterion only.</em>
+<img src="helper-stuff/wordprompt2.png" alt="*Figure 5 - Prompt 2: With one inclusion criterion only.*" width="100%"><p class="caption">
+<em>Figure 5 - Prompt 2: With one inclusion criterion only.</em>
 </p>
 </div>
 <p> </p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">word_path</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"word_pormpt_1.docx"</span>, package <span class="op">=</span> <span class="st">"AIscreenR"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">prompt1</span> <span class="op">&lt;-</span> </span>
@@ -355,6 +361,31 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 <span><span class="va">prompts</span> </span>
 <span><span class="co">#&gt; [1] "Evaluate the following study based on the selection criteria for a systematic review on the effects of family-based interventions on drug abuse reduction for young people in treatment for non-opioid drug use. A family-based intervention (FFT) is equivalent to a behavior focused family therapy, where young people’s drug use is understood in relation to family behavior problems. Family-based interventions also include manual-based family therapies as it target young people and their families as a system throughout treatment, and thereby recognize the important role of the family system in the development and treatment of young people’s drug use problems. FFT was developed in the late 1980s on request from the US National Institute on Drug Abuse (NIDA). The development of FFT was initially heavily inspired by the alcohol abuse program Community Reinforcement Approach (CRA), which was aimed at restructuring the environment to reinforce non-alcohol associated activities. FFT was developed to have more emphasis on contingency contracting, impulse control strategies specific to drug use, and increased emphasis on the involvement of family members in treatment. FFT is designed to accommodate diverse populations of youths with a variety of behavioral, cultural and individual preferences. FFT has evolved for use in severe behavioral disturbances known to co-exist with substance use and dependence, and the core interventions have been enhanced to address several mental health related problems commonly occurring as comorbid conditions in drug use treatment participant.  For each study, I would like you to assess:  1) Is the study about a family-based intervention, such as Functional Family Therapy, Multidimensional Family Therapy, or Behavioral Family Therapy? (Outpatient manual-based interventions of any duration delivered to young people and their families). If not, exclude study. 2) Are the participants in outpatient drug treatment primarily for non-opioid drug use? 3) Are the participants within age 11–21?"</span></span>
 <span><span class="co">#&gt; [2] "Evaluate the following study based on the selection criteria for a systematic review on the effects of family-based interventions on drug abuse reduction for young people in treatment for non-opioid drug use. A family-based intervention (FFT) is equivalent to a behavior focused family therapy, where young people’s drug use is understood in relation to family behavior problems. Family-based interventions also include manual-based family therapies as it target young people and their families as a system throughout treatment, and thereby recognize the important role of the family system in the development and treatment of young people’s drug use problems. FFT was developed in the late 1980s on request from the US National Institute on Drug Abuse (NIDA). The development of FFT was initially heavily inspired by the alcohol abuse program Community Reinforcement Approach (CRA), which was aimed at restructuring the environment to reinforce non-alcohol associated activities. FFT was developed to have more emphasis on contingency contracting, impulse control strategies specific to drug use, and increased emphasis on the involvement of family members in treatment. FFT is designed to accommodate diverse populations of youths with a variety of behavioral, cultural and individual preferences. FFT has evolved for use in severe behavioral disturbances known to co-exist with substance use and dependence, and the core interventions have been enhanced to address several mental health related problems commonly occurring as comorbid conditions in drug use treatment participant.  For each study, I would like you to assess:  1) Is the study about a family-based intervention, such as Functional Family Therapy, Multidimensional Family Therapy, or Behavioral Family Therapy? (Outpatient manual-based interventions of any duration delivered to young people and their families). If not, exclude study. "</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="retrieve-rate-limit-information">Retrieve rate limit information<a class="anchor" aria-label="anchor" href="#retrieve-rate-limit-information"></a>
+</h3>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Rate limits across one model (Default is "gpt-3.5-turbo-0613")</span></span>
+<span><span class="va">rate_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">rate_limits</span></span>
+<span><span class="co">#&gt; # A tibble: 1 × 3</span></span>
+<span><span class="co">#&gt;   model              requests_per_minute tokens_per_minute</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;                            &lt;dbl&gt;             &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 gpt-3.5-turbo-0613               10000           1000000</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># Rate limits overview across multiple models</span></span>
+<span><span class="co"># Add further models if necessary</span></span>
+<span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-4"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">models_rate_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">models</span><span class="op">)</span> </span>
+<span><span class="va">models_rate_limits</span></span>
+<span><span class="co">#&gt; # A tibble: 2 × 3</span></span>
+<span><span class="co">#&gt;   model              requests_per_minute tokens_per_minute</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;                            &lt;dbl&gt;             &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 gpt-3.5-turbo-0613               10000           1000000</span></span>
+<span><span class="co">#&gt; 2 gpt-4                              200             10000</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="approximate-price-of-screening">Approximate price of screening<a class="anchor" aria-label="anchor" href="#approximate-price-of-screening"></a>
@@ -526,7 +557,7 @@ and restart <code>RStudio</code> (ctrl + shift + F10).</p>
 </div>
 </div>
 <div class="section level3">
-<h3 id="getting-detailed-descriptions-will-become-a-separate-vignette">Getting detailed descriptions [WILL BECOME A SEPARATE VIGNETTE]<a class="anchor" aria-label="anchor" href="#getting-detailed-descriptions-will-become-a-separate-vignette"></a>
+<h3 id="getting-detailed-descriptions">Getting detailed descriptions<a class="anchor" aria-label="anchor" href="#getting-detailed-descriptions"></a>
 </h3>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Show example with gpt-4</span></span></code></pre></div>
@@ -539,6 +570,9 @@ accuracy of machine-assisted abstract screening with DistillerAI: a user
 study. <em>Systematic Reviews</em>. 8, 1-10. <a href="https://doi.org/10.1186/s13643-019-1221-3" class="external-link uri">https://doi.org/10.1186/s13643-019-1221-3</a></p>
 <p>McHugh, M. L. (2012). Interrater reliability: The kappa statistic.
 <em>Biochemia Medica</em>, 22(3), 276–282.</p>
+<p>Syriani, E., David, I., &amp; Kumar, G. (2023). Assessing the Ability
+of ChatGPT to Screen Articles for Systematic Reviews. <em>ArXiv Preprint
+ArXiv:2307.06464.</em> <a href="https://arxiv.org/pdf/2307.06464.pdf" class="external-link uri">https://arxiv.org/pdf/2307.06464.pdf</a></p>
 <p>Waffenschmidt, S., Knelangen, M., Sieben, W., Bühn, S., &amp; Pieper,
 D. (2019). Single screening versus conventional double screening for
 study selection in systematic reviews: a methodological systematic
