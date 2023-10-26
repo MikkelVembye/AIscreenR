@@ -29,15 +29,14 @@ options(dplyr.summarise.inform = FALSE) # Avoids summarize info from tidyverse
 <p style='margin-top:1em; text-align:center'>
 <b>Important note</b></p>
 <p style='margin:1em'>
-This vignette represent tentative work-in-progress only. The general applicability and efficacy of using large-language models (LLMs) including ChatGPT for title and abstract screening in literature reviews are still unknown. Our first results suggest that ChatGPT can be a reliable second screener when reviewing specific and well defined interventions. The first evidence of this is shown in this vignette. However, be aware that our first results are based on a retrospective analysis which might not generalize to prospective screenings where ChatGPT potentially has not been trained on that reference data, that is data added to the internet after 2021. Also note that the result presented here are for tutorial purposes only. Hard inferences about the relative efficacy of the used gpt models should be avoided. 
+This vignette represent tentative work-in-progress only. The general applicability and efficacy of using large-language models (LLMs) including ChatGPT for title and abstract screening in literature reviews are still rather limited (Syriani et al., 2023). Our first results suggest that ChatGPT can be a reliable second screener when reviewing specific and well defined interventions. The first evidence of this is shown in this vignette. However, be aware that our first results are based on a retrospective analysis which might not generalize to prospective screenings where ChatGPT potentially has not been trained on that reference data, that is data added to the internet after 2021. Also note that the result presented here are for tutorial purposes only. Hard inferences about the relative efficacy of the used gpt models should be avoided. 
 </p></span>
 </div>
 
-An all-important step to ensure the quality of systematic reviews involves detecting all relevant references related to the literature under review. Usually, this involves independent double screening of all references detected in relevant databases and literature with two human screeners. This procedure has shown pivotal since less experienced single screeners tend to miss around 13%  relavant studies (with 3% for experienced screeners), which in most cases substantially change the main review findings (Waffenschmidt, 2019). Yet, double-screening is a costly and resource intensive procedure, excluding many researchers from using it. An alternative to human double-screening is to use automated tools to act as the second screener (Gartlehner et al., 2019; van de Schoot et al. 2021). Hereto, most evaluations of existing tools finds that most automated tools fail to reliably act as/imitating a human second screener. Meanwhile, it is still unknown how well or if the newly developed large-language models (LLMs) such as ChatGPT can work and possibly emulate a human second screener. The aim of the `AIscreenR` package is to support the use and testing of ChatGPT as a the second screener or alternatively to reduce research waste. Concretely the package allows user to apply the gpt models from the [https://api.openai.com/v1/chat/completions](https://platform.openai.com/docs/models/model-endpoint-compatibility) endpoint. In future developments, we expect to add further LLMs (such as Bard) when APIs are available for those LLMs. For now, we invite other researchers to test this software so that we as a review community can get a better understanding of the performance of the gpt models from OpenAI as second screeners. In this vignette, we show how a title and abstract screening with ChatGPT can be done in R. The advantages of conducting the screening with ChatGPT via R is 1) that reviewers can easily work with a large number of references, avoiding copy-paste procedures, 2) that the total screening time can be substantially increased relative to using the ChatGPT interface, and 3) that consistency between gpt answer for the same title and abstract can easily be tested. In this vignette, we also show the first proof of concept for the use of ChatGPT as a reliable second screener. This goes without saying that ChatGPT works in all cases, and we think the tool should be use carefully and should always assisted by a human (human-in-the-loop). Consequently, we do not recommend to use the the ChatGPT as a single screener.   
+The aim of the `AIscreenR` package is to support the use and testing of ChatGPT as a the second screener or alternatively to reduce research waste, i.e., the number of references needed to be screened by humans. At the current stage, the package allows user to apply OpenAI's gpt models from the [https://api.openai.com/v1/chat/completions](https://platform.openai.com/docs/models/model-endpoint-compatibility) endpoint. In future developments, we expect to add further LLMs when APIs become available for other models. For now, we invite other researchers to test this software so that we as a review community can get a better understanding of the performance of the gpt models. In this vignette, we show how a title and abstract screening with ChatGPT can be done in R. The advantages of conducting the screening with ChatGPT via R is 1) that reviewers can easily work with a large number of references, avoiding copy-paste procedures, 2) that the total screening time can be substantially increased relative to using the ChatGPT interface, and 3) that consistency between gpt answer for the same title and abstract can easily be tested. In this vignette, we also show the first proof of concept for the use of ChatGPT as a reliable second screener (see also Syriani et al., 2023). This goes without saying that ChatGPT works in all cases, and we think the tool should be use carefully and should always assisted by a human (human-in-the-loop). Consequently, we do not recommend to use ChatGPT as a single screener per se. If used to reduced the overall number of references needed to be screened, our tentative recommendation is to random sample approximately 10% of the studies excluded by gpt to check the accuracy of the screening.    
 
 ## Getting started: Loading relevant ris file data for screening
-
-At this stage, we expect that you have a pile of ris-files, containing titles and abstract for the references you would like to screen. You can retrieve ris-files in several ways, either directly from research database, a Google Scholar search, or exported from your reference management tool, such as EndNote, Mendeley, and RefMan. Alternatively, you can export ris-file from systematic software tool such as [EPPI-reviewer](https://eppi.ioe.ac.uk/EPPIReviewer-Web/home), [Covidence](https://www.covidence.org/), [MetaReviewer](https://www.metareviewer.org/landing/index.html), [`revtools`](https://revtools.net/), or whatever software you use. In the example given below, we load ris-files extracted from the EPPI-reviewer. A minor advantage of extracting ris-files from systematic software tools is that they add a unique study ID for each reference. This feature makes it easier to keep track of the screening. Yet, such ID can be generated in R as well, and is automatically generated in the `tabscreen_gpt()` function when unique IDs are not provided. When using ChatGPT as the second screener, we recommend that the human screening has been done before uploading to R. Thereby, it is possible to compare the screenings instantly after the computer screening has been done. In the below example we load ris-files separately for excluded and included ris-files, respectively, and add the `human_code` variable that tracks the human decision.   
+At this stage, we expect that you have a pile of ris-files, containing titles and abstracts for the references you would like to screen. You can retrieve ris-files in several ways, either directly from research database, a Google Scholar search, or exported from your reference management tool, such as EndNote, Mendeley, and RefMan. Alternatively, you can export ris-file from systematic software tool such as [EPPI-reviewer](https://eppi.ioe.ac.uk/EPPIReviewer-Web/home), [Covidence](https://www.covidence.org/), [MetaReviewer](https://www.metareviewer.org/landing/index.html), [`revtools`](https://revtools.net/), or whatever software you use. In the example given below, we load ris-files extracted from the EPPI-reviewer. A minor advantage of extracting ris-files from systematic software tools is that they add a unique study ID for each reference. This feature makes it easier to keep track of the screening. Yet, such ID can be generated in R as well, and is automatically generated in the `tabscreen_gpt()` function when unique IDs are not provided. When using ChatGPT as the second screener, we recommend that the human screening has been done before uploading to R. Thereby, it is possible to compare the screenings instantly after the computer screening has been done. In the below example we load ris-files separately for excluded and included ris-files, respectively, and add the `human_code` variable that tracks the human decision.   
 
 ```{r not included setup, include = FALSE}
 # Loading packages 
@@ -148,66 +147,58 @@ filges2015_dat
 #> 10 Faber J and Srutova L and Pilarova… 9431505      10 EEG … "Sponta…          0
 ```
 
-## Getting API key OpenAI
+## Getting API key (OpenAI)
 
-Before you can use the functions from `AIscreenR`, you must generate your own secret
-API key. To do so you must first ensure that you have created an account at OpenAI (*if you have not done so at this stage, you can sign up [here](https://auth0.openai.com/u/login/identifier?state=hKFo2SBqQjNHSlc1ejIyREpUb01hdDF2OHEzQy12NnJwWlFUN6Fur3VuaXZlcnNhbC1sb2dpbqN0aWTZIEJSOWJaamdKLWswNGlfWDQ2NER1OXJmVUNpVmVzVjZfo2NpZNkgRFJpdnNubTJNdTQyVDNLT3BxZHR3QjNOWXZpSFl6d0Q)).* When having an account, go to [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys) and press the `+ Create new secret key` button (see picture below) and give your key a name. 
+Before you can use the functions from `AIscreenR` to screen your references, you must generate your own secret API key from OpenAI. To do so you must first ensure that you have created an account at OpenAI (*if you have not done so at this stage, you can sign up [here](https://auth0.openai.com/u/login/identifier?state=hKFo2SBqQjNHSlc1ejIyREpUb01hdDF2OHEzQy12NnJwWlFUN6Fur3VuaXZlcnNhbC1sb2dpbqN0aWTZIEJSOWJaamdKLWswNGlfWDQ2NER1OXJmVUNpVmVzVjZfo2NpZNkgRFJpdnNubTJNdTQyVDNLT3BxZHR3QjNOWXZpSFl6d0Q)).* When having an account, go to [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys) and press the `+ Create new secret key` button (see Figure 1 below) and give your key a name. 
 
 \  
 
-```{r eval=TRUE, echo=FALSE}
+```{r eval=TRUE, echo=FALSE, fig.cap='*Figure 1 - Generate API key from OpenAI*'}
 knitr::include_graphics("helper-stuff/API_key_pic.png")
 ```
 \ 
 
-When you have generate your secret API key, remember to store it safely since
+When you have generated your secret API key, remember to store it safely since
 you will not be able see it again. **NOTE**: *If you lose your API key, you can 
 just generate a new one*. 
 
 ## Handling your API key 
 
-### Temporary solution
-
-TO BE DONE
+When you have retrieved your API, you could in theory add it directly to the 
+`AIscreenR` functions via the `api_key` argument. Yet, this would be an improper
+way to work the API key since you would easily compromise your secret key. For example, 
+your API key would be disclosed when sharing your codes with others which in turn would be able to 
+draw on your OpenAI account. Also OpenAI will cancel the API key if they recognize 
+that your API key has been compromised, e.g., by pushing it to a public GitHub page. 
+To overcome this issue you have several options. You can either work with what we call
+permanent or temporary solutions. 
 
 ### Pemanent solution
 
-To add your API key permanently as an environment variables, you can execute
-`usethis::edit_r_environ()`.
-
+The easiest way to work with your API key is to permanently added it to your R environment
+as an environment variable. This can be achieved with `usethis::edit_r_environ()`. In the `.Renviron`
+file, write `CHAT_GPT=your_key` as depicted in Figure 2. After entering the API key, close and save the `.Renviron` file and restart `RStudio` (ctrl + shift + F10). From now on, the `AIscreenR` functions will use the `get_api_key()` function to get your API key from your R environment automatically. By using this approach you don't have to worry more about you API key (unless you update RStudio, deliberately delete the key, or get a new computer. Then you must repeat this procedure).
 \  
 
-```{r eval=TRUE, echo=FALSE}
+```{r eval=TRUE, echo=FALSE, fig.cap='*Figure 2 - R environment file*'}
 knitr::include_graphics("helper-stuff/Renviron.png")
 ```
 \ 
 
-After entering the API key, save the `.Renviron` document and restart `RStudio` (ctrl + shift + F10).
+### Temporary solution
 
-## Retrieve rate limit information 
+If you do not want to add you API key permanently to your R environment, you can 
+use `set_api_key()`. When executing `set_api_key()`, you will see a pop-up window in
+which you can enter your API key. This will add your API key as temporary environment variable. 
+Consequently, when you restart RStudio, you will no longer be able to find your 
+API key in your R environment. Alternatively, you can pass a decrypted key to the `set_api_key()`, like
+`set_api_key(key = secret_decrypt(encrypt_key, "YOUR_SECRET_KEY_FOR_DECRYTING"))`. See the [`HTTR2`](https://httr2.r-lib.org/articles/wrapping-apis.html#basics) pacakge for further details about this solution. 
+\  
 
-```{r,  eval = FALSE}
-# Rate limits across one model (Default is "gpt-3.5-turbo-0613")
-rate_limits <- rate_limits_per_minute()
-rate_limits
-#> # A tibble: 1 × 3
-#>   model              requests_per_minute tokens_per_minute
-#>   <chr>                            <dbl>             <dbl>
-#> 1 gpt-3.5-turbo-0613               10000           1000000
-
-
-# Rate limits overview across multiple models
-# Add further models if necessary
-models <- c("gpt-3.5-turbo-0613", "gpt-4")
-
-models_rate_limits <- rate_limits_per_minute(model = models) 
-models_rate_limits
-#> # A tibble: 2 × 3
-#>   model              requests_per_minute tokens_per_minute
-#>   <chr>                            <dbl>             <dbl>
-#> 1 gpt-3.5-turbo-0613               10000           1000000
-#> 2 gpt-4                              200             10000
+```{r eval=TRUE, echo=FALSE, fig.cap='*Figure 3 - Set API key*'}
+knitr::include_graphics("helper-stuff/set_api.png")
 ```
+\ 
 
 ## Working with prompts in R
 
@@ -247,14 +238,14 @@ Can also be done in word
 
 \  
 
-```{r eval=TRUE, echo=FALSE, fig.cap='*Figure 3 - Prompt 1: With three inclusion critera.*'}
+```{r eval=TRUE, echo=FALSE, fig.cap='*Figure 4 - Prompt 1: With three inclusion critera.*'}
 knitr::include_graphics("helper-stuff/wordprompt1.png")
 ```
 \ 
 
 \  
 
-```{r eval=TRUE, echo=FALSE, fig.cap='*Figure 4 - Prompt 2: With one inclusion criterion only.*'}
+```{r eval=TRUE, echo=FALSE, fig.cap='*Figure 5 - Prompt 2: With one inclusion criterion only.*'}
 knitr::include_graphics("helper-stuff/wordprompt2.png")
 ```
 \ 
@@ -280,6 +271,32 @@ prompts <-
   )
 
 prompts 
+```
+
+
+## Retrieve rate limit information 
+
+```{r,  eval = FALSE}
+# Rate limits across one model (Default is "gpt-3.5-turbo-0613")
+rate_limits <- rate_limits_per_minute()
+rate_limits
+#> # A tibble: 1 × 3
+#>   model              requests_per_minute tokens_per_minute
+#>   <chr>                            <dbl>             <dbl>
+#> 1 gpt-3.5-turbo-0613               10000           1000000
+
+
+# Rate limits overview across multiple models
+# Add further models if necessary
+models <- c("gpt-3.5-turbo-0613", "gpt-4")
+
+models_rate_limits <- rate_limits_per_minute(model = models) 
+models_rate_limits
+#> # A tibble: 2 × 3
+#>   model              requests_per_minute tokens_per_minute
+#>   <chr>                            <dbl>             <dbl>
+#> 1 gpt-3.5-turbo-0613               10000           1000000
+#> 2 gpt-4                              200             10000
 ```
 
 ## Approximate price of screening
@@ -426,7 +443,7 @@ screen_perform
 
 ```
 
-## Getting detailed descriptions [WILL BECOME A SEPARATE VIGNETTE]
+## Getting detailed descriptions 
 
 ```{r}
 # Show example with gpt-4
@@ -437,6 +454,8 @@ screen_perform
 Gartlehner, G., Wagner, G., Lux, L. et al. (2019). Assessing the accuracy of machine-assisted abstract screening with DistillerAI: a user study. *Systematic Reviews*. 8, 1-10. <https://doi.org/10.1186/s13643-019-1221-3>
 
 McHugh, M. L. (2012). Interrater reliability: The kappa statistic. *Biochemia Medica*, 22(3), 276–282.
+
+Syriani, E., David, I., & Kumar, G. (2023). Assessing the Ability of ChatGPT to Screen Articles for Systematic Reviews. *ArXiv Preprint ArXiv:2307.06464.* <https://arxiv.org/pdf/2307.06464.pdf>
 
 Waffenschmidt, S., Knelangen, M., Sieben, W., Bühn, S., & Pieper, D. (2019). Single screening versus conventional double screening for study selection in systematic reviews: a methodological systematic review. *BMC Medical Research Methodology* 19, 1-9. <https://doi.org/10.1186/s12874-019-0782-0>
 
