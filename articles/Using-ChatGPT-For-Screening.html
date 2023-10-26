@@ -102,25 +102,17 @@ avoided.
 </p>
 <p></p></span>
 </div>
-<p>The aim of the <code>AIscreenR</code> package is to support the use
-and testing of ChatGPT as a the second screener or alternatively to
-reduce research waste, i.e., the number of references needed to be
-screened by humans. At the current stage, the package allows user to
-apply OpenAI’s gpt models from the <a href="https://platform.openai.com/docs/models/model-endpoint-compatibility" class="external-link">https://api.openai.com/v1/chat/completions</a>
-endpoint. In future developments, we expect to add further LLMs when
-APIs become available for other models. For now, we invite other
-researchers to test this software so that we as a review community can
-get a better understanding of the performance of the gpt models. In this
-vignette, we show how a title and abstract screening with ChatGPT can be
-done in R. The advantages of conducting the screening with ChatGPT via R
-is 1) that reviewers can easily work with a large number of references,
-avoiding copy-paste procedures, 2) that the total screening time can be
-substantially increased relative to using the ChatGPT interface, and 3)
-that consistency between gpt answer for the same title and abstract can
-easily be tested. In this vignette, we also show the first proof of
-concept for the use of ChatGPT as a reliable second screener (see also
-Syriani et al., 2023). This goes without saying that ChatGPT works in
-all cases, and we think the tool should be use carefully and should
+<p>In this vignette, we show how a title and abstract screening with
+ChatGPT can be done in R. The advantages of conducting the screening
+with ChatGPT via R is 1) that reviewers can easily work with a large
+number of references, avoiding copy-paste procedures, 2) that the total
+screening time can be substantially increased relative to using the
+ChatGPT interface, 3) that it eases model comparison, and 4) that
+consistency between gpt answer for the same title and abstract can
+easily be tested. In this vignette, we also show the first/initial proof
+of concept for the use of ChatGPT as a reliable second screener (see
+also Syriani et al., 2023). This goes without saying that ChatGPT works
+in all cases, and we think the tool should be use carefully and should
 always assisted by a human (human-in-the-loop). Consequently, we do not
 recommend to use ChatGPT as a single screener per se. If used to reduced
 the overall number of references needed to be screened, our tentative
@@ -392,37 +384,35 @@ pacakge for further details about this solution.  </p>
 </h3>
 <p>Approximate price of screening</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-4"</span><span class="op">)</span></span>
-<span><span class="va">reps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span>, <span class="fl">1</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">app_obj</span> <span class="op">&lt;-</span> </span>
+<code class="sourceCode R"><span><span class="va">app_obj</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu"><a href="../reference/approximate_price_gpt.html">approximate_price_gpt</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">filges2015_dat</span>, <span class="co"># Tutorial data embedded in the package</span></span>
 <span>    prompt <span class="op">=</span> <span class="va">prompts</span>, </span>
 <span>    studyid <span class="op">=</span> <span class="va">studyid</span>, <span class="co"># indicate the variable with the studyid in the data</span></span>
 <span>    title <span class="op">=</span> <span class="va">title</span>, <span class="co"># indicate the variable with the titles in the data</span></span>
 <span>    abstract <span class="op">=</span> <span class="va">abstract</span>, <span class="co"># indicate the variable with the abstracts in the data</span></span>
-<span>    model <span class="op">=</span> <span class="va">models</span>,</span>
-<span>    reps <span class="op">=</span> <span class="va">reps</span></span>
+<span>    model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-4"</span><span class="op">)</span>,</span>
+<span>    reps <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>    top_p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.001</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="va">app_obj</span></span>
-<span><span class="co">#&gt; The approximate price of the (simple) screening will be around $28.0678.</span></span>
+<span><span class="co">#&gt; The approximate price of the (simple) screening will be around $56.1356.</span></span>
 <span></span>
 <span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_dollar</span></span>
-<span><span class="co">#&gt; [1] 28.0678</span></span>
+<span><span class="co">#&gt; [1] 56.1356</span></span>
 <span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_data</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 5</span></span></span>
 <span><span class="co">#&gt;   model              iterations input_price_dollar output_price_dollar</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> gpt-3.5-turbo-0613          1             0.889<span style="text-decoration: underline;">2</span>             0.011<span style="text-decoration: underline;">88</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> gpt-3.5-turbo-0613         10             8.898              0.118<span style="text-decoration: underline;">8</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> gpt-4                       1            17.79               0.356<span style="text-decoration: underline;">4</span> </span></span>
-<span><span class="co">#&gt;   total_price_dollor</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> gpt-3.5-turbo-0613          1              1.778             0.023<span style="text-decoration: underline;">76</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> gpt-3.5-turbo-0613         10             17.80              0.237<span style="text-decoration: underline;">6</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> gpt-4                       1             35.59              0.712<span style="text-decoration: underline;">8</span> </span></span>
+<span><span class="co">#&gt;   total_price_dollar</span></span>
 <span><span class="co">#&gt;                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>             0.901<span style="text-decoration: underline;">1</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>             9.017 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>            18.15</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>              1.802</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>             18.03 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>             36.30</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="screening-titles-and-abstracts">Screening titles and abstracts<a class="anchor" aria-label="anchor" href="#screening-titles-and-abstracts"></a>
@@ -441,11 +431,12 @@ pacakge for further details about this solution.  </p>
 <span>    studyid <span class="op">=</span> <span class="va">studyid</span>, <span class="co"># indicate the variable with the studyid in the data</span></span>
 <span>    title <span class="op">=</span> <span class="va">title</span>, <span class="co"># indicate the variable with the titles in the data</span></span>
 <span>    abstract <span class="op">=</span> <span class="va">abstract</span>, <span class="co"># indicate the variable with the abstracts in the data,</span></span>
-<span>    model <span class="op">=</span> <span class="va">models</span>,</span>
-<span>    reps <span class="op">=</span> <span class="va">reps</span>,</span>
-<span>    rpm <span class="op">=</span> <span class="va">rpm</span></span>
+<span>    model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-4"</span><span class="op">)</span>,</span>
+<span>    reps <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>    rpm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10000</span>, <span class="fl">10000</span>, <span class="fl">200</span><span class="op">)</span>,</span>
+<span>    top_p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.001</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $28.0678.</span></span>
+<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $27.9901.</span></span>
 <span><span class="co">#&gt; * Consider removing references that has no abstract since these can distort the accuracy of the screening</span></span>
 <span><span class="co">#&gt;  Progress: ──────────────────────────────────────────────────────────────────────────────────────────── 100%</span></span>
 <span><span class="co">#&gt;  * NOTE: Requests failed 4 times."</span></span>
@@ -460,7 +451,7 @@ pacakge for further details about this solution.  </p>
 <span><span class="co">#&gt;  result_object$answer_data_sum</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Find total price for the screening by executing</span></span>
-<span><span class="co">#&gt;  result_object$price_dollor</span></span>
+<span><span class="co">#&gt;  result_object$price_dollar</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Find error data by executing</span></span>
 <span><span class="co">#&gt;  result_object$error_data</span></span></code></pre></div>
@@ -481,23 +472,23 @@ pacakge for further details about this solution.  </p>
 <span><span class="co">#&gt;  result_object$answer_data_sum</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Find total price for the screening by executing</span></span>
-<span><span class="co">#&gt;  result_object$price_dollor</span></span></code></pre></div>
+<span><span class="co">#&gt;  result_object$price_dollar</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="getting-the-results-from-the-screening">Getting the results from the screening<a class="anchor" aria-label="anchor" href="#getting-the-results-from-the-screening"></a>
 </h3>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># gpt-3.5 results (prompt 1 - 10 replications)</span></span>
+<code class="sourceCode R"><span><span class="co"># gpt-3.5 results (prompt 1, top_p = 1, 10 replications)</span></span>
 <span><span class="co"># studyid = 21 is not included since it failed during the loop</span></span>
 <span><span class="co"># I show how to recover this in another </span></span>
 <span><span class="va">sum_dat_gpt3</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">result_object</span><span class="op">$</span><span class="va">answer_data_sum</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html" class="external-link">str_detect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"3"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">promptid</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">reps</span> <span class="op">==</span> <span class="fl">10</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html" class="external-link">str_detect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"3"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">promptid</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">reps</span> <span class="op">==</span> <span class="fl">10</span> <span class="op">&amp;</span> <span class="va">top_p</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># gpt-4 results (prompt 1)</span></span>
+<span><span class="co"># gpt-4 results (prompt 1, top_p = 1)</span></span>
 <span><span class="va">sum_dat_gpt4</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">result_object</span><span class="op">$</span><span class="va">answer_data_sum</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html" class="external-link">str_detect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"4"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">promptid</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html" class="external-link">str_detect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"4"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">promptid</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">top_p</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="analyzing-the-screening">Analyzing the screening<a class="anchor" aria-label="anchor" href="#analyzing-the-screening"></a>
@@ -528,32 +519,50 @@ pacakge for further details about this solution.  </p>
 <span>  <span class="fu"><a href="../reference/screen_analyzer.html">screen_analyzer</a></span><span class="op">(</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="va">screen_perform</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 25</span></span></span>
-<span><span class="co">#&gt;   promptid model          reps top_p n_screened n_missing n_refs human_in_gpt_ex</span></span>
-<span><span class="co">#&gt;      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>        1 gpt-3.5-turb…     1     1        135         0    135              11</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>        1 gpt-3.5-turb…    10     1        135         0    135               4</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>        1 gpt-4             1     1        135         0    135               0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>        2 gpt-3.5-turb…     1     1        135         0    135              10</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>        2 gpt-3.5-turb…    10     1        135         0    135               7</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>        2 gpt-4             1     1        135         0    135               2</span></span>
-<span><span class="co">#&gt;   human_ex_gpt_in human_in_gpt_in human_ex_gpt_ex accuracy p_agreement precision</span></span>
-<span><span class="co">#&gt;             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>               8              34              82  0.140<span style="text-decoration: underline;">7</span>       0.859<span style="text-decoration: underline;">3</span>    0.809<span style="text-decoration: underline;">5</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>               8              41              82  0.088<span style="text-decoration: underline;">89</span>      0.911<span style="text-decoration: underline;">1</span>    0.836<span style="text-decoration: underline;">7</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>               6              45              84  0.044<span style="text-decoration: underline;">44</span>      0.955<span style="text-decoration: underline;">6</span>    0.882<span style="text-decoration: underline;">4</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>               6              35              84  0.118<span style="text-decoration: underline;">5</span>       0.881<span style="text-decoration: underline;">5</span>    0.853<span style="text-decoration: underline;">7</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>               7              38              83  0.103<span style="text-decoration: underline;">7</span>       0.896<span style="text-decoration: underline;">3</span>    0.844<span style="text-decoration: underline;">4</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>               7              43              83  0.066<span style="text-decoration: underline;">67</span>      0.933<span style="text-decoration: underline;">3</span>    0.86  </span></span>
-<span><span class="co">#&gt;   recall    npv specificity   bacc     F2    mcc    irr   se_irr cl_irr cu_irr</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 0.755<span style="text-decoration: underline;">6</span> 0.881<span style="text-decoration: underline;">7</span>      0.911<span style="text-decoration: underline;">1</span> 0.833<span style="text-decoration: underline;">3</span> 0.488<span style="text-decoration: underline;">5</span> 0.839<span style="text-decoration: underline;">4</span> 0.678<span style="text-decoration: underline;">0</span> 0.013<span style="text-decoration: underline;">08</span>  0.652<span style="text-decoration: underline;">3</span> 0.703<span style="text-decoration: underline;">6</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 0.911<span style="text-decoration: underline;">1</span> 0.953<span style="text-decoration: underline;">5</span>      0.911<span style="text-decoration: underline;">1</span> 0.911<span style="text-decoration: underline;">1</span> 0.545<span style="text-decoration: underline;">2</span> 0.903<span style="text-decoration: underline;">0</span> 0.804<span style="text-decoration: underline;">3</span> 0.011<span style="text-decoration: underline;">13</span>  0.782<span style="text-decoration: underline;">5</span> 0.826<span style="text-decoration: underline;">2</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 1      1           0.933<span style="text-decoration: underline;">3</span> 0.966<span style="text-decoration: underline;">7</span> 0.585<span style="text-decoration: underline;">9</span> 0.953<span style="text-decoration: underline;">7</span> 0.903<span style="text-decoration: underline;">2</span> 0.008<span style="text-decoration: underline;">146</span> 0.887<span style="text-decoration: underline;">3</span> 0.919<span style="text-decoration: underline;">2</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 0.777<span style="text-decoration: underline;">8</span> 0.893<span style="text-decoration: underline;">6</span>      0.933<span style="text-decoration: underline;">3</span> 0.855<span style="text-decoration: underline;">6</span> 0.508<span style="text-decoration: underline;">7</span> 0.864<span style="text-decoration: underline;">5</span> 0.727<span style="text-decoration: underline;">3</span> 0.012<span style="text-decoration: underline;">09</span>  0.703<span style="text-decoration: underline;">6</span> 0.751<span style="text-decoration: underline;">0</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 0.844<span style="text-decoration: underline;">4</span> 0.922<span style="text-decoration: underline;">2</span>      0.922<span style="text-decoration: underline;">2</span> 0.883<span style="text-decoration: underline;">3</span> 0.527<span style="text-decoration: underline;">8</span> 0.883<span style="text-decoration: underline;">3</span> 0.766<span style="text-decoration: underline;">7</span> 0.011<span style="text-decoration: underline;">66</span>  0.743<span style="text-decoration: underline;">8</span> 0.789<span style="text-decoration: underline;">5</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 0.955<span style="text-decoration: underline;">6</span> 0.976<span style="text-decoration: underline;">5</span>      0.922<span style="text-decoration: underline;">2</span> 0.938<span style="text-decoration: underline;">9</span> 0.565<span style="text-decoration: underline;">8</span> 0.928<span style="text-decoration: underline;">4</span> 0.854<span style="text-decoration: underline;">1</span> 0.009<span style="text-decoration: underline;">807</span> 0.834<span style="text-decoration: underline;">8</span> 0.873<span style="text-decoration: underline;">3</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: level_of_agreement &lt;chr&gt;</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 12 × 25</span></span></span>
+<span><span class="co">#&gt;    promptid model         reps top_p n_screened n_missing n_refs human_in_gpt_ex</span></span>
+<span><span class="co">#&gt;       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>        1 gpt-3.5-tur…     1 0.001        135         0    135               8</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>        1 gpt-3.5-tur…    10 0.001        135         0    135               8</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>        1 gpt-3.5-tur…     1 1            135         0    135              11</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>        1 gpt-3.5-tur…    10 1            135         0    135               4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>        1 gpt-4            1 0.001        135         0    135               1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>        1 gpt-4            1 1            135         0    135               0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>        2 gpt-3.5-tur…     1 0.001        135         0    135               9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>        2 gpt-3.5-tur…    10 0.001        135         0    135               8</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>        2 gpt-3.5-tur…     1 1            135         0    135              10</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        2 gpt-3.5-tur…    10 1            135         0    135               7</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span>        2 gpt-4            1 0.001        135         0    135               1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span>        2 gpt-4            1 1            135         0    135               2</span></span>
+<span><span class="co">#&gt;    human_ex_gpt_in human_in_gpt_in human_ex_gpt_ex accuracy p_agreement</span></span>
+<span><span class="co">#&gt;              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>               8              37              82  0.118<span style="text-decoration: underline;">5</span>       0.881<span style="text-decoration: underline;">5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>               8              37              82  0.118<span style="text-decoration: underline;">5</span>       0.881<span style="text-decoration: underline;">5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>               8              34              82  0.140<span style="text-decoration: underline;">7</span>       0.859<span style="text-decoration: underline;">3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>               8              41              82  0.088<span style="text-decoration: underline;">89</span>      0.911<span style="text-decoration: underline;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>               9              44              81  0.074<span style="text-decoration: underline;">07</span>      0.925<span style="text-decoration: underline;">9</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>               6              45              84  0.044<span style="text-decoration: underline;">44</span>      0.955<span style="text-decoration: underline;">6</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>               6              36              84  0.111<span style="text-decoration: underline;">1</span>       0.888<span style="text-decoration: underline;">9</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>               7              37              83  0.111<span style="text-decoration: underline;">1</span>       0.888<span style="text-decoration: underline;">9</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>               6              35              84  0.118<span style="text-decoration: underline;">5</span>       0.881<span style="text-decoration: underline;">5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>               7              38              83  0.103<span style="text-decoration: underline;">7</span>       0.896<span style="text-decoration: underline;">3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span>               8              44              82  0.066<span style="text-decoration: underline;">67</span>      0.933<span style="text-decoration: underline;">3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span>               7              43              83  0.066<span style="text-decoration: underline;">67</span>      0.933<span style="text-decoration: underline;">3</span></span></span>
+<span><span class="co">#&gt;    precision recall    npv specificity   bacc     F2    mcc    irr   se_irr</span></span>
+<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>    0.822<span style="text-decoration: underline;">2</span> 0.822<span style="text-decoration: underline;">2</span> 0.911<span style="text-decoration: underline;">1</span>      0.911<span style="text-decoration: underline;">1</span> 0.866<span style="text-decoration: underline;">7</span> 0.513<span style="text-decoration: underline;">9</span> 0.866<span style="text-decoration: underline;">7</span> 0.733<span style="text-decoration: underline;">3</span> 0.012<span style="text-decoration: underline;">36</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>    0.822<span style="text-decoration: underline;">2</span> 0.822<span style="text-decoration: underline;">2</span> 0.911<span style="text-decoration: underline;">1</span>      0.911<span style="text-decoration: underline;">1</span> 0.866<span style="text-decoration: underline;">7</span> 0.513<span style="text-decoration: underline;">9</span> 0.866<span style="text-decoration: underline;">7</span> 0.733<span style="text-decoration: underline;">3</span> 0.012<span style="text-decoration: underline;">36</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>    0.809<span style="text-decoration: underline;">5</span> 0.755<span style="text-decoration: underline;">6</span> 0.881<span style="text-decoration: underline;">7</span>      0.911<span style="text-decoration: underline;">1</span> 0.833<span style="text-decoration: underline;">3</span> 0.488<span style="text-decoration: underline;">5</span> 0.839<span style="text-decoration: underline;">4</span> 0.678<span style="text-decoration: underline;">0</span> 0.013<span style="text-decoration: underline;">08</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>    0.836<span style="text-decoration: underline;">7</span> 0.911<span style="text-decoration: underline;">1</span> 0.953<span style="text-decoration: underline;">5</span>      0.911<span style="text-decoration: underline;">1</span> 0.911<span style="text-decoration: underline;">1</span> 0.545<span style="text-decoration: underline;">2</span> 0.903<span style="text-decoration: underline;">0</span> 0.804<span style="text-decoration: underline;">3</span> 0.011<span style="text-decoration: underline;">13</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>    0.830<span style="text-decoration: underline;">2</span> 0.977<span style="text-decoration: underline;">8</span> 0.987<span style="text-decoration: underline;">8</span>      0.9    0.938<span style="text-decoration: underline;">9</span> 0.561<span style="text-decoration: underline;">2</span> 0.923<span style="text-decoration: underline;">7</span> 0.840<span style="text-decoration: underline;">4</span> 0.010<span style="text-decoration: underline;">46</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>    0.882<span style="text-decoration: underline;">4</span> 1      1           0.933<span style="text-decoration: underline;">3</span> 0.966<span style="text-decoration: underline;">7</span> 0.585<span style="text-decoration: underline;">9</span> 0.953<span style="text-decoration: underline;">7</span> 0.903<span style="text-decoration: underline;">2</span> 0.008<span style="text-decoration: underline;">146</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>    0.857<span style="text-decoration: underline;">1</span> 0.8    0.903<span style="text-decoration: underline;">2</span>      0.933<span style="text-decoration: underline;">3</span> 0.866<span style="text-decoration: underline;">7</span> 0.517<span style="text-decoration: underline;">2</span> 0.873<span style="text-decoration: underline;">4</span> 0.745<span style="text-decoration: underline;">8</span> 0.011<span style="text-decoration: underline;">82</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>    0.840<span style="text-decoration: underline;">9</span> 0.822<span style="text-decoration: underline;">2</span> 0.912<span style="text-decoration: underline;">1</span>      0.922<span style="text-decoration: underline;">2</span> 0.872<span style="text-decoration: underline;">2</span> 0.519<span style="text-decoration: underline;">7</span> 0.874<span style="text-decoration: underline;">4</span> 0.748<span style="text-decoration: underline;">6</span> 0.011<span style="text-decoration: underline;">95</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>    0.853<span style="text-decoration: underline;">7</span> 0.777<span style="text-decoration: underline;">8</span> 0.893<span style="text-decoration: underline;">6</span>      0.933<span style="text-decoration: underline;">3</span> 0.855<span style="text-decoration: underline;">6</span> 0.508<span style="text-decoration: underline;">7</span> 0.864<span style="text-decoration: underline;">5</span> 0.727<span style="text-decoration: underline;">3</span> 0.012<span style="text-decoration: underline;">09</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>    0.844<span style="text-decoration: underline;">4</span> 0.844<span style="text-decoration: underline;">4</span> 0.922<span style="text-decoration: underline;">2</span>      0.922<span style="text-decoration: underline;">2</span> 0.883<span style="text-decoration: underline;">3</span> 0.527<span style="text-decoration: underline;">8</span> 0.883<span style="text-decoration: underline;">3</span> 0.766<span style="text-decoration: underline;">7</span> 0.011<span style="text-decoration: underline;">66</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span>    0.846<span style="text-decoration: underline;">2</span> 0.977<span style="text-decoration: underline;">8</span> 0.988<span style="text-decoration: underline;">0</span>      0.911<span style="text-decoration: underline;">1</span> 0.944<span style="text-decoration: underline;">4</span> 0.567<span style="text-decoration: underline;">0</span> 0.930<span style="text-decoration: underline;">5</span> 0.855<span style="text-decoration: underline;">6</span> 0.009<span style="text-decoration: underline;">913</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span>    0.86   0.955<span style="text-decoration: underline;">6</span> 0.976<span style="text-decoration: underline;">5</span>      0.922<span style="text-decoration: underline;">2</span> 0.938<span style="text-decoration: underline;">9</span> 0.565<span style="text-decoration: underline;">8</span> 0.928<span style="text-decoration: underline;">4</span> 0.854<span style="text-decoration: underline;">1</span> 0.009<span style="text-decoration: underline;">807</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 3 more variables: cl_irr &lt;dbl&gt;, cu_irr &lt;dbl&gt;, level_of_agreement &lt;chr&gt;</span></span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
