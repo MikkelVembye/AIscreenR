@@ -14,7 +14,16 @@ coverage](https://codecov.io/gh/MikkelVembye/AIscreenR/branch/main/graph/badge.s
 
 The goal of AIscreenR is to use AI tools to support screening processes
 (including title and abstract screening) in systematic reviews and
-related literature reviews.
+related literature reviews. At the current stage, the main aim of the
+`AIscreenR` package is to support the use and testing of ChatGPT as a
+the second screener of titles and abstracts or alternatively to reduce
+research waste, i.e., the number of references needed to be screened by
+humans. The package allows user to apply OpenAI’s gpt models from the
+[https://api.openai.com/v1/chat/completions](https://platform.openai.com/docs/models/model-endpoint-compatibility)
+endpoint. In future developments, we expect to add further LLMs when
+APIs become available for other models. For now, we invite other
+researchers to test this software so that we as a review community can
+get a better understanding of the performance of the gpt models.
 
 ## Installation
 
@@ -240,5 +249,5 @@ sum_dat |> select(human_code, final_decision_gpt:final_decision_gpt_num)
 #>  8          0 Exclude                                 0
 #>  9          0 Exclude                                 0
 #> 10          0 Exclude                                 0
-#> 11          0 Exclude                                 0
+#> 11          0 Include                                 1
 ```

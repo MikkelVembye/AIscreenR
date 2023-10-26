@@ -19,8 +19,8 @@ print.chatgpt <- function(x, ...){
   all_data <- paste0(obj_name, "$answer_data_all\n\n")
   sum_data <- paste0(obj_name, "$answer_data_sum\n\n")
   sum_data2 <- paste0(obj_name, "$answer_data_sum\n")
-  price1 <- paste0(obj_name, "$price_dollor\n\n")
-  price2 <- paste0(obj_name, "$price_dollor\n")
+  price1 <- paste0(obj_name, "$price_dollar\n\n")
+  price2 <- paste0(obj_name, "$price_dollar\n")
 
   if ("error_data" %in% names(x)) err_data <- paste0(obj_name, "$error_data\n")
 

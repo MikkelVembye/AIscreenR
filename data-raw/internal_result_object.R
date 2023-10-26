@@ -32,7 +32,7 @@ plan(multisession)
 system.time(
   res_object1 <-
     tabscreen_gpt(
-      data = dat1[1:2,],
+      data = dat1,
       prompt = prompts,
       studyid = studyid,
       title = title,
@@ -40,13 +40,34 @@ system.time(
       model = c("gpt-3.5-turbo-0613", "gpt-3.5-turbo-0613", "gpt-4"),
       reps = c(1, 10, 1),
       rpm = c(10000, 10000, 200),
-      max_tries = 11
+      max_tries = 11,
+      top_p = c(0.001, 1)
     )
 )
-
-plan(sequential)
 
 result_object <- res_object1
 result_object_no_err <- result_object |> screen_errors()
 
-usethis::use_data(result_object, result_object_no_err, overwrite = TRUE, internal = TRUE)
+result_object$
+
+
+system.time(
+  res_object2 <-
+    tabscreen_gpt(
+      data = dat2,
+      prompt = prompts,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      model = c("gpt-3.5-turbo-0613", "gpt-3.5-turbo-0613", "gpt-4"),
+      reps = c(1, 10, 1),
+      rpm = c(10000, 10000, 200),
+      top_p = c(0.001, 1)
+    )
+)
+
+result_object2 <- res_object2
+result_object2_no_err <- result_object2 |> screen_errors()
+plan(sequential)
+
+usethis::use_data(result_object, result_object_no_err, result_object2_no_err, overwrite = TRUE, internal = TRUE)

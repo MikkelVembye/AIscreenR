@@ -186,14 +186,14 @@ approximate_price_gpt <-
         iterations = unique(iterations),
         input_price_dollar = sum(input_price, na.rm = TRUE),
         output_price_dollar = sum(output_price, na.rm = TRUE),
-        total_price_dollor = round(input_price_dollar + output_price_dollar, 4),
+        total_price_dollar = round(input_price_dollar + output_price_dollar, 4),
 
         .by = c(model, iterations)
 
       )
 
 
-    price <- sum(price_dat$total_price_dollor, na.rm = TRUE)
+    price <- sum(price_dat$total_price_dollar, na.rm = TRUE)
 
     res <- list(price_data = price_dat, price_dollar = price)
     class(res) <- c("list", "gpt_price")

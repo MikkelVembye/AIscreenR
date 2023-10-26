@@ -33,7 +33,7 @@ This vignette represent tentative work-in-progress only. The general applicabili
 </p></span>
 </div>
 
-The aim of the `AIscreenR` package is to support the use and testing of ChatGPT as a the second screener or alternatively to reduce research waste, i.e., the number of references needed to be screened by humans. At the current stage, the package allows user to apply OpenAI's gpt models from the [https://api.openai.com/v1/chat/completions](https://platform.openai.com/docs/models/model-endpoint-compatibility) endpoint. In future developments, we expect to add further LLMs when APIs become available for other models. For now, we invite other researchers to test this software so that we as a review community can get a better understanding of the performance of the gpt models. In this vignette, we show how a title and abstract screening with ChatGPT can be done in R. The advantages of conducting the screening with ChatGPT via R is 1) that reviewers can easily work with a large number of references, avoiding copy-paste procedures, 2) that the total screening time can be substantially increased relative to using the ChatGPT interface, and 3) that consistency between gpt answer for the same title and abstract can easily be tested. In this vignette, we also show the first proof of concept for the use of ChatGPT as a reliable second screener (see also Syriani et al., 2023). This goes without saying that ChatGPT works in all cases, and we think the tool should be use carefully and should always assisted by a human (human-in-the-loop). Consequently, we do not recommend to use ChatGPT as a single screener per se. If used to reduced the overall number of references needed to be screened, our tentative recommendation is to random sample approximately 10% of the studies excluded by gpt to check the accuracy of the screening.    
+In this vignette, we show how a title and abstract screening with ChatGPT can be done in R. The advantages of conducting the screening with ChatGPT via R is 1) that reviewers can easily work with a large number of references, avoiding copy-paste procedures, 2) that the total screening time can be substantially increased relative to using the ChatGPT interface, 3) that it eases model comparison, and 4) that consistency between gpt answer for the same title and abstract can easily be tested. In this vignette, we also show the first/initial proof of concept for the use of ChatGPT as a reliable second screener (see also Syriani et al., 2023). This goes without saying that ChatGPT works in all cases, and we think the tool should be use carefully and should always assisted by a human (human-in-the-loop). Consequently, we do not recommend to use ChatGPT as a single screener per se. If used to reduced the overall number of references needed to be screened, our tentative recommendation is to random sample approximately 10% of the studies excluded by gpt to check the accuracy of the screening.    
 
 ## Getting started: Loading relevant ris file data for screening
 At this stage, we expect that you have a pile of ris-files, containing titles and abstracts for the references you would like to screen. You can retrieve ris-files in several ways, either directly from research database, a Google Scholar search, or exported from your reference management tool, such as EndNote, Mendeley, and RefMan. Alternatively, you can export ris-file from systematic software tool such as [EPPI-reviewer](https://eppi.ioe.ac.uk/EPPIReviewer-Web/home), [Covidence](https://www.covidence.org/), [MetaReviewer](https://www.metareviewer.org/landing/index.html), [`revtools`](https://revtools.net/), or whatever software you use. In the example given below, we load ris-files extracted from the EPPI-reviewer. A minor advantage of extracting ris-files from systematic software tools is that they add a unique study ID for each reference. This feature makes it easier to keep track of the screening. Yet, such ID can be generated in R as well, and is automatically generated in the `tabscreen_gpt()` function when unique IDs are not provided. When using ChatGPT as the second screener, we recommend that the human screening has been done before uploading to R. Thereby, it is possible to compare the screenings instantly after the computer screening has been done. In the below example we load ris-files separately for excluded and included ris-files, respectively, and add the `human_code` variable that tracks the human decision.   
@@ -308,9 +308,6 @@ models <- c("gpt-3.5-turbo-0613", "gpt-3.5-turbo-0613", "gpt-4")
 ```
 
 ```{r}
-models <- c("gpt-3.5-turbo-0613", "gpt-3.5-turbo-0613", "gpt-4")
-reps <- c(1, 10, 1)
-
 app_obj <- 
   approximate_price_gpt(
     data = filges2015_dat, # Tutorial data embedded in the package
@@ -318,8 +315,9 @@ app_obj <-
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
     abstract = abstract, # indicate the variable with the abstracts in the data
-    model = models,
-    reps = reps
+    model = c("gpt-3.5-turbo-0613", "gpt-3.5-turbo-0613", "gpt-4"),
+    reps = c(1, 10, 1),
+    top_p = c(0.001, 1)
   )
 
 app_obj
@@ -344,11 +342,12 @@ result_object <-
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
     abstract = abstract, # indicate the variable with the abstracts in the data,
-    model = models,
-    reps = reps,
-    rpm = rpm
+    model = c("gpt-3.5-turbo-0613", "gpt-3.5-turbo-0613", "gpt-4"),
+    reps = c(1, 10, 1),
+    rpm = c(10000, 10000, 200),
+    top_p = c(0.001, 1)
   )
-#> * The approximate price of the current (simple) screening will be around $28.0678.
+#> * The approximate price of the current (simple) screening will be around $27.9901.
 #> * Consider removing references that has no abstract since these can distort the accuracy of the screening
 #>  Progress: ──────────────────────────────────────────────────────────────────────────────────────────── 100%
 #>  * NOTE: Requests failed 4 times."
@@ -363,7 +362,7 @@ print(result_object)
 #>  result_object$answer_data_sum
 #> 
 #> Find total price for the screening by executing
-#>  result_object$price_dollor
+#>  result_object$price_dollar
 #> 
 #> Find error data by executing
 #>  result_object$error_data
@@ -384,7 +383,7 @@ print(result_object)
 #>  result_object$answer_data_sum
 #> 
 #> Find total price for the screening by executing
-#>  result_object$price_dollor
+#>  result_object$price_dollar
 ```
 
 ```{r, echo=FALSE}
@@ -395,29 +394,17 @@ result_object <- AIscreenR:::result_object_no_err
 ## Getting the results from the screening
 
 ```{r}
-# gpt-3.5 results (prompt 1 - 10 replications)
+# gpt-3.5 results (prompt 1, top_p = 1, 10 replications)
 # studyid = 21 is not included since it failed during the loop
 # I show how to recover this in another 
 sum_dat_gpt3 <- 
   result_object$answer_data_sum |> 
-  filter(stringr::str_detect(model, "3") & promptid == 1 & reps == 10)
+  filter(stringr::str_detect(model, "3") & promptid == 1 & reps == 10 & top_p == 1)
 
-# gpt-4 results (prompt 1)
+# gpt-4 results (prompt 1, top_p = 1)
 sum_dat_gpt4 <- 
   result_object$answer_data_sum |> 
-  filter(stringr::str_detect(model, "4") & promptid == 1)
-
-```
-
-```{r, include = FALSE, eval = FALSE}
-sum_dat_gpt3 <- 
-  result_object$answer_data_sum |> 
-  filter(stringr::str_detect(model, "3"))
-  
-# gpt-4 results
-sum_dat_gpt4 <- 
-  result_object$answer_data_sum |> 
-  filter(stringr::str_detect(model, "4") & !is.na(final_decision_gpt))
+  filter(stringr::str_detect(model, "4") & promptid == 1 & top_p == 1)
 
 ```
 

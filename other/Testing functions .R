@@ -72,7 +72,7 @@ for non-opioid drug use?"
 
 
 app_obj <- approximate_price_gpt(
-  data = filges2015_dat[c(2),],
+  data = filges2015_dat[1:2,],
   prompt = c(prompt),
   studyid = studyid,
   title = title,
@@ -99,11 +99,11 @@ test_obj <- tabscreen_gpt(
   title = title, # indicate the variable with the titles in the data
   abstract = abstract,
   model = c("gpt-3.5-turbo-0613"),
-  reps = 10,
+  reps = 2
   #reps = c(2, 1, 1),
   #top_p = c(0.2, 1),
-  functions = AIscreenR:::incl_function,
-  function_call_name = list(name = "inclusion_decision")
+  #functions = AIscreenR:::incl_function,
+  #function_call_name = list(name = "inclusion_decision")
   #max_tries = 12
   #reps = 1 # Number of times the same question is asked to ChatGPT
   #max_tokens = 40
@@ -158,6 +158,7 @@ is_chatgpt_tbl(error_test_dat2)
 
 test_error_obj <- tabscreen_gpt(error_test_dat2, api_key = 1234)
 test_error_obj
+
 
 
 

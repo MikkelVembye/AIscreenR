@@ -678,13 +678,13 @@ tabscreen_gpt <- function(
         iterations = unique(iterations),
         input_price_dollar = sum(input_price, na.rm = TRUE),
         output_price_dollar = sum(output_price, na.rm = TRUE),
-        total_price_dollor = round(input_price_dollar + output_price_dollar, 4),
+        total_price_dollar = round(input_price_dollar + output_price_dollar, 4),
 
         .by = c(model, iterations)
 
       )
 
-    app_price <- sum(app_price_dat$total_price_dollor, na.rm = TRUE)
+    app_price <- sum(app_price_dat$total_price_dollar, na.rm = TRUE)
 
 
     if (messages){
