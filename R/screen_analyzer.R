@@ -99,6 +99,10 @@ screen_analyzer <- function(x, human_decision = human_code){
       # Eq. 5 (Syriani et al., 2023)
       specificity = human_ex_gpt_ex / (human_ex_gpt_ex + human_ex_gpt_in),
 
+      .by = c(promptid, model, reps, top_p)
+    ) |>
+    rowwise() |>
+    mutate(
       # Eq. 6 (Syriani et al., 2023)
       bacc = (recall + specificity)/2,
       # Eq. 7 (Syriani et al., 2023)
@@ -132,10 +136,9 @@ screen_analyzer <- function(x, human_decision = human_code){
         irr > .9 ~ "Almost perfect",
         TRUE ~ NA_character_
 
-      ),
-
-      .by = c(promptid, model, reps, top_p)
+      )
     ) |>
+    ungroup() |>
     select(-c(rm1:pe, nominator:denominator))
 
 
