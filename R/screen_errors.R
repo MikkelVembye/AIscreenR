@@ -18,7 +18,7 @@
 #' @param max_tries,max_seconds 'Cap the maximum number of attempts with
 #'  `max_tries` or the total elapsed time from the first request with
 #'  `max_seconds`. If neither option is supplied (the default), [req_perform()]
-#'  will not retry' (Wickham, 2023). If missing, the values of `max_tries` and `max_seconds`
+#'  will not retry' (Wickham, 2023). Default `max_tries` is 4. If missing, the value of `max_seconds`
 #'  from the original screening (e.g., conducted with [tabscreen_gpt()]) will be used.
 #' @param is_transient 'A predicate function that takes a single argument
 #'  (the response) and returns `TRUE` or `FALSE` specifying whether or not
@@ -74,7 +74,7 @@ screen_errors <- function(
     object,
     ...,
     api_key = get_api_key(),
-    max_tries,
+    max_tries = 4,
     max_seconds,
     is_transient,
     backoff,
@@ -101,7 +101,7 @@ screen_errors <- function(
     function_call_name <- object$arguments_used$function_call_name
     time_info <- object$arguments_used$time_info
     token_info <- object$arguments_used$token_info
-    max_tries <- if (missing(max_tries)) object$arguments_used$max_tries else max_tries
+    #max_tries <- if (missing(max_tries)) object$arguments_used$max_tries else max_tries
     max_seconds <- if (missing(max_seconds)) object$arguments_used$max_seconds else max_seconds
     is_transient <- if (missing(is_transient)) object$arguments_used$is_transient else is_transient
     backoff <- if (missing(backoff)) object$arguments_used$backoff else backoff
@@ -151,6 +151,29 @@ screen_errors <- function(
     # Consider !is.na(n) if errors appear
     error_dat <- object$error_data
 
+    if(any(stringr::str_detect(error_dat$decision_gpt, "400"))){
+
+      error_400_dat <-
+        error_dat |>
+        filter(stringr::str_detect(decision_gpt, "400")) |>
+        mutate(
+          # Help needed to find a more smooth and generic solution
+          question = base::gsub("<.*?>", "", question),
+          question = stringr::str_remove_all(question, "[:punct:]|[:symbol:]"),
+          question = stringr::str_remove_all(question, "\\&")
+        )
+
+      error_other_dat <-
+        error_dat |>
+        filter(!stringr::str_detect(decision_gpt, "400"))
+
+      error_dat <-
+        bind_rows(error_400_dat, error_other_dat) |>
+        arrange(promptid, model, topp, iterations, studyid, n)
+
+    }
+
+
     error_recoved_dat <-
       tabscreen_gpt(
         data = error_dat,
@@ -161,6 +184,7 @@ screen_errors <- function(
         time_info = time_info,
         token_info = token_info,
         max_tries = max_tries,
+        max_seconds = max_seconds,
         is_transient = is_transient,
         backoff = backoff,
         after = after,

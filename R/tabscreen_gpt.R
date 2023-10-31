@@ -440,7 +440,7 @@ tabscreen_gpt <- function(
         purrr::possibly(
           ask_gpt_engine,
           otherwise = tibble::tibble(
-            decision_gpt = "Error [future_map failied]",
+            decision_gpt = "Error [possibly a JSON error]",
             decision_binary = NA_real_,
             prompt_tokens = p_tokens,
             completion_tokens = c_tokens,
@@ -456,7 +456,7 @@ tabscreen_gpt <- function(
         purrr::possibly(
           ask_gpt_engine,
           otherwise = tibble::tibble(
-            decision_gpt = "Error [future_map failied]",
+            decision_gpt = "Error [possibly a JSON error]",
             detailed_description = NA_character_,
             decision_binary = NA_real_,
             prompt_tokens = p_tokens,
@@ -528,7 +528,7 @@ tabscreen_gpt <- function(
 #        purrr::possibly(
 #          ask_gpt,
 #          otherwise = tibble::tibble(
-#            decision_gpt = "future_map failied",
+#            decision_gpt = "JSON error",
 #            decision_binary = NA_real_,
 #            prompt_tokens = p_tokens,
 #            completion_tokens = c_tokens,
@@ -545,7 +545,7 @@ tabscreen_gpt <- function(
 #        purrr::possibly(
 #          ask_gpt,
 #          otherwise = tibble::tibble(
-#            decision_gpt = "future_map failied",
+#            decision_gpt = "JSON error",
 #            detailed_description = NA_character_,
 #            decision_binary = NA_real_,
 #            prompt_tokens = p_tokens,
@@ -1080,7 +1080,7 @@ status_code_text <- function(){
 
     text <- paste("Error", code)
 
-    if (code == 400) text <- paste("Error", code, "Bad request [check body parameters]")
+    if (code == 400) text <- paste("Error", code, "Bad request [check/clean body parameters]")
     if (code == 401) text <- paste("Error", code, "Unauthorized [invalid api]")
     if (code == 404) text <- paste("Error", code, "[check gpt model]")
     if (code == 429 | code == 500) text <- paste("Error", code, check_string)
@@ -1104,7 +1104,7 @@ status_code_text <- function(){
 #}
 
 gpt_is_transient <- function(resp){
-  status_code() %in% c(400, 429, 500:503)
+  status_code() %in% c(429, 500:503)
 }
 
 
