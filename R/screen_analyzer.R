@@ -80,8 +80,8 @@ screen_analyzer <- function(x, human_decision = human_code){
     filter(!is.na(final_decision_gpt_num)) |>
     summarise(
       n_screened = n(),
-      n_missing = if_else(stringr::str_detect(unique(model), "4"), unique(n_ref) - n_screened, max(unique(n_mis_answers), na.rm = TRUE), missing = NA_real_),
       n_refs = unique(n_ref),
+      n_missing = n_refs - n_screened,
       human_in_gpt_ex = sum(if_else({{ human_decision }} == 1 & final_decision_gpt_num == 0, 1, 0, missing = NA), na.rm = TRUE),
       human_ex_gpt_in = sum(if_else({{ human_decision }}  == 0 & final_decision_gpt_num == 1, 1, 0, missing = NA), na.rm = TRUE),
       human_in_gpt_in = sum(if_else({{ human_decision }}  == 1 & final_decision_gpt_num == 1, 1, 0, missing = NA), na.rm = TRUE),
@@ -139,7 +139,8 @@ screen_analyzer <- function(x, human_decision = human_code){
       )
     ) |>
     ungroup() |>
-    select(-c(rm1:pe, nominator:denominator))
+    select(-c(rm1:pe, nominator:denominator)) |>
+    relocate(n_refs, .before = n_screened)
 
 
   res
