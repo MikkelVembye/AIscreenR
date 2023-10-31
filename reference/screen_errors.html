@@ -14,7 +14,7 @@ This function supports re-screening of all failed title and abstract requests.">
     
     <a class="navbar-brand me-2" href="../index.html">AIscreenR</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Unreleased version">0.0.0.9012</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Unreleased version">0.0.0.9013</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@ This function supports re-screening of all failed title and abstract requests.">
 <span>  <span class="va">object</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="get_api_key.html">get_api_key</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  <span class="va">max_tries</span>,</span>
+<span>  max_tries <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>  <span class="va">max_seconds</span>,</span>
 <span>  <span class="va">is_transient</span>,</span>
 <span>  <span class="va">backoff</span>,</span>
@@ -94,7 +94,7 @@ must be specified again here.</p></dd>
 <dd><p>'Cap the maximum number of attempts with
 <code>max_tries</code> or the total elapsed time from the first request with
 <code>max_seconds</code>. If neither option is supplied (the default), <code>req_perform()</code>
-will not retry' (Wickham, 2023). If missing, the values of <code>max_tries</code> and <code>max_seconds</code>
+will not retry' (Wickham, 2023). Default <code>max_tries</code> is 4. If missing, the value of <code>max_seconds</code>
 from the original screening (e.g., conducted with <code><a href="tabscreen_gpt.html">tabscreen_gpt()</a></code>) will be used.</p></dd>
 
 
