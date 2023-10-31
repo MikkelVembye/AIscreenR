@@ -159,8 +159,31 @@ is_chatgpt_tbl(error_test_dat2)
 test_error_obj <- tabscreen_gpt(error_test_dat2, api_key = 1234)
 test_error_obj
 
+FFT_res2 <- readRDS("R:/Chatgpt in R/FFT/FFT_res2.rds")
 
+library(future)
+plan(multisession)
+FFT_no_err <-
+  FFT_res2 |>
+  screen_errors()
+plan(sequential)
 
+plan(multisession)
+FFT_no_err <-
+  FFT_no_err |>
+  screen_errors()
+plan(sequential)
 
+FFT_res2$error_data |>
+  filter(stringr::str_detect(decision_gpt, "400")) |>
+  pull(studyid) |>
+  unique()
 
+recovered <- FFT_res2$error_data |>
+  filter(stringr::str_detect(decision_gpt, "400")) |>
+  mutate(
+    question = base::gsub("<.*?>", "", question),
+    question = stringr::str_remove_all(question, "[:punct:]|[:symbol:]"),
+    question = stringr::str_remove_all(question, "\\&")
+  )
 

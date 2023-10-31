@@ -153,23 +153,53 @@ screen_errors <- function(
 
     if(any(stringr::str_detect(error_dat$decision_gpt, "400"))){
 
+      # IDs for studies with HTTP 400 error
+      studyid_filter <-
+        error_dat |>
+        filter(stringr::str_detect(decision_gpt, "400")) |>
+        pull(studyid) |>
+        unique()
+
+      # Error data
       error_400_dat <-
         error_dat |>
         filter(stringr::str_detect(decision_gpt, "400")) |>
         mutate(
-          # Help needed to find a more smooth and generic solution
           question = base::gsub("<.*?>", "", question),
           question = stringr::str_remove_all(question, "[:punct:]|[:symbol:]"),
           question = stringr::str_remove_all(question, "\\&")
         )
 
+
       error_other_dat <-
         error_dat |>
-        filter(!stringr::str_detect(decision_gpt, "400"))
+        filter(!stringr::str_detect(decision_gpt, "400")) |>
+        mutate(
+          question = if_else(studyid %in% studyid_filter, base::gsub("<.*?>", "", question), question),
+          question = if_else(studyid %in% studyid_filter, stringr::str_remove_all(question, "[:punct:]|[:symbol:]"), question),
+          question = if_else(studyid %in% studyid_filter, stringr::str_remove_all(question, "\\&"), question)
+        )
 
       error_dat <-
         bind_rows(error_400_dat, error_other_dat) |>
         arrange(promptid, model, topp, iterations, studyid, n)
+
+      # Aligning all and sum data set
+      object$answer_data_all <-
+        object$answer_data_all |>
+        mutate(
+          question = if_else(studyid %in% studyid_filter, base::gsub("<.*?>", "", question), question),
+          question = if_else(studyid %in% studyid_filter, stringr::str_remove_all(question, "[:punct:]|[:symbol:]"), question),
+          question = if_else(studyid %in% studyid_filter, stringr::str_remove_all(question, "\\&"), question)
+        )
+
+      object$answer_data_sum <-
+        object$answer_data_sum |>
+        mutate(
+          question = if_else(studyid %in% studyid_filter, base::gsub("<.*?>", "", question), question),
+          question = if_else(studyid %in% studyid_filter, stringr::str_remove_all(question, "[:punct:]|[:symbol:]"), question),
+          question = if_else(studyid %in% studyid_filter, stringr::str_remove_all(question, "\\&"), question)
+        )
 
     }
 
