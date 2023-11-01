@@ -1,4 +1,4 @@
-paths <- system.file("extdata", c("word_pormpt_1.docx", "word_pormpt_2.docx"), package = "AIscreenR")
+paths <- system.file("extdata", c("word_prompt_1.docx", "word_prompt_2.docx"), package = "AIscreenR")
 
 prompts <-
   purrr::map_chr(

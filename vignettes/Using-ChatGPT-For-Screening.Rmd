@@ -251,7 +251,7 @@ knitr::include_graphics("helper-stuff/wordprompt2.png")
 \ 
 
 ```{r}
-word_path <-  system.file("extdata", "word_pormpt_1.docx", package = "AIscreenR")
+word_path <-  system.file("extdata", "word_prompt_1.docx", package = "AIscreenR")
 
 prompt1 <- 
   readtext::readtext(word_path)$text |> 
@@ -260,7 +260,7 @@ prompt1 <-
 prompt1
 
 # Working with multiple prompts
-word_paths <- system.file("extdata", c("word_pormpt_1.docx", "word_pormpt_2.docx"), package = "AIscreenR")
+word_paths <- system.file("extdata", c("word_prompt_1.docx", "word_prompt_2.docx"), package = "AIscreenR")
 
 prompts <- 
   purrr::map_chr(
