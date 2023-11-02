@@ -292,7 +292,7 @@ tabscreen_gpt <- function(
     detailed <- body$function_call$name == "inclusion_decision"
 
     if (RPM > 10000) RPM <- 10000
-    if (RPM > 200 && stringr::str_detect(body$model, "gpt-4")) RPM <- 200
+    #if (RPM > 200 && stringr::str_detect(body$model, "gpt-4")) RPM <- 200
 
     if (max_t == 0) max_t <- is_trans <- NULL
 
