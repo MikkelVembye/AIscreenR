@@ -29,7 +29,7 @@ options(dplyr.summarise.inform = FALSE) # Avoids summarize info from tidyverse
 <p style='margin-top:1em; text-align:center'>
 <b>Important note</b></p>
 <p style='margin:1em'>
-This vignette represent tentative work-in-progress only. The general applicability and efficacy of using large-language models (LLMs) including ChatGPT for title and abstract screening in literature reviews are still rather limited (Syriani et al., 2023). Our first results suggest that ChatGPT can be a reliable second screener when reviewing specific and well defined interventions. The first evidence of this is shown in this vignette. However, be aware that our first results are based on a retrospective analysis which might not generalize to prospective screenings where ChatGPT potentially has not been trained on that reference data, that is data added to the internet after 2021. Also note that the result presented here are for tutorial purposes only. Hard inferences about the relative efficacy of the used gpt models should be avoided. 
+This vignette represent tentative work-in-progress only. The general applicability and efficacy of using large-language models (LLMs) including ChatGPT for title and abstract screening in literature reviews are still rather limited (Syriani et al., 2023). Our first results suggest that ChatGPT can be a reliable second screener when reviewing specific and well defined interventions. The first evidence of this is shown in this vignette. Also note that the result presented here are for tutorial purposes only. Hard inferences about the relative efficacy of the used gpt models should be avoided. 
 </p></span>
 </div>
 
