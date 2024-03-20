@@ -41,7 +41,7 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="articles/Using-ChatGPT-For-Screening.html">Using ChatGPT for Title and Abstract Screening in Systematic Reviews</a>
+    <a class="dropdown-item" href="articles/Using-ChatGPT-For-Screening.html">Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews</a>
   </div>
 </li>
 <li class="nav-item">
@@ -72,7 +72,7 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>The goal of AIscreenR is to use AI tools to support screening processes (including title and abstract screening) in systematic reviews and related literature reviews. At the current stage, the main aim of the <code>AIscreenR</code> package is to support the use and testing of ChatGPT as a the second screener of titles and abstracts or alternatively to reduce research waste, i.e., the number of references needed to be screened by humans. The package allows user to apply OpenAI’s gpt models from the <a href="https://platform.openai.com/docs/models/model-endpoint-compatibility" class="external-link">https://api.openai.com/v1/chat/completions</a> endpoint. In future developments, we expect to add further LLMs when APIs become available for other models. For now, we invite other researchers to test this software so that we as a review community can get a better understanding of the performance of the gpt models.</p>
+<p>The goal of AIscreenR is to use AI tools to support screening processes (including title and abstract screening) in systematic reviews and related literature reviews. At the current stage, the main aim of the <code>AIscreenR</code> package is to support the use and testing of OpenAI’s GPT API models as the second screeners of titles and abstracts or alternatively to reduce research waste, i.e., the number of references needed to be screened by humans. The package allows user to apply OpenAI’s GPT API models from the <a href="https://platform.openai.com/docs/models/model-endpoint-compatibility" class="external-link">https://api.openai.com/v1/chat/completions</a> endpoint. In future developments, we expect to add further LLMs when APIs become available for other models, for example from Claude 2. For now, we invite other researchers to test this software so that we as a review community can get a better understanding of the performance of OpenAI’s GPT API models.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -101,7 +101,7 @@
 <span><span class="co">#&gt; # A tibble: 1 × 3</span></span>
 <span><span class="co">#&gt;   model              requests_per_minute tokens_per_minute</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;                            &lt;dbl&gt;             &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 gpt-3.5-turbo-0613               10000           1000000</span></span>
+<span><span class="co">#&gt; 1 gpt-3.5-turbo-0613               10000           2000000</span></span>
 <span></span>
 <span><span class="co"># Obtain rate limits info across multiple models</span></span>
 <span><span class="va">rate_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span>model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-4"</span><span class="op">)</span><span class="op">)</span></span>
@@ -109,8 +109,8 @@
 <span><span class="co">#&gt; # A tibble: 2 × 3</span></span>
 <span><span class="co">#&gt;   model              requests_per_minute tokens_per_minute</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;                            &lt;dbl&gt;             &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 gpt-3.5-turbo-0613               10000           1000000</span></span>
-<span><span class="co">#&gt; 2 gpt-4                              200             10000</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 gpt-3.5-turbo-0613               10000           2000000</span></span>
+<span><span class="co">#&gt; 2 gpt-4                            10000            300000</span></span></code></pre></div>
 <p>How to load ris files. In this example we have downloaded the ris files from the <a href="https://eppi.ioe.ac.uk/EPPIReviewer-Web/home" class="external-link">EPPI-Reviewer</a>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Loading ris file data via revtools</span></span>
@@ -145,21 +145,8 @@
 <span><span class="co">#&gt;  8 9432040 Pictorial cognitive task solving and dynamics of… "AIMS: …          0</span></span>
 <span><span class="co">#&gt;  9 9434093 Enhancing the Impact of Parent Training Through … "New an…          0</span></span>
 <span><span class="co">#&gt; 10 9431505 EEG spectrum as information carrier               "Sponta…          0</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 10 × 6</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    author                              eppi_id studyid title abstract human_code</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;                               &lt;chr&gt;     &lt;int&gt; &lt;chr&gt; &lt;chr&gt;         &lt;dbl&gt;</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1 Holloway R G and Gramling R and Ke… 9434957       1 Esti… "Progno…          0</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2 Morawska Alina and Stallman Helen … 9433838       2 Self… "Behavi…          0</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3 Michel C M and Pascual-Marqui R D … 9431171       3 Freq… "The to…          0</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4 Paul Howard A                       9433968       4 A Re… "The ar…          0</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5 Feinberg I and De Bie E and Davis … 9434460       5 Topo… "STUDY …          0</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 Hamburg Sam R                       9433554       6 BOOK… "The ar…          0</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7 Park H Y and Lee B J and Kim J H a… 9435130       7 Rapi… "Backgr…          0</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 Petrek J                            9432040       8 Pict… "AIMS: …          0</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 Schwartzman Meredith P and Wahler … 9434093       9 Enha… "New an…          0</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 Faber J and Srutova L and Pilarova… 9431505      10 EEG … "Sponta…          0</span></span></code></pre></div>
 <p>Example of how to enter a prompt. Can also be done in word (see vignette).</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">prompt</span> <span class="op">&lt;-</span> <span class="st">"Evaluate the following study based on the selection criteria</span></span>
 <span><span class="st">for a systematic review on the effects of family-based interventions on drug abuse</span></span>
 <span><span class="st">reduction for young people in treatment for non-opioid drug use.</span></span>
@@ -186,7 +173,7 @@
 <span><span class="st">2) Are the participants in outpatient drug treatment primarily</span></span>
 <span><span class="st">for non-opioid drug use? 3) Are the participants within age 11–21?"</span></span></code></pre></div>
 <p>Approximate price of screening</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">app_obj</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu"><a href="reference/approximate_price_gpt.html">approximate_price_gpt</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">filges2015_dat</span>,</span>
@@ -205,11 +192,11 @@
 <span><span class="co">#&gt; [1] 4.477</span></span>
 <span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_data</span></span>
 <span><span class="co">#&gt; # A tibble: 1 × 5</span></span>
-<span><span class="co">#&gt;   model     iterations input_price_dollar output_price_dollar total_price_dollor</span></span>
+<span><span class="co">#&gt;   model     iterations input_price_dollar output_price_dollar total_price_dollar</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;          &lt;dbl&gt;              &lt;dbl&gt;               &lt;dbl&gt;              &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt; 1 gpt-3.5-…         10               4.42              0.0594               4.48</span></span></code></pre></div>
 <p>Example of how to conduct simple screening, getting return 1 if a reference should be included, 0 if excluded, and 1.1 if a firm decision cannot be reached.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Subsetting the number of references to speed up the tutorial screening</span></span>
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span><span class="op">)</span></span>
 <span><span class="va">test_obj</span> <span class="op">&lt;-</span> </span>
@@ -232,7 +219,7 @@
 <span><span class="co">#&gt;  x$answer_data_sum</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Find total price for the screening by executing</span></span>
-<span><span class="co">#&gt;  x$price_dollor</span></span>
+<span><span class="co">#&gt;  x$price_dollar</span></span>
 <span></span>
 <span><span class="co"># Data sets in object</span></span>
 <span><span class="va">price_dat</span> <span class="op">&lt;-</span> <span class="va">test_obj</span><span class="op">$</span><span class="va">price_dat</span></span>
@@ -276,7 +263,7 @@
 <span><span class="co">#&gt;  8          0 Exclude                                 0</span></span>
 <span><span class="co">#&gt;  9          0 Exclude                                 0</span></span>
 <span><span class="co">#&gt; 10          0 Exclude                                 0</span></span>
-<span><span class="co">#&gt; 11          0 Include                                 1</span></span></code></pre></div>
+<span><span class="co">#&gt; 11          0 Exclude                                 0</span></span></code></pre></div>
 </div>
 </div>
 
