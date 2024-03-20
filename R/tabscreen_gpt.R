@@ -1,5 +1,5 @@
 
-#' @title Title and abstract screening with ChatGPT using function calls.
+#' @title Title and abstract screening with GPT API models using function calls.
 #'
 #' @description
 #' `r lifecycle::badge("stable")`<br>
@@ -80,10 +80,14 @@
 #'   above which studies should be check by a human. Default is 0.4, which means
 #'   that if you ask ChatGPT the same questions 10 times and it includes the
 #'   title and abstract 4 times, we suggest that the study should be check by a human.
+#' @param force Logical argument indicating whether to force the function to use more than
+#'   10 iterations for gpt-3.5 models and more than 1 iteration for gpt-4 models.
+#'   This argument is developed to avoid the conduct of wrong and extreme sized screening.
+#'   Default is `FALSE`.
 #'
 #' @return An object of class \code{"chatgpt"}. The object is a list containing the following
 #' components:
-#' \item{answer_data_sum}{dataset with the summerized, probalistic inclusion decision
+#' \item{answer_data_sum}{dataset with the summarized, probabilistic inclusion decision
 #' for each title and abstract across multiple repeated questions.}
 #' \item{answer_data_all}{dataset with all individual answers.}
 #' \item{price}{numerical value indicating the total price (in USD) of the screening.}
@@ -212,10 +216,31 @@ tabscreen_gpt <- function(
   progress = TRUE,
   messages = TRUE,
   incl_cutoff_upper = 0.5,
-  incl_cutoff_lower = incl_cutoff_upper - 0.1
+  incl_cutoff_lower = incl_cutoff_upper - 0.1,
+  force = FALSE
   ){
 
   # Stop warnings
+  if (max(reps) > 10 && !force){
+    max_reps_mes <- paste("* Are you sure you want to use", max(reps), "iterations? If so, set force = TRUE")
+    stop(max_reps_mes)
+  }
+
+  if (any(stringr::str_detect(model, "gpt-4")) && max(reps) > 1 && !force){
+
+    gpt4_reps <- tibble::tibble(model, reps) |> filter(stringr::str_detect(model, "gpt-4")) |> pull(reps) |> max()
+
+    if (gpt4_reps > 1){
+
+      max_reps_mes_gpt4 <-
+        paste("* Are you sure you want to use", gpt4_reps, "iterations with gpt-4?",
+              "If so, set force = TRUE")
+      stop(max_reps_mes_gpt4)
+
+    }
+
+  }
+
   if (length(rpm) > 1 && length(model) != length(rpm)){
     stop("model and rpm must be of the same length.")
   }
@@ -245,6 +270,7 @@ tabscreen_gpt <- function(
     model <- unique(model)
   }
 
+  # Collecting all arguments to be used in the screen_errors function
   arg_list <-
     list(
       role = role,
@@ -700,9 +726,9 @@ tabscreen_gpt <- function(
         )
       }
 
-      if (any(stringr::str_detect(model, "gpt-4")) && max_reps_gpt4 > 1){
-        message("* Consider to reduce reps to 1 for gpt-4 models.")
-      }
+#      if (any(stringr::str_detect(model, "gpt-4")) && max_reps_gpt4 > 1){
+#        message("* Consider to reduce reps to 1 for gpt-4 models.")
+#      }
 
 
       if ("No information" %in% unique(question_dat$abstract)) {
@@ -715,26 +741,27 @@ tabscreen_gpt <- function(
       }
     }
 
-    if (!messages && any(stringr::str_detect(model, "gpt-4"))){
 
-      warn <- "* Be aware that using gpt-4 models cost at least 10 times more than gpt-3.5 models.\n"
-      price <- paste0("* The approximate price of the current (simple) screening will be around $", app_price, ".")
-
-      if (functions[[1]]$name == "inclusion_decision"){
-        detail_mess <- paste0(
-          "\n* Be aware that getting detailed reponses from ChatGPT ",
-          "will substantially increase the prize of the screening relative to the noted approximate prize."
-        )
-      } else {
-        detail_mess <- NULL
-      }
-
-      extra_mes <- if (max_reps_gpt4 > 1) "\n* Consider to reduce reps to 1 for gpt-4 models." else NULL
-      warn_message <- paste0(warn, price, detail_mess, extra_mes)
-
-      message(warn_message)
-
-    }
+#    if (!messages && any(stringr::str_detect(model, "gpt-4")) && max_reps_gpt4 > 1){
+#
+#      warn <- "* Be aware that using gpt-4 models cost at least 10 times more than gpt-3.5 models.\n"
+#      price <- paste0("* The approximate price of the current (simple) screening will be around $", app_price, ".")
+#
+#      if (functions[[1]]$name == "inclusion_decision"){
+#        detail_mess <- paste0(
+#          "\n* Be aware that getting detailed reponses from ChatGPT ",
+#          "will substantially increase the prize of the screening relative to the noted approximate prize."
+#        )
+#      } else {
+#        detail_mess <- NULL
+#      }
+#
+#      reps_mes <- "\n* Consider to reduce reps to 1 for gpt-4 models." else NULL
+#      warn_message <- paste0(warn, price, detail_mess, reps_mes)
+#
+#      message(warn_message)
+#
+#    }
 
     # RUNNING QUESTIONS
     furrr_seed <- if (is.null(seed)) TRUE else NULL

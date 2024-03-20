@@ -2,7 +2,7 @@
 % Please edit documentation in R/tabscreen_gpt.R
 \name{tabscreen_gpt}
 \alias{tabscreen_gpt}
-\title{Title and abstract screening with ChatGPT using function calls.}
+\title{Title and abstract screening with GPT API models using function calls.}
 \usage{
 tabscreen_gpt(
   data,
@@ -30,7 +30,8 @@ tabscreen_gpt(
   progress = TRUE,
   messages = TRUE,
   incl_cutoff_upper = 0.5,
-  incl_cutoff_lower = incl_cutoff_upper - 0.1
+  incl_cutoff_lower = incl_cutoff_upper - 0.1,
+  force = FALSE
 )
 }
 \arguments{
@@ -130,11 +131,16 @@ should be included.}
 above which studies should be check by a human. Default is 0.4, which means
 that if you ask ChatGPT the same questions 10 times and it includes the
 title and abstract 4 times, we suggest that the study should be check by a human.}
+
+\item{force}{Logical argument indicating whether to force the function to use more than
+10 iterations for gpt-3.5 models and more than 1 iteration for gpt-4 models.
+This argument is developed to avoid the conduct of wrong and extreme sized screening.
+Default is \code{FALSE}.}
 }
 \value{
 An object of class \code{"chatgpt"}. The object is a list containing the following
 components:
-\item{answer_data_sum}{dataset with the summerized, probalistic inclusion decision
+\item{answer_data_sum}{dataset with the summarized, probabilistic inclusion decision
 for each title and abstract across multiple repeated questions.}
 \item{answer_data_all}{dataset with all individual answers.}
 \item{price}{numerical value indicating the total price (in USD) of the screening.}

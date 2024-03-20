@@ -15,15 +15,17 @@ coverage](https://codecov.io/gh/MikkelVembye/AIscreenR/branch/main/graph/badge.s
 The goal of AIscreenR is to use AI tools to support screening processes
 (including title and abstract screening) in systematic reviews and
 related literature reviews. At the current stage, the main aim of the
-`AIscreenR` package is to support the use and testing of ChatGPT as a
-the second screener of titles and abstracts or alternatively to reduce
-research waste, i.e., the number of references needed to be screened by
-humans. The package allows user to apply OpenAI’s gpt models from the
+`AIscreenR` package is to support the use and testing of OpenAI’s GPT
+API models as the second screeners of titles and abstracts or
+alternatively to reduce research waste, i.e., the number of references
+needed to be screened by humans. The package allows user to apply
+OpenAI’s GPT API models from the
 [https://api.openai.com/v1/chat/completions](https://platform.openai.com/docs/models/model-endpoint-compatibility)
 endpoint. In future developments, we expect to add further LLMs when
-APIs become available for other models. For now, we invite other
-researchers to test this software so that we as a review community can
-get a better understanding of the performance of the gpt models.
+APIs become available for other models, for example from Claude 2. For
+now, we invite other researchers to test this software so that we as a
+review community can get a better understanding of the performance of
+OpenAI’s GPT API models.
 
 ## Installation
 
@@ -57,7 +59,7 @@ rate_limits
 #> # A tibble: 1 × 3
 #>   model              requests_per_minute tokens_per_minute
 #>   <chr>                            <dbl>             <dbl>
-#> 1 gpt-3.5-turbo-0613               10000           1000000
+#> 1 gpt-3.5-turbo-0613               10000           2000000
 
 # Obtain rate limits info across multiple models
 rate_limits <- rate_limits_per_minute(model = c("gpt-3.5-turbo-0613", "gpt-4"))
@@ -65,8 +67,8 @@ rate_limits
 #> # A tibble: 2 × 3
 #>   model              requests_per_minute tokens_per_minute
 #>   <chr>                            <dbl>             <dbl>
-#> 1 gpt-3.5-turbo-0613               10000           1000000
-#> 2 gpt-4                              200             10000
+#> 1 gpt-3.5-turbo-0613               10000           2000000
+#> 2 gpt-4                            10000            300000
 ```
 
 How to load ris files. In this example we have downloaded the ris files
@@ -106,20 +108,6 @@ head(filges2015_dat, 10)
 #>  9 9434093 Enhancing the Impact of Parent Training Through … "New an…          0
 #> 10 9431505 EEG spectrum as information carrier               "Sponta…          0
 ```
-
-    #> # A tibble: 10 × 6
-    #>    author                              eppi_id studyid title abstract human_code
-    #>    <chr>                               <chr>     <int> <chr> <chr>         <dbl>
-    #>  1 Holloway R G and Gramling R and Ke… 9434957       1 Esti… "Progno…          0
-    #>  2 Morawska Alina and Stallman Helen … 9433838       2 Self… "Behavi…          0
-    #>  3 Michel C M and Pascual-Marqui R D … 9431171       3 Freq… "The to…          0
-    #>  4 Paul Howard A                       9433968       4 A Re… "The ar…          0
-    #>  5 Feinberg I and De Bie E and Davis … 9434460       5 Topo… "STUDY …          0
-    #>  6 Hamburg Sam R                       9433554       6 BOOK… "The ar…          0
-    #>  7 Park H Y and Lee B J and Kim J H a… 9435130       7 Rapi… "Backgr…          0
-    #>  8 Petrek J                            9432040       8 Pict… "AIMS: …          0
-    #>  9 Schwartzman Meredith P and Wahler … 9434093       9 Enha… "New an…          0
-    #> 10 Faber J and Srutova L and Pilarova… 9431505      10 EEG … "Sponta…          0
 
 Example of how to enter a prompt. Can also be done in word (see
 vignette).
@@ -173,7 +161,7 @@ app_obj$price_dollar
 #> [1] 4.477
 app_obj$price_data
 #> # A tibble: 1 × 5
-#>   model     iterations input_price_dollar output_price_dollar total_price_dollor
+#>   model     iterations input_price_dollar output_price_dollar total_price_dollar
 #>   <chr>          <dbl>              <dbl>               <dbl>              <dbl>
 #> 1 gpt-3.5-…         10               4.42              0.0594               4.48
 ```
@@ -205,7 +193,7 @@ test_obj
 #>  x$answer_data_sum
 #> 
 #> Find total price for the screening by executing
-#>  x$price_dollor
+#>  x$price_dollar
 
 # Data sets in object
 price_dat <- test_obj$price_dat
@@ -249,5 +237,5 @@ sum_dat |> select(human_code, final_decision_gpt:final_decision_gpt_num)
 #>  8          0 Exclude                                 0
 #>  9          0 Exclude                                 0
 #> 10          0 Exclude                                 0
-#> 11          0 Include                                 1
+#> 11          0 Exclude                                 0
 ```

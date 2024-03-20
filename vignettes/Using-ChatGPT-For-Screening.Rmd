@@ -1,8 +1,8 @@
 ---
-title: "Using ChatGPT for Title and Abstract Screening in Systematic Reviews"
+title: "Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Using ChatGPT for Title and Abstract Screening in Systematic Reviews}
+  %\VignetteIndexEntry{Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -29,14 +29,14 @@ options(dplyr.summarise.inform = FALSE) # Avoids summarize info from tidyverse
 <p style='margin-top:1em; text-align:center'>
 <b>Important note</b></p>
 <p style='margin:1em'>
-This vignette represent tentative work-in-progress only. The general applicability and efficacy of using large-language models (LLMs) including ChatGPT for title and abstract screening in literature reviews are still rather limited (Syriani et al., 2023). Our first results suggest that ChatGPT can be a reliable second screener when reviewing specific and well defined interventions. The first evidence of this is shown in this vignette. Also note that the result presented here are for tutorial purposes only. Hard inferences about the relative efficacy of the used gpt models should be avoided. 
+This vignette represent tentative work-in-progress only. Be aware that knowledge about the general applicability and efficacy of using large-language models (LLMs) including OpenAI's GPT API models for title and abstract screening in literature reviews are still in the initial stage (Alshami et al., 2023; Guo et al., 2024; Syriani et al., 2023). Our first results suggest that OpenAI's GPT API models [not to be confused with GPT models used from the ChatGPT interface, see  Khraisha et al. (2024)] can be reliable second screeners on par with human performance when reviewing specific and well defined interventions and possibly in more complex reviews as well. Concretely, we find that the GPT-4 API model shows the best performance relative to GPT-3.5-turbo, and we suggest using this model whenever possible. The first evidence of the working of OpenAI's GPT API models is shown in this vignette. Yet, note that the result presented here are for tutorial purposes only. Hard inferences about the relative efficacy of the used GPT API models should be avoided. 
 </p></span>
 </div>
 
-In this vignette, we show how a title and abstract screening with ChatGPT can be done in R. The advantages of conducting the screening with ChatGPT via R is 1) that reviewers can easily work with a large number of references, avoiding copy-paste procedures, 2) that the total screening time can be substantially increased relative to using the ChatGPT interface, 3) that it eases model comparison, and 4) that consistency between gpt answer for the same title and abstract can easily be tested. In this vignette, we also show the first/initial proof of concept for the use of ChatGPT as a reliable second screener (see also Syriani et al., 2023). This goes without saying that ChatGPT works in all cases, and we think the tool should be use carefully and should always assisted by a human (human-in-the-loop). Consequently, we do not recommend to use ChatGPT as a single screener per se. If used to reduced the overall number of references needed to be screened, our tentative recommendation is to random sample approximately 10% of the studies excluded by gpt to check the accuracy of the screening.    
+In this vignette, we show how to conduct title and abstract screening with OpenAI's GPT API models in R. The advantages of conducting the screening with ChatGPT via R is 1) that reviewers can easily work with a large number of references, avoiding copy-paste procedures (cf. Khraisha et al., 2024), 2) that the total screening time can be substantially increased relative to using the ChatGPT interface, 3) that it eases model comparison, and 4) that consistency between GPT answer for the same title and abstract can easily be tested. In this vignette, we also show the first/initial proof of concept for the use of GPT API models as reliable second screeners (see also Syriani et al., 2023). This goes without saying that the GPT API models work in all cases, and we think the tool should be use carefully and should always assisted by a human (human-in-the-loop). Consequently, we do not recommend to use the `AIscreenR` as a single screener per se. If used to reduced the overall number of references needed to be screened, our tentative recommendation is to random sample approximately 10% of the studies excluded by GPT to check the accuracy of the screening.    
 
 ## Getting started: Loading relevant ris file data for screening
-At this stage, we expect that you have a pile of ris-files, containing titles and abstracts for the references you would like to screen. You can retrieve ris-files in several ways, either directly from research database, a Google Scholar search, or exported from your reference management tool, such as EndNote, Mendeley, and RefMan. Alternatively, you can export ris-file from systematic software tool such as [EPPI-reviewer](https://eppi.ioe.ac.uk/EPPIReviewer-Web/home), [Covidence](https://www.covidence.org/), [MetaReviewer](https://www.metareviewer.org/landing/index.html), [`revtools`](https://revtools.net/), or whatever software you use. In the example given below, we load ris-files extracted from the EPPI-reviewer. A minor advantage of extracting ris-files from systematic software tools is that they add a unique study ID for each reference. This feature makes it easier to keep track of the screening. Yet, such ID can be generated in R as well, and is automatically generated in the `tabscreen_gpt()` function when unique IDs are not provided. When using ChatGPT as the second screener, we recommend that the human screening has been done before uploading to R. Thereby, it is possible to compare the screenings instantly after the computer screening has been done. In the below example we load ris-files separately for excluded and included ris-files, respectively, and add the `human_code` variable that tracks the human decision.   
+At this stage, we expect that you have a pile of ris-files, containing titles and abstracts for the references you would like to screen. You can retrieve ris-files in several ways, either directly from research database, a Google Scholar search, or exported from your reference management tool, such as EndNote, Mendeley, and RefMan. Alternatively, you can export ris-file from systematic software tool such as [EPPI-reviewer](https://eppi.ioe.ac.uk/EPPIReviewer-Web/home), [Covidence](https://www.covidence.org/), [MetaReviewer](https://www.metareviewer.org/landing/index.html), [`revtools`](https://revtools.net/), or whatever software you use. In the example given below, we load ris-files extracted from the EPPI-reviewer. A minor advantage of extracting ris-files from systematic software tools is that they add a unique study ID for each reference. This feature makes it easier to keep track of the screening. Yet, such ID can be generated in R as well, and is automatically generated in the `tabscreen_gpt()` function when unique IDs are not provided. When using a GPT API model as the second screener, we recommend that the human screening has been done before uploading to R. Thereby, it is possible to compare the screenings instantly after the computer screening has been done. In the below example we load ris-files separately for excluded and included ris-files, respectively, and add the `human_code` variable that tracks the human decision.   
 
 ```{r not included setup, include = FALSE}
 # Loading packages 
@@ -405,7 +405,6 @@ sum_dat_gpt3 <-
 sum_dat_gpt4 <- 
   result_object$answer_data_sum |> 
   filter(stringr::str_detect(model, "4") & promptid == 1 & top_p == 1)
-
 ```
 
 
@@ -421,13 +420,11 @@ table(gpt = sum_dat_gpt4$final_decision_gpt_num, human = sum_dat_gpt4$human_code
 ### False included and excluded (by gpt)
 
 ```{r screen_stats}
-
 screen_perform <- 
   result_object |> 
   screen_analyzer() 
 
 screen_perform
-
 ```
 
 ## Getting detailed descriptions 
@@ -436,9 +433,22 @@ screen_perform
 # Show example with gpt-4
 ```
 
+## Hierarchical prompting
+
+```{r}
+# Add codes
+```
+
 
 # References
+Alshami, A., Elsayed, M., Ali, E., Eltoukhy, A. E. E., & Zayed, T. (2023). Harnessing the power of ChatGPT for automating systematic review process: Methodology, case study, limitations, and future directions. *Systems*. 11(7).
+
 Gartlehner, G., Wagner, G., Lux, L. et al. (2019). Assessing the accuracy of machine-assisted abstract screening with DistillerAI: a user study. *Systematic Reviews*. 8, 1-10. <https://doi.org/10.1186/s13643-019-1221-3>
+
+Guo, E., Gupta, M., Deng, J., Park, Y.-J., Paget, M., & Naugler, C. (2024). Automated Paper Screening for Clinical Reviews Using Large Language Models: Data Analysis Study. *Journal of Medical Internet Research*. <https://doi.org/10.2196/48996>
+
+Khraisha Q, Put S, Kappenberg J, Warraitch A, Hadfield K (2024). Can large language models replace humans in systematic reviews? Evaluating GPT-4's efficacy in screening and extracting data from peer-reviewed and grey literature in multiple languages. 
+*Research Synthesis Methods*. 1-11. <https://doi.org/10.1002/jrsm.1715>
 
 McHugh, M. L. (2012). Interrater reliability: The kappa statistic. *Biochemia Medica*, 22(3), 276–282.
 
