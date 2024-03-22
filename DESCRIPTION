@@ -4,10 +4,13 @@ Version: 0.0.0.9016
 Date: 2023-09-14
 Authors@R: c(
     person(given = "Mikkel H.", 
-           family = "Vembye", 
            email = "mikkel.vembye@gmail.com", 
            role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0001-9071-0724"))
+           comment = c(ORCID = "0000-0001-9071-0724")),
+    person(given = "Thomas",
+          family = "Olsen",
+          email = "thomasolsen123@hotmail.com",
+          role = c("aut"))
            )
 Description: Screening with AI tools including gpt models from 'OpenAI'.
 Depends:
@@ -15,7 +18,7 @@ Depends:
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Imports:
     dplyr,
     tibble,

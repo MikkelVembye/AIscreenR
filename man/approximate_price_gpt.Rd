@@ -2,7 +2,7 @@
 % Please edit documentation in R/approximate_price.R
 \name{approximate_price_gpt}
 \alias{approximate_price_gpt}
-\title{Approximate price estimation for title and abstract screening using ChatGPT models}
+\title{Approximate price estimation for title and abstract screening using OpenAI's GPT API models}
 \usage{
 approximate_price_gpt(
   data,
