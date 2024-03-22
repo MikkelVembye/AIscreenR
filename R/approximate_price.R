@@ -75,6 +75,8 @@ approximate_price_gpt <-
       stop("model and reps must be of the same length.")
     }
 
+
+    # Ensures only viable models are used
     if (any(!is.element(model, c(
       "gpt-3.5-turbo", "gpt-3.5-turbo-0613",
       "gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613",
