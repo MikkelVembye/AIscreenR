@@ -3,7 +3,8 @@ Title: AI screening tools for systematic reviews
 Version: 0.0.0.9016
 Date: 2023-09-14
 Authors@R: c(
-    person(given = "Mikkel H.", 
+    person(given = "Mikkel H.",
+          family = "Vembye",
            email = "mikkel.vembye@gmail.com", 
            role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-9071-0724")),
