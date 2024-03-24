@@ -4,7 +4,7 @@
 #' @description
 #' `r lifecycle::badge("stable")`<br>
 #' <br>
-#' This function supports the conduct of title and abstract screening with ChatGPT in R.
+#' This function supports the conduct of title and abstract screening with GPT API models in R.
 #' The function allows to run title and abstract screening across multiple prompts and with
 #' repeated questions to check for consistency across answers. This function draws
 #' on the newly developed function calling to better steer the output of the responses.
@@ -63,7 +63,7 @@
 #'   \url{https://platform.openai.com/docs/guides/rate-limits/what-are-the-rate-limits-for-our-api}.
 #'   Alternatively, use [rate_limits_per_minute()].
 #' @param reps Numerical value indicating the number of times the same
-#'   question should be sent to ChatGPT. This can be useful to test consistency
+#'   question should be sent to OpenAI's GPT API models. This can be useful to test consistency
 #'   between answers. Default is `1` but when using 3.5 models, we recommend setting this
 #'   value to `10`.
 #' @param seed Numerical value for a seed to ensure that proper,
@@ -74,11 +74,11 @@
 #'   Defualt is `TRUE`.
 #' @param incl_cutoff_upper Numerical value indicating the probability threshold
 #'   for which a studies should be included. Default is 0.5, which indicates that
-#'   titles and abstracts that ChatGPT has included more than 50 percent of the times
+#'   titles and abstracts that OpenAI's GPT API model has included more than 50 percent of the times
 #'   should be included.
 #' @param incl_cutoff_lower Numerical value indicating the probability threshold
 #'   above which studies should be check by a human. Default is 0.4, which means
-#'   that if you ask ChatGPT the same questions 10 times and it includes the
+#'   that if you ask OpenAI's GPT API model the same questions 10 times and it includes the
 #'   title and abstract 4 times, we suggest that the study should be check by a human.
 #' @param force Logical argument indicating whether to force the function to use more than
 #'   10 iterations for gpt-3.5 models and more than 1 iteration for gpt-4 models.
@@ -101,7 +101,7 @@
 #'  \bold{promptid} \tab \code{integer} \tab indicating the prompt ID. \cr
 #'  \bold{prompt} \tab \code{character} \tab indicating the prompt. \cr
 #'  \bold{model} \tab \code{character}   \tab indicating the specific gpt-model used. \cr
-#'  \bold{question} \tab \code{character} \tab indicating the final question sent to ChatGPT. \cr
+#'  \bold{question} \tab \code{character} \tab indicating the final question sent to OpenAI's GPT API models. \cr
 #'  \bold{top_p} \tab \code{numeric}  \tab indicating the applied top_p. \cr
 #'  \bold{incl_p} \tab \code{numeric}  \tab indicating the probability of inclusion calculated across multiple repeated responses on the same title and abstract. \cr
 #'  \bold{final_decision_gpt} \tab \code{character} \tab indicating the final decision reached by gpt - either 'Include', 'Exclude', or 'Check'. \cr
@@ -109,7 +109,7 @@
 #'  \bold{longest_answer}  \tab \code{character} \tab indicating the longest gpt response obtained
 #'  across multiple repeated responses on the same title and abstract. Only included if the detailed function calling
 #'  function is used. See 'Examples' below for how to use this function. \cr
-#'  \bold{reps}  \tab \code{integer}  \tab indicating the number of times the same question has been sent to ChatGPT. \cr
+#'  \bold{reps}  \tab \code{integer}  \tab indicating the number of times the same question has been sent to OpenAI's GPT API models. \cr
 #'  \bold{n_mis_answers} \tab \code{integer} \tab indicating the number of missing responses. \cr
 #' }
 #' <br>
@@ -121,11 +121,11 @@
 #'  \bold{promptid} \tab \code{integer} \tab indicating the prompt ID. \cr
 #'  \bold{prompt} \tab \code{character} \tab indicating the prompt. \cr
 #'  \bold{model} \tab \code{character}   \tab indicating the specific gpt-model used. \cr
-#'  \bold{iterations} \tab \code{numeric} \tab indicating the number of times the same question has been sent to ChatGPT. \cr
-#'  \bold{question} \tab \code{character} \tab indicating the final question sent to ChatGPT. \cr
+#'  \bold{iterations} \tab \code{numeric} \tab indicating the number of times the same question has been sent to OpenAI's GPT API models. \cr
+#'  \bold{question} \tab \code{character} \tab indicating the final question sent to OpenAI's GPT API models. \cr
 #'  \bold{top_p}  \tab \code{numeric} \tab indicating the applied top_p. \cr
 #'  \bold{decision_gpt}  \tab \code{character} \tab indicating the raw gpt decision - either \code{"1", "0", "1.1"} for inclusion, exclusion, or uncertainty, respectively. \cr
-#'  \bold{detailed_description}  \tab \code{character} \tab indicating detailed description of the given decision made by ChatGPT.
+#'  \bold{detailed_description}  \tab \code{character} \tab indicating detailed description of the given decision made by OpenAI's GPT API models.
 #'  Only included if the detailed function calling function is used. See 'Examples' below for how to use this function. \cr
 #'  \bold{decision_binary}  \tab \code{integer} \tab indicating the binary gpt decision,
 #'  that is 1 for inclusion and 0 for exclusion. 1.1 decision are coded equal to 1 in this case. \cr
@@ -298,9 +298,9 @@ tabscreen_gpt <- function(
 
   if (is_chatgpt_tbl(data) && !"topp" %in% names(data)) data <- data |> tibble::as_tibble()
 
-  ###############################################
-  # Function to send a single request to ChatGPT
-  ###############################################
+  ###############################################################
+  # Function to send a single request to OpenAI's GPT API models
+  ###############################################################
 
   ask_gpt_engine <- function(
     body,
@@ -494,9 +494,9 @@ tabscreen_gpt <- function(
 
   }
 
-  ###############################################
-  # Function to send repeated requests to ChatGPT
-  ###############################################
+  ################################################################
+  # Function to send repeated requests to OpenAI's GPT API models
+  ################################################################
 
   ask_gpt <- function(
     question,
