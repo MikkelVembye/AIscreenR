@@ -35,7 +35,6 @@ scrape_table <- function(css_selector) {
     assign(paste0("Input_price_", gsub("-", "_", data$Model[i])), data$Input[i], envir = .GlobalEnv)
     assign(paste0("Output_price_", gsub("-", "_", data$Model[i])), data$Output[i], envir = .GlobalEnv)
   }
-  print(data)
 }
 
 # CSS selectors for the tables
@@ -45,6 +44,3 @@ selectors <- c("#gpt-4-turbo > div:nth-child(1) > div:nth-child(1) > div:nth-chi
 
 # Scrape and process each table
 lapply(selectors, scrape_table)
-
-print(Input_price_gpt_4)
-print(Output_price_gpt_4)
