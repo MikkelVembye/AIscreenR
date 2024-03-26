@@ -65,7 +65,7 @@ approximate_price_gpt <-
     studyid,
     title,
     abstract,
-    model = "gpt-3.5-turbo-0613",
+    model = "gpt-3.5-turbo-0125",
     reps = 1,
     top_p = 1,
     token_word_ratio = 1.6
@@ -78,10 +78,9 @@ approximate_price_gpt <-
 
     # Ensures only viable models are used
     if (any(!is.element(model, c(
-      "gpt-3.5-turbo", "gpt-3.5-turbo-0613",
-      "gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613",
-      "gpt-4", "gpt-4-0613",
-      "gpt-4-32k", "gpt-4-32k-0613"
+      "gpt-3.5-turbo-instruct", "gpt-3.5-turbo-0125",
+      "gpt-4","gpt-4-32k",
+      "gpt-4-0125-preview", "gpt-4-1106-preview", "gpt-4-1106-vision-preview"
     )))) stop("Unknown gpt model(s) used - check model name(s).")
 
     if (n_distinct(prompt) != length(prompt)) stop("Do not add same prompt twice.")

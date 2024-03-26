@@ -28,6 +28,13 @@ extract_info <- function(row){
 scrape_table <- function(css_selector) {
   rows <- webpage %>% html_nodes(css_selector)
   data <- do.call(rbind, lapply(rows, extract_info))
+  # Remove the first row
+  data <- data[-1, ]
+  # Create variables for the input and output price for each model
+  for(i in 1:nrow(data)) {
+    assign(paste0("Input_price_", gsub("-", "_", data$Model[i])), data$Input[i], envir = .GlobalEnv)
+    assign(paste0("Output_price_", gsub("-", "_", data$Model[i])), data$Output[i], envir = .GlobalEnv)
+  }
   print(data)
 }
 
@@ -38,3 +45,6 @@ selectors <- c("#gpt-4-turbo > div:nth-child(1) > div:nth-child(1) > div:nth-chi
 
 # Scrape and process each table
 lapply(selectors, scrape_table)
+
+print(Input_price_gpt_4)
+print(Output_price_gpt_4)
