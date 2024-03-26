@@ -57,6 +57,25 @@
 #' app_price$price_dollar
 #' app_price$price_data
 
+use_r("scrape_price")
+writeLines(c(
+  paste0("Input_price_gpt_3.5_turbo_instruct <- ", Input_price_gpt_3.5_turbo_instruct),
+  paste0("Input_price_gpt_3.5_turbo_0125 <- ", Input_price_gpt_3.5_turbo_0125),
+  paste0("Input_price_gpt_4 <- ", Input_price_gpt_4),
+  paste0("Input_price_gpt_4_32k <- ", Input_price_gpt_4_32k),
+  paste0("Input_price_gpt_4_0125_preview <- ", Input_price_gpt_4_0125_preview),
+  paste0("Input_price_gpt_4_1106_preview <- ", Input_price_gpt_4_1106_preview),
+  paste0("Input_price_gpt_4_1106_vision_preview <- ", Input_price_gpt_4_1106_vision_preview),
+
+  paste0("Output_price_gpt_3.5_turbo_instruct <- ", Output_price_gpt_3.5_turbo_instruct),
+  paste0("Output_price_gpt_3.5_turbo_0125 <- ", Output_price_gpt_3.5_turbo_0125),
+  paste0("Output_price_gpt_4 <- ", Output_price_gpt_4),
+  paste0("Output_price_gpt_4_32k <- ", Output_price_gpt_4_32k),
+  paste0("Output_price_gpt_4_0125_preview <- ", Output_price_gpt_4_0125_preview),
+  paste0("Output_price_gpt_4_1106_preview <- ", Output_price_gpt_4_1106_preview),
+  paste0("Output_price_gpt_4_1106_vision_preview <- ", Output_price_gpt_4_1106_vision_preview)
+), R/scrape_price.R)
+
 
 approximate_price_gpt <-
   function(
