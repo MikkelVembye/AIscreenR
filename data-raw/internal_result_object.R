@@ -102,4 +102,4 @@ result_object <- AIscreenR:::result_object
 result_object_no_err <- AIscreenR:::result_object_no_err
 result_object2_no_err <- AIscreenR:::result_object2_no_err
 
-usethis::use_data(result_object, result_object_no_err, result_object2_no_err, models_and_prices_040424, overwrite = TRUE, internal = TRUE)
+usethis::use_data(models_and_prices_040424, result_object, result_object_no_err, result_object2_no_err, overwrite = TRUE, internal = TRUE)
