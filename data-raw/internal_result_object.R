@@ -82,8 +82,8 @@ deprecated_models <-
 # Find information aboth these here:
 # https://platform.openai.com/docs/models
 
-# These models names could't be retrieved when the price_table function. They are
-# therefor added manually.
+# These models names could't be retrieved with the price_table function. They are
+# therefore added manually.
 
 further_models <-
   tibble::tibble(
