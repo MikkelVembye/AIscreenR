@@ -57,25 +57,6 @@
 #' app_price$price_dollar
 #' app_price$price_data
 
-use_r("scrape_price")
-writeLines(c(
-  paste0("Input_price_gpt_3.5_turbo_instruct <- ", Input_price_gpt_3.5_turbo_instruct),
-  paste0("Input_price_gpt_3.5_turbo_0125 <- ", Input_price_gpt_3.5_turbo_0125),
-  paste0("Input_price_gpt_4 <- ", Input_price_gpt_4),
-  paste0("Input_price_gpt_4_32k <- ", Input_price_gpt_4_32k),
-  paste0("Input_price_gpt_4_0125_preview <- ", Input_price_gpt_4_0125_preview),
-  paste0("Input_price_gpt_4_1106_preview <- ", Input_price_gpt_4_1106_preview),
-  paste0("Input_price_gpt_4_1106_vision_preview <- ", Input_price_gpt_4_1106_vision_preview),
-
-  paste0("Output_price_gpt_3.5_turbo_instruct <- ", Output_price_gpt_3.5_turbo_instruct),
-  paste0("Output_price_gpt_3.5_turbo_0125 <- ", Output_price_gpt_3.5_turbo_0125),
-  paste0("Output_price_gpt_4 <- ", Output_price_gpt_4),
-  paste0("Output_price_gpt_4_32k <- ", Output_price_gpt_4_32k),
-  paste0("Output_price_gpt_4_0125_preview <- ", Output_price_gpt_4_0125_preview),
-  paste0("Output_price_gpt_4_1106_preview <- ", Output_price_gpt_4_1106_preview),
-  paste0("Output_price_gpt_4_1106_vision_preview <- ", Output_price_gpt_4_1106_vision_preview)
-), R/scrape_price.R)
-
 
 approximate_price_gpt <-
   function(
@@ -84,7 +65,7 @@ approximate_price_gpt <-
     studyid,
     title,
     abstract,
-    model = "gpt-3.5-turbo-0125",
+    model = "gpt-3.5-turbo-0613",
     reps = 1,
     top_p = 1,
     token_word_ratio = 1.6
@@ -94,15 +75,26 @@ approximate_price_gpt <-
       stop("model and reps must be of the same length.")
     }
 
-
     # Ensures only viable models are used
-    if (any(!is.element(model, c(
-      "gpt-3.5-turbo-instruct", "gpt-3.5-turbo-0125",
-      "gpt-4","gpt-4-32k",
-      "gpt-4-0125-preview", "gpt-4-1106-preview", "gpt-4-1106-vision-preview"
-    )))) stop("Unknown gpt model(s) used - check model name(s).")
+    if (any(!is.element(model, current_models))) stop("Unknown gpt model(s) used - check model name(s).")
 
     if (n_distinct(prompt) != length(prompt)) stop("Do not add same prompt twice.")
+
+    # Service message regarding deprecation
+    if (any(is.element(model, c(
+      "gpt-3.5-turbo-0613", "gpt-3.5-turbo-16k-0613",
+      "gpt-3.5-turbo-0301", "gpt-4-0314", "gpt-4-32k-0314"
+    )))) {
+
+      message(
+        paste(
+          "Notice that the models gpt-3.5-turbo-0613, gpt-3.5-turbo-16k-0613,",
+          "gpt-3.5-turbo-0301, gpt-4-0314, and gpt-4-32k-0314 deprecate 20240613"
+        )
+      )
+
+    }
+
 
     ###############################################
     # Data manipulation
@@ -183,21 +175,26 @@ approximate_price_gpt <-
       dplyr::rowwise() |>
       mutate(
 
-        input_price = case_when(
-          any(c("gpt-3.5-turbo", "gpt-3.5-turbo-0613") %in% model) ~ round(prompt_tokens * (0.0015/1000) * iterations, 4),
-          any(c("gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613") %in% model) ~ round(prompt_tokens * (0.003/1000) * iterations, 4),
-          any(c("gpt-4", "gpt-4-0613") %in% model) ~ round(prompt_tokens * (0.03/1000) * iterations, 4),
-          any(c("gpt-4-32k", "gpt-4-32k-0613") %in% model) ~ round(prompt_tokens * (0.06/1000) * iterations, 4),
-          TRUE ~ NA_real_
-        ),
 
-        output_price = case_when(
-          any(c("gpt-3.5-turbo", "gpt-3.5-turbo-0613") %in% model) ~ completion_tokens * (0.002/1000) * iterations,
-          any(c("gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613") %in% model) ~ completion_tokens * (0.004/1000) * iterations,
-          any(c("gpt-4", "gpt-4-0613") %in% model) ~ completion_tokens * (0.06/1000) * iterations,
-          any(c("gpt-4-32k", "gpt-4-32k-0613") %in% model) ~ completion_tokens * (0.12/1000) * iterations,
-          TRUE ~ NA_real_
-        )
+        input_price = round(prompt_tokens * price_input(model) * iterations, 4),
+        output_price = completion_tokens * price_output(model) * iterations,
+
+        # DELETE WHEN WE HAVE TESTED THAT THE ABOVE FUNCTIONS WORK PROPERLY
+        #input_price = case_when(
+        #  any(c("gpt-3.5-turbo", "gpt-3.5-turbo-0613") %in% model) ~ round(prompt_tokens * (0.0015/1000) * iterations, 4),
+        #  any(c("gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613") %in% model) ~ round(prompt_tokens * (0.003/1000) * iterations, 4),
+        #  any(c("gpt-4", "gpt-4-0613") %in% model) ~ round(prompt_tokens * (0.03/1000) * iterations, 4),
+        #  any(c("gpt-4-32k", "gpt-4-32k-0613") %in% model) ~ round(prompt_tokens * (0.06/1000) * iterations, 4),
+        #  TRUE ~ NA_real_
+        #),
+
+        #output_price = case_when(
+        #  any(c("gpt-3.5-turbo", "gpt-3.5-turbo-0613") %in% model) ~ completion_tokens * (0.002/1000) * iterations,
+        #  any(c("gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613") %in% model) ~ completion_tokens * (0.004/1000) * iterations,
+        #  any(c("gpt-4", "gpt-4-0613") %in% model) ~ completion_tokens * (0.06/1000) * iterations,
+        #  any(c("gpt-4-32k", "gpt-4-32k-0613") %in% model) ~ completion_tokens * (0.12/1000) * iterations,
+        #  TRUE ~ NA_real_
+        #)
 
       ) |>
       ungroup() |>
@@ -220,4 +217,7 @@ approximate_price_gpt <-
 
     res
 
-}
+  }
+
+
+

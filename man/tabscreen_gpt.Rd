@@ -11,7 +11,7 @@ tabscreen_gpt(
   title,
   abstract,
   ...,
-  model = "gpt-3.5-turbo-0613",
+  model = "gpt-3.5-turbo",
   role = "user",
   functions = incl_function_simple,
   function_call_name = list(name = "inclusion_decision_simple"),

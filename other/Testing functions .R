@@ -14,7 +14,7 @@ AIscreenR:::set_api_key()
 #  function_call = list(name = "inclusion_decision_simple"),
 #  top_p = 1
 #)
-models <- c("gpt-3.5-turbo-0613", "gpt-4")
+models <- c("gpt-3.5-turbo", "gpt-4")
 rl <- rate_limits_per_minute(model = models)
 
 prompt <- "Evaluate the following study based on the selection criteria
@@ -70,16 +70,16 @@ duration delivered to young people and their families). If not, exclude study.
 for non-opioid drug use?"
 
 
-
 app_obj <- approximate_price_gpt(
   data = filges2015_dat[1:2,],
   prompt = c(prompt),
   studyid = studyid,
   title = title,
   abstract = abstract,
-  model = c("gpt-4"),
-  reps = c(100)
+  model = c("gpt-3.5-turbo-0125", "gpt-4-0125-preview", "gpt-3.5-turbo-0613"),
+  reps = c(1)
 )
+
 
 app_obj
 
@@ -98,8 +98,8 @@ test_obj <- tabscreen_gpt(
   studyid = studyid, # indicate the variable with the studyid in the data
   title = title, # indicate the variable with the titles in the data
   abstract = abstract,
-  model = c("gpt-3.5-turbo-0613", "gpt-4-0613"),
-  reps = c(10, 2),
+  model = c("gpt-3.5-turbo-0613", "gpt-4"),
+  reps = 2,
   force = TRUE
   #top_p = c(0.2, 1),
   #functions = AIscreenR:::incl_function,
