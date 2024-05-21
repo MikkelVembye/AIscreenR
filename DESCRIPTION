@@ -3,15 +3,11 @@ Title: AI screening tools for systematic reviews
 Version: 0.0.0.9016
 Date: 2023-09-14
 Authors@R: c(
-    person(given = "Mikkel H.",
-          family = "Vembye",
+    person(given = "Mikkel H.", 
+           family = "Vembye", 
            email = "mikkel.vembye@gmail.com", 
            role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0001-9071-0724")),
-    person(given = "Thomas",
-          family = "Olsen",
-          email = "thomasolsen123@hotmail.com",
-          role = c("aut"))
+           comment = c(ORCID = "0000-0001-9071-0724"))
            )
 Description: Screening with AI tools including gpt models from 'OpenAI'.
 Depends:
