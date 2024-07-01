@@ -11,7 +11,7 @@ tabscreen_gpt(
   title,
   abstract,
   ...,
-  model = "gpt-3.5-turbo-0613",
+  model = "gpt-4",
   role = "user",
   functions = incl_function_simple,
   function_call_name = list(name = "inclusion_decision_simple"),
@@ -50,7 +50,9 @@ automatically.}
 See \url{https://platform.openai.com/docs/api-reference/chat/create}.}
 
 \item{model}{Character string with the name of the completion model. Can take
-multiple models, including gpt-4 models. Default = \code{"gpt-3.5-turbo-0613"}.
+multiple models, including gpt-4 models. Default = \code{"gpt-4"} (i.e., gpt-4-0613). This model has
+been shown to outperform the gpt-3.5-turbo models in terms of its ability to detect
+relevant studies (Vembye et al., Under preparation).
 Find available model at
 \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.}
 
@@ -109,7 +111,7 @@ available for the specified api key. Find more information at
 Alternatively, use \code{\link[=rate_limits_per_minute]{rate_limits_per_minute()}}.}
 
 \item{reps}{Numerical value indicating the number of times the same
-question should be sent to ChatGPT. This can be useful to test consistency
+question should be sent to OpenAI's GPT API models. This can be useful to test consistency
 between answers. Default is \code{1} but when using 3.5 models, we recommend setting this
 value to \code{10}.}
 
@@ -124,12 +126,12 @@ Defualt is \code{TRUE}.}
 
 \item{incl_cutoff_upper}{Numerical value indicating the probability threshold
 for which a studies should be included. Default is 0.5, which indicates that
-titles and abstracts that ChatGPT has included more than 50 percent of the times
+titles and abstracts that OpenAI's GPT API model has included more than 50 percent of the times
 should be included.}
 
 \item{incl_cutoff_lower}{Numerical value indicating the probability threshold
 above which studies should be check by a human. Default is 0.4, which means
-that if you ask ChatGPT the same questions 10 times and it includes the
+that if you ask OpenAI's GPT API model the same questions 10 times and it includes the
 title and abstract 4 times, we suggest that the study should be check by a human.}
 
 \item{force}{Logical argument indicating whether to force the function to use more than
@@ -149,7 +151,7 @@ for each title and abstract across multiple repeated questions.}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}\if{html}{\out{<br>}}
 \if{html}{\out{<br>}}
-This function supports the conduct of title and abstract screening with ChatGPT in R.
+This function supports the conduct of title and abstract screening with GPT API models in R.
 The function allows to run title and abstract screening across multiple prompts and with
 repeated questions to check for consistency across answers. This function draws
 on the newly developed function calling to better steer the output of the responses.
@@ -163,7 +165,7 @@ The \code{answer_data_sum} data contains the following mandatory variables:
 \bold{promptid} \tab \code{integer} \tab indicating the prompt ID. \cr
 \bold{prompt} \tab \code{character} \tab indicating the prompt. \cr
 \bold{model} \tab \code{character}   \tab indicating the specific gpt-model used. \cr
-\bold{question} \tab \code{character} \tab indicating the final question sent to ChatGPT. \cr
+\bold{question} \tab \code{character} \tab indicating the final question sent to OpenAI's GPT API models. \cr
 \bold{top_p} \tab \code{numeric}  \tab indicating the applied top_p. \cr
 \bold{incl_p} \tab \code{numeric}  \tab indicating the probability of inclusion calculated across multiple repeated responses on the same title and abstract. \cr
 \bold{final_decision_gpt} \tab \code{character} \tab indicating the final decision reached by gpt - either 'Include', 'Exclude', or 'Check'. \cr
@@ -171,7 +173,7 @@ The \code{answer_data_sum} data contains the following mandatory variables:
 \bold{longest_answer}  \tab \code{character} \tab indicating the longest gpt response obtained
 across multiple repeated responses on the same title and abstract. Only included if the detailed function calling
 function is used. See 'Examples' below for how to use this function. \cr
-\bold{reps}  \tab \code{integer}  \tab indicating the number of times the same question has been sent to ChatGPT. \cr
+\bold{reps}  \tab \code{integer}  \tab indicating the number of times the same question has been sent to OpenAI's GPT API models. \cr
 \bold{n_mis_answers} \tab \code{integer} \tab indicating the number of missing responses. \cr
 }
 \if{html}{\out{<br>}}
@@ -183,11 +185,11 @@ The \code{answer_data_all} data contains the following mandatory variables:
 \bold{promptid} \tab \code{integer} \tab indicating the prompt ID. \cr
 \bold{prompt} \tab \code{character} \tab indicating the prompt. \cr
 \bold{model} \tab \code{character}   \tab indicating the specific gpt-model used. \cr
-\bold{iterations} \tab \code{numeric} \tab indicating the number of times the same question has been sent to ChatGPT. \cr
-\bold{question} \tab \code{character} \tab indicating the final question sent to ChatGPT. \cr
+\bold{iterations} \tab \code{numeric} \tab indicating the number of times the same question has been sent to OpenAI's GPT API models. \cr
+\bold{question} \tab \code{character} \tab indicating the final question sent to OpenAI's GPT API models. \cr
 \bold{top_p}  \tab \code{numeric} \tab indicating the applied top_p. \cr
 \bold{decision_gpt}  \tab \code{character} \tab indicating the raw gpt decision - either \code{"1", "0", "1.1"} for inclusion, exclusion, or uncertainty, respectively. \cr
-\bold{detailed_description}  \tab \code{character} \tab indicating detailed description of the given decision made by ChatGPT.
+\bold{detailed_description}  \tab \code{character} \tab indicating detailed description of the given decision made by OpenAI's GPT API models.
 Only included if the detailed function calling function is used. See 'Examples' below for how to use this function. \cr
 \bold{decision_binary}  \tab \code{integer} \tab indicating the binary gpt decision,
 that is 1 for inclusion and 0 for exclusion. 1.1 decision are coded equal to 1 in this case. \cr
@@ -227,9 +229,7 @@ tabscreen_gpt(
   studyid = studyid,
   title = title,
   abstract = abstract,
-  model = c("gpt-3.5-turbo-0613", "gpt-3.5-turbo-16k-0613"),
-  max_tries = 1,
-  reps = 10
+  max_tries = 2,
   )
 
  # Get detailed descriptions of the gpt decisions by using the
@@ -242,12 +242,15 @@ tabscreen_gpt(
    abstract = abstract,
    functions = AIscreenR:::incl_function,
    function_call_name = list(name = "inclusion_decision"),
-   max_tries = 1,
-   reps = 2
+   max_tries = 2
  )
 }
 }
 \references{
+Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (Under preparation)
+\emph{GPT API Models Can Function as Highly Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
+A Proof of Concept and Common Guidelines}
+
 Wickham H (2023).
 \emph{httr2: Perform HTTP Requests and Process the Responses}.
 https://httr2.r-lib.org, https://github.com/r-lib/httr2.

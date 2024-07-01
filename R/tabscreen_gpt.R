@@ -9,7 +9,11 @@
 #' repeated questions to check for consistency across answers. This function draws
 #' on the newly developed function calling to better steer the output of the responses.
 #'
-#' @references Wickham H (2023).
+#' @references Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (Under preparation)
+#'   \emph{GPT API Models Can Function as Highly Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
+#'   A Proof of Concept and Common Guidelines}
+#'
+#' Wickham H (2023).
 #' \emph{httr2: Perform HTTP Requests and Process the Responses}.
 #' https://httr2.r-lib.org, https://github.com/r-lib/httr2.
 #'
@@ -17,7 +21,9 @@
 #' @param ... Further argument to pass to the request body.
 #'   See \url{https://platform.openai.com/docs/api-reference/chat/create}.
 #' @param model Character string with the name of the completion model. Can take
-#'   multiple models, including gpt-4 models. Default = `"gpt-3.5-turbo-0613"`.
+#'   multiple models, including gpt-4 models. Default = `"gpt-4"` (i.e., gpt-4-0613). This model has
+#'   been shown to outperform the gpt-3.5-turbo models in terms of its ability to detect
+#'   relevant studies (Vembye et al., Under preparation).
 #'   Find available model at
 #' \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.
 #' @param role Character string indicate the role of the user. Default is `"user"`.
@@ -84,6 +90,7 @@
 #'   10 iterations for gpt-3.5 models and more than 1 iteration for gpt-4 models.
 #'   This argument is developed to avoid the conduct of wrong and extreme sized screening.
 #'   Default is `FALSE`.
+#'
 #'
 #' @return An object of class \code{"chatgpt"}. The object is a list containing the following
 #' components:
@@ -168,9 +175,7 @@
 #'   studyid = studyid,
 #'   title = title,
 #'   abstract = abstract,
-#'   model = c("gpt-3.5-turbo-0613", "gpt-3.5-turbo-16k-0613"),
-#'   max_tries = 1,
-#'   reps = 10
+#'   max_tries = 2,
 #'   )
 #'
 #'  # Get detailed descriptions of the gpt decisions by using the
@@ -183,8 +188,7 @@
 #'    abstract = abstract,
 #'    functions = AIscreenR:::incl_function,
 #'    function_call_name = list(name = "inclusion_decision"),
-#'    max_tries = 1,
-#'    reps = 2
+#'    max_tries = 2
 #'  )
 #'}
 
@@ -197,7 +201,7 @@ tabscreen_gpt <- function(
   abstract,
   ...,
   #arrange_var = studyid,
-  model = "gpt-3.5-turbo-0613",
+  model = "gpt-4",
   role = "user",
   functions = incl_function_simple,
   function_call_name = list(name = "inclusion_decision_simple"),
