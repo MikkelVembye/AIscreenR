@@ -177,7 +177,7 @@ permanent or temporary solutions.
 
 The easiest way to work with your API key is to permanently added it to your R environment
 as an environment variable. This can be achieved with `usethis::edit_r_environ()`. In the `.Renviron`
-file, write `CHAT_GPT=your_key` as depicted in Figure 2. After entering the API key, close and save the `.Renviron` file and restart `RStudio` (ctrl + shift + F10). From now on, the `AIscreenR` functions will use the `get_api_key()` function to get your API key from your R environment automatically. By using this approach you don't have to worry more about you API key (unless you update RStudio, deliberately delete the key, or get a new computer. Then you must repeat this procedure).
+file, write `CHATGPT_KEY=your_key` as depicted in Figure 2. After entering the API key, close and save the `.Renviron` file and restart `RStudio` (ctrl + shift + F10). From now on, the `AIscreenR` functions will use the `get_api_key()` function to get your API key from your R environment automatically. By using this approach you don't have to worry more about you API key (unless you update RStudio, deliberately delete the key, or get a new computer. Then you must repeat this procedure).
 \  
 
 ```{r eval=TRUE, echo=FALSE, fig.cap='*Figure 2 - R environment file*'}
