@@ -5,64 +5,48 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="AIscreenR">
 <title>Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews • AIscreenR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews">
-<meta property="og:description" content="AIscreenR">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light" data-bs-theme="light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">AIscreenR</a>
 
     <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Unreleased version">0.0.0.9016</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/Using-ChatGPT-For-Screening.html">Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/Using-ChatGPT-For-Screening.html">Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/MikkelVembye/AIscreenR/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/MikkelVembye/AIscreenR/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -71,10 +55,11 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="" class="logo" alt=""><h1>Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews</h1>
+
+      <h1>Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/MikkelVembye/AIscreenR/blob/HEAD/vignettes/Using-ChatGPT-For-Screening.Rmd" class="external-link"><code>vignettes/Using-ChatGPT-For-Screening.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/MikkelVembye/AIscreenR/blob/main/vignettes/Using-ChatGPT-For-Screening.Rmd" class="external-link"><code>vignettes/Using-ChatGPT-For-Screening.Rmd</code></a></small>
       <div class="d-none name"><code>Using-ChatGPT-For-Screening.Rmd</code></div>
     </div>
 
@@ -341,9 +326,8 @@ pacakge for further details about this solution.  </p>
 <span>      <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove_all</a></span><span class="op">(</span><span class="st">"\n"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">prompt1</span></span>
-<span><span class="co">#&gt; [1] "Evaluate the following study based on the selection criteria for a systematic review on the effects of family-based interventions on drug abuse reduction for young people in treatment for non-opioid drug use. A family-based intervention (FFT) is equivalent to a behavior focused family therapy, where young people’s drug use is understood in relation to family behavior problems. Family-based interventions also include manual-based family therapies as it target young people and their families as a system throughout treatment, and thereby recognize the important role of the family system in the development and treatment of young people’s drug use problems. FFT was developed in the late 1980s on request from the US National Institute on Drug Abuse (NIDA). The development of FFT was initially heavily inspired by the alcohol abuse program Community Reinforcement Approach (CRA), which was aimed at restructuring the environment to reinforce non-alcohol associated activities. FFT was developed to have more emphasis on contingency contracting, impulse control strategies specific to drug use, and increased emphasis on the involvement of family members in treatment. FFT is designed to accommodate diverse populations of youths with a variety of behavioral, cultural and individual preferences. FFT has evolved for use in severe behavioral disturbances known to co-exist with substance use and dependence, and the core interventions have been enhanced to address several mental health related problems commonly occurring as comorbid conditions in drug use treatment participant.  For each study, I would like you to assess:  1) Is the study about a family-based intervention, such as Functional Family Therapy, Multidimensional Family Therapy, or Behavioral Family Therapy? (Outpatient manual-based interventions of any duration delivered to young people and their families). If not, exclude study. 2) Are the participants in outpatient drug treatment primarily for non-opioid drug use? 3) Are the participants within age 11–21?"</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
+<span><span class="co">#&gt; [1] "Evaluate the following study based on the selection criteria for a systematic review on the effects of family-based interventions on drug abuse reduction for young people in treatment for non-opioid drug use. A family-based intervention (FFT) is equivalent to a behavior focused family therapy, where young people’s drug use is understood in relation to family behavior problems. Family-based interventions also include manual-based family therapies as it target young people and their families as a system throughout treatment, and thereby recognize the important role of the family system in the development and treatment of young people’s drug use problems. FFT was developed in the late 1980s on request from the US National Institute on Drug Abuse (NIDA). The development of FFT was initially heavily inspired by the alcohol abuse program Community Reinforcement Approach (CRA), which was aimed at restructuring the environment to reinforce non-alcohol associated activities. FFT was developed to have more emphasis on contingency contracting, impulse control strategies specific to drug use, and increased emphasis on the involvement of family members in treatment. FFT is designed to accommodate diverse populations of youths with a variety of behavioral, cultural and individual preferences. FFT has evolved for use in severe behavioral disturbances known to co-exist with substance use and dependence, and the core interventions have been enhanced to address several mental health related problems commonly occurring as comorbid conditions in drug use treatment participant.  For each study, I would like you to assess:  1) Is the study about a family-based intervention, such as Functional Family Therapy, Multidimensional Family Therapy, or Behavioral Family Therapy? (Outpatient manual-based interventions of any duration delivered to young people and their families). If not, exclude study. 2) Are the participants in outpatient drug treatment primarily for non-opioid drug use? 3) Are the participants within age 11–21?"</span></span>
+<span></span>
 <span><span class="co"># Working with multiple prompts</span></span>
 <span><span class="va">word_paths</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"word_prompt_1.docx"</span>, <span class="st">"word_prompt_2.docx"</span><span class="op">)</span>, package <span class="op">=</span> <span class="st">"AIscreenR"</span><span class="op">)</span></span>
 <span></span>
@@ -362,7 +346,7 @@ pacakge for further details about this solution.  </p>
 <div class="section level3">
 <h3 id="retrieve-rate-limit-information">Retrieve rate limit information<a class="anchor" aria-label="anchor" href="#retrieve-rate-limit-information"></a>
 </h3>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Rate limits across one model (Default is "gpt-3.5-turbo-0613")</span></span>
 <span><span class="va">rate_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">rate_limits</span></span>
@@ -388,7 +372,7 @@ pacakge for further details about this solution.  </p>
 <h3 id="approximate-price-of-screening">Approximate price of screening<a class="anchor" aria-label="anchor" href="#approximate-price-of-screening"></a>
 </h3>
 <p>Approximate price of screening</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">app_obj</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu"><a href="../reference/approximate_price_gpt.html">approximate_price_gpt</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">filges2015_dat</span>, <span class="co"># Tutorial data embedded in the package</span></span>
@@ -402,13 +386,11 @@ pacakge for further details about this solution.  </p>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="va">app_obj</span></span>
-<span><span class="co">#&gt; The approximate price of the (simple) screening will be around $56.1356.</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
+<span><span class="co">#&gt; The approximate price of the (simple) screening will be around $56.1356.</span></span>
+<span></span>
 <span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_dollar</span></span>
-<span><span class="co">#&gt; [1] 56.1356</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_data</span></span>
+<span><span class="co">#&gt; [1] 56.1356</span></span>
+<span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_data</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 5</span></span></span>
 <span><span class="co">#&gt;   model              iterations input_price_dollar output_price_dollar</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
@@ -424,7 +406,7 @@ pacakge for further details about this solution.  </p>
 <div class="section level3">
 <h3 id="screening-titles-and-abstracts">Screening titles and abstracts<a class="anchor" aria-label="anchor" href="#screening-titles-and-abstracts"></a>
 </h3>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-4"</span><span class="op">)</span></span>
 <span><span class="va">reps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">rpm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10000</span>, <span class="fl">10000</span>, <span class="fl">200</span><span class="op">)</span></span>
@@ -466,7 +448,7 @@ pacakge for further details about this solution.  </p>
 <div class="section level3">
 <h3 id="screen-failed-requests">Screen failed requests<a class="anchor" aria-label="anchor" href="#screen-failed-requests"></a>
 </h3>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result_object</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">result_object</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/screen_errors.html">screen_errors</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -484,7 +466,7 @@ pacakge for further details about this solution.  </p>
 <div class="section level3">
 <h3 id="getting-the-results-from-the-screening">Getting the results from the screening<a class="anchor" aria-label="anchor" href="#getting-the-results-from-the-screening"></a>
 </h3>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># gpt-3.5 results (prompt 1, top_p = 1, 10 replications)</span></span>
 <span><span class="co"># studyid = 21 is not included since it failed during the loop</span></span>
 <span><span class="co"># I show how to recover this in another </span></span>
@@ -503,15 +485,14 @@ pacakge for further details about this solution.  </p>
 <div class="section level4">
 <h4 id="simple-table">Simple table<a class="anchor" aria-label="anchor" href="#simple-table"></a>
 </h4>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># gpt3.5 result</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span>gpt <span class="op">=</span> <span class="va">sum_dat_gpt3</span><span class="op">$</span><span class="va">final_decision_gpt_num</span>, human <span class="op">=</span> <span class="va">sum_dat_gpt3</span><span class="op">$</span><span class="va">human_code</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    human</span></span>
 <span><span class="co">#&gt; gpt  0  1</span></span>
 <span><span class="co">#&gt;   0 82  4</span></span>
-<span><span class="co">#&gt;   1  8 41</span></span></code></pre></div>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span>gpt <span class="op">=</span> <span class="va">sum_dat_gpt4</span><span class="op">$</span><span class="va">final_decision_gpt_num</span>, human <span class="op">=</span> <span class="va">sum_dat_gpt4</span><span class="op">$</span><span class="va">human_code</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   1  8 41</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span>gpt <span class="op">=</span> <span class="va">sum_dat_gpt4</span><span class="op">$</span><span class="va">final_decision_gpt_num</span>, human <span class="op">=</span> <span class="va">sum_dat_gpt4</span><span class="op">$</span><span class="va">human_code</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    human</span></span>
 <span><span class="co">#&gt; gpt  0  1</span></span>
 <span><span class="co">#&gt;   0 84  0</span></span>
@@ -520,7 +501,7 @@ pacakge for further details about this solution.  </p>
 <div class="section level4">
 <h4 id="false-included-and-excluded-by-gpt">False included and excluded (by gpt)<a class="anchor" aria-label="anchor" href="#false-included-and-excluded-by-gpt"></a>
 </h4>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">screen_perform</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">result_object</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/screen_analyzer.html">screen_analyzer</a></span><span class="op">(</span><span class="op">)</span> </span>
@@ -575,13 +556,13 @@ pacakge for further details about this solution.  </p>
 <div class="section level3">
 <h3 id="getting-detailed-descriptions">Getting detailed descriptions<a class="anchor" aria-label="anchor" href="#getting-detailed-descriptions"></a>
 </h3>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Show example with gpt-4</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="hierarchical-prompting">Hierarchical prompting<a class="anchor" aria-label="anchor" href="#hierarchical-prompting"></a>
 </h3>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Add codes</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -616,7 +597,7 @@ review. <em>BMC Medical Research Methodology</em> 19, 1-9. <a href="https://doi.
 screening for evidence synthesis. <em>Research Synthesis Methods</em>.
 <a href="https://doi.org/10.1002/jrsm.1374" class="external-link uri">https://doi.org/10.1002/jrsm.1374</a>.</p>
 </div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
@@ -627,15 +608,15 @@ screening for evidence synthesis. <em>Research Synthesis Methods</em>.
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>
