@@ -3,7 +3,7 @@ pkgdown: 2.1.0
 pkgdown_sha: ~
 articles:
   Using-ChatGPT-For-Screening: Using-ChatGPT-For-Screening.html
-last_built: 2024-07-10T18:34Z
+last_built: 2024-07-10T18:41Z
 urls:
   reference: https://mikkelvembye.github.io/AIscreenR/reference
   article: https://mikkelvembye.github.io/AIscreenR/articles
