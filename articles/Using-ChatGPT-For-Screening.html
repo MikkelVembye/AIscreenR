@@ -562,7 +562,153 @@ pacakge for further details about this solution.  </p>
 <div class="section level3">
 <h3 id="hierarchical-prompting">Hierarchical prompting<a class="anchor" aria-label="anchor" href="#hierarchical-prompting"></a>
 </h3>
+<p>The following code shows an example of how to approach a screening
+using hierarchical prompting. This means using multiple prompts in a
+specific organized order, where all references are evaluated by the
+first prompt and the references included by the first prompt are then
+evaluated by the second prompt etc.</p>
+<p>The example below is based on already screened references for an
+ongoing review.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Loading the included references</span></span>
+<span><span class="co">#tf_incl &lt;- revtools::read_bibliography("ExportedRis_included_ROB.ris") |&gt; </span></span>
+<span><span class="co">#  suppressWarnings() |&gt; </span></span>
+<span><span class="co">#  as_tibble() |&gt;</span></span>
+<span><span class="co">#  select(author, eppi_id, title, abstract) |&gt;</span></span>
+<span><span class="co">#  mutate(</span></span>
+<span><span class="co">#    human_code = 1</span></span>
+<span><span class="co">#  )</span></span>
+<span></span>
+<span><span class="co"># Loading the excluded references</span></span>
+<span><span class="co">#tf_excl &lt;- revtools::read_bibliography("ExportedRis_100_excluded_refs.ris") |&gt; </span></span>
+<span><span class="co">#  suppressWarnings() |&gt; </span></span>
+<span><span class="co">#  as_tibble() |&gt;</span></span>
+<span><span class="co">#  select(author, eppi_id, title, abstract) |&gt; # Using only relevant variables</span></span>
+<span><span class="co">#  mutate(</span></span>
+<span><span class="co">#    human_code = 0</span></span>
+<span><span class="co">#  )</span></span>
+<span></span>
+<span><span class="co"># Combining the two datasets</span></span>
+<span><span class="co">#tf_dat &lt;- </span></span>
+<span><span class="co">#  bind_rows(tf_excl, tf_incl) |&gt; </span></span>
+<span><span class="co">#  mutate(studyid = 1:n()) |&gt; </span></span>
+<span><span class="co">#  relocate(studyid, .before = title)</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># Filtering the data so that studies having "meta-anaysis", "review", "meta", "Meta" or "systematic review in the title are excluded.</span></span>
+<span><span class="co"># And only studies that have an abstract are included in the data.</span></span>
+<span><span class="co">#tf_filtered &lt;- </span></span>
+<span><span class="co">#  tf_dat |&gt; </span></span>
+<span><span class="co">#  filter(!str_detect(title, "review|meta-analysis|meta|Meta|systematic review"), !is.na(abstract))</span></span>
+<span><span class="co"># References without an abstract can be saved in another dataset so they can be screened by human coders on title &amp; abstract level or go directly to the 2nd stage screening for further review in full text format.</span></span></code></pre></div>
+<p>For this review, six prompts have been developed and these are saved
+as .docx files that need to be loaded and saved as a vector for the
+following screening.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Creating an empty list to store the prompts</span></span>
+<span><span class="co">#prompts &lt;- list()</span></span>
+<span></span>
+<span><span class="co"># Looping over the prompt numbers</span></span>
+<span><span class="co">#for (i in 1:6) {</span></span>
+<span>  </span>
+<span>  <span class="co"># Construct the file name</span></span>
+<span><span class="co">#  prompt_file &lt;- paste0("Prompt 12.", i, ".docx")</span></span>
+<span>  </span>
+<span>  <span class="co"># Read and process the file, then store the result in the list</span></span>
+<span><span class="co">#  prompts[[i]] &lt;- readtext::readtext(prompt_file)$text |&gt; </span></span>
+<span><span class="co">#    stringr::str_remove_all("\n")</span></span>
+<span><span class="co">#}</span></span>
+<span></span>
+<span><span class="co"># Converting the list to a vector</span></span>
+<span><span class="co">#prompts &lt;- unlist(prompts)</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Example of a hierarchical screening using the six developed prompts for TF</span></span>
+<span><span class="co">#data &lt;- tf_filtered</span></span>
+<span><span class="co">#var_names &lt;- names(data)</span></span>
+<span><span class="co">#n_prompts &lt;- length(prompts)</span></span>
+<span><span class="co">#i &lt;- 1</span></span>
+<span><span class="co">#nrow_left &lt;- 5</span></span>
+<span></span>
+<span><span class="co">#x &lt;- list()</span></span>
+<span><span class="co">#y &lt;- list()</span></span>
+<span></span>
+<span><span class="co">#while (i &lt;= n_prompts &amp; nrow_left &gt; 0) {</span></span>
+<span>  </span>
+<span><span class="co">#  obj &lt;- tabscreen_gpt(</span></span>
+<span><span class="co">#    data = data, </span></span>
+<span><span class="co">#    prompt = prompts[i], </span></span>
+<span><span class="co">#    studyid = studyid, </span></span>
+<span><span class="co">#    title = title, </span></span>
+<span><span class="co">#    abstract = abstract, </span></span>
+<span>    <span class="co">#functions = incl_function_custom,</span></span>
+<span>    <span class="co">#function_call_name = list(name = "inclusion_decision"),</span></span>
+<span><span class="co">#    model = "gpt-4",</span></span>
+<span><span class="co">#    reps = 1,</span></span>
+<span><span class="co">#    messages = FALSE</span></span>
+<span><span class="co">#  )</span></span>
+<span>  </span>
+<span><span class="co">#  y[[i]] &lt;- obj  </span></span>
+<span><span class="co">#  x[[i]] &lt;- obj$answer_data_sum </span></span>
+<span>  </span>
+<span><span class="co">#  data &lt;- </span></span>
+<span><span class="co">#    obj$answer_data_sum |&gt; </span></span>
+<span><span class="co">#    filter(final_decision_gpt_num == 1) |&gt; </span></span>
+<span><span class="co">#    select(all_of(var_names)) |&gt; </span></span>
+<span><span class="co">#    as_tibble()</span></span>
+<span>  </span>
+<span><span class="co">#  final_answer_dat &lt;- </span></span>
+<span><span class="co">#    obj$answer_data_sum |&gt; </span></span>
+<span><span class="co">#    filter(final_decision_gpt_num == 1)</span></span>
+<span>  </span>
+<span><span class="co">#  i &lt;- i + 1</span></span>
+<span><span class="co">#  nrow_left &lt;- nrow(data)</span></span>
+<span>    </span>
+<span><span class="co">#}</span></span>
+<span></span>
+<span><span class="co">#&gt; * Be aware that using gpt-4 models cost at least 10 times more than gpt-3.5 models.</span></span>
+<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $2.2379.</span></span>
+<span><span class="co">#&gt; Progress: ──────────────────────────────────────────────────────────────────────────────────────────── 100%</span></span>
+<span><span class="co">#&gt; * Be aware that using gpt-4 models cost at least 10 times more than gpt-3.5 models.</span></span>
+<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $0.7889.</span></span>
+<span><span class="co">#&gt; Progress: ──────────────────────────────────────────────────────────────────────────────────────────── 100%</span></span>
+<span><span class="co">#&gt; * Be aware that using gpt-4 models cost at least 10 times more than gpt-3.5 models.</span></span>
+<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $0.7007.</span></span>
+<span><span class="co">#&gt; Progress: ──────────────────────────────────────────────────────────────────────────────────────────── 100%</span></span>
+<span><span class="co">#&gt; * Be aware that using gpt-4 models cost at least 10 times more than gpt-3.5 models.</span></span>
+<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $0.6886.</span></span>
+<span><span class="co">#&gt; Progress: ──────────────────────────────────────────────────────────────────────────────────────────── 100%</span></span>
+<span><span class="co">#&gt; * Be aware that using gpt-4 models cost at least 10 times more than gpt-3.5 models.</span></span>
+<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $0.7925.</span></span>
+<span><span class="co">#&gt; Progress: ──────────────────────────────────────────────────────────────────────────────────────────── 100%</span></span>
+<span><span class="co">#&gt; * Be aware that using gpt-4 models cost at least 10 times more than gpt-3.5 models.</span></span>
+<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $0.5516.</span></span>
+<span><span class="co">#&gt; Progress: ──────────────────────────────────────────────────────────────────────────────────────────── 100% </span></span></code></pre></div>
+<p>The results from the screening can be viewed in two ways:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#include &lt;- x[[length(x)]] |&gt; filter(final_decision_gpt_num == 1)</span></span>
+<span><span class="co">#include</span></span>
+<span></span>
+<span><span class="co">#final_answer_dat</span></span>
+<span></span>
+<span><span class="co">## Optional</span></span>
+<span><span class="co"># Saving the dataset in a separate datafile</span></span>
+<span><span class="co">#saveRDS(final_answer_dat, "final_answer_dat.rds")</span></span>
+<span></span>
+<span><span class="co"># Loading the dataset</span></span>
+<span><span class="co">#final_dat &lt;- readRDS("final_answer_dat.rds")</span></span></code></pre></div>
+<p>If you use EPPI-reviewer as your software tool for your systematic
+review, then it can be useful to isolate the eppi-id’s for the included
+references so they can be identified through EPPI-reviewer’s ‘Search
+&amp; Classify’ function, specifically searching for the references
+‘With these internal ID’s’.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Converting the dataset to a wide-format and keeping only the eppi-id's for the included references to load them into EPPI</span></span>
+<span><span class="co">#selected_final_dat &lt;- final_dat %&gt;%</span></span>
+<span><span class="co">#  dplyr::select(eppi_id) %&gt;%</span></span>
+<span><span class="co">#  t()</span></span>
+<span></span>
+<span><span class="co">#write.csv(selected_final_dat)</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Add codes</span></span></code></pre></div>
 </div>
 <div class="section level2">
