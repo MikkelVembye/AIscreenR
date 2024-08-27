@@ -1,6 +1,7 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/404.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/LICENSE-text.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/LICENSE.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/articles/Using-ChatGPT-For-Screening.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/articles/index.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/authors.html</loc></url>
@@ -13,6 +14,7 @@
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/index.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/is_chatgpt.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/is_chatgpt_tbl.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/reference/model_prizes.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/print.chatgpt.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/print.gpt_price.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/rate_limits_per_minute.html</loc></url>

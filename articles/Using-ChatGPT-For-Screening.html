@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AIscreenR</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Unreleased version">0.0.0.9016</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Unreleased version">0.0.0.9999</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -386,22 +386,28 @@ pacakge for further details about this solution.  </p>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="va">app_obj</span></span>
-<span><span class="co">#&gt; The approximate price of the (simple) screening will be around $56.1356.</span></span>
+<span><span class="co">#&gt; The approximate price of the (simple) screening will be around $56.1396.</span></span>
 <span></span>
 <span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_dollar</span></span>
-<span><span class="co">#&gt; [1] 56.1356</span></span>
+<span><span class="co">#&gt; [1] 56.1396</span></span>
 <span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_data</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 5</span></span></span>
-<span><span class="co">#&gt;   model              iterations input_price_dollar output_price_dollar</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> gpt-3.5-turbo-0613          1              1.778             0.023<span style="text-decoration: underline;">76</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> gpt-3.5-turbo-0613         10             17.80              0.237<span style="text-decoration: underline;">6</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> gpt-4                       1             35.59              0.712<span style="text-decoration: underline;">8</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 6</span></span></span>
+<span><span class="co">#&gt;   prompt   model              iterations input_price_dollar output_price_dollar</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Prompt 1 gpt-3.5-turbo-0613          1             0.903<span style="text-decoration: underline;">4</span>             0.011<span style="text-decoration: underline;">88</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Prompt 1 gpt-3.5-turbo-0613         10             9.042              0.118<span style="text-decoration: underline;">8</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Prompt 1 gpt-4                       1            18.08               0.356<span style="text-decoration: underline;">4</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Prompt 2 gpt-3.5-turbo-0613          1             0.875              0.011<span style="text-decoration: underline;">88</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Prompt 2 gpt-3.5-turbo-0613         10             8.755              0.118<span style="text-decoration: underline;">8</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> Prompt 2 gpt-4                       1            17.51               0.356<span style="text-decoration: underline;">4</span> </span></span>
 <span><span class="co">#&gt;   total_price_dollar</span></span>
 <span><span class="co">#&gt;                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>              1.802</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>             18.03 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>             36.30</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>             0.915<span style="text-decoration: underline;">3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>             9.161 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>            18.44  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>             0.886<span style="text-decoration: underline;">9</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>             8.874 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>            17.87</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="screening-titles-and-abstracts">Screening titles and abstracts<a class="anchor" aria-label="anchor" href="#screening-titles-and-abstracts"></a>
