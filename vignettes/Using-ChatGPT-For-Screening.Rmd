@@ -29,7 +29,7 @@ options(dplyr.summarise.inform = FALSE) # Avoids summarize info from tidyverse
 <p style='margin-top:1em; text-align:center'>
 <b>Important note</b></p>
 <p style='margin:1em'>
-This vignette represent tentative work-in-progress only. Be aware that knowledge about the general applicability and efficacy of using large-language models (LLMs) including OpenAI's GPT API models for title and abstract screening in literature reviews are still in the initial stage (Alshami et al., 2023; Guo et al., 2024; Syriani et al., 2023). Our first results suggest that OpenAI's GPT API models [not to be confused with GPT models used from the ChatGPT interface, see  Khraisha et al. (2024)] can be reliable second screeners on par with human performance when reviewing specific and well defined interventions and possibly in more complex reviews as well. Concretely, we find that the GPT-4 API model shows the best performance relative to GPT-3.5-turbo, and we suggest using this model whenever possible. The first evidence of the working of OpenAI's GPT API models is shown in this vignette. Yet, note that the result presented here are for tutorial purposes only. Hard inferences about the relative efficacy of the used GPT API models should be avoided. 
+See Vembye et al. (2024) for an overview of how and when GPT API models can be used for title and abstract screening. For an overview of other research regarding the use of GPT API models for title and abstract screening, see Syriani et al. (2023), Guo et al., (2024), and Gargari et al. (2024). On a related line of research, Alshami et al. (2023), Khraisha et al. (2024), and Issaiy et al. (2024) explored the ChatGPT web browser interface for TAB screening. Based on our experience, we think that these two lines of research should not be mixed up since the draw on different GPT models. 
 </p></span>
 </div>
 
@@ -433,181 +433,25 @@ screen_perform
 # Show example with gpt-4
 ```
 
-## Hierarchical prompting
+## Multi-prompt screening
 
-
-The following code shows an example of how to approach a screening using hierarchical prompting. This means using multiple prompts in a specific organized order, where all references are evaluated by the first prompt and the references included by the first prompt are then evaluated by the second prompt etc.
-
-The example below is based on already screened references for an ongoing review.
-
-```{r}
-# Loading the included references
-#tf_incl <- revtools::read_bibliography("ExportedRis_included_ROB.ris") |> 
-#  suppressWarnings() |> 
-#  as_tibble() |>
-#  select(author, eppi_id, title, abstract) |>
-#  mutate(
-#    human_code = 1
-#  )
-
-# Loading the excluded references
-#tf_excl <- revtools::read_bibliography("ExportedRis_100_excluded_refs.ris") |> 
-#  suppressWarnings() |> 
-#  as_tibble() |>
-#  select(author, eppi_id, title, abstract) |> # Using only relevant variables
-#  mutate(
-#    human_code = 0
-#  )
-
-# Combining the two datasets
-#tf_dat <- 
-#  bind_rows(tf_excl, tf_incl) |> 
-#  mutate(studyid = 1:n()) |> 
-#  relocate(studyid, .before = title)
-
-
-# Filtering the data so that studies having "meta-anaysis", "review", "meta", "Meta" or "systematic review in the title are excluded.
-# And only studies that have an abstract are included in the data.
-#tf_filtered <- 
-#  tf_dat |> 
-#  filter(!str_detect(title, "review|meta-analysis|meta|Meta|systematic review"), !is.na(abstract))
-# References without an abstract can be saved in another dataset so they can be screened by human coders on title & abstract level or go directly to the 2nd stage screening for further review in full text format.
-
-```
-For this review, six prompts have been developed and these are saved as .docx files that need to be loaded and saved as a vector for the following screening. 
-
-```{r}
-# Creating an empty list to store the prompts
-#prompts <- list()
-
-# Looping over the prompt numbers
-#for (i in 1:6) {
-  
-  # Construct the file name
-#  prompt_file <- paste0("Prompt 12.", i, ".docx")
-  
-  # Read and process the file, then store the result in the list
-#  prompts[[i]] <- readtext::readtext(prompt_file)$text |> 
-#    stringr::str_remove_all("\n")
-#}
-
-# Converting the list to a vector
-#prompts <- unlist(prompts)
-```
-
-
-```{r eval = FALSE}
-# Example of a hierarchical screening using the six developed prompts for TF
-#data <- tf_filtered
-#var_names <- names(data)
-#n_prompts <- length(prompts)
-#i <- 1
-#nrow_left <- 5
-
-#x <- list()
-#y <- list()
-
-#while (i <= n_prompts & nrow_left > 0) {
-  
-#  obj <- tabscreen_gpt(
-#    data = data, 
-#    prompt = prompts[i], 
-#    studyid = studyid, 
-#    title = title, 
-#    abstract = abstract, 
-    #functions = incl_function_custom,
-    #function_call_name = list(name = "inclusion_decision"),
-#    model = "gpt-4",
-#    reps = 1,
-#    messages = FALSE
-#  )
-  
-#  y[[i]] <- obj  
-#  x[[i]] <- obj$answer_data_sum 
-  
-#  data <- 
-#    obj$answer_data_sum |> 
-#    filter(final_decision_gpt_num == 1) |> 
-#    select(all_of(var_names)) |> 
-#    as_tibble()
-  
-#  final_answer_dat <- 
-#    obj$answer_data_sum |> 
-#    filter(final_decision_gpt_num == 1)
-  
-#  i <- i + 1
-#  nrow_left <- nrow(data)
-    
-#}
-
-#> * Be aware that using gpt-4 models cost at least 10 times more than gpt-3.5 models.
-#> * The approximate price of the current (simple) screening will be around $2.2379.
-#> Progress: ──────────────────────────────────────────────────────────────────────────────────────────── 100%
-#> * Be aware that using gpt-4 models cost at least 10 times more than gpt-3.5 models.
-#> * The approximate price of the current (simple) screening will be around $0.7889.
-#> Progress: ──────────────────────────────────────────────────────────────────────────────────────────── 100%
-#> * Be aware that using gpt-4 models cost at least 10 times more than gpt-3.5 models.
-#> * The approximate price of the current (simple) screening will be around $0.7007.
-#> Progress: ──────────────────────────────────────────────────────────────────────────────────────────── 100%
-#> * Be aware that using gpt-4 models cost at least 10 times more than gpt-3.5 models.
-#> * The approximate price of the current (simple) screening will be around $0.6886.
-#> Progress: ──────────────────────────────────────────────────────────────────────────────────────────── 100%
-#> * Be aware that using gpt-4 models cost at least 10 times more than gpt-3.5 models.
-#> * The approximate price of the current (simple) screening will be around $0.7925.
-#> Progress: ──────────────────────────────────────────────────────────────────────────────────────────── 100%
-#> * Be aware that using gpt-4 models cost at least 10 times more than gpt-3.5 models.
-#> * The approximate price of the current (simple) screening will be around $0.5516.
-#> Progress: ──────────────────────────────────────────────────────────────────────────────────────────── 100% 
-
-```
-
-The results from the screening can be viewed in two ways:
-
-```{r}
-#include <- x[[length(x)]] |> filter(final_decision_gpt_num == 1)
-#include
-
-#final_answer_dat
-
-## Optional
-# Saving the dataset in a separate datafile
-#saveRDS(final_answer_dat, "final_answer_dat.rds")
-
-# Loading the dataset
-#final_dat <- readRDS("final_answer_dat.rds")
-
-```
-
-If you use EPPI-reviewer as your software tool for your systematic review, then it can be useful to isolate the eppi-id's for the included references so they can be identified through EPPI-reviewer's 'Search & Classify' function, specifically searching for the references 'With these internal ID's'.
-
-```{r}
-# Converting the dataset to a wide-format and keeping only the eppi-id's for the included references to load them into EPPI
-#selected_final_dat <- final_dat %>%
-#  dplyr::select(eppi_id) %>%
-#  t()
-
-#write.csv(selected_final_dat)
-```
-
-```{r}
-# Add codes
-```
+INSERT WHEN DATA IS ADDED TO PACKAGE
 
 
 # References
 Alshami, A., Elsayed, M., Ali, E., Eltoukhy, A. E. E., & Zayed, T. (2023). Harnessing the power of ChatGPT for automating systematic review process: Methodology, case study, limitations, and future directions. *Systems*. 11(7).
 
-Gartlehner, G., Wagner, G., Lux, L. et al. (2019). Assessing the accuracy of machine-assisted abstract screening with DistillerAI: a user study. *Systematic Reviews*. 8, 1-10. <https://doi.org/10.1186/s13643-019-1221-3>
+Gargari, O. K., Mahmoudi, M. H., Hajisafarali, M., & Samiee, R. (2024). Enhancing title and abstract screening for systematic reviews with GPT-3.5 turbo. *BMJ Evidence-Based Medicine*, 29(1), 69 LP – 70. <https://doi.org/10.1136/bmjebm-2023-112678>
 
 Guo, E., Gupta, M., Deng, J., Park, Y.-J., Paget, M., & Naugler, C. (2024). Automated Paper Screening for Clinical Reviews Using Large Language Models: Data Analysis Study. *Journal of Medical Internet Research*. <https://doi.org/10.2196/48996>
+
+Issaiy, M., Ghanaati, H., Kolahi, S., Shakiba, M., Jalali, A. H., Zarei, D., Kazemian, S., Avanaki, M. A., & Firouznia, K. (2024). Methodological insights into ChatGPT’s screening performance in systematic reviews. *BMC Medical Research Methodology*, 24(1), 78. <https://doi.org/10.1186/s12874-024-02203-8>
 
 Khraisha Q, Put S, Kappenberg J, Warraitch A, Hadfield K (2024). Can large language models replace humans in systematic reviews? Evaluating GPT-4's efficacy in screening and extracting data from peer-reviewed and grey literature in multiple languages. 
 *Research Synthesis Methods*. 1-11. <https://doi.org/10.1002/jrsm.1715>
 
-McHugh, M. L. (2012). Interrater reliability: The kappa statistic. *Biochemia Medica*, 22(3), 276–282.
-
 Syriani, E., David, I., & Kumar, G. (2023). Assessing the Ability of ChatGPT to Screen Articles for Systematic Reviews. *ArXiv Preprint ArXiv:2307.06464.* <https://arxiv.org/pdf/2307.06464.pdf>
 
-Waffenschmidt, S., Knelangen, M., Sieben, W., Bühn, S., & Pieper, D. (2019). Single screening versus conventional double screening for study selection in systematic reviews: a methodological systematic review. *BMC Medical Research Methodology* 19, 1-9. <https://doi.org/10.1186/s12874-019-0782-0>
+Vembye, M., Christensen, J., Mølgaard, A. B., Schytt, F.L.W. (2024). GPT API Models Can Function as Highly Reliable Second Screeners of Titles and Abstracts in Systematic Reviews: A Proof of Concept and Common Guidelines. *Open Science Framework (OSF)*. <https://doi.org/10.31219/osf.io/yrhzm>
 
 Westgate MJ (2019). revtools: An R package to support article screening for evidence synthesis. *Research Synthesis Methods*. <https://doi.org/10.1002/jrsm.1374>.
