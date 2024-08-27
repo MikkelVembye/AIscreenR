@@ -13,7 +13,7 @@ prompt <- prompts[1]
 
 test_that("approximate_price_gpt() takes multiple inputs", {
 
-  skip_on_ci()
+  #skip_on_ci()
 
   app_obj <- approximate_price_gpt(
     data = filges2015_dat,
@@ -52,7 +52,7 @@ test_that("approximate_price_gpt() takes multiple inputs", {
 
 test_that("approximate_price_gpt() error structure.", {
 
-  skip_on_ci()
+  #skip_on_ci()
 
   expect_error(
     app_obj <- approximate_price_gpt(
