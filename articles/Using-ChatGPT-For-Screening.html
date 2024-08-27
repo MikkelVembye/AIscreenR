@@ -71,22 +71,15 @@
 <b>Important note</b>
 </p>
 <p style="margin:1em">
-This vignette represent tentative work-in-progress only. Be aware that
-knowledge about the general applicability and efficacy of using
-large-language models (LLMs) including OpenAI’s GPT API models for title
-and abstract screening in literature reviews are still in the initial
-stage (Alshami et al., 2023; Guo et al., 2024; Syriani et al., 2023).
-Our first results suggest that OpenAI’s GPT API models [not to be
-confused with GPT models used from the ChatGPT interface, see Khraisha
-et al. (2024)] can be reliable second screeners on par with human
-performance when reviewing specific and well defined interventions and
-possibly in more complex reviews as well. Concretely, we find that the
-GPT-4 API model shows the best performance relative to GPT-3.5-turbo,
-and we suggest using this model whenever possible. The first evidence of
-the working of OpenAI’s GPT API models is shown in this vignette. Yet,
-note that the result presented here are for tutorial purposes only. Hard
-inferences about the relative efficacy of the used GPT API models should
-be avoided.
+See Vembye et al. (2024) for an overview of how and when GPT API models
+can be used for title and abstract screening. For an overview of other
+research regarding the use of GPT API models for title and abstract
+screening, see Syriani et al. (2023), Guo et al., (2024), and Gargari et
+al. (2024). On a related line of research, Alshami et al. (2023),
+Khraisha et al. (2024), and Issaiy et al. (2024) explored the ChatGPT
+web browser interface for TAB screening. Based on our experience, we
+think that these two lines of research should not be mixed up since the
+draw on different GPT models.
 </p>
 <p></p></span>
 </div>
@@ -566,156 +559,9 @@ pacakge for further details about this solution.  </p>
 <code class="sourceCode R"><span><span class="co"># Show example with gpt-4</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="hierarchical-prompting">Hierarchical prompting<a class="anchor" aria-label="anchor" href="#hierarchical-prompting"></a>
+<h3 id="multi-prompt-screening">Multi-prompt screening<a class="anchor" aria-label="anchor" href="#multi-prompt-screening"></a>
 </h3>
-<p>The following code shows an example of how to approach a screening
-using hierarchical prompting. This means using multiple prompts in a
-specific organized order, where all references are evaluated by the
-first prompt and the references included by the first prompt are then
-evaluated by the second prompt etc.</p>
-<p>The example below is based on already screened references for an
-ongoing review.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Loading the included references</span></span>
-<span><span class="co">#tf_incl &lt;- revtools::read_bibliography("ExportedRis_included_ROB.ris") |&gt; </span></span>
-<span><span class="co">#  suppressWarnings() |&gt; </span></span>
-<span><span class="co">#  as_tibble() |&gt;</span></span>
-<span><span class="co">#  select(author, eppi_id, title, abstract) |&gt;</span></span>
-<span><span class="co">#  mutate(</span></span>
-<span><span class="co">#    human_code = 1</span></span>
-<span><span class="co">#  )</span></span>
-<span></span>
-<span><span class="co"># Loading the excluded references</span></span>
-<span><span class="co">#tf_excl &lt;- revtools::read_bibliography("ExportedRis_100_excluded_refs.ris") |&gt; </span></span>
-<span><span class="co">#  suppressWarnings() |&gt; </span></span>
-<span><span class="co">#  as_tibble() |&gt;</span></span>
-<span><span class="co">#  select(author, eppi_id, title, abstract) |&gt; # Using only relevant variables</span></span>
-<span><span class="co">#  mutate(</span></span>
-<span><span class="co">#    human_code = 0</span></span>
-<span><span class="co">#  )</span></span>
-<span></span>
-<span><span class="co"># Combining the two datasets</span></span>
-<span><span class="co">#tf_dat &lt;- </span></span>
-<span><span class="co">#  bind_rows(tf_excl, tf_incl) |&gt; </span></span>
-<span><span class="co">#  mutate(studyid = 1:n()) |&gt; </span></span>
-<span><span class="co">#  relocate(studyid, .before = title)</span></span>
-<span></span>
-<span></span>
-<span><span class="co"># Filtering the data so that studies having "meta-anaysis", "review", "meta", "Meta" or "systematic review in the title are excluded.</span></span>
-<span><span class="co"># And only studies that have an abstract are included in the data.</span></span>
-<span><span class="co">#tf_filtered &lt;- </span></span>
-<span><span class="co">#  tf_dat |&gt; </span></span>
-<span><span class="co">#  filter(!str_detect(title, "review|meta-analysis|meta|Meta|systematic review"), !is.na(abstract))</span></span>
-<span><span class="co"># References without an abstract can be saved in another dataset so they can be screened by human coders on title &amp; abstract level or go directly to the 2nd stage screening for further review in full text format.</span></span></code></pre></div>
-<p>For this review, six prompts have been developed and these are saved
-as .docx files that need to be loaded and saved as a vector for the
-following screening.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Creating an empty list to store the prompts</span></span>
-<span><span class="co">#prompts &lt;- list()</span></span>
-<span></span>
-<span><span class="co"># Looping over the prompt numbers</span></span>
-<span><span class="co">#for (i in 1:6) {</span></span>
-<span>  </span>
-<span>  <span class="co"># Construct the file name</span></span>
-<span><span class="co">#  prompt_file &lt;- paste0("Prompt 12.", i, ".docx")</span></span>
-<span>  </span>
-<span>  <span class="co"># Read and process the file, then store the result in the list</span></span>
-<span><span class="co">#  prompts[[i]] &lt;- readtext::readtext(prompt_file)$text |&gt; </span></span>
-<span><span class="co">#    stringr::str_remove_all("\n")</span></span>
-<span><span class="co">#}</span></span>
-<span></span>
-<span><span class="co"># Converting the list to a vector</span></span>
-<span><span class="co">#prompts &lt;- unlist(prompts)</span></span></code></pre></div>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Example of a hierarchical screening using the six developed prompts for TF</span></span>
-<span><span class="co">#data &lt;- tf_filtered</span></span>
-<span><span class="co">#var_names &lt;- names(data)</span></span>
-<span><span class="co">#n_prompts &lt;- length(prompts)</span></span>
-<span><span class="co">#i &lt;- 1</span></span>
-<span><span class="co">#nrow_left &lt;- 5</span></span>
-<span></span>
-<span><span class="co">#x &lt;- list()</span></span>
-<span><span class="co">#y &lt;- list()</span></span>
-<span></span>
-<span><span class="co">#while (i &lt;= n_prompts &amp; nrow_left &gt; 0) {</span></span>
-<span>  </span>
-<span><span class="co">#  obj &lt;- tabscreen_gpt(</span></span>
-<span><span class="co">#    data = data, </span></span>
-<span><span class="co">#    prompt = prompts[i], </span></span>
-<span><span class="co">#    studyid = studyid, </span></span>
-<span><span class="co">#    title = title, </span></span>
-<span><span class="co">#    abstract = abstract, </span></span>
-<span>    <span class="co">#functions = incl_function_custom,</span></span>
-<span>    <span class="co">#function_call_name = list(name = "inclusion_decision"),</span></span>
-<span><span class="co">#    model = "gpt-4",</span></span>
-<span><span class="co">#    reps = 1,</span></span>
-<span><span class="co">#    messages = FALSE</span></span>
-<span><span class="co">#  )</span></span>
-<span>  </span>
-<span><span class="co">#  y[[i]] &lt;- obj  </span></span>
-<span><span class="co">#  x[[i]] &lt;- obj$answer_data_sum </span></span>
-<span>  </span>
-<span><span class="co">#  data &lt;- </span></span>
-<span><span class="co">#    obj$answer_data_sum |&gt; </span></span>
-<span><span class="co">#    filter(final_decision_gpt_num == 1) |&gt; </span></span>
-<span><span class="co">#    select(all_of(var_names)) |&gt; </span></span>
-<span><span class="co">#    as_tibble()</span></span>
-<span>  </span>
-<span><span class="co">#  final_answer_dat &lt;- </span></span>
-<span><span class="co">#    obj$answer_data_sum |&gt; </span></span>
-<span><span class="co">#    filter(final_decision_gpt_num == 1)</span></span>
-<span>  </span>
-<span><span class="co">#  i &lt;- i + 1</span></span>
-<span><span class="co">#  nrow_left &lt;- nrow(data)</span></span>
-<span>    </span>
-<span><span class="co">#}</span></span>
-<span></span>
-<span><span class="co">#&gt; * Be aware that using gpt-4 models cost at least 10 times more than gpt-3.5 models.</span></span>
-<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $2.2379.</span></span>
-<span><span class="co">#&gt; Progress: ──────────────────────────────────────────────────────────────────────────────────────────── 100%</span></span>
-<span><span class="co">#&gt; * Be aware that using gpt-4 models cost at least 10 times more than gpt-3.5 models.</span></span>
-<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $0.7889.</span></span>
-<span><span class="co">#&gt; Progress: ──────────────────────────────────────────────────────────────────────────────────────────── 100%</span></span>
-<span><span class="co">#&gt; * Be aware that using gpt-4 models cost at least 10 times more than gpt-3.5 models.</span></span>
-<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $0.7007.</span></span>
-<span><span class="co">#&gt; Progress: ──────────────────────────────────────────────────────────────────────────────────────────── 100%</span></span>
-<span><span class="co">#&gt; * Be aware that using gpt-4 models cost at least 10 times more than gpt-3.5 models.</span></span>
-<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $0.6886.</span></span>
-<span><span class="co">#&gt; Progress: ──────────────────────────────────────────────────────────────────────────────────────────── 100%</span></span>
-<span><span class="co">#&gt; * Be aware that using gpt-4 models cost at least 10 times more than gpt-3.5 models.</span></span>
-<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $0.7925.</span></span>
-<span><span class="co">#&gt; Progress: ──────────────────────────────────────────────────────────────────────────────────────────── 100%</span></span>
-<span><span class="co">#&gt; * Be aware that using gpt-4 models cost at least 10 times more than gpt-3.5 models.</span></span>
-<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $0.5516.</span></span>
-<span><span class="co">#&gt; Progress: ──────────────────────────────────────────────────────────────────────────────────────────── 100% </span></span></code></pre></div>
-<p>The results from the screening can be viewed in two ways:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#include &lt;- x[[length(x)]] |&gt; filter(final_decision_gpt_num == 1)</span></span>
-<span><span class="co">#include</span></span>
-<span></span>
-<span><span class="co">#final_answer_dat</span></span>
-<span></span>
-<span><span class="co">## Optional</span></span>
-<span><span class="co"># Saving the dataset in a separate datafile</span></span>
-<span><span class="co">#saveRDS(final_answer_dat, "final_answer_dat.rds")</span></span>
-<span></span>
-<span><span class="co"># Loading the dataset</span></span>
-<span><span class="co">#final_dat &lt;- readRDS("final_answer_dat.rds")</span></span></code></pre></div>
-<p>If you use EPPI-reviewer as your software tool for your systematic
-review, then it can be useful to isolate the eppi-id’s for the included
-references so they can be identified through EPPI-reviewer’s ‘Search
-&amp; Classify’ function, specifically searching for the references
-‘With these internal ID’s’.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Converting the dataset to a wide-format and keeping only the eppi-id's for the included references to load them into EPPI</span></span>
-<span><span class="co">#selected_final_dat &lt;- final_dat %&gt;%</span></span>
-<span><span class="co">#  dplyr::select(eppi_id) %&gt;%</span></span>
-<span><span class="co">#  t()</span></span>
-<span></span>
-<span><span class="co">#write.csv(selected_final_dat)</span></span></code></pre></div>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Add codes</span></span></code></pre></div>
+<p>INSERT WHEN DATA IS ADDED TO PACKAGE</p>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
@@ -724,27 +570,31 @@ references so they can be identified through EPPI-reviewer’s ‘Search
 T. (2023). Harnessing the power of ChatGPT for automating systematic
 review process: Methodology, case study, limitations, and future
 directions. <em>Systems</em>. 11(7).</p>
-<p>Gartlehner, G., Wagner, G., Lux, L. et al. (2019). Assessing the
-accuracy of machine-assisted abstract screening with DistillerAI: a user
-study. <em>Systematic Reviews</em>. 8, 1-10. <a href="https://doi.org/10.1186/s13643-019-1221-3" class="external-link uri">https://doi.org/10.1186/s13643-019-1221-3</a></p>
+<p>Gargari, O. K., Mahmoudi, M. H., Hajisafarali, M., &amp; Samiee, R.
+(2024). Enhancing title and abstract screening for systematic reviews
+with GPT-3.5 turbo. <em>BMJ Evidence-Based Medicine</em>, 29(1), 69 LP –
+70. <a href="https://doi.org/10.1136/bmjebm-2023-112678" class="external-link uri">https://doi.org/10.1136/bmjebm-2023-112678</a></p>
 <p>Guo, E., Gupta, M., Deng, J., Park, Y.-J., Paget, M., &amp; Naugler,
 C. (2024). Automated Paper Screening for Clinical Reviews Using Large
 Language Models: Data Analysis Study. <em>Journal of Medical Internet
 Research</em>. <a href="https://doi.org/10.2196/48996" class="external-link uri">https://doi.org/10.2196/48996</a></p>
+<p>Issaiy, M., Ghanaati, H., Kolahi, S., Shakiba, M., Jalali, A. H.,
+Zarei, D., Kazemian, S., Avanaki, M. A., &amp; Firouznia, K. (2024).
+Methodological insights into ChatGPT’s screening performance in
+systematic reviews. <em>BMC Medical Research Methodology</em>, 24(1),
+78. <a href="https://doi.org/10.1186/s12874-024-02203-8" class="external-link uri">https://doi.org/10.1186/s12874-024-02203-8</a></p>
 <p>Khraisha Q, Put S, Kappenberg J, Warraitch A, Hadfield K (2024). Can
 large language models replace humans in systematic reviews? Evaluating
 GPT-4’s efficacy in screening and extracting data from peer-reviewed and
 grey literature in multiple languages. <em>Research Synthesis
 Methods</em>. 1-11. <a href="https://doi.org/10.1002/jrsm.1715" class="external-link uri">https://doi.org/10.1002/jrsm.1715</a></p>
-<p>McHugh, M. L. (2012). Interrater reliability: The kappa statistic.
-<em>Biochemia Medica</em>, 22(3), 276–282.</p>
 <p>Syriani, E., David, I., &amp; Kumar, G. (2023). Assessing the Ability
 of ChatGPT to Screen Articles for Systematic Reviews. <em>ArXiv Preprint
 ArXiv:2307.06464.</em> <a href="https://arxiv.org/pdf/2307.06464.pdf" class="external-link uri">https://arxiv.org/pdf/2307.06464.pdf</a></p>
-<p>Waffenschmidt, S., Knelangen, M., Sieben, W., Bühn, S., &amp; Pieper,
-D. (2019). Single screening versus conventional double screening for
-study selection in systematic reviews: a methodological systematic
-review. <em>BMC Medical Research Methodology</em> 19, 1-9. <a href="https://doi.org/10.1186/s12874-019-0782-0" class="external-link uri">https://doi.org/10.1186/s12874-019-0782-0</a></p>
+<p>Vembye, M., Christensen, J., Mølgaard, A. B., Schytt, F.L.W. (2024).
+GPT API Models Can Function as Highly Reliable Second Screeners of
+Titles and Abstracts in Systematic Reviews: A Proof of Concept and
+Common Guidelines. <em>Open Science Framework (OSF)</em>. <a href="https://doi.org/10.31219/osf.io/yrhzm" class="external-link uri">https://doi.org/10.31219/osf.io/yrhzm</a></p>
 <p>Westgate MJ (2019). revtools: An R package to support article
 screening for evidence synthesis. <em>Research Synthesis Methods</em>.
 <a href="https://doi.org/10.1002/jrsm.1374" class="external-link uri">https://doi.org/10.1002/jrsm.1374</a>.</p>
