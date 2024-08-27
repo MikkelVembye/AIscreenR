@@ -14,5 +14,6 @@ utils::globalVariables(
     "promptid", "SE_kappa", "accuracy", "cm1", "cm2", "human_code", "human_in_gpt_ex", "human_ex_gpt_in", "n_ref",
     "n_refs", "n_screened", "human_ex_gpt_ex", "human_in_gpt_in", "p_agreement", "pe", "reps", "rm1", "rm2",
     "studyid", "top_p", "n_mis_answers", "screen_errros", "max_tries", "max_seconds", "irr", "se_irr", "cl_irr", "cu_irr",
-    "level_of_agreement", "precision", "recall", "npv", "specificity", "bacc", "F2", "mcc", "denominator", "nominator")
+    "level_of_agreement", "precision", "recall", "npv", "specificity", "bacc", "F2", "mcc", "denominator", "nominator",
+    "model_prizes", "price_in_per_token", "price_out_per_token")
 )

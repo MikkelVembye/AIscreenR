@@ -28,9 +28,9 @@ reference:
       - rate_limits_per_minute
 
   - title: "Datasets"
-    desc: "Ris file data from systematic reviews"
     contents:
       - filges2015_dat
+      - model_prizes
 
   - title: "Coercion"
     contents:

@@ -1,7 +1,7 @@
 Package: AIscreenR
 Title: AI screening tools for systematic reviews
-Version: 0.0.0.9016
-Date: 2023-09-14
+Version: 0.0.0.9999
+Date: 2024-08-27
 Authors@R: c(
     person(given = "Mikkel H.", 
            family = "Vembye", 
@@ -9,10 +9,10 @@ Authors@R: c(
            role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-9071-0724"))
            )
-Description: Screening with AI tools including gpt models from 'OpenAI'.
+Description: Screening with AI tools including GPT API models from 'OpenAI'.
 Depends:
     R (>= 4.1.0)
-License: MIT + file LICENSE
+License: GPL-3 + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1

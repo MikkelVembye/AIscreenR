@@ -77,12 +77,8 @@ approximate_price_gpt <-
 
 
     # Ensures only viable models are used
-    if (any(!is.element(model, c(
-      "gpt-3.5-turbo", "gpt-3.5-turbo-0613",
-      "gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613",
-      "gpt-4", "gpt-4-0613",
-      "gpt-4-32k", "gpt-4-32k-0613"
-    )))) stop("Unknown gpt model(s) used - check model name(s).")
+    if (any(!is.element(model, model_prizes$model))) stop("Unknown gpt model(s) used - check model name(s).")
+
 
     if (n_distinct(prompt) != length(prompt)) stop("Do not add same prompt twice.")
 
@@ -153,8 +149,6 @@ approximate_price_gpt <-
       )
 
 
-
-
     price_dat <-
       question_dat |>
       mutate(
@@ -165,32 +159,20 @@ approximate_price_gpt <-
       dplyr::rowwise() |>
       mutate(
 
-        input_price = case_when(
-          any(c("gpt-3.5-turbo", "gpt-3.5-turbo-0613") %in% model) ~ round(prompt_tokens * (0.0015/1000) * iterations, 4),
-          any(c("gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613") %in% model) ~ round(prompt_tokens * (0.003/1000) * iterations, 4),
-          any(c("gpt-4", "gpt-4-0613") %in% model) ~ round(prompt_tokens * (0.03/1000) * iterations, 4),
-          any(c("gpt-4-32k", "gpt-4-32k-0613") %in% model) ~ round(prompt_tokens * (0.06/1000) * iterations, 4),
-          TRUE ~ NA_real_
-        ),
-
-        output_price = case_when(
-          any(c("gpt-3.5-turbo", "gpt-3.5-turbo-0613") %in% model) ~ completion_tokens * (0.002/1000) * iterations,
-          any(c("gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613") %in% model) ~ completion_tokens * (0.004/1000) * iterations,
-          any(c("gpt-4", "gpt-4-0613") %in% model) ~ completion_tokens * (0.06/1000) * iterations,
-          any(c("gpt-4-32k", "gpt-4-32k-0613") %in% model) ~ completion_tokens * (0.12/1000) * iterations,
-          TRUE ~ NA_real_
-        )
+        input_price = round(prompt_tokens * input_price(model) * iterations, 4),
+        output_price = completion_tokens * output_price(model) * iterations
 
       ) |>
       ungroup() |>
       summarise(
 
+        prompt = unique(promptid),
         iterations = unique(iterations),
         input_price_dollar = sum(input_price, na.rm = TRUE),
         output_price_dollar = sum(output_price, na.rm = TRUE),
         total_price_dollar = round(input_price_dollar + output_price_dollar, 4),
 
-        .by = c(model, iterations)
+        .by = c(prompt, model, iterations)
 
       )
 
@@ -203,3 +185,20 @@ approximate_price_gpt <-
     res
 
 }
+
+#Helper function
+input_price <-
+  function(x){
+
+    model_prizes |> dplyr::filter(model == x) |> dplyr::pull(price_in_per_token)
+
+  }
+
+output_price <-
+  function(x){
+
+    model_prizes |> dplyr::filter(model == x) |> dplyr::pull(price_out_per_token)
+
+  }
+
+

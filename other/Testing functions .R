@@ -70,15 +70,26 @@ duration delivered to young people and their families). If not, exclude study.
 for non-opioid drug use?"
 
 
-
 app_obj <- approximate_price_gpt(
-  data = filges2015_dat[1:2,],
-  prompt = c(prompt),
+  data = filges2015_dat,
+  prompt = prompts,
   studyid = studyid,
   title = title,
   abstract = abstract,
-  model = c("gpt-4"),
-  reps = c(100)
+  model = c("gpt-3.5-turbo-0613", "gpt-4"),
+  reps = c(10, 1),
+  top_p = c(0.2, 1)
+)
+
+
+app_obj <- approximate_price_gpt(
+  data = filges2015_dat[c(1:20),],
+  prompt = prompt,
+  #studyid = studyid,
+  title = title,
+  abstract = abstract,
+  model = c("gpt-3.5-turbo-0613", "gpt-4"),
+  reps = 1
 )
 
 app_obj

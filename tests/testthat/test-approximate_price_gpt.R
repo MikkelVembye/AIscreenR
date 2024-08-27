@@ -24,7 +24,7 @@ test_that("approximate_price_gpt() takes multiple inputs", {
     top_p = c(0.2, 1)
   )
 
-  expect_output(print(app_obj), "\\$54\\.5018\\.")
+  expect_output(print(app_obj), "\\$54\\.506\\.")
 
   gpt_price_ratio <- app_obj$price_data$input_price_dollar[2]/app_obj$price_data$input_price_dollar[1]
 
