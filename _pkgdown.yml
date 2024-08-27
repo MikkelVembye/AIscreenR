@@ -28,6 +28,7 @@ reference:
       - rate_limits_per_minute
 
   - title: "Datasets"
+    desc: "Datasets in the package"
     contents:
       - filges2015_dat
       - model_prizes
