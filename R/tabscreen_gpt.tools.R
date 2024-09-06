@@ -1,5 +1,4 @@
-
-#' @title Title and abstract screening with GPT API models using function calls.
+#' @title Title and abstract screening with GPT API models using function calls via tools.
 #'
 #' @description
 #' `r lifecycle::badge("stable")`<br>
@@ -27,13 +26,13 @@
 #'   Find available model at
 #' \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.
 #' @param role Character string indicate the role of the user. Default is `"user"`.
-#' @param functions Function to steer output. Default is `incl_function_simple`.
-#'   To get detailed responses use the `AIscreenR:::incl_function`. Also see 'Examples below.
+#' @param tools Function to steer output. Default is `tools_simple`.
+#'   To get detailed responses use the `AIscreenR:::tools_detailed`. Also see 'Examples below.
 #'   Find further documentation for function calling at
 #'   \url{https://openai.com/blog/function-calling-and-other-api-updates}.
-#' @param function_call_name Functions to call.
-#'   Default is `list(name = "inclusion_decision_simple")`. To get detailed responses
-#'   use `list(name = "inclusion_decision")`. Also see 'Examples below.
+#' @param tool_choice Functions to call.
+#'   Default is `"inclusion_decision_simple"`. To get detailed responses
+#'   use `"inclusion_decision"`. Also see 'Examples below.
 #' @param top_p 'An alternative to sampling with temperature, called nucleus sampling,
 #'   where the model considers the results of the tokens with top_p probability mass.
 #'   So 0.1 means only the tokens comprising the top 10% probability mass are considered.
@@ -169,7 +168,7 @@
 #'
 #' prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
 #'
-#' tabscreen_gpt(
+#' tabscreen_gpt.tools(
 #'   data = filges2015_dat[1:2,],
 #'   prompt = prompt,
 #'   studyid = studyid,
@@ -180,56 +179,50 @@
 #'
 #'  # Get detailed descriptions of the gpt decisions by using the
 #'  # embedded function calling functions from the package. See example below.
-#'  tabscreen_gpt(
+#'  tabscreen_gpt.tools(
 #'    data = filges2015_dat[1:2,],
 #'    prompt = prompt,
 #'    studyid = studyid,
 #'    title = title,
 #'    abstract = abstract,
-#'    functions = AIscreenR:::incl_function,
-#'    function_call_name = list(name = "inclusion_decision"),
+#'    tools = AIscreenR:::tools_detailed,
+#'    tool_choice = "inclusion_decision"
 #'    max_tries = 2
 #'  )
 #'}
 
 
-tabscreen_gpt <- function(
-  data,
-  prompt,
-  studyid,
-  title,
-  abstract,
-  ...,
-  #arrange_var = studyid,
-  model = "gpt-4",
-  role = "user",
-  functions = incl_function_simple,
-  function_call_name = list(name = "inclusion_decision_simple"),
-  top_p = 1,
-  time_info = TRUE,
-  token_info = TRUE,
-  api_key = get_api_key(),
-  max_tries = 16,
-  max_seconds = NULL,
-  is_transient = gpt_is_transient,
-  backoff = NULL,
-  after = NULL,
-  rpm = 10000,
-  reps = 1,
-  seed = NULL,
-  progress = TRUE,
-  messages = TRUE,
-  incl_cutoff_upper = 0.5,
-  incl_cutoff_lower = incl_cutoff_upper - 0.1,
-  force = FALSE
-  ){
+tabscreen_gpt.tools <- function(
+    data,
+    prompt,
+    studyid,
+    title,
+    abstract,
+    ...,
+    #arrange_var = studyid,
+    model = "gpt-4",
+    role = "user",
+    tools = tools_simple,
+    tool_choice = "inclusion_decision_simple",
+    top_p = 1,
+    time_info = TRUE,
+    token_info = TRUE,
+    api_key = get_api_key(),
+    max_tries = 16,
+    max_seconds = NULL,
+    is_transient = gpt_is_transient,
+    backoff = NULL,
+    after = NULL,
+    rpm = 10000,
+    reps = 1,
+    seed = NULL,
+    progress = TRUE,
+    messages = TRUE,
+    incl_cutoff_upper = 0.5,
+    incl_cutoff_lower = incl_cutoff_upper - 0.1,
+    force = FALSE
+){
 
-
-  if (as.Date(Sys.time()) > as.Date("2024-09-13") && model == "gpt-3.5-turbo-0613"){
-    stop("The gpt-3.5-turbo-0613 model has deprecated and can no longer be used.")
-  } else{
-    message("Note that the gpt-3.5-turbo-0613 deprecates Septemper 13 2024 and can no long be used there after.")
-  }
 
 
   # Stop warnings
@@ -264,12 +257,12 @@ tabscreen_gpt <- function(
   }
 
 
-  if (any(!is.element(model, c(
-    "gpt-3.5-turbo", "gpt-3.5-turbo-0613", "gpt-3.5-turbo-1106",
-    "gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613",
-    "gpt-4", "gpt-4-0613",
-    "gpt-4-32k", "gpt-4-32k-0613", "gpt-4-1106-preview", "gpt-4-vision-preview"
-  )))) stop("Unknown gpt model(s) used - check model name(s).")
+  #if (any(!is.element(model, c(
+  #  "gpt-3.5-turbo", "gpt-3.5-turbo-0613", "gpt-3.5-turbo-1106",
+  #  "gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613",
+  #  "gpt-4", "gpt-4-0613",
+  #  "gpt-4-32k", "gpt-4-32k-0613", "gpt-4-1106-preview", "gpt-4-vision-preview"
+  #)))) stop("Unknown gpt model(s) used - check model name(s).")
 
 
   if(incl_cutoff_upper < incl_cutoff_lower){
@@ -288,8 +281,8 @@ tabscreen_gpt <- function(
   arg_list <-
     list(
       role = role,
-      functions = functions,
-      function_call_name = function_call_name,
+      tools = tools,
+      tool_choice = tool_choice,
       time_info = time_info,
       token_info = token_info,
       max_tries = max_tries,
@@ -329,10 +322,9 @@ tabscreen_gpt <- function(
     aft = after
   ){
 
-    detailed <- body$function_call$name == "inclusion_decision"
+    detailed <- body$tools[[1]]$`function`$name == "inclusion_decision"
 
     if (RPM > 10000) RPM <- 10000
-    #if (RPM > 200 && stringr::str_detect(body$model, "gpt-4")) RPM <- 200
 
     if (max_t == 0) max_t <- is_trans <- NULL
 
@@ -370,19 +362,20 @@ tabscreen_gpt <- function(
 
         resp <- resp |> httr2::resp_body_json()
 
-        resp_text <- resp$choices[[1]]$message$function_call$arguments
+        resp_text <- resp$choices[[1]]$message$tool_calls[[1]]$`function`$arguments
 
-        if (!stringr::str_detect(resp_text, '\"\n\\}|\" \n\\}|\"  \n\\}|\n\\}')){
-
-          resp_text <- paste0(resp_text, '\"\n}')
-
-        }
-
-        if (!stringr::str_detect(resp_text, '\\}') && stringr::str_detect(resp_text, '\"\n|\" \n|\"  \n') || stringr::str_ends(resp_text, '\n')) {
-
-          resp_text <- paste0(resp_text, '}')
-
-        }
+        # For now not relevant with new models
+#        if (!stringr::str_detect(resp_text, '\"\n\\}|\" \n\\}|\"  \n\\}|\n\\}')){
+#
+#          resp_text <- paste0(resp_text, '\"\n}')
+#
+#        }
+#
+#        if (!stringr::str_detect(resp_text, '\\}') && stringr::str_detect(resp_text, '\"\n|\" \n|\"  \n') || stringr::str_ends(resp_text, '\n')) {
+#
+#          resp_text <- paste0(resp_text, '}')
+#
+#        }
 
         if (detailed){
 
@@ -400,8 +393,8 @@ tabscreen_gpt <- function(
               ),
 
               prompt_tokens = resp$usage$prompt_tokens,
-              completion_tokens = resp$usage$completion_tokens
-
+              completion_tokens = resp$usage$completion_tokens,
+              submodel = resp$model
             )
 
         } else {
@@ -415,7 +408,8 @@ tabscreen_gpt <- function(
               ),
 
               prompt_tokens = resp$usage$prompt_tokens,
-              completion_tokens = resp$usage$completion_tokens
+              completion_tokens = resp$usage$completion_tokens,
+              submodel = resp$model
 
             )
 
@@ -434,7 +428,8 @@ tabscreen_gpt <- function(
           detailed_description = detail_desc,
           decision_binary = NA_real_,
           prompt_tokens = NA_real_,
-          completion_tokens = NA_real_
+          completion_tokens = NA_real_,
+          submodel = detail_desc
         )
 
       }
@@ -448,7 +443,8 @@ tabscreen_gpt <- function(
         detailed_description = detail_desc,
         decision_binary = NA_real_,
         prompt_tokens = NA_real_,
-        completion_tokens = NA_real_
+        completion_tokens = NA_real_,
+        submodel = detail_desc
       )
 
     }
@@ -473,40 +469,38 @@ tabscreen_gpt <- function(
   p_tokens <- c_tokens <- if (token_info) NA_real_ else NULL
 
   # error handling
-  if (function_call_name$name == "inclusion_decision_simple"){
-
-    ask_gpt_engine <-
-      suppressWarnings(
-        purrr::possibly(
-          ask_gpt_engine,
-          otherwise = tibble::tibble(
-            decision_gpt = "Error [possibly a JSON error]",
-            decision_binary = NA_real_,
-            prompt_tokens = p_tokens,
-            completion_tokens = c_tokens,
-            run_time = t_info
-          )
-        )
-      )
-
-  } else {
-
-    ask_gpt_engine <-
-      suppressWarnings(
-        purrr::possibly(
-          ask_gpt_engine,
-          otherwise = tibble::tibble(
-            decision_gpt = "Error [possibly a JSON error]",
-            detailed_description = NA_character_,
-            decision_binary = NA_real_,
-            prompt_tokens = p_tokens,
-            completion_tokens = c_tokens,
-            run_time = t_info
-          )
-        )
-      )
-
-  }
+ if (tool_choice == "inclusion_decision_simple"){
+   ask_gpt_engine <-
+     suppressWarnings(
+       purrr::possibly(
+         ask_gpt_engine,
+         otherwise = tibble::tibble(
+           decision_gpt = "Error [possibly a JSON error]",
+           decision_binary = NA_real_,
+           prompt_tokens = p_tokens,
+           completion_tokens = c_tokens,
+           submodel = NA_character_,
+           run_time = t_info
+         )
+       )
+     )
+ } else {
+   ask_gpt_engine <-
+     suppressWarnings(
+       purrr::possibly(
+         ask_gpt_engine,
+         otherwise = tibble::tibble(
+           decision_gpt = "Error [possibly a JSON error]",
+           detailed_description = NA_character_,
+           decision_binary = NA_real_,
+           prompt_tokens = p_tokens,
+           completion_tokens = c_tokens,
+           submodel = NA_character_,
+           run_time = t_info
+         )
+       )
+     )
+ }
 
   ################################################################
   # Function to send repeated requests to OpenAI's GPT API models
@@ -520,10 +514,18 @@ tabscreen_gpt <- function(
     req_per_min,
     ...,
     role_gpt = role,
-    funcs = functions,
-    func_call_name = function_call_name,
+    tool = tools,
+    t_choice = tool_choice,
     seeds = seed
   ){
+
+    # Setting tool_choice argument to body
+    tools_choice <- list(
+      type = "function",
+      "function" = list(
+        name = t_choice
+      )
+    )
 
 
     body <- list(
@@ -534,8 +536,8 @@ tabscreen_gpt <- function(
           content = question
         )
       ),
-      functions = funcs,
-      function_call = func_call_name,
+      tools = tool,
+      tool_choice = tools_choice,
       top_p = topp,
       ...
     )
@@ -556,47 +558,6 @@ tabscreen_gpt <- function(
     final_res
 
   }
-
-#  t_info <- if (time_info) NA_real_ else NULL
-#  p_tokens <- c_tokens <- if (token_info) NA_real_ else NULL
-#
-#  # error handling
-#  if (function_call_name$name == "inclusion_decision_simple"){
-#
-#    ask_gpt <-
-#      suppressWarnings(
-#        purrr::possibly(
-#          ask_gpt,
-#          otherwise = tibble::tibble(
-#            decision_gpt = "JSON error",
-#            decision_binary = NA_real_,
-#            prompt_tokens = p_tokens,
-#            completion_tokens = c_tokens,
-#            run_time = t_info,
-#            n = NA_integer_
-#          )
-#        )
-#      )
-#
-#  } else {
-#
-#    ask_gpt <-
-#      suppressWarnings(
-#        purrr::possibly(
-#          ask_gpt,
-#          otherwise = tibble::tibble(
-#            decision_gpt = "JSON error",
-#            detailed_description = NA_character_,
-#            decision_binary = NA_real_,
-#            prompt_tokens = p_tokens,
-#            completion_tokens = c_tokens,
-#            run_time = t_info,
-#            n = NA_integer_
-#          )
-#        )
-#      )
-#
-#  }
 
 
   ###############################################
@@ -731,7 +692,7 @@ tabscreen_gpt <- function(
 
       message(paste0("* The approximate price of the current (simple) screening will be around $", app_price, "."))
 
-      if (functions[[1]]$name == "inclusion_decision"){
+      if (tools[[1]]$`function`$name == "inclusion_decision"){
         message(
           paste0(
             "* Be aware that getting detailed reponses from ChatGPT ",
@@ -739,10 +700,6 @@ tabscreen_gpt <- function(
           )
         )
       }
-
-#      if (any(stringr::str_detect(model, "gpt-4")) && max_reps_gpt4 > 1){
-#        message("* Consider to reduce reps to 1 for gpt-4 models.")
-#      }
 
 
       if ("No information" %in% unique(question_dat$abstract)) {
@@ -755,27 +712,6 @@ tabscreen_gpt <- function(
       }
     }
 
-
-#    if (!messages && any(stringr::str_detect(model, "gpt-4")) && max_reps_gpt4 > 1){
-#
-#      warn <- "* Be aware that using gpt-4 models cost at least 10 times more than gpt-3.5 models.\n"
-#      price <- paste0("* The approximate price of the current (simple) screening will be around $", app_price, ".")
-#
-#      if (functions[[1]]$name == "inclusion_decision"){
-#        detail_mess <- paste0(
-#          "\n* Be aware that getting detailed reponses from ChatGPT ",
-#          "will substantially increase the prize of the screening relative to the noted approximate prize."
-#        )
-#      } else {
-#        detail_mess <- NULL
-#      }
-#
-#      reps_mes <- "\n* Consider to reduce reps to 1 for gpt-4 models." else NULL
-#      warn_message <- paste0(warn, price, detail_mess, reps_mes)
-#
-#      message(warn_message)
-#
-#    }
 
     # RUNNING QUESTIONS
     furrr_seed <- if (is.null(seed)) TRUE else NULL
@@ -905,6 +841,8 @@ tabscreen_gpt <- function(
 
       n_mis_answers = sum(is.na(decision_binary)),
 
+      submodel = unique(submodel),
+
       .by = c(studyid:topp)
 
     )
@@ -952,11 +890,11 @@ tabscreen_gpt <- function(
 
   }
 
-#  # Final data all
-#  answer_dat <-
-#    answer_dat |>
-#    select(-req_per_min) |>
-#    rename(top_p = topp)
+  #  # Final data all
+  #  answer_dat <-
+  #    answer_dat |>
+  #    select(-req_per_min) |>
+  #    rename(top_p = topp)
 
 
   # Final data sum
@@ -1013,7 +951,7 @@ tabscreen_gpt <- function(
 #
 #----------------------------------------------------------------
 
-# Body functions
+# Body functions to tools and tool_choice
 
 inclusion_decision_description <- paste0(
   "If the study should be included for further review, write '1'.",
@@ -1023,6 +961,34 @@ inclusion_decision_description <- paste0(
   "When providing the response only provide the numerical decision."
 )
 
+
+tools_simple <- list(
+  # Function 1
+  list(
+    type = "function",
+    "function" = list(
+      name = "inclusion_decision_simple",
+      description = inclusion_decision_description,
+      parameters = list(
+        type = "object",
+        properties = list(
+          decision_gpt = list(
+            type = "string",
+            items = list(
+              type = "integer",
+              description = "An integer of either 1, 0, or 1.1"
+            ),
+            description = "List the inclusion decision"
+          )
+        ),
+        required = list("decision_gpt"),
+        additionalProperties = FALSE
+      )
+    )
+  )
+)
+
+
 detailed_description_description <- paste0(
   "If the study should be included for further reviewing, give a detailed description of your inclusion decision. ",
   "If the study should be excluded from the review, give a detailed description of your exclusion decision. ",
@@ -1030,176 +996,41 @@ detailed_description_description <- paste0(
   "If there is no information in the title and abstract, write 'No information'"
 )
 
+# Combines both simple and detailed descriptions
 
-incl_function <- list(
+tools_detailed <- list(
   # Function 1
   list(
-    name = "inclusion_decision",
-    description = inclusion_decision_description,
-    parameters = list(
-      type = "object",
-      properties = list(
-        decision_gpt = list(
-          type = "string",
-          items = list(
+    type = "function",
+    "function" = list(
+      name = "inclusion_decision",
+      description = inclusion_decision_description,
+      parameters = list(
+        type = "object",
+        properties = list(
+          decision_gpt = list(
             type = "string",
-            description = "A string of either '1', '0', or '1.1'"
+            items = list(
+              type = "integer",
+              description = "An integer of either 1, 0, or 1.1"
+            ),
+            description = "List the inclusion decision"
           ),
-          description = "List the inclusion decision"
+          detailed_description = list(
+            type = "string",
+            items = list(
+              type = "string",
+              description = detailed_description_description
+            ),
+            description = "List the detailed description of your inclusion decision"
+          )
         ),
-        detailed_description = list(
-          type = "string",
-          items = list(
-            type = "string",
-            description = detailed_description_description
-          ),
-          description = "List the detailed description of your inclusion decision"
-        )
-      ),
-      required = list("decision_gpt", "detailed_description")
+        required = list("decision_gpt", "detailed_description"),
+        additionalProperties = FALSE
+      )
     )
   )
 )
-
-incl_function_simple <- list(
-  # Function 2
-  list(
-    name = "inclusion_decision_simple",
-    description = inclusion_decision_description,
-    parameters = list(
-      type = "object",
-      properties = list(
-        decision_gpt = list(
-          type = "string",
-          items = list(
-            type = "string",
-            description = "A string of either '1', '0', or '1.1'"
-          ),
-          description = "List the inclusion decision"
-        )
-      ),
-      required = list("decision_gpt")
-    )
-  )
-)
-
-
-#----------------------------------------------------------------
-#
-#  Helpers
-#
-#----------------------------------------------------------------
-
-status_code <- function(){
-
-  resp <- httr2::last_response()
-
-  if (!is.null(resp)){
-
-    code <- resp |> httr2::resp_status()
-
-  } else {
-
-    code <- 999
-
-  }
-
-  code
-
-}
-
-
-status_code_text <- function(){
-
-  resp_last <- httr2::last_response()
-
-  check_string <- "[possibly overload on server - check https://platform.openai.com/docs/guides/error-codes]"
-
-  if (!is.null(resp_last)){
-
-    code <- resp_last |> httr2::resp_status()
-
-    text <- paste("Error", code)
-
-    if (code == 400) text <- paste("Error", code, "Bad request [check/clean body parameters]")
-    if (code == 401) text <- paste("Error", code, "Unauthorized [invalid api]")
-    if (code == 404) text <- paste("Error", code, "[check gpt model]")
-    if (code == 429 | code == 500) text <- paste("Error", code, check_string)
-    if (code == 503) text <- paste("Error", code, "Service Unavailable")
-
-    s_code <- text
-
-  } else {
-
-    s_code <- "Error [could not reach host]"
-
-  }
-
-  s_code
-
-}
-
-
-#gpt_is_transient <- function(resp){
-#  status_code() == 400 ||  status_code() == 429 || status_code() == 500 || status_code() ==  503
-#}
-
-gpt_is_transient <- function(resp){
-  status_code() %in% c(429, 500:503)
-}
-
-
-# Function with encrypt code string
-
-testing_key_chatgpt <- function() {
-  httr2::secret_decrypt(
-    "4UAcFSIHVz8Z4zED1WEj3k65xFBWlJ8dzavRDGG4dz0pBxEOXtvSkLwK6_fZaZqCr94oVtKBD6DQo82vwa2gljJMTw",
-    "AISCREENR_KEY"
-    )
-}
-
-# Backup key
-#testing_key_chatgpt <- function() {
-#  httr2::secret_decrypt(
-#    "2FCsUZ0-nA0Cf5h3Oqd72dunFxDf7sbQrC3OIsSaiI-DV4YsYICBMQzqwcgmOFiY6QIrfJbfPYexjW6T1BKKDC-VCg",
-#    "AISCREENR_KEY"
-#  )
-#}
-
-
-#----------------------------------------------------------------
-#
-#  Inherits
-#
-#----------------------------------------------------------------
-
-#' Test if the object is a `'chatgpt'` object
-#'
-#' This function returns `TRUE` for `chatgpt` objects,
-#' and `FALSE` for all other objects.
-#'
-#' @param x An object
-#' @return `TRUE` if the object inherits from the `chatgpt` class.
-#' @export
-
-is_chatgpt <- function(x){
-  inherits(x, "chatgpt")
-}
-
-#' Test if the object is a `'chatgpt_tbl'` object
-#'
-#' This function returns `TRUE` for `chatgpt_tbl` objects,
-#' and `FALSE` for all other objects.
-#'
-#' @param x An object
-#' @return `TRUE` if the object inherits from the `chatgpt_tbl` class.
-#' @export
-
-is_chatgpt_tbl <- function(x){
-  inherits(x, "chatgpt_tbl")
-}
-
-
 
 
 
