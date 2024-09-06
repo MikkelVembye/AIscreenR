@@ -225,10 +225,12 @@ tabscreen_gpt <- function(
   ){
 
   # Stop warnings
+  # Ensuring that users do not conduct wrong screening
   if (max(reps) > 10 && !force){
     max_reps_mes <- paste("* Are you sure you want to use", max(reps), "iterations? If so, set force = TRUE")
     stop(max_reps_mes)
   }
+
 
   if (any(stringr::str_detect(model, "gpt-4")) && max(reps) > 1 && !force){
 
