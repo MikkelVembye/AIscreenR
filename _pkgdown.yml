@@ -9,6 +9,7 @@ reference:
     desc: "R functions to automate title and abstract screeening in ChatGPT"
     contents:
       - tabscreen_gpt
+      - tabscreen_gpt.tools
       - screen_errors
 
   - title: "Analyze screening performance"
