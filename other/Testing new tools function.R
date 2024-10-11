@@ -17,7 +17,7 @@ library(future)
 plan(multisession)
 
 return_dat <-
-  tabscreen2_gpt(
+  tabscreen_gpt(
   data = test_dat,
   prompt = prompts,
   studyid = studyid,
@@ -37,6 +37,16 @@ return_dat <-
 
 plan(sequential)
 
+#prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
+#
+test_x <-
+  tabscreen_gpt(
+    data = filges2015_dat[1:2,],
+    prompt = prompt,
+    studyid = studyid,
+    abstract = abstract,
+    decision_description = FALSE
+ )
 
 
 

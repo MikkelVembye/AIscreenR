@@ -8,7 +8,8 @@ reference:
   - title: "Screening with GPT API models"
     desc: "R functions to automate title and abstract screeening in ChatGPT"
     contents:
-      - tabscreen_gpt
+      - tabscreen_gpt.tools
+      - tabscreen_gpt.original
       - screen_errors
 
   - title: "Analyze screening performance"

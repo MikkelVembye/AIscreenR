@@ -1,17 +1,19 @@
 
-#' @title Title and abstract screening with GPT API models using function calls.
+#' @title Title and abstract screening with GPT API models using function calls via the original function call arguments
 #'
 #' @description
-#' `r lifecycle::badge("stable")`<br>
+#' `r lifecycle::badge("deprecated")`<br>
 #' <br>
 #' This function supports the conduct of title and abstract screening with GPT API models in R.
+#' This function only works with GPT-4, more specifically gpt-4-0613. To draw on other models,
+#' use [tabscreen_gpt.tools()].
 #' The function allows to run title and abstract screening across multiple prompts and with
 #' repeated questions to check for consistency across answers. This function draws
 #' on the newly developed function calling to better steer the output of the responses.
 #'
-#' @references Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (Under preparation)
+#' @references Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2024)
 #'   \emph{GPT API Models Can Function as Highly Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
-#'   A Proof of Concept and Common Guidelines}
+#'   A Proof of Concept and Common Guidelines} \url{https://osf.io/preprints/osf/yrhzm}
 #'
 #' Wickham H (2023).
 #' \emph{httr2: Perform HTTP Requests and Process the Responses}.
@@ -169,7 +171,7 @@
 #'
 #' prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
 #'
-#' tabscreen_gpt(
+#' tabscreen_gpt.original(
 #'   data = filges2015_dat[1:2,],
 #'   prompt = prompt,
 #'   studyid = studyid,
@@ -180,7 +182,7 @@
 #'
 #'  # Get detailed descriptions of the gpt decisions by using the
 #'  # embedded function calling functions from the package. See example below.
-#'  tabscreen_gpt(
+#'  tabscreen_gpt.original(
 #'    data = filges2015_dat[1:2,],
 #'    prompt = prompt,
 #'    studyid = studyid,
@@ -193,7 +195,7 @@
 #'}
 
 
-tabscreen_gpt <- function(
+tabscreen_gpt.original <- function(
   data,
   prompt,
   studyid,
