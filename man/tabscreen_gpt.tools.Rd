@@ -233,6 +233,7 @@ set_api_key()
 prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
 
 plan(multisession)
+
 tabscreen_gpt(
   data = filges2015_dat[1:2,],
   prompt = prompt,
@@ -240,12 +241,13 @@ tabscreen_gpt(
   title = title,
   abstract = abstract
   )
+
 plan(sequential)
 
- # Get detailed descriptions of the gpt decisions by using the
- # embedded function calling functions from the package. See example below.
+ # Get detailed descriptions of the gpt decisions.
 
  plan(multisession)
+
  tabscreen_gpt(
    data = filges2015_dat[1:2,],
    prompt = prompt,

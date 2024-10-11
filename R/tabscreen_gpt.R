@@ -476,6 +476,7 @@ rep_gpt_engine <- function(
 #' prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
 #'
 #' plan(multisession)
+#'
 #' tabscreen_gpt(
 #'   data = filges2015_dat[1:2,],
 #'   prompt = prompt,
@@ -483,12 +484,13 @@ rep_gpt_engine <- function(
 #'   title = title,
 #'   abstract = abstract
 #'   )
+#'
 #' plan(sequential)
 #'
-#'  # Get detailed descriptions of the gpt decisions by using the
-#'  # embedded function calling functions from the package. See example below.
+#'  # Get detailed descriptions of the gpt decisions.
 #'
 #'  plan(multisession)
+#'
 #'  tabscreen_gpt(
 #'    data = filges2015_dat[1:2,],
 #'    prompt = prompt,
