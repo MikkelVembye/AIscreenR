@@ -1,3 +1,219 @@
+# Updated test for tabscreen_gpt.default functions
+
+test_that("gpt_engine return errors correctly", {
+
+  tools_choice_name <- list(
+    type = "function",
+    "function" = list(
+      name = "inclusion_decision_simple"
+    )
+  )
+
+  # Specifying unknown model
+  body <- list(
+    model = "gpt-7",
+    messages = list(list(
+      role = "user",
+      content = question
+    )),
+    tools = tools_simple,
+    tool_choice = tools_choice_name,
+    top_p = 1
+  )
+
+  res <- gpt_engine(
+    body = body,
+    RPM = 10000,
+    timeinf = T,
+    tokeninf = T,
+    key = get_api_key(),
+    max_t = 4,
+    max_s = 10,
+    is_trans = gpt_is_transient,
+    back = NULL,
+    aft = NULL
+  )
+
+
+  expect_equal(ncol(res), 7)
+  expect_true(stringr::str_detect(res$decision_gpt, "404"))
+
+  # Specifying wrong api key
+  body <- list(
+    model = "gpt-4o",
+    messages = list(list(
+      role = "user",
+      content = question
+    )),
+    tools = tools_simple,
+    tool_choice = tools_choice_name,
+    top_p = 1
+  )
+
+  res <- gpt_engine(
+    body = body,
+    RPM = 10000,
+    timeinf = T,
+    tokeninf = T,
+    key = 1234,
+    max_t = 4,
+    max_s = 10,
+    is_trans = gpt_is_transient,
+    back = NULL,
+    aft = NULL
+  )
+
+  expect_equal(ncol(res), 7)
+  expect_true(stringr::str_detect(res$decision_gpt, "401"))
+
+  # Specifying ineligible role
+  body <- list(
+    model = "gpt-4o",
+    messages = list(list(
+      role = "use",
+      content = question
+    )),
+    tools = tools_simple,
+    tool_choice = tools_choice_name,
+    top_p = 1
+  )
+
+  res <- gpt_engine(
+    body = body,
+    RPM = 10000,
+    timeinf = T,
+    tokeninf = T,
+    key = get_api_key(),
+    max_t = 4,
+    max_s = 10,
+    is_trans = gpt_is_transient,
+    back = NULL,
+    aft = NULL
+  )
+
+  expect_equal(ncol(res), 7)
+  expect_true(stringr::str_detect(res$decision_gpt, "400"))
+
+  # Specifying ineligible role
+  body <- list(
+    model = "gpt-4o",
+    messages = list(list(
+      role = "use",
+      content = question
+    )),
+    tools = tools_simple,
+    tool_choice = tools_choice_name,
+    top_p = 1
+  )
+
+  # Transient is correctly add to function
+  gpt_engine(
+    body = body,
+    RPM = 10000,
+    timeinf = T,
+    tokeninf = T,
+    key = get_api_key(),
+    max_t = 4,
+    max_s = 10,
+    is_trans = gpt_is_transient(),
+    back = NULL,
+    aft = NULL
+  ) |>
+    expect_error()
+
+})
+
+
+test_that("rep_gpt_engine controls errrors correctly", {
+
+  iterations <- 3
+
+  # Ineligible role
+  res <- rep_gpt_engine(
+    question = question,
+    model_gpt = "gpt-4o-mini",
+    topp = 1,
+    role_gpt = "use",
+    tool = tools_simple,
+    t_choice = "inclusion_decision_simple",
+    iterations = iterations,
+    req_per_min = 10000,
+    seeds = NULL,
+    time_inf = T,
+    token_inf = T,
+    apikey = get_api_key(),
+    maxt = 4,
+    maxs = 10,
+    istrans = gpt_is_transient,
+    ba = NULL,
+    af = NULL
+  )
+
+  expect_equal(ncol(res), 8)
+  expect_equal(nrow(res), iterations)
+  expect_equal(max(res$n), iterations)
+  expect_true(all(stringr::str_detect(res$decision_gpt, "400")))
+
+  # Ineligible api key
+  res <- rep_gpt_engine(
+    question = question,
+    model_gpt = "gpt-4o-mini",
+    topp = 1,
+    role_gpt = "user",
+    tool = tools_simple,
+    t_choice = "inclusion_decision_simple",
+    iterations = iterations,
+    req_per_min = 10000,
+    seeds = NULL,
+    time_inf = T,
+    token_inf = T,
+    apikey = 1,
+    maxt = 4,
+    maxs = 10,
+    istrans = gpt_is_transient,
+    ba = NULL,
+    af = NULL
+  )
+
+  expect_equal(ncol(res), 8)
+  expect_equal(nrow(res), iterations)
+  expect_equal(max(res$n), iterations)
+  expect_true(all(stringr::str_detect(res$decision_gpt, "401")))
+
+  # Ineligible model
+  res <- rep_gpt_engine(
+    question = question,
+    model_gpt = "gpt-4o-min",
+    topp = 1,
+    role_gpt = "user",
+    tool = tools_simple,
+    t_choice = "inclusion_decision_simple",
+    iterations = iterations,
+    req_per_min = 10000,
+    seeds = NULL,
+    time_inf = T,
+    token_inf = T,
+    apikey = get_api_key(),
+    maxt = 4,
+    maxs = 10,
+    istrans = gpt_is_transient,
+    ba = NULL,
+    af = NULL
+  )
+
+  expect_equal(ncol(res), 8)
+  expect_equal(nrow(res), iterations)
+  expect_equal(max(res$n), iterations)
+  expect_true(all(stringr::str_detect(res$decision_gpt, "404")))
+
+})
+
+
+
+
+
+
+# Old tests (tabscreen_gpt.original)
 paths <- system.file("extdata", c("word_prompt_1.docx", "word_prompt_2.docx"), package = "AIscreenR")
 
 prompts <-
@@ -10,6 +226,7 @@ prompts <-
 
 prompt <- prompts[1]
 prompt2 <- prompts[2]
+
 
 models <- c("gpt-3.5-turbo-0613", "gpt-4")
 reps <- c(10, 1)
