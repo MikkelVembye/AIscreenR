@@ -10,7 +10,7 @@ tabscreen_gpt.tools(data, prompt, studyid, title, abstract, model = "gpt-4",
    token_info = TRUE, api_key = get_api_key(), max_tries = 16, max_seconds = NULL,
    is_transient = gpt_is_transient, backoff = NULL, after = NULL, rpm = 10000,
    reps = 1, seed = NULL, progress = TRUE, decision_description = FALSE, messages = TRUE,
-   incl_cutoff_upper = 0.5, incl_cutoff_lower = incl_cutoff_upper - 0.1, force = FALSE,
+   incl_cutoff_upper = NULL, incl_cutoff_lower = NULL, force = FALSE,
    fine_tuned = FALSE, ...)
 
 tabscreen_gpt(data, prompt, studyid, title, abstract, model = "gpt-4",
@@ -18,7 +18,7 @@ tabscreen_gpt(data, prompt, studyid, title, abstract, model = "gpt-4",
    token_info = TRUE, api_key = get_api_key(), max_tries = 16, max_seconds = NULL,
    is_transient = gpt_is_transient, backoff = NULL, after = NULL, rpm = 10000,
    reps = 1, seed = NULL, progress = TRUE, decision_description = FALSE, messages = TRUE,
-   incl_cutoff_upper = 0.5, incl_cutoff_lower = incl_cutoff_upper - 0.1, force = FALSE,
+   incl_cutoff_upper = NULL, incl_cutoff_lower = NULL, force = FALSE,
    fine_tuned = FALSE, ...)
 }
 \arguments{
@@ -34,21 +34,21 @@ automatically.}
 \item{abstract}{Name of variable containing the abstract information.}
 
 \item{model}{Character string with the name of the completion model. Can take
-multiple models, including gpt-4 models. Default = \code{"gpt-4"} (i.e., gpt-4-0613). This model has
+multiple models, including gpt-4 models. Default is \code{"gpt-4"} (i.e., gpt-4-0613). This model has
 been shown to outperform the gpt-3.5-turbo models in terms of its ability to detect
 relevant studies (Vembye et al., 2024).
 Find available model at
 \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.}
 
-\item{role}{Character string indicate the role of the user. Default is \code{"user"}.}
+\item{role}{Character string indicating the role of the user. Default is \code{"user"}.}
 
-\item{tools}{This argument allows this user to customized functions.
+\item{tools}{This argument allows this user to apply customized functions.
 See \url{https://platform.openai.com/docs/api-reference/chat/create#chat-create-tools}.
-Default is \code{NULL}.}
+Default is \code{NULL}. If not specified the default function calls from \code{AIscreenR} are used.}
 
-\item{tool_choice}{If a customized function is provided this argument,
-'controls which (if any) tool is called by the model'(OpenAI). Default is \code{NULL}.
-If set to \code{NULL} when using a customized function, then the default is \code{"auto"}.
+\item{tool_choice}{If a customized function is provided this argument
+'controls which (if any) tool is called by the model' (OpenAI). Default is \code{NULL}.
+If set to \code{NULL} when using a customized function, the default is \code{"auto"}.
 See \url{https://platform.openai.com/docs/api-reference/chat/create#chat-create-tool_choice}.}
 
 \item{top_p}{'An alternative to sampling with temperature, called nucleus sampling,
@@ -70,16 +70,17 @@ the output object will include price information of the conducted screening.}
 \code{\link[=secret_make_key]{secret_make_key()}}, \code{\link[=secret_encrypt]{secret_encrypt()}}, and
 \code{\link[=secret_decrypt]{secret_decrypt()}} to scramble and decrypt the api key and
 use \code{\link[=set_api_key]{set_api_key()}} to securely automate the use of the
-api key by setting the api key as a locale environment variable.}
+api key by adding the api key as a locale environment variable.}
 
 \item{max_tries, max_seconds}{'Cap the maximum number of attempts with
 \code{max_tries} or the total elapsed time from the first request with
 \code{max_seconds}. If neither option is supplied (the default), \code{\link[=req_perform]{req_perform()}}
-will not retry' (Wickham, 2023).}
+will not retry' (Wickham, 2023). The default of \code{max_tries} is 16.}
 
 \item{is_transient}{'A predicate function that takes a single argument
 (the response) and returns \code{TRUE} or \code{FALSE} specifying whether or not
-the response represents a transient error' (Wickham, 2023).}
+the response represents a transient error' (Wickham, 2023). This function runs
+automatically in the AIscreenR but can be customized by the user if necessary.}
 
 \item{backoff}{'A function that takes a single argument (the number of failed
 attempts so far) and returns the number of seconds to wait' (Wickham, 2023).}
@@ -115,17 +116,18 @@ human decisions.}
 Default is \code{TRUE}.}
 
 \item{incl_cutoff_upper}{Numerical value indicating the probability threshold
-for which a studies should be included. Default is 0.5, which indicates that
-titles and abstracts that OpenAI's GPT API model has included more than 50 percent of the times
-should be included.}
+for which a studies should be included. ONLY relevant when the same questions is requested
+multiple times (i.e., when any reps > 1). Default is 0.5, indicating that
+titles and abstracts should only be included if GPT has included the study more than 50 percent of the times.}
 
 \item{incl_cutoff_lower}{Numerical value indicating the probability threshold
-above which studies should be check by a human. Default is 0.4, which means
-that if you ask OpenAI's GPT API model the same questions 10 times and it includes the
+above which studies should be check by a human. ONLY relevant when the same questions is requested
+multiple times (i.e., when any reps > 1). Default is 0.4, meaning
+that if you ask GPT the same questions 10 times and it includes the
 title and abstract 4 times, we suggest that the study should be check by a human.}
 
 \item{force}{Logical argument indicating whether to force the function to use more than
-10 iterations for gpt-3.5 models and more than 1 iteration for gpt-4 models.
+10 iterations for gpt-3.5 models and more than 1 iteration for gpt-4 models other than gpt-4o-mini.
 This argument is developed to avoid the conduct of wrong and extreme sized screening.
 Default is \code{FALSE}.}
 
@@ -137,14 +139,18 @@ See \url{https://platform.openai.com/docs/api-reference/chat/create}.}
 \value{
 An object of class \code{'gpt'}. The object is a list containing the following
 datasets and components:
-\item{answer_data_final}{dataset of class \code{'gpt_tbl'} with the summarized, probabilistic inclusion decision
-for each title and abstract across multiple repeated questions.}
-\item{answer_data_all}{dataset of class \code{'gpt_tbl'} with all individual answers.}
+\item{answer_data}{dataset of class \code{'gpt_tbl'} with all individual answers.}
 \item{price_dollar}{numerical value indicating the total price (in USD) of the screening.}
 \item{price_data}{dataset with prices across all gpt models used for screening.}
-\item{arguments_used}{list with arguments used. These are past to the \code{\link[=screen_errors]{screen_errors()}} when used to
+\item{arguments_used}{list with arguments used. These are past to \code{\link[=screen_errors]{screen_errors()}} when used to
 catch transient errors.}
-\item{run_date}{string indicating the date when the screening where ran.}
+\item{run_date}{string indicating the date when the screening was ran.}
+
+If the same question is requested multiple times, the object will also contain the
+following dataset with results aggregated across the iterated requests/questions.
+
+\item{answer_data_aggregated}{dataset of class \code{'gpt_tbl'} with the summarized, probabilistic inclusion decision
+for each title and abstract across multiple repeated questions.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}\if{html}{\out{<br>}}
@@ -153,13 +159,45 @@ This function supports the conduct of title and abstract screening with GPT API 
 Specifically, it allows the user to draw on GPT-3.5, GPT-4, GPT-4o, GPT-4o-mini, and fine-tuned models.
 The function allows to run title and abstract screening across multiple prompts and with
 repeated questions to check for consistency across answers. All of which can be done in parallel.
-The function draws on the newly developed function calling to better steer the output of the responses called via the
+The function draws on the newly developed function calling which is used via the
 tools argument in the request body. This is the main different between this \code{\link[=tabscreen_gpt.tools]{tabscreen_gpt.tools()}}
-and \code{\link[=tabscreen_gpt.original]{tabscreen_gpt.original()}}. See \href{https://osf.io/preprints/osf/yrhzm}{Vembye et al. (2024)}
-for documentation guidance on how to use this screening approach adequately.
+and \code{\link[=tabscreen_gpt.original]{tabscreen_gpt.original()}}. Function calls ensure more reliable and consistent responses to ones
+requests. See \href{https://osf.io/preprints/osf/yrhzm}{Vembye et al. (2024)}
+for guidance on how adequately to conduct title and abstract screening with GPT models.
 }
 \note{
-The \code{answer_data_final} data contains the following \emph{mandatory} variables:
+The \code{answer_data} data contains the following \emph{mandatory} variables:
+\tabular{lll}{
+\bold{studyid} \tab \code{integer} \tab indicating the study ID of the reference. \cr
+\bold{title} \tab \code{character} \tab indicating the title of the reference. \cr
+\bold{abstract} \tab \code{character}   \tab indicating the abstract of the reference. \cr
+\bold{promptid} \tab \code{integer} \tab indicating the prompt ID. \cr
+\bold{prompt} \tab \code{character} \tab indicating the prompt. \cr
+\bold{model} \tab \code{character}   \tab indicating the specific gpt-model used. \cr
+\bold{iterations} \tab \code{numeric} \tab indicating the number of times the same question has been sent to OpenAI's GPT API models. \cr
+\bold{question} \tab \code{character} \tab indicating the final question sent to OpenAI's GPT API models. \cr
+\bold{top_p}  \tab \code{numeric} \tab indicating the applied top_p. \cr
+\bold{decision_gpt}  \tab \code{character} \tab indicating the raw gpt decision - either \code{"1", "0", "1.1"} for inclusion, exclusion, or uncertainty, respectively. \cr
+\bold{detailed_description}  \tab \code{character} \tab indicating detailed description of the given decision made by OpenAI's GPT API models.
+ONLY included if the detailed function calling function is used. See 'Examples' below for how to use this function. \cr
+\bold{decision_binary}  \tab \code{integer} \tab indicating the binary gpt decision,
+that is 1 for inclusion and 0 for exclusion. 1.1 decision are coded equal to 1 in this case. \cr
+\bold{prompt_tokens}  \tab \code{integer} \tab indicating the number of prompt tokens sent to the server for the given request. \cr
+\bold{completion_tokens}  \tab \code{integer} \tab indicating the number of completion tokens sent to the server for the given request. \cr
+\bold{submodel} \tab \code{character} \tab indicating the exact (sub)model used for screening. \cr
+\bold{run_time}  \tab \code{numeric} \tab indicating the time it took to obtain a response from the server for the given request. \cr
+\bold{run_date}  \tab \code{character} \tab indicating the date the given response was received. \cr
+\bold{n} \tab \code{integer} \tab indicating iteration ID. Is only different from 1, when \code{reps > 1}.  \cr
+}
+\if{html}{\out{<br>}}
+If any requests failed to reach the server, the \code{gpt} object contains an
+error dataset (\code{error_data}) having the same variables as \code{answer_data}
+but with failed request references only.\if{html}{\out{
+<br>
+}}
+
+
+When the same question is requested multiple times, the \code{answer_data_aggregated} data contains the following \emph{mandatory} variables:
 \tabular{lll}{
 \bold{studyid} \tab \code{integer} \tab indicating the study ID of the reference. \cr
 \bold{title} \tab \code{character} \tab indicating the title of the reference. \cr
@@ -180,42 +218,12 @@ See 'Examples' below for how to use this function. \cr
 \bold{submodel} \tab \code{character} \tab indicating the exact (sub)model used for screening. \cr
 }
 \if{html}{\out{<br>}}
-The \code{answer_data_all} data contains the following \emph{mandatory} variables:
-\tabular{lll}{
-\bold{studyid} \tab \code{integer} \tab indicating the study ID of the reference. \cr
-\bold{title} \tab \code{character} \tab indicating the title of the reference. \cr
-\bold{abstract} \tab \code{character}   \tab indicating the abstract of the reference. \cr
-\bold{promptid} \tab \code{integer} \tab indicating the prompt ID. \cr
-\bold{prompt} \tab \code{character} \tab indicating the prompt. \cr
-\bold{model} \tab \code{character}   \tab indicating the specific gpt-model used. \cr
-\bold{iterations} \tab \code{numeric} \tab indicating the number of times the same question has been sent to OpenAI's GPT API models. \cr
-\bold{question} \tab \code{character} \tab indicating the final question sent to OpenAI's GPT API models. \cr
-\bold{top_p}  \tab \code{numeric} \tab indicating the applied top_p. \cr
-\bold{decision_gpt}  \tab \code{character} \tab indicating the raw gpt decision - either \code{"1", "0", "1.1"} for inclusion, exclusion, or uncertainty, respectively. \cr
-\bold{detailed_description}  \tab \code{character} \tab indicating detailed description of the given decision made by OpenAI's GPT API models.
-Only included if the detailed function calling function is used. See 'Examples' below for how to use this function. \cr
-\bold{decision_binary}  \tab \code{integer} \tab indicating the binary gpt decision,
-that is 1 for inclusion and 0 for exclusion. 1.1 decision are coded equal to 1 in this case. \cr
-\bold{prompt_tokens}  \tab \code{integer} \tab indicating the number of prompt tokens sent to the server for the given request. \cr
-\bold{completion_tokens}  \tab \code{integer} \tab indicating the number of completion tokens sent to the server for the given request. \cr
-\bold{submodel} \tab \code{character} \tab indicating the exact (sub)model used for screening. \cr
-\bold{run_time}  \tab \code{numeric} \tab indicating the time it took to obtain a response from the server for the given request. \cr
-\bold{run_date}  \tab \code{character} \tab indicating the date the given response was received. \cr
-\bold{n} \tab \code{integer} \tab indicating request ID.  \cr
-}
-\if{html}{\out{<br>}}
-If any requests failed to reach the server, the \code{gpt} object contains an
-error data set (\code{error_data}) having the same variables as \code{answer_data_all}
-but with failed request references only.\if{html}{\out{
-<br>
-}}
-
 
 The \code{price_data} data contains the following variables:
 \tabular{lll}{
 \bold{prompt} \tab \code{character} \tab if multiple prompts are used this variable indicates the given prompt-id. \cr
-\bold{model} \tab \code{character} \tab gpt model. \cr
-\bold{iterations} \tab \code{integer} \tab indicating the number of times the same question is requested.  \cr
+\bold{model} \tab \code{character} \tab the specific gpt model used. \cr
+\bold{iterations} \tab \code{integer} \tab indicating the number of times the same question was requested.  \cr
 \bold{input_price_dollar} \tab \code{integer} \tab price for all prompt/input tokens for the correspondent gpt-model. \cr
 \bold{output_price_dollar}  \tab \code{integer} \tab price for all completion/output tokens for the correspondent gpt-model. \cr
 \bold{total_price_dollar} \tab \code{integer} \tab total price for all tokens for the correspondent gpt-model. \cr

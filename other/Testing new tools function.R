@@ -23,29 +23,34 @@ return_dat <-
   studyid = studyid,
   title = title,
   abstract = abstract,
-  model = c("gpt-4o-mini"),
+  model = "gpt-4o-mini",
   top_p = 1,
   rpm = 10000,
-  reps = 2,
+  reps = 3,
   #messages = FALSE,
   decision_description = FALSE,
   progress = TRUE,
   #tools = tools_detailed,
   #tool_choice = "inclusion_decision",
+  incl_cutoff_upper = 0.5,
+  #incl_cutoff_lower = 40,
   force = TRUE
 ); return_dat
 
 plan(sequential)
 
-#prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
-#
+prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
+
 test_x <-
   tabscreen_gpt(
-    data = filges2015_dat[1:2,],
+    data = filges2015_dat[1:4,],
     prompt = prompt,
     studyid = studyid,
+    title = title,
     abstract = abstract,
-    decision_description = FALSE
+    decision_description = FALSE,
+    model = "gpt-4o-mini",
+    reps = 10
  )
 
 
