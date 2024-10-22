@@ -482,7 +482,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
     prompt_length <- length(prompt)
     studyid_length <- dplyr::n_distinct(dat$studyid)
 
-    # Creating the question data that will later be passed to the rep_gpt_engine()
+    # Creating the question data that will later be passed to the .rep_gpt_engine()
     question_dat <-
       dat |>
       dplyr::mutate(
@@ -579,7 +579,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
       dplyr::mutate(
         res = furrr::future_pmap(
           .l = params,
-          .f = rep_gpt_engine,
+          .f = .rep_gpt_engine,
           role_gpt = role,
           tool = tools,
           t_choice = tool_choice,
@@ -612,31 +612,28 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
       if (n_error > 1) message(paste("* NOTE: Requests failed", n_error, "times."))
     }
 
-    if (n_error > 0) error_refs <- answer_dat |> dplyr::filter(is.na(decision_binary))
-
+    # Adding error data
+    error_refs <- if (n_error > 0) answer_dat |> dplyr::filter(is.na(decision_binary)) else NULL
 
     #.............................
     # Final price information ----
     #.............................
 
-    if (token_info){
-
-      price_dat <- price_gpt(answer_dat)
-      price <- sum(price_dat$total_price_dollar, na.rm = TRUE)
-
-    }
-
+    # Adding price data
+    price_dat <- if (token_info) price_gpt(answer_dat) else NULL
+    price <- if (!is.null(price_dat)) sum(price_dat$total_price_dollar, na.rm = TRUE) else NULL
 
     #.........................................................................
     # Making aggregated data ----
     # Of primary importance when multiple iterations are used, i.e. reps > 1
     #.........................................................................
 
+    # Adding the aggregated data
     if (any(reps > 1)) {
 
       # Get the aggregated
       answer_dat_sum <-
-        aggregate_res(
+        .aggregate_res(
           answer_dat,
           incl_cutoff_u = incl_cutoff_upper,
           incl_cutoff_l = incl_cutoff_lower
@@ -648,107 +645,39 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
         suppressMessages() |>
         dplyr::select(-c(iterations, req_per_min)) |>
         dplyr::rename(top_p = topp) |>
-        tibble::new_tibble(class = "gpt_tbl")
-
-      #.........................................
-      # Returned output with aggregate data ----
-      #.........................................
-
-      if (token_info){
-
-        if (n_error > 0) {
-          res <- list(
-            price_data = price_dat,
-            price_dollar = price,
-            answer_data = answer_dat,
-            answer_data_aggregated = answer_dat_aggregated,
-            error_data = error_refs,
-            arguments_used = arg_list,
-            run_date = Sys.Date()
-          )
-        } else {
-          res <- list(
-            price_data = price_dat,
-            price_dollar = price,
-            answer_data = answer_dat,
-            answer_data_aggregated = answer_dat_aggregated,
-            arguments_used = arg_list,
-            run_date = Sys.Date()
-          )
-        }
-
-      } else {
-
-        if (n_error > 0) {
-          res <- list(
-            answer_data = answer_dat,
-            answer_data_aggregated = answer_dat_aggregated,
-            error_data = error_refs,
-            arguments_used = arg_list,
-            run_date = Sys.Date()
-          )
-        } else {
-          res <- list(
-            answer_data = answer_dat,
-            answer_data_aggregated = answer_dat_aggregated,
-            arguments_used = arg_list,
-            run_date = Sys.Date()
-          )
-        }
-
-      }
+        tibble::new_tibble(class = "gpt_agg_tbl")
 
     } else {
 
-      #............................................
-      # Returned output without aggregate data ----
-      #............................................
-
-      if (token_info){
-
-        if (n_error > 0) {
-          res <- list(
-            price_data = price_dat,
-            price_dollar = price,
-            answer_data = answer_dat,
-            error_data = error_refs,
-            arguments_used = arg_list,
-            run_date = Sys.Date()
-          )
-        } else {
-          res <- list(
-            price_data = price_dat,
-            price_dollar = price,
-            answer_data = answer_dat,
-            arguments_used = arg_list,
-            run_date = Sys.Date()
-          )
-        }
-
-      } else {
-
-        if (n_error > 0) {
-          res <- list(
-            answer_data = answer_dat,
-            error_data = error_refs,
-            arguments_used = arg_list,
-            run_date = Sys.Date()
-          )
-        } else {
-          res <- list(
-            answer_data = answer_dat,
-            arguments_used = arg_list,
-            run_date = Sys.Date()
-          )
-        }
-
-      }
-
+      answer_dat_aggregated <- NULL
 
     }
 
+    #.........................................
+    # Returned output
+    #.........................................
 
-    class(res) <- c("list", "gpt")
+    res <- list(
+      price_data = price_dat,
+      price_dollar = price,
+      answer_data = answer_dat,
+      answer_data_aggregated = answer_dat_aggregated,
+      error_data = error_refs,
+      arguments_used = arg_list,
+      run_date = Sys.Date()
+    )
+
+    # If token info is not wanted
+    if (!token_info) res[["price_data"]] <- res[["price_dollar"]] <- NULL
+
+    # If no screening errors
+    if (n_error == 0) res[["error_data"]] <- NULL
+
+    # Returned output without aggregated results
+    if (all(reps == 1)) res[["answer_data_aggregated"]] <- NULL
+
+    # Defining the class of the res object
+    class(res) <- c("gpt", class(res))
 
     res
 

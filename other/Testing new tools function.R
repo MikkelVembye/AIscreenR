@@ -19,14 +19,14 @@ plan(multisession)
 return_dat <-
   tabscreen_gpt(
   data = test_dat,
-  prompt = prompts,
+  prompt = prompts[1],
   studyid = studyid,
   title = title,
   abstract = abstract,
   model = "gpt-4o-mini",
   top_p = 1,
   rpm = 10000,
-  reps = 3,
+  reps = 2,
   #messages = FALSE,
   decision_description = FALSE,
   progress = TRUE,
@@ -34,6 +34,7 @@ return_dat <-
   #tool_choice = "inclusion_decision",
   incl_cutoff_upper = 0.5,
   #incl_cutoff_lower = 40,
+  token_info = TRUE,
   force = TRUE
 ); return_dat
 

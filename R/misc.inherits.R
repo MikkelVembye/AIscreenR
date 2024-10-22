@@ -66,3 +66,16 @@ is_gpt <- function(x){
 is_gpt_tbl <- function(x){
   inherits(x, "gpt_tbl")
 }
+
+#' Test if the object is a `'gpt_agg_tbl'` object
+#'
+#' This function returns `TRUE` for `gpt_agg_tbl` objects,
+#' and `FALSE` for all other objects.
+#'
+#' @param x An object
+#' @return `TRUE` if the object inherits from the `gpt_agg_tbl` class.
+#' @export
+
+is_gpt_agg_tbl <- function(x){
+  inherits(x, "gpt_agg_tbl")
+}

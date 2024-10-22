@@ -14,6 +14,12 @@
 
 print.gpt <- function(x, ...){
 
- cat(paste0("Find the final result under res_object$answer_data_final"))
+  if ("answer_data_aggregated" %in% names(x)){
+    print <- cat(paste0("\nFind the final result dataset via result_object$answer_data_aggregated"))
+  } else {
+    print <- cat(paste0("\nFind the final result dataset via result_object$answer_data"))
+  }
+
+  print
 
 }

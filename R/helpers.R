@@ -69,7 +69,7 @@ error_message <- function(){
 
 }
 
-# Old version
+# Old version (i.e., used in tabscreen_gpt.original)
 status_code_text <- function(){
 
   resp_last <- httr2::last_response()

@@ -2,7 +2,7 @@
 # Function to send a single request to OpenAI's GPT API models
 ###############################################################
 
-gpt_engine <-
+.gpt_engine <-
   function(
     body,
     RPM,
@@ -189,7 +189,7 @@ gpt_engine <-
 # Function to send repeated requests to OpenAI's GPT API models
 ################################################################
 
-rep_gpt_engine <- function(
+.rep_gpt_engine <- function(
     question, model_gpt, topp, iterations, req_per_min,
     role_gpt,
     tool,
@@ -223,7 +223,7 @@ rep_gpt_engine <- function(
 
   }
 
-  # Creating the body to be passed to gpt_engine()
+  # Creating the body to be passed to .gpt_engine()
   # The body is created here, it more readily work with the ... functionality.
   body <- list(
     model = model_gpt,
@@ -246,7 +246,7 @@ rep_gpt_engine <- function(
 
   # Running repeated in requests in parallel, and return tibble
   furrr::future_map_dfr(
-    iterations, \(i) gpt_engine(
+    iterations, \(i) .gpt_engine(
       body = body,
       RPM = req_per_min,
       timeinf = time_inf,
@@ -269,7 +269,7 @@ rep_gpt_engine <- function(
 # Function used to aggregate responses when repeating the same question is used.
 ################################################################################
 
-aggregate_res <-
+.aggregate_res <-
   function(data, incl_cutoff_u, incl_cutoff_l) {
 
     sum_dat <-

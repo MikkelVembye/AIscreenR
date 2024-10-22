@@ -5,19 +5,19 @@
 \title{Find updated rate limits for API models}
 \usage{
 rate_limits_per_minute(
-  model = "gpt-3.5-turbo-0613",
-  AI_tool = "chatgpt",
+  model = "gpt-4",
+  AI_tool = "gpt",
   api_key = get_api_key()
 )
 }
 \arguments{
 \item{model}{Character string with the name of the completion model.
-Default = \code{"gpt-3.5-turbo-0613"}. Can take multiple strings.
+Default = \code{"gpt-4"}. Can take multiple strings.
 Find available model at
 \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.}
 
 \item{AI_tool}{Character string specifying the AI tool from which the api is
-issued. Default is \code{"chatgpt"}.}
+issued. Default is \code{"gpt"}.}
 
 \item{api_key}{Numerical value with your personal API key. Find at
 \url{https://platform.openai.com/account/api-keys}. Use

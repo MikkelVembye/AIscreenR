@@ -40,6 +40,7 @@ reference:
       - is_chatgpt_tbl
       - is_gpt
       - is_gpt_tbl
+      - is_gpt_agg_tbl
 
   - title: "Print methods"
     contents:
