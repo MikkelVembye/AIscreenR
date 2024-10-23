@@ -8,8 +8,6 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml)
-[![Codecov test
-coverage](https://codecov.io/gh/MikkelVembye/AIscreenR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/MikkelVembye/AIscreenR?branch=main)
 <!-- badges: end -->
 
 The goal of AIscreenR is to use AI tools to support screening processes
@@ -57,18 +55,21 @@ set_api_key(AIscreenR:::testing_key_chatgpt())
 rate_limits <- rate_limits_per_minute()
 rate_limits
 #> # A tibble: 1 × 3
-#>   model              requests_per_minute tokens_per_minute
-#>   <chr>                            <dbl>             <dbl>
-#> 1 gpt-3.5-turbo-0613               10000           2000000
+#>   model requests_per_minute tokens_per_minute
+#>   <chr>               <dbl>             <dbl>
+#> 1 gpt-4               10000           1000000
+```
+
+``` r
 
 # Obtain rate limits info across multiple models
 rate_limits <- rate_limits_per_minute(model = c("gpt-3.5-turbo-0613", "gpt-4"))
 rate_limits
 #> # A tibble: 2 × 3
-#>   model              requests_per_minute tokens_per_minute
-#>   <chr>                            <dbl>             <dbl>
-#> 1 gpt-3.5-turbo-0613               10000           2000000
-#> 2 gpt-4                            10000            300000
+#>   model                                    requests_per_minute tokens_per_minute
+#>   <chr>                                                  <dbl>             <dbl>
+#> 1 Error 404: The model `gpt-3.5-turbo-061…                  NA                NA
+#> 2 gpt-4                                                  10000           1000000
 ```
 
 How to load ris files. In this example we have downloaded the ris files
@@ -150,20 +151,27 @@ app_obj <-
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
     abstract = abstract, # indicate the variable with the abstracts in the data
-    model = c("gpt-3.5-turbo-0613"),
+    model = "gpt-4o",
     rep = 10 
   )
 
 app_obj
-#> The approximate price of the (simple) screening will be around $4.477.
+#> The approximate price of the (simple) screening will be around $15.1761.
+```
+
+``` r
 
 app_obj$price_dollar
-#> [1] 4.477
+#> [1] 15.1761
+```
+
+``` r
 app_obj$price_data
-#> # A tibble: 1 × 5
-#>   model     iterations input_price_dollar output_price_dollar total_price_dollar
-#>   <chr>          <dbl>              <dbl>               <dbl>              <dbl>
-#> 1 gpt-3.5-…         10               4.42              0.0594               4.48
+#> # A tibble: 1 × 6
+#>   prompt   model  iterations input_price_dollar output_price_dollar
+#>   <chr>    <chr>       <dbl>              <dbl>               <dbl>
+#> 1 Prompt 1 gpt-4o         10               14.7               0.446
+#> # ℹ 1 more variable: total_price_dollar <dbl>
 ```
 
 Example of how to conduct simple screening, getting return 1 if a
@@ -175,38 +183,43 @@ cannot be reached.
 plan(multisession)
 test_obj <- 
   tabscreen_gpt(
-    data = filges2015_dat[c(140:150),],
+    data = filges2015_dat[c(1:5, 266:270),],
     prompt = prompt, 
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
     abstract = abstract, # indicate the variable with the abstracts in the data
-    model = c("gpt-3.5-turbo-0613"),
-    reps = 2 # Number of times the same question is asked to ChatGPT
+    model = "gpt-4o",
+    reps = 1 # Number of times the same question is asked to ChatGPT
   ) 
-#> * The approximate price of the current (simple) screening will be around $0.036.
+#> * The approximate price of the current (simple) screening will be around $0.0546.
+#> * Consider removing references that has no abstract since these can distort the accuracy of the screening.
+```
+
+``` r
 plan(sequential)
 test_obj
-#> Find data with all answers by executing
-#>  x$answer_data_all
 #> 
-#> Find data with the result aggregated across multiple answers by executing
-#>  x$answer_data_sum
-#> 
-#> Find total price for the screening by executing
-#>  x$price_dollar
+#> Find the final result dataset via result_object$answer_data
+```
+
+``` r
 
 # Data sets in object
-price_dat <- test_obj$price_dat
+price_dat <- test_obj$price_data
 price_dat
-#> # A tibble: 1 × 5
-#>   model     iterations input_price_dollar output_price_dollar price_total_dollar
-#>   <chr>          <dbl>              <dbl>               <dbl>              <dbl>
-#> 1 gpt-3.5-…          2             0.0323             0.00048             0.0328
+#> # A tibble: 1 × 6
+#>   prompt model  iterations input_price_dollar output_price_dollar
+#>    <int> <chr>       <dbl>              <dbl>               <dbl>
+#> 1      1 gpt-4o          1             0.0495             0.00108
+#> # ℹ 1 more variable: total_price_dollar <dbl>
+```
+
+``` r
 
 
-all_dat <- test_obj$answer_data_all
+all_dat <- test_obj$answer_data
 all_dat |> select(human_code, decision_binary)
-#> # A tibble: 22 × 2
+#> # A tibble: 10 × 2
 #>    human_code decision_binary
 #>         <dbl>           <dbl>
 #>  1          0               0
@@ -214,28 +227,9 @@ all_dat |> select(human_code, decision_binary)
 #>  3          0               0
 #>  4          0               0
 #>  5          0               0
-#>  6          0               0
-#>  7          0               0
-#>  8          0               0
-#>  9          0               0
-#> 10          0               0
-#> # ℹ 12 more rows
-
-
-sum_dat <- test_obj$answer_data_sum
-sum_dat |> select(human_code, final_decision_gpt:final_decision_gpt_num)
-#> # A tibble: 11 × 3
-#>    human_code final_decision_gpt final_decision_gpt_num
-#>         <dbl> <chr>                               <dbl>
-#>  1          0 Exclude                                 0
-#>  2          0 Exclude                                 0
-#>  3          0 Exclude                                 0
-#>  4          0 Exclude                                 0
-#>  5          0 Exclude                                 0
-#>  6          0 Exclude                                 0
-#>  7          0 Exclude                                 0
-#>  8          0 Exclude                                 0
-#>  9          0 Exclude                                 0
-#> 10          0 Exclude                                 0
-#> 11          0 Exclude                                 0
+#>  6          1               0
+#>  7          1               1
+#>  8          1               0
+#>  9          1               1
+#> 10          1               1
 ```

@@ -86,6 +86,7 @@ obj_rescreened <-
   obj_with_error |>
   screen_error(max_tries = 16)
 }
+
 }
 \references{
 Wickham H (2023).

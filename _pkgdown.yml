@@ -5,7 +5,7 @@ development:
   mode: auto
 
 reference:
-  - title: "Screening with GPT API models"
+  - title: "Screen with GPT API models"
     desc: "R functions to automate title and abstract screeening with GPT API models"
     contents:
       - tabscreen_gpt.tools
@@ -57,6 +57,11 @@ reference:
   - title: "Pricing"
     contents:
       - approximate_price_gpt
+
+  - title: "Sample references"
+    desc: "Sample references to construct test dataset"
+    contents:
+      - sample_references
 
 articles:
   - title: Using AIscreenR

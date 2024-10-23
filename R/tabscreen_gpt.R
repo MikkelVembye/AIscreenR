@@ -555,7 +555,6 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
         )
       }
 
-
       abstract_text <- question_dat |> pull({{ abstract }}) |> unique()
 
       if ("No information" %in% abstract_text) {

@@ -7,7 +7,7 @@
 \method{screen_errors}{gpt}(
   object,
   api_key = get_api_key(),
-  max_tries = 4,
+  max_tries = 16,
   max_seconds,
   is_transient,
   backoff,
@@ -23,38 +23,38 @@
 \item{max_tries, max_seconds}{'Cap the maximum number of attempts with
 \code{max_tries} or the total elapsed time from the first request with
 \code{max_seconds}. If neither option is supplied (the default), \code{\link[=req_perform]{req_perform()}}
-will not retry' (Wickham, 2023). Default \code{max_tries} is 4. If missing, the value of \code{max_seconds}
-from the original screening (e.g., conducted with \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}) will be used.}
+will not retry' (Wickham, 2023). Default \code{max_tries} is 16. If missing, the value of \code{max_seconds}
+from the original screening conducted with \code{\link[=tabscreen_gpt]{tabscreen_gpt()}} will be used.}
 
 \item{is_transient}{'A predicate function that takes a single argument
 (the response) and returns \code{TRUE} or \code{FALSE} specifying whether or not
 the response represents a transient error' (Wickham, 2023). If missing, the \code{is_transient}
-function from the original screening (e.g., conducted with \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}) will be used.}
+function from the original screening conducted with [tabscreen_gpt() will be used.}
 
 \item{backoff}{'A function that takes a single argument (the number of failed
 attempts so far) and returns the number of seconds to wait' (Wickham, 2023).
-If missing, the \code{backoff}value from the original screening (e.g., conducted with \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}) will be used.}
+If missing, the \code{backoff}value from the original screening conducted with \code{\link[=tabscreen_gpt]{tabscreen_gpt()}} will be used.}
 
 \item{after}{'A function that takes a single argument (the response) and
 returns either a number of seconds to wait or \code{NULL}, which indicates
 that a precise wait time is not available that the \code{backoff} strategy
 should be used instead' (Wickham, 2023). If missing, the \code{after} value
-from the original screening (e.g., conducted with \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}) will be used.}
+from the original screening conducted with \code{\link[=tabscreen_gpt]{tabscreen_gpt()}} will be used.}
 
 \item{...}{Further argument to pass to the request body. See \url{https://platform.openai.com/docs/api-reference/chat/create}.
-If used in the orginal screening (e.g., with \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}), the argument(s)
+If used in the original screening in \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}, the argument(s)
 must be specified again here.}
 }
 \value{
-Object of class \code{'gpt'} similar to the object returned by \code{\link[=tabscreen_gpt.tools]{tabscreen_gpt.tools()}}.
-See documentation for \code{\link[=tabscreen_gpt.tools]{tabscreen_gpt.tools()}}.
+An object of class \code{'gpt'} similar to the object returned by \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}.
+See documentation for \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}\if{html}{\out{<br>}}
 \if{html}{\out{<br>}}
 
 This function supports re-screening of all failed title and abstract requests
-screened with \code{\link[=tabscreen_gpt.tools]{tabscreen_gpt.tools()}}.
+screened with \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}/\code{\link[=tabscreen_gpt.tools]{tabscreen_gpt.tools()}}.
 }
 \examples{
 
@@ -76,6 +76,7 @@ obj_rescreened <-
   screen_error()
 
 }
+
 }
 \references{
 Wickham H (2023).
