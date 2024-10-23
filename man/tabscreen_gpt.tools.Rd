@@ -5,21 +5,21 @@
 \alias{tabscreen_gpt}
 \title{Title and abstract screening with GPT API models using function calls via the tools argument}
 \usage{
-tabscreen_gpt.tools(data, prompt, studyid, title, abstract, model = "gpt-4",
-   role = "user", tools = NULL, tool_choice = NULL, top_p = 1, time_info = TRUE,
-   token_info = TRUE, api_key = get_api_key(), max_tries = 16, max_seconds = NULL,
-   is_transient = gpt_is_transient, backoff = NULL, after = NULL, rpm = 10000,
-   reps = 1, seed = NULL, progress = TRUE, decision_description = FALSE, messages = TRUE,
-   incl_cutoff_upper = NULL, incl_cutoff_lower = NULL, force = FALSE,
-   fine_tuned = FALSE, ...)
+tabscreen_gpt.tools(data, prompt, studyid, title, abstract,
+   model = "gpt-4", role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
+   time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
+   max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
+   after = NULL, rpm = 10000, reps = 1, seed = NULL, progress = TRUE,
+   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
+   incl_cutoff_lower = NULL, force = FALSE, fine_tuned = FALSE, ...)
 
-tabscreen_gpt(data, prompt, studyid, title, abstract, model = "gpt-4",
-   role = "user", tools = NULL, tool_choice = NULL, top_p = 1, time_info = TRUE,
-   token_info = TRUE, api_key = get_api_key(), max_tries = 16, max_seconds = NULL,
-   is_transient = gpt_is_transient, backoff = NULL, after = NULL, rpm = 10000,
-   reps = 1, seed = NULL, progress = TRUE, decision_description = FALSE, messages = TRUE,
-   incl_cutoff_upper = NULL, incl_cutoff_lower = NULL, force = FALSE,
-   fine_tuned = FALSE, ...)
+tabscreen_gpt(data, prompt, studyid, title, abstract,
+   model = "gpt-4", role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
+   time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
+   max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
+   after = NULL, rpm = 10000, reps = 1, seed = NULL, progress = TRUE,
+   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
+   incl_cutoff_lower = NULL, force = FALSE, fine_tuned = FALSE, ...)
 }
 \arguments{
 \item{data}{Dataset containing the titles and abstracts.}

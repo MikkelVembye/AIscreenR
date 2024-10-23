@@ -6,14 +6,20 @@ development:
 
 reference:
   - title: "Screening with GPT API models"
-    desc: "R functions to automate title and abstract screeening in ChatGPT"
+    desc: "R functions to automate title and abstract screeening with GPT API models"
     contents:
       - tabscreen_gpt.tools
       - tabscreen_gpt.original
+
+  - title: "Screen failed requests"
+    desc: "R functions to re-screen failied title and abstract requests"
+    contents:
       - screen_errors
+      - screen_errors.gpt
+      - screen_errors.chatgpt
 
   - title: "Analyze screening performance"
-    desc: "R functions to analyze agreement between humans and AI"
+    desc: "R functions to analyze agreement between humans and GPT"
     contents:
       - screen_analyzer
 
@@ -44,6 +50,7 @@ reference:
 
   - title: "Print methods"
     contents:
+      - print.gpt
       - print.chatgpt
       - print.gpt_price
 

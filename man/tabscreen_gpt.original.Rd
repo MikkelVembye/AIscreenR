@@ -151,6 +151,15 @@ for each title and abstract across multiple repeated questions.}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}\if{html}{\out{<br>}}
 \if{html}{\out{<br>}}
+
+This function has been deprecated (but can still be used) because
+OpenAI has deprecated the function_call and and functions argument which is
+used in this function. Instead use the \code{\link[=tabscreen_gpt.tools]{tabscreen_gpt.tools()}} that handles
+the function calling via the tools and tool_choice arguments.\if{html}{\out{
+<br>
+}}
+
+
 This function supports the conduct of title and abstract screening with GPT API models in R.
 This function only works with GPT-4, more specifically gpt-4-0613. To draw on other models,
 use \code{\link[=tabscreen_gpt.tools]{tabscreen_gpt.tools()}}.

@@ -224,7 +224,7 @@
   }
 
   # Creating the body to be passed to .gpt_engine()
-  # The body is created here, it more readily work with the ... functionality.
+  # The body is created here, because it is then more easy to work with the ... functionality.
   body <- list(
     model = model_gpt,
     messages = list(

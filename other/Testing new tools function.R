@@ -32,10 +32,10 @@ return_dat <-
   progress = TRUE,
   #tools = tools_detailed,
   #tool_choice = "inclusion_decision",
-  incl_cutoff_upper = 0.5,
+  #incl_cutoff_upper = 0.5,
   #incl_cutoff_lower = 40,
-  token_info = TRUE,
-  force = TRUE
+  #token_info = TRUE,
+  force = FALSE
 ); return_dat
 
 plan(sequential)

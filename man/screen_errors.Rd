@@ -2,58 +2,28 @@
 % Please edit documentation in R/screen_errors.R
 \name{screen_errors}
 \alias{screen_errors}
-\title{Re-screen failed requests.}
+\title{Generic function to re-screen failed title and abstract requests.}
 \usage{
 screen_errors(
   object,
-  ...,
   api_key = get_api_key(),
   max_tries = 4,
   max_seconds,
   is_transient,
   backoff,
-  after
+  after,
+  ...
 )
 }
-\arguments{
-\item{object}{An object of class \code{'chatgpt'}.}
-
-\item{...}{Further argument to pass to the request body. See \url{https://platform.openai.com/docs/api-reference/chat/create}.
-If used in the orginal screening (e.g., with \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}), the argument(s)
-must be specified again here.}
-
-\item{api_key}{Numerical value with your personal API key.}
-
-\item{max_tries, max_seconds}{'Cap the maximum number of attempts with
-\code{max_tries} or the total elapsed time from the first request with
-\code{max_seconds}. If neither option is supplied (the default), \code{\link[=req_perform]{req_perform()}}
-will not retry' (Wickham, 2023). Default \code{max_tries} is 4. If missing, the value of \code{max_seconds}
-from the original screening (e.g., conducted with \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}) will be used.}
-
-\item{is_transient}{'A predicate function that takes a single argument
-(the response) and returns \code{TRUE} or \code{FALSE} specifying whether or not
-the response represents a transient error' (Wickham, 2023). If missing, the \code{is_transient}
-function from the original screening (e.g., conducted with \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}) will be used.}
-
-\item{backoff}{'A function that takes a single argument (the number of failed
-attempts so far) and returns the number of seconds to wait' (Wickham, 2023).
-If missing, the \code{backoff}value from the original screening (e.g., conducted with \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}) will be used.}
-
-\item{after}{'A function that takes a single argument (the response) and
-returns either a number of seconds to wait or \code{NULL}, which indicates
-that a precise wait time is not available that the \code{backoff} strategy
-should be used instead' (Wickham, 2023). If missing, the \code{after} value
-from the original screening (e.g., conducted with \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}) will be used.}
-}
 \value{
-Object of class \code{'chatgpt'} similar to the object returned by \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}.
-See documentation value for \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}.
+An object of class \code{'gpt'} or \code{'chatgpt'} similar to the object returned by \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}.
+See documentation for \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}\if{html}{\out{<br>}}
 \if{html}{\out{<br>}}
 
-This function supports re-screening of all failed title and abstract requests.
+This is a generic function to re-screen of failed title and abstract requests.
 }
 \examples{
 
@@ -62,31 +32,21 @@ prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
 
 obj_with_error <-
   tabscreen_gpt(
-    data = filges2015_dat[1:2,],
+    data = filges2015_dat[1:10,],
     prompt = prompt,
     studyid = studyid,
     title = title,
     abstract = abstract,
-    model = c("gpt-3.5-turbo-0613", "gpt-3.5-turbo-16k-0613"),
-    max_tries = 1,
-    reps = 10
+    model = "gpt-4o-mini"
     )
 
 obj_rescreened <-
   obj_with_error |>
   screen_error()
 
-# Alternatively re-set max_tries if errors still appear
-obj_rescreened <-
-  obj_with_error |>
-  screen_error(max_tries = 16)
 }
-}
-\references{
-Wickham H (2023).
-\emph{httr2: Perform HTTP Requests and Process the Responses}.
-https://httr2.r-lib.org, https://github.com/r-lib/httr2.
+
 }
 \seealso{
-\code{\link[=tabscreen_gpt]{tabscreen_gpt()}}
+\code{\link[=screen_errors.gpt]{screen_errors.gpt()}}, \code{\link[=screen_errors.chatgpt]{screen_errors.chatgpt()}}
 }

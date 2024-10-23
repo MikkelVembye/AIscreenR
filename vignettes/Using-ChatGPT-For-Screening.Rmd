@@ -29,14 +29,14 @@ options(dplyr.summarise.inform = FALSE) # Avoids summarize info from tidyverse
 <p style='margin-top:1em; text-align:center'>
 <b>Important note</b></p>
 <p style='margin:1em'>
-See Vembye et al. (2024) for an overview of how and when GPT API models can be used for title and abstract screening. For an overview of other research regarding the use of GPT API models for title and abstract screening, see Syriani et al. (2023), Guo et al., (2024), and Gargari et al. (2024). On a related line of research, Alshami et al. (2023), Khraisha et al. (2024), and Issaiy et al. (2024) explored the ChatGPT web browser interface for TAB screening. Based on our experience, we think that these two lines of research should not be mixed up since the draw on different GPT models. 
+This is work-in-progress only. For now, see Vembye et al. (2024) for an overview of how and when GPT API models can be used for title and abstract (TAB) screening. For an overview of other research regarding the use of GPT API models for title and abstract screening, see Syriani et al. (2023), Guo et al., (2024), and Gargari et al. (2024). On a related line of research, Alshami et al. (2023), Khraisha et al. (2024), and Issaiy et al. (2024) explored using the ChatGPT web browser interface for TAB screening. Based on our experience, we think that these two lines of research should not be mixed up since the draw on different GPT models. 
 </p></span>
 </div>
 
-In this vignette, we show how to conduct title and abstract screening with OpenAI's GPT API models in R. The advantages of conducting the screening with ChatGPT via R is 1) that reviewers can easily work with a large number of references, avoiding copy-paste procedures (cf. Khraisha et al., 2024), 2) that the total screening time can be substantially increased relative to using the ChatGPT interface, 3) that it eases model comparison, and 4) that consistency between GPT answer for the same title and abstract can easily be tested. In this vignette, we also show the first/initial proof of concept for the use of GPT API models as reliable second screeners (see also Syriani et al., 2023). This goes without saying that the GPT API models work in all cases, and we think the tool should be use carefully and should always assisted by a human (human-in-the-loop). Consequently, we do not recommend to use the `AIscreenR` as a single screener per se. If used to reduced the overall number of references needed to be screened, our tentative recommendation is to random sample approximately 10% of the studies excluded by GPT to check the accuracy of the screening.    
+In this vignette, we show how to conduct title and abstract screening with OpenAI's GPT API models in R. The advantages of conducting the screening with GPT API models via R is 1) that reviewers can easily work with a large number of references, avoiding copy-paste procedures (cf. Khraisha et al., 2024), 2) that the total screening time can be substantially increased relative to using the ChatGPT interface, 3) that it eases model comparison, and 4) that consistency between GPT answer for the same title and abstract can easily be tested. In this vignette, we also show the first/initial proof of concept for the use of GPT API models as reliable second screeners (see also Syriani et al., 2023). This goes without saying that the GPT API models work in all cases, and we think the tool should be use carefully and should always assisted by a human (human-in-the-loop). Consequently, we do not recommend to use the `AIscreenR` as a single screener per se. If used to reduced the overall number of references needed to be screened, our tentative recommendation is to random sample approximately 10% of the studies excluded by GPT to check the accuracy of the screening.    
 
 ## Getting started: Loading relevant ris file data for screening
-At this stage, we expect that you have a pile of ris-files, containing titles and abstracts for the references you would like to screen. You can retrieve ris-files in several ways, either directly from research database, a Google Scholar search, or exported from your reference management tool, such as EndNote, Mendeley, and RefMan. Alternatively, you can export ris-file from systematic software tool such as [EPPI-reviewer](https://eppi.ioe.ac.uk/EPPIReviewer-Web/home), [Covidence](https://www.covidence.org/), [MetaReviewer](https://www.metareviewer.org/landing/index.html), [`revtools`](https://revtools.net/), or whatever software you use. In the example given below, we load ris-files extracted from the EPPI-reviewer. A minor advantage of extracting ris-files from systematic software tools is that they add a unique study ID for each reference. This feature makes it easier to keep track of the screening. Yet, such ID can be generated in R as well, and is automatically generated in the `tabscreen_gpt()` function when unique IDs are not provided. When using a GPT API model as the second screener, we recommend that the human screening has been done before uploading to R. Thereby, it is possible to compare the screenings instantly after the computer screening has been done. In the below example we load ris-files separately for excluded and included ris-files, respectively, and add the `human_code` variable that tracks the human decision.   
+At this stage, we expect that you have a pile of ris-files, containing titles and abstracts for the references you would like to screen. You can retrieve ris-files in several ways, either directly from research database, a Google Scholar search, or exported from your reference management tool, such as EndNote, Mendeley, and RefMan. Alternatively, you can export ris-file from systematic software tool such as [EPPI-reviewer](https://eppi.ioe.ac.uk/EPPIReviewer-Web/home), [Covidence](https://www.covidence.org/), [MetaReviewer](https://www.metareviewer.org/landing/index.html), [`revtools`](https://revtools.net/), or whatever software you use. In the example given below, we load ris-files extracted from the EPPI-reviewer. A minor advantage of extracting ris-files from systematic software tools is that they add a unique study ID for each reference. This feature makes it easier to keep track of the screening. Yet, such ID can be generated in R as well, and is automatically generated in the `tabscreen_gpt()` function when unique IDs are missing. When using a GPT API model as the second screener, we recommend that the human screening has been done before uploading ris-file(s) to R. Thereby, it is possible to compare the screenings instantly after the computer screening has been done. In the below example we load ris-files separately for excluded and included ris-files, respectively, and add the `human_code` variable that tracks the human decision.   
 
 ```{r not included setup, include = FALSE}
 # Loading packages 
@@ -315,9 +315,8 @@ app_obj <-
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
     abstract = abstract, # indicate the variable with the abstracts in the data
-    model = c("gpt-3.5-turbo-0613", "gpt-3.5-turbo-0613", "gpt-4"),
-    reps = c(1, 10, 1),
-    top_p = c(0.001, 1)
+    model = "gpt-4",
+    reps = 1
   )
 
 app_obj
@@ -336,7 +335,7 @@ rpm <- c(10000, 10000, 200)
 plan(multisession)
 
 result_object <- 
-  tabscreen_gpt(
+  tabscreen_gpt.original(
     data = filges2015_dat, # ris-file data create above 
     prompt = prompt, # indicate name of the loaded prompt object
     studyid = studyid, # indicate the variable with the studyid in the data
