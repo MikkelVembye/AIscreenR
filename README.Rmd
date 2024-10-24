@@ -19,7 +19,9 @@ knitr::opts_chunk$set(
 # AIscreenR: AI screening tools in R for systematic reviewing 
 
 <!-- badges: start -->
+[![License: GPL (>=3)](https://img.shields.io/badge/license-GPL-blue)](https://www.gnu.org/licenses/gpl-3.0.html)
 [![R-CMD-check](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml)
+[![devel Version](https://img.shields.io/badge/devel-0.0.0.9999-lightpink.svg)](https://mikkelvembye.github.io/AIscreenR/)
 <!-- badges: end -->
 
 The goal of AIscreenR is to use AI tools to support screening processes (including title and abstract screening) in systematic reviews and related literature reviews. At the current stage, the main aim of the `AIscreenR` package is to support the use and testing of OpenAI's GPT API models as the second screeners of titles and abstracts or alternatively to reduce research waste, i.e., the number of references needed to be screened by humans. The package allows user to apply OpenAI's GPT API models from the [https://api.openai.com/v1/chat/completions](https://platform.openai.com/docs/models/model-endpoint-compatibility) endpoint. In future developments, we expect to add further LLMs when APIs become available for other models, for example from Claude 2. For now, we invite other researchers to test this software so that we as a review community can get a better understanding of the performance of OpenAI's GPT API models.

@@ -137,6 +137,16 @@ rep_gpt_engine(
 
 plan(sequential)
 
+ex_dat <- filges2015_dat[1:200,] |> as.data.frame()
+## Alternative sampling function
+# shuffle abstracts randomly to allow random selection
+df_shuffle <- df[sample(nrow(ex_dat)), ]
+
+# subset 10 of the records
+random_selection <- sample(nrow(df_shuffle), floor(nrow(df_shuffle) * 0.1))
+
+# shuffle random selection
+df_randomSelection <- df_shuffle[random_selection,  ]
 
 
 

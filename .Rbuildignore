@@ -11,3 +11,4 @@ README.md
 ^data-raw$
 ^codecov\.yml$
 ^LICENSE\.md$
+^cran-comments\.md$
