@@ -15,6 +15,36 @@ screen_errors(
   ...
 )
 }
+\arguments{
+\item{object}{An object of either class \code{'gpt'} or \code{'chatgpt'}.}
+
+\item{api_key}{Numerical value with your personal API key.}
+
+\item{max_tries, max_seconds}{'Cap the maximum number of attempts with
+\code{max_tries} or the total elapsed time from the first request with
+\code{max_seconds}. If neither option is supplied (the default), \code{\link[=req_perform]{req_perform()}}
+will not retry' (Wickham, 2023). Default \code{max_tries} is 16. If missing, the value of \code{max_seconds}
+from the original screening conducted with \code{\link[=tabscreen_gpt]{tabscreen_gpt()}} will be used.}
+
+\item{is_transient}{'A predicate function that takes a single argument
+(the response) and returns \code{TRUE} or \code{FALSE} specifying whether or not
+the response represents a transient error' (Wickham, 2023). If missing, the \code{is_transient}
+function from the original screening conducted with [tabscreen_gpt() will be used.}
+
+\item{backoff}{'A function that takes a single argument (the number of failed
+attempts so far) and returns the number of seconds to wait' (Wickham, 2023).
+If missing, the \code{backoff}value from the original screening conducted with \code{\link[=tabscreen_gpt]{tabscreen_gpt()}} will be used.}
+
+\item{after}{'A function that takes a single argument (the response) and
+returns either a number of seconds to wait or \code{NULL}, which indicates
+that a precise wait time is not available that the \code{backoff} strategy
+should be used instead' (Wickham, 2023). If missing, the \code{after} value
+from the original screening conducted with \code{\link[=tabscreen_gpt]{tabscreen_gpt()}} will be used.}
+
+\item{...}{Further argument to pass to the request body. See \url{https://platform.openai.com/docs/api-reference/chat/create}.
+If used in the original screening in \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}, the argument(s)
+must be specified again here.}
+}
 \value{
 An object of class \code{'gpt'} or \code{'chatgpt'} similar to the object returned by \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}.
 See documentation for \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}.

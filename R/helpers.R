@@ -15,7 +15,8 @@ utils::globalVariables(
     "n_refs", "n_screened", "human_ex_gpt_ex", "human_in_gpt_in", "p_agreement", "pe", "reps", "rm1", "rm2",
     "studyid", "top_p", "n_mis_answers", "screen_errros", "max_tries", "max_seconds", "irr", "se_irr", "cl_irr", "cu_irr",
     "level_of_agreement", "precision", "recall", "npv", "specificity", "bacc", "F2", "mcc", "denominator", "nominator",
-    "model_prizes", "price_in_per_token", "price_out_per_token")
+    "model_prizes", "price_in_per_token", "price_out_per_token",
+    "submodel", "prompt", "data", "tools", "tool_choice", "is.gpt")
 )
 
 
@@ -24,8 +25,6 @@ utils::globalVariables(
 #  Helpers
 #
 #----------------------------------------------------------------
-
-#' @export
 
 status_code <- function(){
 
@@ -135,42 +134,40 @@ testing_key_chatgpt <- function() {
 #
 #----------------------------------------------------------------
 
-question <- "Evaluate the following study based on the selection criteria for a
-systematic review on the effects of family-based interventions on drug abuse reduction
-for young people in treatment for non-opioid drug use. A family-based intervention (FBT)
-is equivalent to a behavior focused family therapy, where young people’s drug use
+question <- "Evaluate the following study based on the selection criteria for
+a systematic review on the effects of family-based interventions on drug abuse
+reduction for young people in treatment for non-opioid drug use. A family-based intervention (FBT)
+is equivalent to a behavior focused family therapy, where young peoples drug use
 is understood in relation to family behavior problems. Family-based interventions
-also includes manual-based family therapies as it targets young people and  their
+also includes manual-based family therapies as it targets young people and their
 families as a system throughout treatment, and thereby recognizes the important
-role of the family system in the development and treatment of young people’s drug
-use problems. FBT was developed in the late 1980s on request from the US National
-Institute on Drug Abuse (NIDA).The development of FBT was initially heavily inspired
-by the alcohol abuse program Community Reinforcement Approach (CRA), which was aimed
-at restructuring the environmentto reinforce non-alcohol associated activities.
-FBT developed to have more emphasis oncontingency contracting, impulse control
-strategies specific to drug use, and increased emphasis on involvement of family
-members in treatment. FBT is designed to accommodate diverse populations of youths
-with a variety of behavioral,cultural and individual preferences. FBT has evolved
-for use in severe behavioral disturbances known to co-exist with substance use and
-dependence, and the core interventions have been enhanced to address several mental
-health related problems commonly occurringas comorbid conditions in drug use treatment
-participant.  For each study, I would like you to assess:
-1) Is the study about a family-based intervention, such as Functional
-Family Therapy, Multidimensional Family Therapy, or Behavioral Family Therapy?
-(Outpatient manual-based interventions of any duration delivered to young people
-and their families). If no to this answer exclude the study. 2) Are the participants
-in outpatient drug treatment primarilyfor non-opioid drug use? 3) Are the participants
-within age 11–21?  Now, evaluate the following titles and abstracts for Study 150:
--Title: Treatment Outcomes for Adolescent Substance Abuse at 4- and 7-Month
-Assessments-Abstract: This randomized clinical trial evaluated individual
-cognitive-behavioral therapy (CBT), family therapy, combined individual
-and family therapy, and a group intervention for 114 substance-abusing
-adolescents. Outcomes were percentage of days marijuana was used and
-percentage of youths achieving minimal use. Each intervention demonstrated some
-efficacy, although differences occurred for outcome measured, speed of change, and
-maintenance of change.From pretreatment to 4 months, significantly fewer days of
-use were found for the family therapy alone and the combined interventions.
-Significantly more youths had achieved minimal use levels in the family and combined
-conditions and in CBT. From pretreatment to 7 months, reductions in percentage of
-days of use were significant for the combined and group interventions, and changes
-in minimal use levels were significant for the family, combined, and group interventions."
+role of the family system in the development and treatment of young peoples drug
+use problems. FBT was developed in the late 1980s on request from
+the US National Institute on Drug Abuse (NIDA).The development
+of FBT was initially heavily inspired by the alcohol abuse program
+Community Reinforcement Approach (CRA), which was aimed at restructuring the
+environmentto reinforce non-alcohol associated activities. FBT developed to
+have more emphasis oncontingency contracting, impulse control strategies specific
+to drug use, and increased emphasis on involvement of family members in treatment.
+FBT is designed to accommodate diverse populations of youths with a variety of behavioral,
+cultural and individual preferences. FBT has evolved for use in severe behavioral disturbances
+known to co-exist with substance use and dependence, and the core interventions have
+been enhanced to address several mental health related problems commonly occurringas
+comorbid conditions in drug use treatment participant.
+For each study, I would like you to assess: 1) Is the study about a family-based intervention,
+such as Functional Family Therapy, Multidimensional Family Therapy, or Behavioral Family Therapy?
+(Outpatient manual-based interventions of any duration delivered to young people and their families).
+If no to this answer exclude the study. 2) Are the participants in outpatient drug treatment primarily
+for non-opioid drug use? 3) Are the participants within age 11a\"21?
+Now, evaluate the following titles and abstracts for Study 150:
+Title: Treatment Outcomes for Adolescent Substance Abuse at 4 and 7 Month Assessments-Abstract:
+This randomized clinical trial evaluated individual cognitive-behavioral therapy (CBT),
+family therapy, combined individual and family therapy, and a group intervention for
+114 substance-abusing adolescents. Outcomes were percentage of days marijuana was used and
+percentage of youths achieving minimal use. Each intervention demonstrated some efficacy,
+although differences occurred for outcome measured, speed of change, and maintenance of change.
+From pretreatment to 4 months, significantly fewer days of use were found for the family therapy
+alone and the combined interventions. Significantly more youths had achieved minimal use levels
+in the family and combined conditions and in CBT. From pretreatment to 7 months,
+reductions in percentage of days of use were significant for the combined and group interventions,
+and changes in minimal use levels were significant for the family, combined, and group interventions."

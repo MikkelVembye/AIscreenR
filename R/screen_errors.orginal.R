@@ -5,9 +5,9 @@
 #' <br>
 #'
 #' This function supports re-screening of all failed title and abstract requests
-#' screened with [tabscreen_gpt.orginal()]. This function has been deprecated because
+#' screened with [tabscreen_gpt.original()]. This function has been deprecated because
 #' OpenAI has deprecated the function_call and and functions argument that was used
-#' in [tabscreen_gpt.orginal()].
+#' in [tabscreen_gpt.original()].
 #'
 #' @references Wickham H (2023).
 #' \emph{httr2: Perform HTTP Requests and Process the Responses}.

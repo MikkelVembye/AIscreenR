@@ -1,6 +1,6 @@
 # Updated test for tabscreen_gpt.default functions
 
-test_that("gpt_engine return errors correctly", {
+test_that(".gpt_engine return errors correctly", {
 
   tools_choice_name <- list(
     type = "function",
@@ -21,7 +21,7 @@ test_that("gpt_engine return errors correctly", {
     top_p = 1
   )
 
-  res <- gpt_engine(
+  res <- .gpt_engine(
     body = body,
     RPM = 10000,
     timeinf = T,
@@ -50,7 +50,7 @@ test_that("gpt_engine return errors correctly", {
     top_p = 1
   )
 
-  res <- gpt_engine(
+  res <- .gpt_engine(
     body = body,
     RPM = 10000,
     timeinf = T,
@@ -78,7 +78,7 @@ test_that("gpt_engine return errors correctly", {
     top_p = 1
   )
 
-  res <- gpt_engine(
+  res <- .gpt_engine(
     body = body,
     RPM = 10000,
     timeinf = T,
@@ -107,7 +107,7 @@ test_that("gpt_engine return errors correctly", {
   )
 
   # Transient is correctly add to function
-  gpt_engine(
+  .gpt_engine(
     body = body,
     RPM = 10000,
     timeinf = T,
@@ -124,12 +124,12 @@ test_that("gpt_engine return errors correctly", {
 })
 
 
-test_that("rep_gpt_engine controls errrors correctly", {
+test_that(".rep_gpt_engine controls errrors correctly", {
 
   iterations <- 3
 
   # Ineligible role
-  res <- rep_gpt_engine(
+  res <- .rep_gpt_engine(
     question = question,
     model_gpt = "gpt-4o-mini",
     topp = 1,
@@ -155,7 +155,7 @@ test_that("rep_gpt_engine controls errrors correctly", {
   expect_true(all(stringr::str_detect(res$decision_gpt, "400")))
 
   # Ineligible api key
-  res <- rep_gpt_engine(
+  res <- .rep_gpt_engine(
     question = question,
     model_gpt = "gpt-4o-mini",
     topp = 1,
@@ -181,7 +181,7 @@ test_that("rep_gpt_engine controls errrors correctly", {
   expect_true(all(stringr::str_detect(res$decision_gpt, "401")))
 
   # Ineligible model
-  res <- rep_gpt_engine(
+  res <- .rep_gpt_engine(
     question = question,
     model_gpt = "gpt-4o-min",
     topp = 1,
