@@ -4,7 +4,7 @@
 \alias{screen_analyzer}
 \title{Analyze performance between the human and AI screening.}
 \usage{
-screen_analyzer(x, human_decision = human_code)
+screen_analyzer(x, human_decision = human_code, key_result = TRUE)
 }
 \arguments{
 \item{x}{An object of either class\code{'gpt'} or \code{'chatgpt'}
@@ -12,6 +12,9 @@ or a dataset of either class \code{'gpt_tbl'}, \code{'chatgpt_tbl'}, or \code{'g
 
 \item{human_decision}{Indicate the variable in the data that contains the human_decision.
 This variable must be numeric, containing 1 (for included references) and 0 (for excluded references) only.}
+
+\item{key_result}{Logical indicating if only the raw agreement, recall, and specificity measures should be returned.
+Default is \code{TRUE}.}
 }
 \value{
 A \code{tibble} with screening performance measures. The \code{tibble} includes the following variables:

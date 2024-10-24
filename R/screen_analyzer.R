@@ -24,7 +24,9 @@
 #' @param x An object of either class`'gpt'` or `'chatgpt'`
 #'    or a dataset of either class `'gpt_tbl'`, `'chatgpt_tbl'`, or `'gpt_agg_tbl'`
 #' @param human_decision Indicate the variable in the data that contains the human_decision.
-#' This variable must be numeric, containing 1 (for included references) and 0 (for excluded references) only.
+#'    This variable must be numeric, containing 1 (for included references) and 0 (for excluded references) only.
+#' @param key_result Logical indicating if only the raw agreement, recall, and specificity measures should be returned.
+#'    Default is `TRUE`.
 #'
 #' @return A `tibble` with screening performance measures. The `tibble` includes the following variables:
 #' \tabular{lll}{
@@ -64,7 +66,7 @@
 #' x |> screen_analyzer() |> print(width=260)
 
 
-screen_analyzer <- function(x, human_decision = human_code){
+screen_analyzer <- function(x, human_decision = human_code, key_result = TRUE){
 
 
   if (all(!is_chatgpt(x), !is_chatgpt_tbl(x), !is_gpt(x), !is_gpt_tbl(x), !is_gpt_agg_tbl(x))){
@@ -158,6 +160,7 @@ screen_analyzer <- function(x, human_decision = human_code){
     dplyr::select(-c(rm1:pe, nominator:denominator)) |>
     dplyr::relocate(n_refs, .before = n_screened)
 
+  if (key_result) res <- res |> dplyr::select(promptid, model, reps, top_p, p_agreement, recall, specificity)
 
   res
 
