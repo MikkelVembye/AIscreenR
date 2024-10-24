@@ -67,4 +67,4 @@ articles:
   - title: Using AIscreenR
     navbar: ~
     contents:
-      - Using-ChatGPT-For-Screening
+      - Using-GPT-API-Models-For-Screening

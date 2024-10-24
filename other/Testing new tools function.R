@@ -42,7 +42,7 @@ plan(sequential)
 
 return_dat2 <- return_dat |> screen_errors()
 
-return_dat$answer_data |> screen_analyzer() |> print(width = 300)
+return_dat$answer_data |> screen_analyzer(key_result = FALSE) |> print(width = 300)
 
 prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
 
