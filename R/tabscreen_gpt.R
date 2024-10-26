@@ -127,14 +127,14 @@
 #' \item{answer_data}{dataset of class `'gpt_tbl'` with all individual answers.}
 #' \item{price_dollar}{numerical value indicating the total price (in USD) of the screening.}
 #' \item{price_data}{dataset with prices across all gpt models used for screening.}
-#' \item{arguments_used}{list with arguments used. These are past to [screen_errors()] when used to
-#'  catch transient errors.}
 #' \item{run_date}{string indicating the date when the screening was ran.}
+#' \item{...}{some additional values/components, including a list with the arguments used in the function.
+#'  These are used in  \code{\link[=screen_errors]{screen_errors()}} to re-screen transient errors.}
 #'
 #' If the same question is requested multiple times, the object will also contain the
 #' following dataset with results aggregated across the iterated requests/questions.
 #'
-#' \item{answer_data_aggregated}{dataset of class `'gpt_tbl'` with the summarized, probabilistic inclusion decision
+#' \item{answer_data_aggregated}{dataset of class `'gpt_agg_tbl'` with the summarized, probabilistic inclusion decision
 #' for each title and abstract across multiple repeated questions.}
 #'
 #' @note The \code{answer_data} data contains the following *mandatory* variables:
@@ -666,7 +666,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
       answer_data = answer_dat,
       answer_data_aggregated = answer_dat_aggregated,
       error_data = error_dat,
-      arguments_used = arg_list,
+      #arguments_used = arg_list,
       run_date = Sys.Date()
     )
 
@@ -678,6 +678,9 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
 
     # Returned output without aggregated results
     if (all(reps == 1)) res[["answer_data_aggregated"]] <- NULL
+
+    # Attributing used arguments to res. Used in screen_errors()
+    attr(res, "arg_list") <- arg_list
 
     # Defining the class of the res object
     class(res) <- c("gpt", class(res))

@@ -88,7 +88,8 @@ screen_errors.gpt <- function(
     # Add data and reps
     answer_data <- object$answer_data
     error_dat <- error_data <- object$error_data
-    reps <- object$arguments_used$reps
+    arguments_used <- attr(object, "arg_list")
+    reps <- arguments_used$reps
 
     if (nrow(error_data) < nrow(answer_data)){
 
@@ -97,23 +98,23 @@ screen_errors.gpt <- function(
 
     }
 
-    role <- object$arguments_used$role
-    functions <- object$arguments_used$functions
-    function_call_name <- object$arguments_used$function_call_name
-    time_info <- object$arguments_used$time_info
-    token_info <- object$arguments_used$token_info
-    #max_tries <- if (missing(max_tries)) object$arguments_used$max_tries else max_tries
-    max_seconds <- if (missing(max_seconds)) object$arguments_used$max_seconds else max_seconds
-    is_transient <- if (missing(is_transient)) object$arguments_used$is_transient else is_transient
-    backoff <- if (missing(backoff)) object$arguments_used$backoff else backoff
-    after <- if (missing(after)) object$arguments_used$after else after
-    seed <- object$arguments_used$seed
-    progress <- object$arguments_used$progress
-    messages <- object$arguments_used$messages
-    incl_cutoff_upper <- object$arguments_used$incl_cutoff_upper
-    incl_cutoff_lower <- object$arguments_used$incl_cutoff_lower
-    force <- object$arguments_used$force
-    fine_tuned <- object$arguments_used$fine_tuned
+    role <- arguments_used$role
+    functions <- arguments_used$functions
+    function_call_name <- arguments_used$function_call_name
+    time_info <- arguments_used$time_info
+    token_info <- arguments_used$token_info
+    #max_tries <- if (missing(max_tries)) arguments_used$max_tries else max_tries
+    max_seconds <- if (missing(max_seconds)) arguments_used$max_seconds else max_seconds
+    is_transient <- if (missing(is_transient)) arguments_used$is_transient else is_transient
+    backoff <- if (missing(backoff)) arguments_used$backoff else backoff
+    after <- if (missing(after)) arguments_used$after else after
+    seed <- arguments_used$seed
+    progress <- arguments_used$progress
+    messages <- arguments_used$messages
+    incl_cutoff_upper <- arguments_used$incl_cutoff_upper
+    incl_cutoff_lower <- arguments_used$incl_cutoff_lower
+    force <- arguments_used$force
+    fine_tuned <- arguments_used$fine_tuned
 
     arg_list <-
       list(
@@ -294,7 +295,7 @@ screen_errors.gpt <- function(
       answer_data = answer_dat,
       answer_data_aggregated = answer_dat_aggregated,
       error_data = error_dat,
-      arguments_used = arg_list,
+      #arguments_used = arg_list,
       run_date = Sys.Date()
     )
 
@@ -306,6 +307,9 @@ screen_errors.gpt <- function(
 
     # Returned output without aggregated results
     if (all(reps == 1)) res[["answer_data_aggregated"]] <- NULL
+
+    # Attributing used arguments to res. Used in screen_errors()
+    attr(res, "arg_list") <- arg_list
 
     # Defining the class of the res object
     class(res) <- c("gpt", class(res))

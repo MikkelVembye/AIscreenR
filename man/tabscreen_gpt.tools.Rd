@@ -142,14 +142,14 @@ datasets and components:
 \item{answer_data}{dataset of class \code{'gpt_tbl'} with all individual answers.}
 \item{price_dollar}{numerical value indicating the total price (in USD) of the screening.}
 \item{price_data}{dataset with prices across all gpt models used for screening.}
-\item{arguments_used}{list with arguments used. These are past to \code{\link[=screen_errors]{screen_errors()}} when used to
-catch transient errors.}
 \item{run_date}{string indicating the date when the screening was ran.}
+\item{...}{some additional values/components, including a list with the arguments used in the function.
+These are used in  \code{\link[=screen_errors]{screen_errors()}} to re-screen transient errors.}
 
 If the same question is requested multiple times, the object will also contain the
 following dataset with results aggregated across the iterated requests/questions.
 
-\item{answer_data_aggregated}{dataset of class \code{'gpt_tbl'} with the summarized, probabilistic inclusion decision
+\item{answer_data_aggregated}{dataset of class \code{'gpt_agg_tbl'} with the summarized, probabilistic inclusion decision
 for each title and abstract across multiple repeated questions.}
 }
 \description{

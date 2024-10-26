@@ -23,7 +23,7 @@ return_dat <-
   studyid = studyid,
   title = title,
   abstract = abstract,
-  model = c("gpt-4o-mini", "gpt-4o"),
+  model = "gpt-4o-mini",
   top_p = 1,
   rpm = 10000,
   reps = 1,
@@ -42,7 +42,7 @@ plan(sequential)
 
 return_dat2 <- return_dat |> screen_errors()
 
-return_dat$answer_data |> screen_analyzer(key_result = FALSE) |> print(width = 300)
+return_dat$answer_data |> screen_analyzer(key_result = TRUE) |> print(width = 300)
 
 prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
 
