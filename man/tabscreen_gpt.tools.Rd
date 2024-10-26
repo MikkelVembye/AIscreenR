@@ -159,8 +159,8 @@ This function supports the conduct of title and abstract screening with GPT API 
 Specifically, it allows the user to draw on GPT-3.5, GPT-4, GPT-4o, GPT-4o-mini, and fine-tuned models.
 The function allows to run title and abstract screening across multiple prompts and with
 repeated questions to check for consistency across answers. All of which can be done in parallel.
-The function draws on the newly developed function calling which is used via the
-tools argument in the request body. This is the main different between this \code{\link[=tabscreen_gpt.tools]{tabscreen_gpt.tools()}}
+The function draws on the newly developed function calling which is called via the
+tools argument in the request body. This is the main different between \code{\link[=tabscreen_gpt.tools]{tabscreen_gpt.tools()}}
 and \code{\link[=tabscreen_gpt.original]{tabscreen_gpt.original()}}. Function calls ensure more reliable and consistent responses to ones
 requests. See \href{https://osf.io/preprints/osf/yrhzm}{Vembye et al. (2024)}
 for guidance on how adequately to conduct title and abstract screening with GPT models.
