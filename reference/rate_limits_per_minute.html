@@ -82,15 +82,15 @@ issued. Default is <code>"gpt"</code>.</p></dd>
 <dt id="arg-api-key">api_key<a class="anchor" aria-label="anchor" href="#arg-api-key"></a></dt>
 <dd><p>Numerical value with your personal API key. Find at
 <a href="https://platform.openai.com/account/api-keys" class="external-link">https://platform.openai.com/account/api-keys</a>. Use
-<code>secret_make_key()</code>, <code>secret_encrypt()</code>, and
-<code>secret_decrypt()</code> to scramble and decrypt the api key and
+<code><a href="https://httr2.r-lib.org/reference/secrets.html" class="external-link">httr2::secret_make_key()</a></code>, <code><a href="https://httr2.r-lib.org/reference/secrets.html" class="external-link">httr2::secret_encrypt()</a></code>, and
+<code><a href="https://httr2.r-lib.org/reference/secrets.html" class="external-link">httr2::secret_decrypt()</a></code> to scramble and decrypt the api key and
 use <code><a href="set_api_key.html">set_api_key()</a></code> to securely automate the use of the
 api key by setting the api key as a locale environment variable.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a> including variables with information about the model used,
+    <p>A <code>tibble</code> including variables with information about the model used,
 the number of requests and tokens per minute.</p>
     </div>
 

@@ -194,8 +194,8 @@ the output object will include price information of the conducted screening.</p>
 <dt id="arg-api-key">api_key<a class="anchor" aria-label="anchor" href="#arg-api-key"></a></dt>
 <dd><p>Numerical value with your personal API key. Find at
 <a href="https://platform.openai.com/account/api-keys" class="external-link">https://platform.openai.com/account/api-keys</a>. Use
-<code>secret_make_key()</code>, <code>secret_encrypt()</code>, and
-<code>secret_decrypt()</code> to scramble and decrypt the api key and
+<code><a href="https://httr2.r-lib.org/reference/secrets.html" class="external-link">httr2::secret_make_key()</a></code>, <code><a href="https://httr2.r-lib.org/reference/secrets.html" class="external-link">httr2::secret_encrypt()</a></code>, and
+<code><a href="https://httr2.r-lib.org/reference/secrets.html" class="external-link">httr2::secret_decrypt()</a></code> to scramble and decrypt the api key and
 use <code><a href="set_api_key.html">set_api_key()</a></code> to securely automate the use of the
 api key by setting the api key as a locale environment variable.</p></dd>
 
@@ -203,7 +203,7 @@ api key by setting the api key as a locale environment variable.</p></dd>
 <dt id="arg-max-tries-max-seconds">max_tries, max_seconds<a class="anchor" aria-label="anchor" href="#arg-max-tries-max-seconds"></a></dt>
 <dd><p>'Cap the maximum number of attempts with
 <code>max_tries</code> or the total elapsed time from the first request with
-<code>max_seconds</code>. If neither option is supplied (the default), <code>req_perform()</code>
+<code>max_seconds</code>. If neither option is supplied (the default), <code><a href="https://httr2.r-lib.org/reference/req_perform.html" class="external-link">httr2::req_perform()</a></code>
 will not retry' (Wickham, 2023).</p></dd>
 
 
