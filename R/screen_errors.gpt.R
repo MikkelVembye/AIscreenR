@@ -12,7 +12,7 @@
 #' https://httr2.r-lib.org, https://github.com/r-lib/httr2.
 #'
 #' @param object An object of class `'gpt'`.
-#' @param api_key Numerical value with your personal API key.
+#' @template api-key-arg
 #' @param max_tries,max_seconds 'Cap the maximum number of attempts with
 #'  `max_tries` or the total elapsed time from the first request with
 #'  `max_seconds`. If neither option is supplied (the default), [httr2::req_perform()]

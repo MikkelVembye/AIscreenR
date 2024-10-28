@@ -19,12 +19,15 @@ Find available model at
 \item{AI_tool}{Character string specifying the AI tool from which the api is
 issued. Default is \code{"gpt"}.}
 
-\item{api_key}{Numerical value with your personal API key. Find at
-\url{https://platform.openai.com/account/api-keys}. Use
-\code{\link[httr2:secrets]{httr2::secret_make_key()}}, \code{\link[httr2:secrets]{httr2::secret_encrypt()}}, and
-\code{\link[httr2:secrets]{httr2::secret_decrypt()}} to scramble and decrypt the api key and
+\item{api_key}{Numerical value with your personal API key. Default setting draws
+on the \code{\link[=get_api_key]{get_api_key()}} to retrieve the API key from the R environment, so that the key is not
+compromised. The API key can be added to the R environment via \code{\link[=set_api_key]{set_api_key()}}
+or by using \code{\link[usethis:edit]{usethis::edit_r_environ()}}. In the \code{.Renviron} file, write \code{CHATGPT_KEY=INSERT_YOUR_KEY_HERE}.
+After entering the API key, close and save the \code{.Renviron} file and restart \code{RStudio} (ctrl + shift + F10).
+Alternatively, one can use \code{\link[httr2:secrets]{httr2::secret_make_key()}}, \code{\link[httr2:secrets]{httr2::secret_encrypt()}}, and
+\code{\link[httr2:secrets]{httr2::secret_decrypt()}} to scramble and decrypt the API key and
 use \code{\link[=set_api_key]{set_api_key()}} to securely automate the use of the
-api key by setting the api key as a locale environment variable.}
+API key by adding the api key as a locale environment variable.}
 }
 \value{
 A \code{tibble} including variables with information about the model used,

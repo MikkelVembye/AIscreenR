@@ -54,12 +54,7 @@
 #' @param token_info Logical indicating whether the number of prompt and completion tokens
 #'   per request should be included in the output data. Default = `TRUE`. When `TRUE`,
 #'   the output object will include price information of the conducted screening.
-#' @param api_key Numerical value with your personal API key. Find at
-#'  \url{https://platform.openai.com/account/api-keys}. Use
-#'  [httr2::secret_make_key()], [httr2::secret_encrypt()], and
-#'  [httr2::secret_decrypt()] to scramble and decrypt the api key and
-#'  use [set_api_key()] to securely automate the use of the
-#'  api key by adding the api key as a locale environment variable.
+#' @template api-key-arg
 #' @param max_tries,max_seconds 'Cap the maximum number of attempts with
 #'  `max_tries` or the total elapsed time from the first request with
 #'  `max_seconds`. If neither option is supplied (the default), [httr2::req_perform()]
