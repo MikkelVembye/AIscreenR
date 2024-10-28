@@ -11,8 +11,8 @@
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="AI screening tools for systematic reviews">
-<meta name="description" content="Screening with AI tools, including GPT API models from OpenAI.">
-<meta property="og:description" content="Screening with AI tools, including GPT API models from OpenAI.">
+<meta name="description" content="Screening with AI tools, including title and abstract screening with GPT API models from OpenAI.">
+<meta property="og:description" content="Screening with AI tools, including title and abstract screening with GPT API models from OpenAI.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -81,25 +81,23 @@
 <span><span class="co"># Setting API</span></span>
 <span><span class="fu"><a href="reference/set_api_key.html">set_api_key</a></span><span class="op">(</span><span class="fu">AIscreenR</span><span class="fu">:::</span><span class="fu">testing_key_chatgpt</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Obtain rate limits info (Default is "gpt-3.5-turbo-0613")</span></span>
+<span><span class="co"># Obtain rate limits info (Default is "gpt-4")</span></span>
 <span><span class="va">rate_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">rate_limits</span></span>
 <span><span class="co">#&gt; # A tibble: 1 × 3</span></span>
 <span><span class="co">#&gt;   model requests_per_minute tokens_per_minute</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;               &lt;dbl&gt;             &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 gpt-4               10000           1000000</span></span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
+<span><span class="co">#&gt; 1 gpt-4               10000           1000000</span></span>
+<span></span>
 <span><span class="co"># Obtain rate limits info across multiple models</span></span>
-<span><span class="va">rate_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span>model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-4"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">rate_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"gpt-4o-mini"</span><span class="op">)</span></span>
 <span><span class="va">rate_limits</span></span>
-<span><span class="co">#&gt; # A tibble: 2 × 3</span></span>
-<span><span class="co">#&gt;   model                                    requests_per_minute tokens_per_minute</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;                                                  &lt;dbl&gt;             &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 Error 404: The model `gpt-3.5-turbo-061…                  NA                NA</span></span>
-<span><span class="co">#&gt; 2 gpt-4                                                  10000           1000000</span></span></code></pre></div>
+<span><span class="co">#&gt; # A tibble: 1 × 3</span></span>
+<span><span class="co">#&gt;   model       requests_per_minute tokens_per_minute</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;                     &lt;dbl&gt;             &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 gpt-4o-mini               30000         150000000</span></span></code></pre></div>
 <p>How to load ris files. In this example we have downloaded the ris files from the <a href="https://eppi.ioe.ac.uk/EPPIReviewer-Web/home" class="external-link">EPPI-Reviewer</a>.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Loading ris file data via revtools</span></span>
 <span><span class="va">ris_dat_excl</span> <span class="op">&lt;-</span> <span class="fu">revtools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/revtools/man/read_bibliograpy.html" class="external-link">read_bibliography</a></span><span class="op">(</span><span class="st">"path/FFT_exclude.ris"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -133,7 +131,7 @@
 <span><span class="co">#&gt;  9 9434093 Enhancing the Impact of Parent Training Through … "New an…          0</span></span>
 <span><span class="co">#&gt; 10 9431505 EEG spectrum as information carrier               "Sponta…          0</span></span></code></pre></div>
 <p>Example of how to enter a prompt. Can also be done in word (see vignette).</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">prompt</span> <span class="op">&lt;-</span> <span class="st">"Evaluate the following study based on the selection criteria</span></span>
 <span><span class="st">for a systematic review on the effects of family-based interventions on drug abuse</span></span>
 <span><span class="st">reduction for young people in treatment for non-opioid drug use.</span></span>
@@ -159,8 +157,8 @@
 <span><span class="st">duration delivered to young people and their families). If not, exclude study.</span></span>
 <span><span class="st">2) Are the participants in outpatient drug treatment primarily</span></span>
 <span><span class="st">for non-opioid drug use? 3) Are the participants within age 11–21?"</span></span></code></pre></div>
-<p>Approximate price of screening</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<p>Approximate price of screening before running the screening.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">app_obj</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu"><a href="reference/approximate_price_gpt.html">approximate_price_gpt</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">filges2015_dat</span>,</span>
@@ -168,25 +166,23 @@
 <span>    studyid <span class="op">=</span> <span class="va">studyid</span>, <span class="co"># indicate the variable with the studyid in the data</span></span>
 <span>    title <span class="op">=</span> <span class="va">title</span>, <span class="co"># indicate the variable with the titles in the data</span></span>
 <span>    abstract <span class="op">=</span> <span class="va">abstract</span>, <span class="co"># indicate the variable with the abstracts in the data</span></span>
-<span>    model <span class="op">=</span> <span class="st">"gpt-4o"</span>,</span>
-<span>    rep <span class="op">=</span> <span class="fl">10</span> </span>
+<span>    model <span class="op">=</span> <span class="st">"gpt-4o-mini"</span>,</span>
+<span>    rep <span class="op">=</span> <span class="fl">1</span> </span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="va">app_obj</span></span>
-<span><span class="co">#&gt; The approximate price of the (simple) screening will be around $15.1761.</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
+<span><span class="co">#&gt; The approximate price of the (simple) screening will be around $0.0476.</span></span>
+<span></span>
 <span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_dollar</span></span>
-<span><span class="co">#&gt; [1] 15.1761</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_data</span></span>
+<span><span class="co">#&gt; [1] 0.0476</span></span>
+<span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_data</span></span>
 <span><span class="co">#&gt; # A tibble: 1 × 6</span></span>
-<span><span class="co">#&gt;   prompt   model  iterations input_price_dollar output_price_dollar</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;       &lt;dbl&gt;              &lt;dbl&gt;               &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 Prompt 1 gpt-4o         10               14.7               0.446</span></span>
+<span><span class="co">#&gt;   prompt   model       iterations input_price_dollar output_price_dollar</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;            &lt;dbl&gt;              &lt;dbl&gt;               &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 Prompt 1 gpt-4o-mini          1             0.0458             0.00178</span></span>
 <span><span class="co">#&gt; # ℹ 1 more variable: total_price_dollar &lt;dbl&gt;</span></span></code></pre></div>
-<p>Example of how to conduct simple screening, getting return 1 if a reference should be included, 0 if excluded, and 1.1 if a firm decision cannot be reached.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<p>Example of how to conduct simple screening, returning 1 if a reference should be included, 0 if excluded, and 1.1 if uncertain.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Subsetting the number of references to speed up the tutorial screening</span></span>
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span><span class="op">)</span></span>
 <span><span class="va">test_obj</span> <span class="op">&lt;-</span> </span>
@@ -196,28 +192,24 @@
 <span>    studyid <span class="op">=</span> <span class="va">studyid</span>, <span class="co"># indicate the variable with the studyid in the data</span></span>
 <span>    title <span class="op">=</span> <span class="va">title</span>, <span class="co"># indicate the variable with the titles in the data</span></span>
 <span>    abstract <span class="op">=</span> <span class="va">abstract</span>, <span class="co"># indicate the variable with the abstracts in the data</span></span>
-<span>    model <span class="op">=</span> <span class="st">"gpt-4o"</span>,</span>
+<span>    model <span class="op">=</span> <span class="st">"gpt-4o-mini"</span>,</span>
 <span>    reps <span class="op">=</span> <span class="fl">1</span> <span class="co"># Number of times the same question is asked to ChatGPT</span></span>
 <span>  <span class="op">)</span> </span>
-<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $0.0546.</span></span>
-<span><span class="co">#&gt; * Consider removing references that has no abstract since these can distort the accuracy of the screening.</span></span></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">sequential</span><span class="op">)</span></span>
+<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $0.0017.</span></span>
+<span><span class="co">#&gt; * Consider removing references that has no abstract since these can distort the accuracy of the screening.</span></span>
+<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">sequential</span><span class="op">)</span></span>
 <span><span class="va">test_obj</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Find the final result dataset via result_object$answer_data</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
+<span><span class="co">#&gt; Find the final result dataset via result_object$answer_data</span></span>
+<span></span>
 <span><span class="co"># Data sets in object</span></span>
 <span><span class="va">price_dat</span> <span class="op">&lt;-</span> <span class="va">test_obj</span><span class="op">$</span><span class="va">price_data</span></span>
 <span><span class="va">price_dat</span></span>
 <span><span class="co">#&gt; # A tibble: 1 × 6</span></span>
-<span><span class="co">#&gt;   prompt model  iterations input_price_dollar output_price_dollar</span></span>
-<span><span class="co">#&gt;    &lt;int&gt; &lt;chr&gt;       &lt;dbl&gt;              &lt;dbl&gt;               &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1      1 gpt-4o          1             0.0495             0.00108</span></span>
-<span><span class="co">#&gt; # ℹ 1 more variable: total_price_dollar &lt;dbl&gt;</span></span></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
+<span><span class="co">#&gt;   prompt model       iterations input_price_dollar output_price_dollar</span></span>
+<span><span class="co">#&gt;    &lt;int&gt; &lt;chr&gt;            &lt;dbl&gt;              &lt;dbl&gt;               &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1      1 gpt-4o-mini          1             0.0016           0.0000432</span></span>
+<span><span class="co">#&gt; # ℹ 1 more variable: total_price_dollar &lt;dbl&gt;</span></span>
 <span></span>
 <span><span class="va">all_dat</span> <span class="op">&lt;-</span> <span class="va">test_obj</span><span class="op">$</span><span class="va">answer_data</span></span>
 <span><span class="va">all_dat</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">human_code</span>, <span class="va">decision_binary</span><span class="op">)</span></span>
@@ -273,6 +265,7 @@
 <ul class="list-unstyled">
 <li><a href="https://www.gnu.org/licenses/gpl-3.0.html" class="external-link"><img src="https://img.shields.io/badge/license-GPL-blue" alt="License: GPL (&gt;=3)"></a></li>
 <li><a href="https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://github.com/MikkelVembye/AIscreenR" class="external-link"><img src="https://img.shields.io/badge/Status-Work%20in%20Progress-orange" alt="Status"></a></li>
 <li><a href="https://mikkelvembye.github.io/AIscreenR/"><img src="https://img.shields.io/badge/devel-0.0.0.9999-brightgreen.svg" alt="devel Version"></a></li>
 </ul>
 </div>
