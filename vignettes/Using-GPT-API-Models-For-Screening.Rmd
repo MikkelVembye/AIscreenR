@@ -128,7 +128,7 @@ that your API key has been compromised (e.g., if you push it to a public GitHub 
 To overcome this issue you have several options from here. You can either work with what we call
 permanent or temporary solutions. 
 
-### Pemanent solution
+### Permanent solution
 
 The easiest way to work with your API key is to permanently add it to your R environment
 as an environment variable. This can be achieved with `usethis::edit_r_environ()`. In the `.Renviron`
@@ -147,7 +147,7 @@ use `set_api_key()`. When executing `set_api_key()`, you will see a pop-up windo
 which you can enter your API key. This will add your API key as temporary environment variable. 
 Consequently, when you restart RStudio, you will no longer be able to find your 
 API key in your R environment. Alternatively, you can pass a decrypted key to the `set_api_key()`, like
-`set_api_key(key = secret_decrypt(encrypt_key, "YOUR_SECRET_KEY_FOR_DECRYTING"))`. See the [`HTTR2`](https://httr2.r-lib.org/articles/wrapping-apis.html#basics) pacakge for further details about this solution. 
+`set_api_key(key = secret_decrypt(encrypt_key, "YOUR_SECRET_KEY_FOR_DECRYTING"))`. See the [`HTTR2`](https://httr2.r-lib.org/articles/wrapping-apis.html#basics) package for further details about this solution. 
 \  
 
 ```{r eval=TRUE, echo=FALSE, fig.cap='*Figure 3 - Set API key*'}

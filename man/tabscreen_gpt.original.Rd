@@ -122,7 +122,7 @@ parallel-safe random numbers are produced.}
 the title and abstract screening in parallel. Default is \code{TRUE}.}
 
 \item{messages}{Logical indicating whether to print messages embedded in the function.
-Defualt is \code{TRUE}.}
+Default is \code{TRUE}.}
 
 \item{incl_cutoff_upper}{Numerical value indicating the probability threshold
 for which a studies should be included. Default is 0.5, which indicates that

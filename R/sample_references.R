@@ -11,7 +11,7 @@
 #'
 #' @param data Dataset containing the titles and abstracts wanted to be screened.
 #' @param n A non-negative integer giving the number of rows to choose.
-#' @param with_replacement Logical indicating if sampling should be done with of withour replacement.
+#' @param with_replacement Logical indicating if sampling should be done with of without replacement.
 #'    Default is `FALSE`.
 #' @param prob_vec 'A vector of probability weights for obtaining the elements of the vector being sampled.'
 #'    Default is a vector of 1/n.

@@ -87,7 +87,7 @@
 #' @param progress Logical indicating whether a progress line should be shown when running
 #'   the title and abstract screening in parallel. Default is `TRUE`.
 #' @param messages Logical indicating whether to print messages embedded in the function.
-#'   Defualt is `TRUE`.
+#'   Default is `TRUE`.
 #' @param incl_cutoff_upper Numerical value indicating the probability threshold
 #'   for which a studies should be included. Default is 0.5, which indicates that
 #'   titles and abstracts that OpenAI's GPT API model has included more than 50 percent of the times

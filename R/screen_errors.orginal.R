@@ -16,7 +16,7 @@
 #' @param object An object of class `'chatgpt'`.
 #' @param ... Further argument to pass to the request body.
 #'  See \url{https://platform.openai.com/docs/api-reference/chat/create}.
-#'  If used in the orginal screening (e.g., with [tabscreen_gpt.original()]), the argument(s)
+#'  If used in the original screening (e.g., with [tabscreen_gpt.original()]), the argument(s)
 #'  must be specified again here.
 #' @param api_key Numerical value with your personal API key.
 #' @param max_tries,max_seconds 'Cap the maximum number of attempts with

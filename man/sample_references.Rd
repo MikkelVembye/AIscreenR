@@ -16,7 +16,7 @@ sample_references(
 
 \item{n}{A non-negative integer giving the number of rows to choose.}
 
-\item{with_replacement}{Logical indicating if sampling should be done with of withour replacement.
+\item{with_replacement}{Logical indicating if sampling should be done with of without replacement.
 Default is \code{FALSE}.}
 
 \item{prob_vec}{'A vector of probability weights for obtaining the elements of the vector being sampled.'

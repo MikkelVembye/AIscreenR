@@ -27,7 +27,7 @@ use \code{\link[=set_api_key]{set_api_key()}} to securely automate the use of th
 api key by setting the api key as a locale environment variable.}
 }
 \value{
-A tibble including variables with information about the model used,
+A \link{tibble} including variables with information about the model used,
 the number of requests and tokens per minute.
 }
 \description{

@@ -22,7 +22,7 @@
 #'  use [set_api_key()] to securely automate the use of the
 #'  api key by setting the api key as a locale environment variable.
 #'
-#' @return A tibble including variables with information about the model used,
+#' @return A [tibble] including variables with information about the model used,
 #' the number of requests and tokens per minute.
 #' @export
 #'
