@@ -1,9 +1,9 @@
 pandoc: 3.1.11
-pkgdown: 2.1.0
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
-  Using-ChatGPT-For-Screening: Using-ChatGPT-For-Screening.html
-last_built: 2024-09-06T08:02Z
+  Using-GPT-API-Models-For-Screening: Using-GPT-API-Models-For-Screening.html
+last_built: 2024-10-28T07:09Z
 urls:
   reference: https://mikkelvembye.github.io/AIscreenR/reference
   article: https://mikkelvembye.github.io/AIscreenR/articles

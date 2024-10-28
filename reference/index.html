@@ -18,7 +18,7 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/Using-ChatGPT-For-Screening.html">Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/Using-GPT-API-Models-For-Screening.html">Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -36,9 +36,9 @@
     </div>
 
     <div class="section level2">
-      <h2 id="screening-with-chatgpt">Screening with ChatGPT<a class="anchor" aria-label="anchor" href="#screening-with-chatgpt"></a></h2>
+      <h2 id="screen-with-gpt-api-models">Screen with GPT API models<a class="anchor" aria-label="anchor" href="#screen-with-gpt-api-models"></a></h2>
 
-      <div class="section-desc"><p>R functions to automate title and abstract screeening in ChatGPT</p></div>
+      <div class="section-desc"><p>R functions to automate title and abstract screeening with GPT API models</p></div>
 
 
     </div><div class="section level2">
@@ -48,20 +48,49 @@
 
       <dl><dt>
 
-          <code><a href="tabscreen_gpt.html">tabscreen_gpt()</a></code>
+          <code><a href="tabscreen_gpt.tools.html">tabscreen_gpt.tools()</a></code> <code><a href="tabscreen_gpt.tools.html">tabscreen_gpt()</a></code>
           <span class="badge lifecycle lifecycle-stable">stable</span>
         </dt>
-        <dd>Title and abstract screening with GPT API models using function calls.</dd>
+        <dd>Title and abstract screening with GPT API models using function calls via the tools argument</dd>
       </dl><dl><dt>
+
+          <code><a href="tabscreen_gpt.original.html">tabscreen_gpt.original()</a></code>
+          <span class="badge lifecycle lifecycle-deprecated">deprecated</span>
+        </dt>
+        <dd>Title and abstract screening with GPT API models using function calls via the original function call arguments</dd>
+      </dl></div><div class="section level2">
+      <h2 id="screen-failed-requests">Screen failed requests<a class="anchor" aria-label="anchor" href="#screen-failed-requests"></a></h2>
+
+      <div class="section-desc"><p>R functions to re-screen failied title and abstract requests</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
 
           <code><a href="screen_errors.html">screen_errors()</a></code>
           <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Generic function to re-screen failed title and abstract requests.</dd>
+      </dl><dl><dt>
+
+          <code><a href="screen_errors.gpt.html">screen_errors(<i>&lt;gpt&gt;</i>)</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Re-screen failed requests.</dd>
+      </dl><dl><dt>
+
+          <code><a href="screen_errors.chatgpt.html">screen_errors(<i>&lt;chatgpt&gt;</i>)</a></code>
+          <span class="badge lifecycle lifecycle-deprecated">deprecated</span>
         </dt>
         <dd>Re-screen failed requests.</dd>
       </dl></div><div class="section level2">
       <h2 id="analyze-screening-performance">Analyze screening performance<a class="anchor" aria-label="anchor" href="#analyze-screening-performance"></a></h2>
 
-      <div class="section-desc"><p>R functions to analyze agreement between humans and AI</p></div>
+      <div class="section-desc"><p>R functions to analyze agreement between humans and GPT</p></div>
 
 
     </div><div class="section level2">
@@ -152,15 +181,33 @@
       <dl><dt>
 
           <code><a href="is_chatgpt.html">is_chatgpt()</a></code>
-
+          <span class="badge lifecycle lifecycle-deprecated">deprecated</span>
         </dt>
         <dd>Test if the object is a <code>'chatgpt'</code> object</dd>
       </dl><dl><dt>
 
           <code><a href="is_chatgpt_tbl.html">is_chatgpt_tbl()</a></code>
-
+          <span class="badge lifecycle lifecycle-deprecated">deprecated</span>
         </dt>
         <dd>Test if the object is a <code>'chatgpt_tbl'</code> object</dd>
+      </dl><dl><dt>
+
+          <code><a href="is_gpt.html">is_gpt()</a></code>
+
+        </dt>
+        <dd>Test if the object is a <code>'gpt'</code> object</dd>
+      </dl><dl><dt>
+
+          <code><a href="is_gpt_tbl.html">is_gpt_tbl()</a></code>
+
+        </dt>
+        <dd>Test if the object is a <code>'gpt_tbl'</code> object</dd>
+      </dl><dl><dt>
+
+          <code><a href="is_gpt_agg_tbl.html">is_gpt_agg_tbl()</a></code>
+
+        </dt>
+        <dd>Test if the object is a <code>'gpt_agg_tbl'</code> object</dd>
       </dl></div><div class="section level2">
       <h2 id="print-methods">Print methods<a class="anchor" aria-label="anchor" href="#print-methods"></a></h2>
 
@@ -173,6 +220,12 @@
 
 
       <dl><dt>
+
+          <code><a href="print.gpt.html">print(<i>&lt;gpt&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Print methods for <code>'gpt'</code> objects</dd>
+      </dl><dl><dt>
 
           <code><a href="print.chatgpt.html">print(<i>&lt;chatgpt&gt;</i>)</a></code>
 
@@ -201,6 +254,23 @@
           <span class="badge lifecycle lifecycle-experimental">experimental</span>
         </dt>
         <dd>Approximate price estimation for title and abstract screening using OpenAI's GPT API models</dd>
+      </dl></div><div class="section level2">
+      <h2 id="sample-references">Sample references<a class="anchor" aria-label="anchor" href="#sample-references"></a></h2>
+
+      <div class="section-desc"><p>Sample references to construct test dataset</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="sample_references.html">sample_references()</a></code>
+
+        </dt>
+        <dd>Random sample references</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
@@ -211,7 +281,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>

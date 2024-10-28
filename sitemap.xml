@@ -1,7 +1,7 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/404.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/LICENSE.html</loc></url>
-<url><loc>https://mikkelvembye.github.io/AIscreenR/articles/Using-ChatGPT-For-Screening.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/articles/Using-GPT-API-Models-For-Screening.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/articles/index.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/authors.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/index.html</loc></url>
@@ -13,13 +13,21 @@
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/index.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/is_chatgpt.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/is_chatgpt_tbl.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/reference/is_gpt.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/reference/is_gpt_agg_tbl.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/reference/is_gpt_tbl.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/model_prizes.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/print.chatgpt.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/reference/print.gpt.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/print.gpt_price.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/rate_limits_per_minute.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/reference/sample_references.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/screen_analyzer.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/reference/screen_errors.chatgpt.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/reference/screen_errors.gpt.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/screen_errors.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/set_api_key.html</loc></url>
-<url><loc>https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.original.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.html</loc></url>
 </urlset>
 

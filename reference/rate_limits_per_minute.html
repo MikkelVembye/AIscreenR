@@ -28,7 +28,7 @@ https://platform.openai.com/docs/guides/rate-limits/overview."></head><body>
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/Using-ChatGPT-For-Screening.html">Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/Using-GPT-API-Models-For-Screening.html">Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -57,8 +57,8 @@ Find general information at
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rate_limits_per_minute</span><span class="op">(</span></span>
-<span>  model <span class="op">=</span> <span class="st">"gpt-3.5-turbo-0613"</span>,</span>
-<span>  AI_tool <span class="op">=</span> <span class="st">"chatgpt"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"gpt-4"</span>,</span>
+<span>  AI_tool <span class="op">=</span> <span class="st">"gpt"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="get_api_key.html">get_api_key</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -69,14 +69,14 @@ Find general information at
 
 <dl><dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
 <dd><p>Character string with the name of the completion model.
-Default = <code>"gpt-3.5-turbo-0613"</code>. Can take multiple strings.
+Default = <code>"gpt-4"</code>. Can take multiple strings.
 Find available model at
 <a href="https://platform.openai.com/docs/models/model-endpoint-compatibility" class="external-link">https://platform.openai.com/docs/models/model-endpoint-compatibility</a>.</p></dd>
 
 
 <dt id="arg-ai-tool">AI_tool<a class="anchor" aria-label="anchor" href="#arg-ai-tool"></a></dt>
 <dd><p>Character string specifying the AI tool from which the api is
-issued. Default is <code>"chatgpt"</code>.</p></dd>
+issued. Default is <code>"gpt"</code>.</p></dd>
 
 
 <dt id="arg-api-key">api_key<a class="anchor" aria-label="anchor" href="#arg-api-key"></a></dt>
@@ -90,7 +90,7 @@ api key by setting the api key as a locale environment variable.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A tibble including variables with information about the model used,
+    <p>A <a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a> including variables with information about the model used,
 the number of requests and tokens per minute.</p>
     </div>
 
@@ -112,7 +112,7 @@ the number of requests and tokens per minute.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>

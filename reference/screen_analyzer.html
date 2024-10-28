@@ -4,12 +4,12 @@
 When both the human and AI title and abstract screening has been done, this function
 allows you to calculate performance measures of the screening, including the overall
 accuracy, specificity and sensitivity of the screening, as well as
-interrater reliability kappa statistics."><meta property="og:description" content="
+inter-rater reliability kappa statistics."><meta property="og:description" content="
 
 When both the human and AI title and abstract screening has been done, this function
 allows you to calculate performance measures of the screening, including the overall
 accuracy, specificity and sensitivity of the screening, as well as
-interrater reliability kappa statistics."></head><body>
+inter-rater reliability kappa statistics."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -28,7 +28,7 @@ interrater reliability kappa statistics."></head><body>
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/Using-ChatGPT-For-Screening.html">Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/Using-GPT-API-Models-For-Screening.html">Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -52,12 +52,12 @@ interrater reliability kappa statistics."></head><body>
 When both the human and AI title and abstract screening has been done, this function
 allows you to calculate performance measures of the screening, including the overall
 accuracy, specificity and sensitivity of the screening, as well as
-interrater reliability kappa statistics.</p>
+inter-rater reliability kappa statistics.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">screen_analyzer</span><span class="op">(</span><span class="va">x</span>, human_decision <span class="op">=</span> <span class="va">human_code</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">screen_analyzer</span><span class="op">(</span><span class="va">x</span>, human_decision <span class="op">=</span> <span class="va">human_code</span>, key_result <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -65,17 +65,23 @@ interrater reliability kappa statistics.</p>
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>Either an object of class <code>'chatgpt'</code> or a data set of class <code>'chatgpt_tbl'</code></p></dd>
+<dd><p>An object of either class<code>'gpt'</code> or <code>'chatgpt'</code>
+or a dataset of either class <code>'gpt_tbl'</code>, <code>'chatgpt_tbl'</code>, or <code>'gpt_agg_tbl'</code></p></dd>
 
 
 <dt id="arg-human-decision">human_decision<a class="anchor" aria-label="anchor" href="#arg-human-decision"></a></dt>
 <dd><p>Indicate the variable in the data that contains the human_decision.
-This variable must be numeric containing 1 (for included references) and 0 (for excluded references) only.</p></dd>
+This variable must be numeric, containing 1 (for included references) and 0 (for excluded references) only.</p></dd>
+
+
+<dt id="arg-key-result">key_result<a class="anchor" aria-label="anchor" href="#arg-key-result"></a></dt>
+<dd><p>Logical indicating if only the raw agreement, recall, and specificity measures should be returned.
+Default is <code>TRUE</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code>tibble</code> with screening performance measures. The <code>tibble</code> includes the following variables:</p><table class="table table"><tr><td><b>promptid</b></td><td><code>integer</code></td><td>indicating the prompt ID.</td></tr><tr><td><b>model</b></td><td><code>character</code></td><td>indicating the specific gpt-model used.</td></tr><tr><td><b>reps</b></td><td><code>integer</code></td><td>indicating the number of times the same question was sent to ChatGPT.</td></tr><tr><td><b>top_p</b></td><td><code>numeric</code></td><td>indicating the applied top_p.</td></tr><tr><td><b>n_screened</b></td><td><code>integer</code></td><td>indicating the number of screened references.</td></tr><tr><td><b>n_missing</b></td><td><code>numeric</code></td><td>indicating the number of missing responses.</td></tr><tr><td><b>n_refs</b></td><td><code>integer</code></td><td>indicating the number of references expected to be screened for the given condition.</td></tr><tr><td><b>human_in_gpt_ex</b></td><td><code>numeric</code></td><td>indicating the number of references included by humans and excluded by gpt.</td></tr><tr><td><b>human_ex_gpt_in</b></td><td><code>numeric</code></td><td>indicating the number of references excluded by humans and included by gpt.</td></tr><tr><td><b>human_in_gpt_in</b></td><td><code>numeric</code></td><td>indicating the number of references included by humans and included by gpt.</td></tr><tr><td><b>human_ex_gpt_ex</b></td><td><code>numeric</code></td><td>indicating the number of references excluded by humans and excluded by gpt.</td></tr><tr><td><b>accuracy</b></td><td><code>numeric</code></td><td>indicating the overall percent disagreement between human and gpt (Gartlehner et al., 2019).</td></tr><tr><td><b>p_agreement</b></td><td><code>numeric</code></td><td>indicating the overall percent agreement between human and gpt.</td></tr><tr><td><b>precision</b></td><td><code>numeric</code></td><td>"measures the ability to include only articles that should be included" (Syriani et al., 2023).</td></tr><tr><td><b>recall</b></td><td><code>numeric</code></td><td>"measures the ability to include all articles that should be included" (Syriani et al., 2023).</td></tr><tr><td><b>npv</b></td><td><code>numeric</code></td><td>Negative predictive value (NPV) "measures the ability to exclude only articles that should be excluded" (Syriani et al., 2023).</td></tr><tr><td><b>specificity</b></td><td><code>numeric</code></td><td>"measures the ability to exclude all articles that should be excluded" (Syriani et al., 2023).</td></tr><tr><td><b>bacc</b></td><td><code>numeric</code></td><td>"capture the accuracy of deciding both inclusion and exclusion classes" (Syriani et al., 2023).</td></tr><tr><td><b>F2</b></td><td><code>numeric</code></td><td>F-measure that "consider the cost of getting false negatives twice as costly as getting false positives" (Syriani et al., 2023).</td></tr><tr><td><b>mcc</b></td><td><code>numeric</code></td><td>indicating percent agreement for excluded references (Gartlehner et al., 2019).</td></tr><tr><td><b>irr</b></td><td><code>numeric</code></td><td>indicating the interrater reliability as described in McHugh (2012).</td></tr><tr><td><b>se_irr</b></td><td><code>numeric</code></td><td>indicating standard error for the interrater reliability.</td></tr><tr><td><b>cl_irr</b></td><td><code>numeric</code></td><td>indicating lower confidence interval for the interrater reliability.</td></tr><tr><td><b>cu_irr</b></td><td><code>numeric</code></td><td>indicating upper confidence interval for the interrater reliability.</td></tr><tr><td><b>level_of_agreement</b></td><td><code>character</code></td><td>interpretation of the interrater reliability as suggested by McHugh (2012).</td></tr></table></div>
+    <p>A <code>tibble</code> with screening performance measures. The <code>tibble</code> includes the following variables:</p><table class="table table"><tr><td><b>promptid</b></td><td><code>integer</code></td><td>indicating the prompt ID.</td></tr><tr><td><b>model</b></td><td><code>character</code></td><td>indicating the specific gpt-model used.</td></tr><tr><td><b>reps</b></td><td><code>integer</code></td><td>indicating the number of times the same question was sent to ChatGPT.</td></tr><tr><td><b>top_p</b></td><td><code>numeric</code></td><td>indicating the applied top_p.</td></tr><tr><td><b>n_screened</b></td><td><code>integer</code></td><td>indicating the number of screened references.</td></tr><tr><td><b>n_missing</b></td><td><code>numeric</code></td><td>indicating the number of missing responses.</td></tr><tr><td><b>n_refs</b></td><td><code>integer</code></td><td>indicating the number of references expected to be screened for the given condition.</td></tr><tr><td><b>human_in_gpt_ex</b></td><td><code>numeric</code></td><td>indicating the number of references included by humans and excluded by gpt.</td></tr><tr><td><b>human_ex_gpt_in</b></td><td><code>numeric</code></td><td>indicating the number of references excluded by humans and included by gpt.</td></tr><tr><td><b>human_in_gpt_in</b></td><td><code>numeric</code></td><td>indicating the number of references included by humans and included by gpt.</td></tr><tr><td><b>human_ex_gpt_ex</b></td><td><code>numeric</code></td><td>indicating the number of references excluded by humans and excluded by gpt.</td></tr><tr><td><b>accuracy</b></td><td><code>numeric</code></td><td>indicating the overall percent disagreement between human and gpt (Gartlehner et al., 2019).</td></tr><tr><td><b>p_agreement</b></td><td><code>numeric</code></td><td>indicating the overall percent agreement between human and gpt.</td></tr><tr><td><b>precision</b></td><td><code>numeric</code></td><td>"measures the ability to include only articles that should be included" (Syriani et al., 2023).</td></tr><tr><td><b>recall</b></td><td><code>numeric</code></td><td>"measures the ability to include all articles that should be included" (Syriani et al., 2023).</td></tr><tr><td><b>npv</b></td><td><code>numeric</code></td><td>Negative predictive value (NPV) "measures the ability to exclude only articles that should be excluded" (Syriani et al., 2023).</td></tr><tr><td><b>specificity</b></td><td><code>numeric</code></td><td>"measures the ability to exclude all articles that should be excluded" (Syriani et al., 2023).</td></tr><tr><td><b>bacc</b></td><td><code>numeric</code></td><td>"capture the accuracy of deciding both inclusion and exclusion classes" (Syriani et al., 2023).</td></tr><tr><td><b>F2</b></td><td><code>numeric</code></td><td>F-measure that "consider the cost of getting false negatives twice as costly as getting false positives" (Syriani et al., 2023).</td></tr><tr><td><b>mcc</b></td><td><code>numeric</code></td><td>indicating percent agreement for excluded references (Gartlehner et al., 2019).</td></tr><tr><td><b>irr</b></td><td><code>numeric</code></td><td>indicating the inter-rater reliability as described in McHugh (2012).</td></tr><tr><td><b>se_irr</b></td><td><code>numeric</code></td><td>indicating standard error for the inter-rater reliability.</td></tr><tr><td><b>cl_irr</b></td><td><code>numeric</code></td><td>indicating lower confidence interval for the inter-rater reliability.</td></tr><tr><td><b>cu_irr</b></td><td><code>numeric</code></td><td>indicating upper confidence interval for the inter-rater reliability.</td></tr><tr><td><b>level_of_agreement</b></td><td><code>character</code></td><td>interpretation of the inter-rater reliability as suggested by McHugh (2012).</td></tr></table></div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Gartlehner, G., Wagner, G., Lux, L., Affengruber, L., Dobrescu, A., Kaminski-Hartenthaler, A., &amp; Viswanathan, M. (2019).
@@ -93,63 +99,21 @@ Assessing the Ability of ChatGPT to Screen Articles for Systematic Reviews.
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">AIscreenR</span><span class="fu">:::</span><span class="va">result_object</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">|&gt;</span> <span class="fu">screen_analyzer</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span>width<span class="op">=</span><span class="fl">260</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 12 × 25</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    promptid model               reps top_p n_refs n_screened n_missing</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>        1 gpt-3.5-turbo-0613     1 0.001    135        132         3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>        1 gpt-3.5-turbo-0613    10 0.001    135        135         0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>        1 gpt-3.5-turbo-0613     1 1        135        135         0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>        1 gpt-3.5-turbo-0613    10 1        135        135         0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>        1 gpt-4                  1 0.001    135        135         0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>        1 gpt-4                  1 1        135        134         1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>        2 gpt-3.5-turbo-0613     1 0.001    135        135         0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>        2 gpt-3.5-turbo-0613    10 0.001    135        135         0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>        2 gpt-3.5-turbo-0613     1 1        135        135         0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>        2 gpt-3.5-turbo-0613    10 1        135        135         0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span>        2 gpt-4                  1 0.001    135        135         0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span>        2 gpt-4                  1 1        135        133         2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    human_in_gpt_ex human_ex_gpt_in human_in_gpt_in human_ex_gpt_ex accuracy</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>               8               7              36              81   0.111 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>               8               8              37              82   0.119 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>              11               8              34              82   0.141 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>               4               8              41              82   0.088<span style="text-decoration: underline;">9</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>               1               9              44              81   0.074<span style="text-decoration: underline;">1</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>               0               6              45              83   0.044<span style="text-decoration: underline;">4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>               9               6              36              84   0.111 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>               8               7              37              83   0.111 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>              10               6              35              84   0.119 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>               7               7              38              83   0.104 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span>               1               8              44              82   0.066<span style="text-decoration: underline;">7</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span>               2               7              43              81   0.066<span style="text-decoration: underline;">7</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    p_agreement precision recall   npv specificity  bacc    F2   mcc   irr</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>       0.889     0.837  0.818 0.910       0.920 0.869 0.517 0.871 0.762</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>       0.881     0.822  0.822 0.911       0.911 0.867 0.514 0.867 0.733</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>       0.859     0.810  0.756 0.882       0.911 0.833 0.489 0.839 0.678</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>       0.911     0.837  0.911 0.953       0.911 0.911 0.545 0.903 0.804</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>       0.926     0.830  0.978 0.988       0.9   0.939 0.561 0.924 0.840</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>       0.956     0.882  1     1           0.933 0.966 0.586 0.954 0.905</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>       0.889     0.857  0.8   0.903       0.933 0.867 0.517 0.873 0.746</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>       0.889     0.841  0.822 0.912       0.922 0.872 0.520 0.874 0.749</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>       0.881     0.854  0.778 0.894       0.933 0.856 0.509 0.864 0.727</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>       0.896     0.844  0.844 0.922       0.922 0.883 0.528 0.883 0.767</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span>       0.933     0.846  0.978 0.988       0.911 0.944 0.567 0.931 0.856</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span>       0.933     0.86   0.956 0.976       0.920 0.938 0.566 0.928 0.860</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     se_irr cl_irr cu_irr level_of_agreement</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 0.012<span style="text-decoration: underline;">6</span>   0.737  0.787 Moderate          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 0.012<span style="text-decoration: underline;">4</span>   0.709  0.758 Moderate          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 0.013<span style="text-decoration: underline;">1</span>   0.652  0.704 Moderate          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 0.011<span style="text-decoration: underline;">1</span>   0.783  0.826 Strong            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 0.010<span style="text-decoration: underline;">5</span>   0.820  0.861 Strong            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 0.008<span style="text-decoration: underline;">31</span>  0.889  0.921 Almost perfect    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 0.011<span style="text-decoration: underline;">8</span>   0.723  0.769 Moderate          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 0.012<span style="text-decoration: underline;">0</span>   0.725  0.772 Moderate          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 0.012<span style="text-decoration: underline;">1</span>   0.704  0.751 Moderate          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 0.011<span style="text-decoration: underline;">7</span>   0.744  0.790 Moderate          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> 0.009<span style="text-decoration: underline;">91</span>  0.836  0.875 Strong            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> 0.010<span style="text-decoration: underline;">2</span>   0.840  0.880 Strong            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 12 × 7</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    promptid model               reps top_p p_agreement recall specificity</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>        1 gpt-3.5-turbo-0613     1 0.001       0.889  0.818       0.920</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>        1 gpt-3.5-turbo-0613    10 0.001       0.881  0.822       0.911</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>        1 gpt-3.5-turbo-0613     1 1           0.859  0.756       0.911</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>        1 gpt-3.5-turbo-0613    10 1           0.911  0.911       0.911</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>        1 gpt-4                  1 0.001       0.926  0.978       0.9  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>        1 gpt-4                  1 1           0.956  1           0.933</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>        2 gpt-3.5-turbo-0613     1 0.001       0.889  0.8         0.933</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>        2 gpt-3.5-turbo-0613    10 0.001       0.889  0.822       0.922</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>        2 gpt-3.5-turbo-0613     1 1           0.881  0.778       0.933</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>        2 gpt-3.5-turbo-0613    10 1           0.896  0.844       0.922</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span>        2 gpt-4                  1 0.001       0.933  0.978       0.911</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span>        2 gpt-4                  1 1           0.933  0.956       0.920</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -161,7 +125,7 @@ Assessing the Ability of ChatGPT to Screen Articles for Systematic Reviews.
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>
