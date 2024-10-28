@@ -15,7 +15,7 @@
 #'
 #' McHugh, M. L. (2012).
 #' Interrater reliability: The kappa statistic.
-#' *Biochemia Medica*, 22(3), 276-282. \url{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3900052/}
+#' *Biochemia Medica*, 22(3), 276-282. \url{https://pubmed.ncbi.nlm.nih.gov/23092060/}
 #'
 #' Syriani, E., David, I., & Kumar, G. (2023).
 #' Assessing the Ability of ChatGPT to Screen Articles for Systematic Reviews.

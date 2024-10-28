@@ -1,4 +1,4 @@
-# Models Prizes Augusts 27 2024
+# Models Prizes October 28 2024
 
 mio <- 1000000
 
@@ -40,7 +40,7 @@ model_prizes <-
       10/mio,  # gpt-4-turbo
 
       # GPT-4o models
-      5/mio,   # gpt-4o
+      2.5/mio,   # gpt-4o
       2.5/mio, # gpt-4o-2024-08-06
       5/mio,    # gpt-4o-2024-05-13
 
@@ -63,7 +63,7 @@ model_prizes <-
       30/mio,  # gpt-4-turbo
 
       # GPT-4o models
-      15/mio,  # gpt-4o
+      10/mio,  # gpt-4o
       10/mio,  # gpt-4o-2024-08-06
       15/mio,  # gpt-4o-2024-05-13
 

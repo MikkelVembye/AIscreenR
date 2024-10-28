@@ -1,7 +1,6 @@
 Package: AIscreenR
 Title: AI Screening Tools for Systematic Reviews
 Version: 0.0.0.9999
-Date: 2024-08-27
 Authors@R: c(
     person(given = "Mikkel H.", 
            family = "Vembye", 

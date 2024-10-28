@@ -3,15 +3,9 @@
 test_dat <-
   filges2015_dat[c(1:3, 241:243, 251),]
 
-paths <- system.file("extdata", c("word_prompt_1.docx", "word_prompt_2.docx"), package = "AIscreenR")
+paths <- system.file("extdata", "test_prompts.rds", package = "AIscreenR")
 
-prompts <-
-  purrr::map_chr(
-    paths, ~ {
-      readtext::readtext(.x)$text |>
-        stringr::str_remove_all("\n")
-    }
-  )
+prompts <- readRDS(paths)
 
 library(future)
 plan(multisession)
@@ -23,19 +17,20 @@ return_dat <-
   studyid = studyid,
   title = title,
   abstract = abstract,
-  model = "gpt-4o-mini",
+  model = c("gpt-4o-mini", "ft:gpt-4o-2024-08-06:vivecampbell:fft:A6G4jDPL"),
   top_p = 1,
   rpm = 10000,
-  reps = 1,
+  reps = 2,
   #messages = FALSE,
-  decision_description = FALSE,
+  decision_description = TRUE,
   progress = TRUE,
   #tools = tools_detailed,
   #tool_choice = "inclusion_decision",
   #incl_cutoff_upper = 0.5,
   #incl_cutoff_lower = 40,
   #token_info = TRUE,
-  force = FALSE
+  force = TRUE,
+  fine_tuned = TRUE
 ); return_dat
 
 plan(sequential)
@@ -70,7 +65,7 @@ tools_choice_name <- list(
 )
 
 body1 <- list(
-  model = "gpt-4o",
+  model = "o1-mini",
   messages = list(list(
     role = "user",
     content = question
@@ -82,7 +77,7 @@ body1 <- list(
 
 #debugonce(gpt_engine)
 
-gpt_engine(
+.gpt_engine(
   body = body1,
   RPM = 10000,
   timeinf = T,
@@ -100,7 +95,7 @@ library(future)
 plan(multisession)
 
 furrr::future_map_dfr(
-  1:20, \(i) gpt_engine(
+  1:20, \(i) .gpt_engine(
     body = body1,
     RPM = 10000,
     timeinf = T,
@@ -115,7 +110,7 @@ furrr::future_map_dfr(
   .options = furrr::furrr_options(seed = TRUE)
 )
 
-rep_gpt_engine(
+.rep_gpt_engine(
   question = question,
   model_gpt = "gpt-4o-mini",
   topp = 1,

@@ -533,6 +533,9 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
     #...................................
 
     # Calculating the approximate price using the helper function price_gpt()
+
+    if(!fine_tuned) {
+
     app_price_dat <- price_gpt(question_dat)
     app_price <- sum(app_price_dat$total_price_dollar, na.rm = TRUE)
 
@@ -548,29 +551,40 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
     #.......................
 
     if (messages){
-
       message(paste0("* The approximate price of the current (simple) screening will be around $", app_price, "."))
+    }
 
-      if (decision_description){
-        message(
-          paste0(
-            "* Be aware that getting descriptive, detailed reponses will substantially increase",
-            " the prize of the screening relative to the noted approximate prize."
-          )
-        )
-      }
+    } else {
 
-      abstract_text <- question_dat |> pull({{ abstract }}) |> unique()
+      app_price_dat <- NULL
+      app_price <- NULL
 
-      if ("No information" %in% abstract_text) {
-        message(
-          paste0(
-            "* Consider removing references that has no abstract ",
-            "since these can distort the accuracy of the screening."
-          )
-        )
+      if (messages){
+        message(paste0("* Cannot approximate the price of the screening since one or more non-standard models are used."))
       }
     }
+
+
+    if (decision_description){
+      message(
+        paste0(
+          "* Be aware that getting descriptive, detailed reponses will substantially increase",
+          " the prize of the screening relative to the noted approximate prize."
+        )
+      )
+    }
+
+    abstract_text <- question_dat |> pull({{ abstract }}) |> unique()
+
+    if ("No information" %in% abstract_text) {
+      message(
+        paste0(
+          "* Consider removing references that has no abstract ",
+          "since these can distort the accuracy of the screening."
+        )
+      )
+    }
+
 
     #...................................................
     # RUNNING QUESTIONS - the heart of the function ----
@@ -628,7 +642,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
     #.............................
 
     # Adding price data
-    price_dat <- if (token_info) price_gpt(answer_dat) else NULL
+    price_dat <- if (token_info && !fine_tuned) price_gpt(answer_dat) else NULL
     price <- if (!is.null(price_dat)) sum(price_dat$total_price_dollar, na.rm = TRUE) else NULL
 
     #.........................................................................
@@ -674,8 +688,8 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
       run_date = Sys.Date()
     )
 
-    # If token info is not wanted
-    if (!token_info) res[["price_data"]] <- res[["price_dollar"]] <- NULL
+    # If token info is not wanted or fine tuned model used
+    if (fine_tuned || !token_info) res[["price_data"]] <- res[["price_dollar"]] <- NULL
 
     # If no screening errors
     if (n_error == 0) res[["error_data"]] <- NULL

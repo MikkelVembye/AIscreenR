@@ -1,6 +1,6 @@
 # Locally
-devtools::spell_check()            # fix any spelling errors
-devtools::check()                  # run local package check [DONE]
+devtools::spell_check()                       # fix any spelling errors
+devtools::check(remote = TRUE, manual = TRUE)
 
 # Check the package under various architectures, using CRAN build configurations
 devtools::check_win_devel() # Tested 1 note about maintainer
