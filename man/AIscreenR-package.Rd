@@ -4,7 +4,7 @@
 \name{AIscreenR-package}
 \alias{AIscreenR}
 \alias{AIscreenR-package}
-\title{AIscreenR: AI screening tools for systematic reviews}
+\title{AIscreenR: AI Screening Tools for Systematic Reviews}
 \description{
 Screening with AI tools, including title and abstract screening with GPT API models from 'OpenAI'.
 }

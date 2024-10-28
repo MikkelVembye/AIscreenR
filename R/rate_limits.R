@@ -17,12 +17,12 @@
 #' \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.
 #' @param api_key Numerical value with your personal API key. Find at
 #'  \url{https://platform.openai.com/account/api-keys}. Use
-#'  [secret_make_key()], [secret_encrypt()], and
-#'  [secret_decrypt()] to scramble and decrypt the api key and
+#'  [httr2::secret_make_key()], [httr2::secret_encrypt()], and
+#'  [httr2::secret_decrypt()] to scramble and decrypt the api key and
 #'  use [set_api_key()] to securely automate the use of the
 #'  api key by setting the api key as a locale environment variable.
 #'
-#' @return A [tibble] including variables with information about the model used,
+#' @return A \code{tibble} including variables with information about the model used,
 #' the number of requests and tokens per minute.
 #' @export
 #'

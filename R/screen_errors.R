@@ -10,13 +10,13 @@
 #' @param api_key Numerical value with your personal API key.
 #' @param max_tries,max_seconds 'Cap the maximum number of attempts with
 #'  `max_tries` or the total elapsed time from the first request with
-#'  `max_seconds`. If neither option is supplied (the default), [req_perform()]
+#'  `max_seconds`. If neither option is supplied (the default), [httr2::req_perform()]
 #'  will not retry' (Wickham, 2023). Default `max_tries` is 16. If missing, the value of `max_seconds`
 #'  from the original screening conducted with [tabscreen_gpt()] will be used.
 #' @param is_transient 'A predicate function that takes a single argument
 #'  (the response) and returns `TRUE` or `FALSE` specifying whether or not
 #'  the response represents a transient error' (Wickham, 2023). If missing, the `is_transient`
-#'  function from the original screening conducted with [tabscreen_gpt() will be used.
+#'  function from the original screening conducted with [tabscreen_gpt()] will be used.
 #' @param backoff 'A function that takes a single argument (the number of failed
 #'   attempts so far) and returns the number of seconds to wait' (Wickham, 2023).
 #'   If missing, the `backoff`value from the original screening conducted with [tabscreen_gpt()] will be used.

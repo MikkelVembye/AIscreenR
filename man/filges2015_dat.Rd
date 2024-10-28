@@ -5,7 +5,7 @@
 \alias{filges2015_dat}
 \title{Ris-file data from Functional Family Therapy (FFT) systematic review}
 \format{
-A \link{tibble} with 270 rows/studies and 6 variables/columns
+A \code{tibble} with 270 rows/studies and 6 variables/columns
 
 \tabular{lll}{
 \bold{author} \tab \code{character} \tab indicating the authors of the reference \cr

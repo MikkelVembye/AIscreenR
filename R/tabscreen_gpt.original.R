@@ -58,13 +58,13 @@
 #'   the output object will include price information of the conducted screening.
 #' @param api_key Numerical value with your personal API key. Find at
 #'  \url{https://platform.openai.com/account/api-keys}. Use
-#'  [secret_make_key()], [secret_encrypt()], and
-#'  [secret_decrypt()] to scramble and decrypt the api key and
+#'  [httr2::secret_make_key()], [httr2::secret_encrypt()], and
+#'  [httr2::secret_decrypt()] to scramble and decrypt the api key and
 #'  use [set_api_key()] to securely automate the use of the
 #'  api key by setting the api key as a locale environment variable.
 #' @param max_tries,max_seconds 'Cap the maximum number of attempts with
 #'  `max_tries` or the total elapsed time from the first request with
-#'  `max_seconds`. If neither option is supplied (the default), [req_perform()]
+#'  `max_seconds`. If neither option is supplied (the default), [httr2::req_perform()]
 #'  will not retry' (Wickham, 2023).
 #' @param is_transient 'A predicate function that takes a single argument
 #'  (the response) and returns `TRUE` or `FALSE` specifying whether or not

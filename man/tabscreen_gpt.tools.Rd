@@ -67,14 +67,14 @@ the output object will include price information of the conducted screening.}
 
 \item{api_key}{Numerical value with your personal API key. Find at
 \url{https://platform.openai.com/account/api-keys}. Use
-\code{\link[=secret_make_key]{secret_make_key()}}, \code{\link[=secret_encrypt]{secret_encrypt()}}, and
-\code{\link[=secret_decrypt]{secret_decrypt()}} to scramble and decrypt the api key and
+\code{\link[httr2:secrets]{httr2::secret_make_key()}}, \code{\link[httr2:secrets]{httr2::secret_encrypt()}}, and
+\code{\link[httr2:secrets]{httr2::secret_decrypt()}} to scramble and decrypt the api key and
 use \code{\link[=set_api_key]{set_api_key()}} to securely automate the use of the
 api key by adding the api key as a locale environment variable.}
 
 \item{max_tries, max_seconds}{'Cap the maximum number of attempts with
 \code{max_tries} or the total elapsed time from the first request with
-\code{max_seconds}. If neither option is supplied (the default), \code{\link[=req_perform]{req_perform()}}
+\code{max_seconds}. If neither option is supplied (the default), \code{\link[httr2:req_perform]{httr2::req_perform()}}
 will not retry' (Wickham, 2023). The default of \code{max_tries} is 16.}
 
 \item{is_transient}{'A predicate function that takes a single argument

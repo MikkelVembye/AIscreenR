@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![License: GPL (>=3)](https://img.shields.io/badge/license-GPL-blue)](https://www.gnu.org/licenses/gpl-3.0.html)
 [![R-CMD-check](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml)
-[![Status](https://img.shields.io/badge/Status-Work%20in%20Progress-orange)](https://github.com/MikkelVembye/AIscreenR)
+[![status](https://img.shields.io/badge/status-work%20in%20progress-orange)](https://github.com/MikkelVembye/AIscreenR)
 [![devel Version](https://img.shields.io/badge/devel-0.0.0.9999-brightgreen.svg)](https://mikkelvembye.github.io/AIscreenR/)
 <!-- badges: end -->
 

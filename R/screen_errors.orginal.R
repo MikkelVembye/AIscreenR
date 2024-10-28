@@ -21,7 +21,7 @@
 #' @param api_key Numerical value with your personal API key.
 #' @param max_tries,max_seconds 'Cap the maximum number of attempts with
 #'  `max_tries` or the total elapsed time from the first request with
-#'  `max_seconds`. If neither option is supplied (the default), [req_perform()]
+#'  `max_seconds`. If neither option is supplied (the default), [httr2::req_perform()]
 #'  will not retry' (Wickham, 2023). Default `max_tries` is 4. If missing, the value of `max_seconds`
 #'  from the original screening (e.g., conducted with [tabscreen_gpt.original()]) will be used.
 #' @param is_transient 'A predicate function that takes a single argument

@@ -7,7 +7,7 @@
 #' systematic review.
 #'
 #'
-#' @format A [tibble] with 270 rows/studies and 6 variables/columns
+#' @format A \code{tibble} with 270 rows/studies and 6 variables/columns
 #'
 #' \tabular{lll}{
 #'  \bold{author} \tab \code{character} \tab indicating the authors of the reference \cr

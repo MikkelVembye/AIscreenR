@@ -11,11 +11,11 @@
 #' @references
 #' Gartlehner, G., Wagner, G., Lux, L., Affengruber, L., Dobrescu, A., Kaminski-Hartenthaler, A., & Viswanathan, M. (2019).
 #' Assessing the accuracy of machine-assisted abstract screening with DistillerAI: a user study.
-#' *Systematic Reviews*, 8(1), 277. <https://doi.org/10.1186/s13643-019-1221-3>
+#' *Systematic Reviews*, 8(1), 277. \doi{10.1186/s13643-019-1221-3}
 #'
 #' McHugh, M. L. (2012).
 #' Interrater reliability: The kappa statistic.
-#' *Biochemia Medica*, 22(3), 276-282. <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3900052/>
+#' *Biochemia Medica*, 22(3), 276-282. \url{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3900052/}
 #'
 #' Syriani, E., David, I., & Kumar, G. (2023).
 #' Assessing the Ability of ChatGPT to Screen Articles for Systematic Reviews.

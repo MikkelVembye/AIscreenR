@@ -27,7 +27,7 @@ must be specified again here.}
 
 \item{max_tries, max_seconds}{'Cap the maximum number of attempts with
 \code{max_tries} or the total elapsed time from the first request with
-\code{max_seconds}. If neither option is supplied (the default), \code{\link[=req_perform]{req_perform()}}
+\code{max_seconds}. If neither option is supplied (the default), \code{\link[httr2:req_perform]{httr2::req_perform()}}
 will not retry' (Wickham, 2023). Default \code{max_tries} is 4. If missing, the value of \code{max_seconds}
 from the original screening (e.g., conducted with \code{\link[=tabscreen_gpt.original]{tabscreen_gpt.original()}}) will be used.}
 

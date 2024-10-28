@@ -21,13 +21,13 @@ issued. Default is \code{"gpt"}.}
 
 \item{api_key}{Numerical value with your personal API key. Find at
 \url{https://platform.openai.com/account/api-keys}. Use
-\code{\link[=secret_make_key]{secret_make_key()}}, \code{\link[=secret_encrypt]{secret_encrypt()}}, and
-\code{\link[=secret_decrypt]{secret_decrypt()}} to scramble and decrypt the api key and
+\code{\link[httr2:secrets]{httr2::secret_make_key()}}, \code{\link[httr2:secrets]{httr2::secret_encrypt()}}, and
+\code{\link[httr2:secrets]{httr2::secret_decrypt()}} to scramble and decrypt the api key and
 use \code{\link[=set_api_key]{set_api_key()}} to securely automate the use of the
 api key by setting the api key as a locale environment variable.}
 }
 \value{
-A \link{tibble} including variables with information about the model used,
+A \code{tibble} including variables with information about the model used,
 the number of requests and tokens per minute.
 }
 \description{
