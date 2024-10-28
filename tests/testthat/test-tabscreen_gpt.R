@@ -214,15 +214,16 @@ test_that(".rep_gpt_engine controls errrors correctly", {
 
 
 # Old tests (tabscreen_gpt.original)
-paths <- system.file("extdata", c("word_prompt_1.docx", "word_prompt_2.docx"), package = "AIscreenR")
+paths <- system.file("extdata", "test_prompts.rds", package = "AIscreenR")
+prompts <- readRDS(file = paths)
 
-prompts <-
-  purrr::map_chr(
-    paths, ~ {
-      readtext::readtext(.x)$text |>
-        stringr::str_remove_all("\n")
-    }
-  )
+#prompts <-
+#  purrr::map_chr(
+#    paths, ~ {
+#      readtext::readtext(.x)$text |>
+#        stringr::str_remove_all("\n")
+#    }
+#  )
 
 prompt <- prompts[1]
 prompt2 <- prompts[2]

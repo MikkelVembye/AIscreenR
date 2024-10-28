@@ -1,13 +1,6 @@
 
-paths <- system.file("extdata", c("word_prompt_1.docx", "word_prompt_2.docx"), package = "AIscreenR")
-
-prompts <-
-  purrr::map_chr(
-    paths, ~ {
-      readtext::readtext(.x)$text |>
-        stringr::str_remove_all("\n")
-    }
-  )
+paths <- system.file("extdata", "test_prompts.rds", package = "AIscreenR")
+prompts <- readRDS(file = paths)
 
 prompt <- prompts[1]
 

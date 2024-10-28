@@ -12,7 +12,8 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.path = "man/figures/README-",
   out.width = "100%",
-  eval = httr2::secret_has_key("AISCREENR_KEY")
+  #eval = httr2::secret_has_key("AISCREENR_KEY")
+  eval = FALSE
 )
 ```
 
@@ -21,6 +22,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![License: GPL (>=3)](https://img.shields.io/badge/license-GPL-blue)](https://www.gnu.org/licenses/gpl-3.0.html)
 [![R-CMD-check](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml)
+[![Status](https://img.shields.io/badge/Status-Work%20in%20Progress-orange)](https://github.com/MikkelVembye/AIscreenR)
 [![devel Version](https://img.shields.io/badge/devel-0.0.0.9999-brightgreen.svg)](https://mikkelvembye.github.io/AIscreenR/)
 <!-- badges: end -->
 
@@ -37,7 +39,7 @@ devtools::install_github("MikkelVembye/AIscreenR")
 ```
 
 Setting API key and checking rate limits
-```{r, message=FALSE, warning=FALSE}
+```{r, eval=FALSE}
 # Find your api key at https://platform.openai.com/account/api-keys 
 # Thereafter, either encrypt it with the secret functions from the httr2 package
 # see https://httr2.r-lib.org/reference/secrets.html or run set_api_key() 
@@ -51,14 +53,21 @@ library(future)
 # Setting API
 set_api_key(AIscreenR:::testing_key_chatgpt())
 
-# Obtain rate limits info (Default is "gpt-3.5-turbo-0613")
+# Obtain rate limits info (Default is "gpt-4")
 rate_limits <- rate_limits_per_minute()
 rate_limits
+#> # A tibble: 1 × 3
+#>   model requests_per_minute tokens_per_minute
+#>   <chr>               <dbl>             <dbl>
+#> 1 gpt-4               10000           1000000
 
 # Obtain rate limits info across multiple models
-rate_limits <- rate_limits_per_minute(model = c("gpt-3.5-turbo-0613", "gpt-4"))
+rate_limits <- rate_limits_per_minute(model = "gpt-4o-mini")
 rate_limits
-
+#> # A tibble: 1 × 3
+#>   model       requests_per_minute tokens_per_minute
+#>   <chr>                     <dbl>             <dbl>
+#> 1 gpt-4o-mini               30000         150000000
 ```
 
 How to load ris files. In this example we have downloaded the ris files from 
@@ -104,7 +113,7 @@ head(filges2015_dat, 10)
 
 Example of how to enter a prompt. Can also be done in word (see vignette).
 
-```{r}
+```{r, eval = FALSE}
 prompt <- "Evaluate the following study based on the selection criteria
 for a systematic review on the effects of family-based interventions on drug abuse
 reduction for young people in treatment for non-opioid drug use.
@@ -132,9 +141,9 @@ duration delivered to young people and their families). If not, exclude study.
 for non-opioid drug use? 3) Are the participants within age 11–21?"
 ```
 
-Approximate price of screening
+Approximate price of screening before running the screening.
 
-```{r}
+```{r, eval = FALSE}
 app_obj <- 
   approximate_price_gpt(
     data = filges2015_dat,
@@ -142,21 +151,27 @@ app_obj <-
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
     abstract = abstract, # indicate the variable with the abstracts in the data
-    model = "gpt-4o",
-    rep = 10 
+    model = "gpt-4o-mini",
+    rep = 1 
   )
 
 app_obj
+#> The approximate price of the (simple) screening will be around $0.0476.
 
 app_obj$price_dollar
+#> [1] 0.0476
 app_obj$price_data
-
+#> # A tibble: 1 × 6
+#>   prompt   model       iterations input_price_dollar output_price_dollar
+#>   <chr>    <chr>            <dbl>              <dbl>               <dbl>
+#> 1 Prompt 1 gpt-4o-mini          1             0.0458             0.00178
+#> # ℹ 1 more variable: total_price_dollar <dbl>
 ```
 
-Example of how to conduct simple screening, getting return 1 if a reference should be included,
-0 if excluded, and 1.1 if a firm decision cannot be reached. 
+Example of how to conduct simple screening, returning 1 if a reference should be included,
+0 if excluded, and 1.1 if uncertain. 
 
-```{r, warning=FALSE, eval = TRUE}
+```{r, warning=FALSE, eval = FALSE}
 # Subsetting the number of references to speed up the tutorial screening
 plan(multisession)
 test_obj <- 
@@ -166,21 +181,39 @@ test_obj <-
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
     abstract = abstract, # indicate the variable with the abstracts in the data
-    model = "gpt-4o",
+    model = "gpt-4o-mini",
     reps = 1 # Number of times the same question is asked to ChatGPT
   ) 
+#> * The approximate price of the current (simple) screening will be around $0.0017.
+#> * Consider removing references that has no abstract since these can distort the accuracy of the screening.
 plan(sequential)
 test_obj
+#> 
+#> Find the final result dataset via result_object$answer_data
 
 # Data sets in object
 price_dat <- test_obj$price_data
 price_dat
-
+#> # A tibble: 1 × 6
+#>   prompt model       iterations input_price_dollar output_price_dollar
+#>    <int> <chr>            <dbl>              <dbl>               <dbl>
+#> 1      1 gpt-4o-mini          1             0.0016           0.0000432
+#> # ℹ 1 more variable: total_price_dollar <dbl>
 
 all_dat <- test_obj$answer_data
 all_dat |> select(human_code, decision_binary)
-
-
-
+#> # A tibble: 10 × 2
+#>    human_code decision_binary
+#>         <dbl>           <dbl>
+#>  1          0               0
+#>  2          0               0
+#>  3          0               0
+#>  4          0               0
+#>  5          0               0
+#>  6          1               0
+#>  7          1               1
+#>  8          1               0
+#>  9          1               1
+#> 10          1               1
 ```
 

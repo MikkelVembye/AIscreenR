@@ -20,6 +20,10 @@
 #'   \emph{GPT API Models Can Function as Highly Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
 #'   A Proof of Concept and Common Guidelines} \url{https://osf.io/preprints/osf/yrhzm}
 #'
+#'   Thomas, J. et al. (2024).
+#'   Responsible AI in Evidence SynthEsis (RAISE): guidance and recommendations.
+#'   \url{https://osf.io/cn7x4}
+#'
 #' Wickham H (2023).
 #' \emph{httr2: Perform HTTP Requests and Process the Responses}.
 #' \url{https://httr2.r-lib.org}, \url{https://github.com/r-lib/httr2}.
@@ -127,8 +131,9 @@
 #' \item{answer_data}{dataset of class `'gpt_tbl'` with all individual answers.}
 #' \item{price_dollar}{numerical value indicating the total price (in USD) of the screening.}
 #' \item{price_data}{dataset with prices across all gpt models used for screening.}
-#' \item{run_date}{string indicating the date when the screening was ran.}
-#' \item{...}{some additional values/components, including a list with the arguments used in the function.
+#' \item{run_date}{string indicating the date when the screening was ran. In some frameworks,
+#'    time details are considered important to report (see e.g., Thomas et al., 2024).}
+#' \item{...}{some additional attributed values/components, including an attributed list with the arguments used in the function.
 #'  These are used in  \code{\link[=screen_errors]{screen_errors()}} to re-screen transient errors.}
 #'
 #' If the same question is requested multiple times, the object will also contain the
@@ -666,7 +671,6 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
       answer_data = answer_dat,
       answer_data_aggregated = answer_dat_aggregated,
       error_data = error_dat,
-      #arguments_used = arg_list,
       run_date = Sys.Date()
     )
 

@@ -166,6 +166,7 @@ use \code{\link[=tabscreen_gpt.tools]{tabscreen_gpt.tools()}}.
 The function allows to run title and abstract screening across multiple prompts and with
 repeated questions to check for consistency across answers. This function draws
 on the newly developed function calling to better steer the output of the responses.
+This function was used in \href{https://osf.io/preprints/osf/yrhzm}{Vembye et al. (2024)}.
 }
 \note{
 The \code{answer_data_sum} data contains the following mandatory variables:

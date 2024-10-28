@@ -295,7 +295,6 @@ screen_errors.gpt <- function(
       answer_data = answer_dat,
       answer_data_aggregated = answer_dat_aggregated,
       error_data = error_dat,
-      #arguments_used = arg_list,
       run_date = Sys.Date()
     )
 

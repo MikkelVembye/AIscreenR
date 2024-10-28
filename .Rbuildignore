@@ -1,6 +1,7 @@
 ^AIscreenR\.Rproj$
 ^\.Rproj\.user$
 ^other$
+CRAN-submission-steps.R
 README.Rmd
 README.md
 ^man-roxygen$

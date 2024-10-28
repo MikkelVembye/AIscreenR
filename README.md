@@ -10,6 +10,7 @@
 [![License: GPL
 (\>=3)](https://img.shields.io/badge/license-GPL-blue)](https://www.gnu.org/licenses/gpl-3.0.html)
 [![R-CMD-check](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml)
+[![Status](https://img.shields.io/badge/Status-Work%20in%20Progress-orange)](https://github.com/MikkelVembye/AIscreenR)
 [![devel
 Version](https://img.shields.io/badge/devel-0.0.0.9999-brightgreen.svg)](https://mikkelvembye.github.io/AIscreenR/)
 <!-- badges: end -->
@@ -55,25 +56,21 @@ library(future)
 # Setting API
 set_api_key(AIscreenR:::testing_key_chatgpt())
 
-# Obtain rate limits info (Default is "gpt-3.5-turbo-0613")
+# Obtain rate limits info (Default is "gpt-4")
 rate_limits <- rate_limits_per_minute()
 rate_limits
 #> # A tibble: 1 × 3
 #>   model requests_per_minute tokens_per_minute
 #>   <chr>               <dbl>             <dbl>
 #> 1 gpt-4               10000           1000000
-```
-
-``` r
 
 # Obtain rate limits info across multiple models
-rate_limits <- rate_limits_per_minute(model = c("gpt-3.5-turbo-0613", "gpt-4"))
+rate_limits <- rate_limits_per_minute(model = "gpt-4o-mini")
 rate_limits
-#> # A tibble: 2 × 3
-#>   model                                    requests_per_minute tokens_per_minute
-#>   <chr>                                                  <dbl>             <dbl>
-#> 1 Error 404: The model `gpt-3.5-turbo-061…                  NA                NA
-#> 2 gpt-4                                                  10000           1000000
+#> # A tibble: 1 × 3
+#>   model       requests_per_minute tokens_per_minute
+#>   <chr>                     <dbl>             <dbl>
+#> 1 gpt-4o-mini               30000         150000000
 ```
 
 How to load ris files. In this example we have downloaded the ris files
@@ -145,7 +142,7 @@ duration delivered to young people and their families). If not, exclude study.
 for non-opioid drug use? 3) Are the participants within age 11–21?"
 ```
 
-Approximate price of screening
+Approximate price of screening before running the screening.
 
 ``` r
 app_obj <- 
@@ -155,32 +152,25 @@ app_obj <-
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
     abstract = abstract, # indicate the variable with the abstracts in the data
-    model = "gpt-4o",
-    rep = 10 
+    model = "gpt-4o-mini",
+    rep = 1 
   )
 
 app_obj
-#> The approximate price of the (simple) screening will be around $15.1761.
-```
-
-``` r
+#> The approximate price of the (simple) screening will be around $0.0476.
 
 app_obj$price_dollar
-#> [1] 15.1761
-```
-
-``` r
+#> [1] 0.0476
 app_obj$price_data
 #> # A tibble: 1 × 6
-#>   prompt   model  iterations input_price_dollar output_price_dollar
-#>   <chr>    <chr>       <dbl>              <dbl>               <dbl>
-#> 1 Prompt 1 gpt-4o         10               14.7               0.446
+#>   prompt   model       iterations input_price_dollar output_price_dollar
+#>   <chr>    <chr>            <dbl>              <dbl>               <dbl>
+#> 1 Prompt 1 gpt-4o-mini          1             0.0458             0.00178
 #> # ℹ 1 more variable: total_price_dollar <dbl>
 ```
 
-Example of how to conduct simple screening, getting return 1 if a
-reference should be included, 0 if excluded, and 1.1 if a firm decision
-cannot be reached.
+Example of how to conduct simple screening, returning 1 if a reference
+should be included, 0 if excluded, and 1.1 if uncertain.
 
 ``` r
 # Subsetting the number of references to speed up the tutorial screening
@@ -192,34 +182,24 @@ test_obj <-
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
     abstract = abstract, # indicate the variable with the abstracts in the data
-    model = "gpt-4o",
+    model = "gpt-4o-mini",
     reps = 1 # Number of times the same question is asked to ChatGPT
   ) 
-#> * The approximate price of the current (simple) screening will be around $0.0546.
+#> * The approximate price of the current (simple) screening will be around $0.0017.
 #> * Consider removing references that has no abstract since these can distort the accuracy of the screening.
-```
-
-``` r
 plan(sequential)
 test_obj
 #> 
 #> Find the final result dataset via result_object$answer_data
-```
-
-``` r
 
 # Data sets in object
 price_dat <- test_obj$price_data
 price_dat
 #> # A tibble: 1 × 6
-#>   prompt model  iterations input_price_dollar output_price_dollar
-#>    <int> <chr>       <dbl>              <dbl>               <dbl>
-#> 1      1 gpt-4o          1             0.0495             0.00108
+#>   prompt model       iterations input_price_dollar output_price_dollar
+#>    <int> <chr>            <dbl>              <dbl>               <dbl>
+#> 1      1 gpt-4o-mini          1             0.0016           0.0000432
 #> # ℹ 1 more variable: total_price_dollar <dbl>
-```
-
-``` r
-
 
 all_dat <- test_obj$answer_data
 all_dat |> select(human_code, decision_binary)
