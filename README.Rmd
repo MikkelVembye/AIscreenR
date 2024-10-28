@@ -19,8 +19,9 @@ knitr::opts_chunk$set(
 # AIscreenR: AI screening tools in R for systematic reviewing 
 
 <!-- badges: start -->
+[![License: GPL (>=3)](https://img.shields.io/badge/license-GPL-blue)](https://www.gnu.org/licenses/gpl-3.0.html)
 [![R-CMD-check](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml)
-[![Codecov test coverage](https://codecov.io/gh/MikkelVembye/AIscreenR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/MikkelVembye/AIscreenR?branch=main)
+[![devel Version](https://img.shields.io/badge/devel-0.0.0.9999-brightgreen.svg)](https://mikkelvembye.github.io/AIscreenR/)
 <!-- badges: end -->
 
 The goal of AIscreenR is to use AI tools to support screening processes (including title and abstract screening) in systematic reviews and related literature reviews. At the current stage, the main aim of the `AIscreenR` package is to support the use and testing of OpenAI's GPT API models as the second screeners of titles and abstracts or alternatively to reduce research waste, i.e., the number of references needed to be screened by humans. The package allows user to apply OpenAI's GPT API models from the [https://api.openai.com/v1/chat/completions](https://platform.openai.com/docs/models/model-endpoint-compatibility) endpoint. In future developments, we expect to add further LLMs when APIs become available for other models, for example from Claude 2. For now, we invite other researchers to test this software so that we as a review community can get a better understanding of the performance of OpenAI's GPT API models.
@@ -141,7 +142,7 @@ app_obj <-
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
     abstract = abstract, # indicate the variable with the abstracts in the data
-    model = c("gpt-3.5-turbo-0613"),
+    model = "gpt-4o",
     rep = 10 
   )
 
@@ -160,27 +161,26 @@ Example of how to conduct simple screening, getting return 1 if a reference shou
 plan(multisession)
 test_obj <- 
   tabscreen_gpt(
-    data = filges2015_dat[c(140:150),],
+    data = filges2015_dat[c(1:5, 266:270),],
     prompt = prompt, 
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
     abstract = abstract, # indicate the variable with the abstracts in the data
-    model = c("gpt-3.5-turbo-0613"),
-    reps = 2 # Number of times the same question is asked to ChatGPT
+    model = "gpt-4o",
+    reps = 1 # Number of times the same question is asked to ChatGPT
   ) 
 plan(sequential)
 test_obj
 
 # Data sets in object
-price_dat <- test_obj$price_dat
+price_dat <- test_obj$price_data
 price_dat
 
 
-all_dat <- test_obj$answer_data_all
+all_dat <- test_obj$answer_data
 all_dat |> select(human_code, decision_binary)
 
 
-sum_dat <- test_obj$answer_data_sum
-sum_dat |> select(human_code, final_decision_gpt:final_decision_gpt_num)
+
 ```
 

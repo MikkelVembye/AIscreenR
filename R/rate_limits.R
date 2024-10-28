@@ -10,9 +10,9 @@
 #' \url{https://platform.openai.com/docs/guides/rate-limits/overview}.
 #'
 #' @param AI_tool Character string specifying the AI tool from which the api is
-#' issued. Default is `"chatgpt"`.
+#' issued. Default is `"gpt"`.
 #' @param model Character string with the name of the completion model.
-#' Default = `"gpt-3.5-turbo-0613"`. Can take multiple strings.
+#' Default = `"gpt-4"`. Can take multiple strings.
 #' Find available model at
 #' \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.
 #' @param api_key Numerical value with your personal API key. Find at
@@ -22,7 +22,7 @@
 #'  use [set_api_key()] to securely automate the use of the
 #'  api key by setting the api key as a locale environment variable.
 #'
-#' @return A tibble including variables with information about the model used,
+#' @return A [tibble] including variables with information about the model used,
 #' the number of requests and tokens per minute.
 #' @export
 #'
@@ -34,8 +34,8 @@
 #' }
 
 rate_limits_per_minute <- function(
-    model = "gpt-3.5-turbo-0613",
-    AI_tool = "chatgpt",
+    model = "gpt-4",
+    AI_tool = "gpt",
     api_key = get_api_key()
 ) {
 
@@ -50,7 +50,7 @@ rate_limits_per_minute_engine <- function(
     ){
 
 
-  if ("chatgpt" %in% AI_tool){
+  if ("gpt" %in% AI_tool){
 
     body <- list(
       model = model,
@@ -100,7 +100,7 @@ rate_limits_per_minute_engine <- function(
     } else {
 
       res <- tibble::tibble(
-        model = status_code_text(),
+        model = error_message(),
         requests_per_minute = NA_real_,
         tokens_per_minute = NA_real_
       )

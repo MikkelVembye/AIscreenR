@@ -72,7 +72,7 @@ for non-opioid drug use?"
 
 app_obj <- approximate_price_gpt(
   data = filges2015_dat,
-  prompt = prompts,
+  prompt = prompt,
   studyid = studyid,
   title = title,
   abstract = abstract,
@@ -103,15 +103,14 @@ library(future)
 plan(multisession)
 
 
-test_obj <- tabscreen_gpt(
+test_obj <- tabscreen_gpt.tools(
   data = filges2015_dat[c(1:2),],
   prompt = c(prompt),
   studyid = studyid, # indicate the variable with the studyid in the data
   title = title, # indicate the variable with the titles in the data
   abstract = abstract,
-  model = c("gpt-3.5-turbo-0613", "gpt-4-0613"),
-  reps = c(10, 2),
-  force = TRUE
+  model = c("gpt-4o"),
+  reps = 1
   #top_p = c(0.2, 1),
   #functions = AIscreenR:::incl_function,
   #function_call_name = list(name = "inclusion_decision")

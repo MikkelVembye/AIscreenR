@@ -5,14 +5,21 @@ development:
   mode: auto
 
 reference:
-  - title: "Screening with ChatGPT"
-    desc: "R functions to automate title and abstract screeening in ChatGPT"
+  - title: "Screen with GPT API models"
+    desc: "R functions to automate title and abstract screeening with GPT API models"
     contents:
-      - tabscreen_gpt
+      - tabscreen_gpt.tools
+      - tabscreen_gpt.original
+
+  - title: "Screen failed requests"
+    desc: "R functions to re-screen failied title and abstract requests"
+    contents:
       - screen_errors
+      - screen_errors.gpt
+      - screen_errors.chatgpt
 
   - title: "Analyze screening performance"
-    desc: "R functions to analyze agreement between humans and AI"
+    desc: "R functions to analyze agreement between humans and GPT"
     contents:
       - screen_analyzer
 
@@ -37,9 +44,13 @@ reference:
     contents:
       - is_chatgpt
       - is_chatgpt_tbl
+      - is_gpt
+      - is_gpt_tbl
+      - is_gpt_agg_tbl
 
   - title: "Print methods"
     contents:
+      - print.gpt
       - print.chatgpt
       - print.gpt_price
 
@@ -47,8 +58,13 @@ reference:
     contents:
       - approximate_price_gpt
 
+  - title: "Sample references"
+    desc: "Sample references to construct test dataset"
+    contents:
+      - sample_references
+
 articles:
   - title: Using AIscreenR
     navbar: ~
     contents:
-      - Using-ChatGPT-For-Screening
+      - Using-GPT-API-Models-For-Screening

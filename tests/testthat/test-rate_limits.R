@@ -1,4 +1,4 @@
-models <- c("gpt-3.5-turbo-0613", "gpt-4")
+models <- c("gpt-4o-mini", "gpt-4")
 
 skip <- TRUE
 

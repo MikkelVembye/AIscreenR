@@ -7,9 +7,6 @@ model_prizes <-
     model = c(
       # GPT 3.5 models
       "gpt-3.5-turbo",
-      "gpt-3.5-turbo-0301",
-      "gpt-3.5-turbo-16k-0613",
-      "gpt-3.5-turbo-0613",
       "gpt-3.5-turbo-1106",
       "gpt-3.5-turbo-0125",
 
@@ -33,9 +30,6 @@ model_prizes <-
     price_in_per_token = c(
       # GPT 3.5 models
       0.5/mio, # gpt-3.5-turbo (refers currently to gpt-3.5-turbo-0125)
-      1.5/mio, # gpt-3.5-turbo-0301
-      3/mio,   # gpt-3.5-turbo-16k-0613
-      1.5/mio, # gpt-3.5-turbo-0613
       1/mio,   # gpt-3.5-turbo-1106
       0.5/mio, # gpt-3.5-turbo-0125
 
@@ -59,9 +53,6 @@ model_prizes <-
     price_out_per_token = c(
       # GPT 3.5 models
       1.5/mio, # gpt-3.5-turbo (refers currently to gpt-3.5-turbo-0125)
-      2/mio,   # gpt-3.5-turbo-0301
-      4/mio,   # gpt-3.5-turbo-16k-0613
-      2/mio,   # gpt-3.5-turbo-0613
       2/mio,   # gpt-3.5-turbo-1106
       1.5/mio, # gpt-3.5-turbo-0125
 

@@ -9,7 +9,7 @@ Authors@R: c(
            role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-9071-0724"))
            )
-Description: Screening with AI tools including GPT API models from 'OpenAI'.
+Description: Screening with AI tools, including GPT API models from 'OpenAI'.
 Depends:
     R (>= 4.1.0)
 License: GPL (>= 3)

@@ -4,13 +4,17 @@
 \alias{screen_analyzer}
 \title{Analyze performance between the human and AI screening.}
 \usage{
-screen_analyzer(x, human_decision = human_code)
+screen_analyzer(x, human_decision = human_code, key_result = TRUE)
 }
 \arguments{
-\item{x}{Either an object of class \code{'chatgpt'} or a data set of class \code{'chatgpt_tbl'}}
+\item{x}{An object of either class\code{'gpt'} or \code{'chatgpt'}
+or a dataset of either class \code{'gpt_tbl'}, \code{'chatgpt_tbl'}, or \code{'gpt_agg_tbl'}}
 
 \item{human_decision}{Indicate the variable in the data that contains the human_decision.
-This variable must be numeric containing 1 (for included references) and 0 (for excluded references) only.}
+This variable must be numeric, containing 1 (for included references) and 0 (for excluded references) only.}
+
+\item{key_result}{Logical indicating if only the raw agreement, recall, and specificity measures should be returned.
+Default is \code{TRUE}.}
 }
 \value{
 A \code{tibble} with screening performance measures. The \code{tibble} includes the following variables:
@@ -35,11 +39,11 @@ A \code{tibble} with screening performance measures. The \code{tibble} includes 
 \bold{bacc}  \tab \code{numeric}  \tab "capture the accuracy of deciding both inclusion and exclusion classes" (Syriani et al., 2023). \cr
 \bold{F2}  \tab \code{numeric} \tab F-measure that "consider the cost of getting false negatives twice as costly as getting false positives" (Syriani et al., 2023). \cr
 \bold{mcc}  \tab \code{numeric} \tab indicating percent agreement for excluded references (Gartlehner et al., 2019). \cr
-\bold{irr}  \tab \code{numeric}  \tab indicating the interrater reliability as described in McHugh (2012). \cr
-\bold{se_irr} \tab \code{numeric} \tab indicating standard error for the interrater reliability. \cr
-\bold{cl_irr} \tab \code{numeric} \tab indicating lower confidence interval for the interrater reliability. \cr
-\bold{cu_irr} \tab \code{numeric} \tab indicating upper confidence interval for the interrater reliability. \cr
-\bold{level_of_agreement} \tab \code{character} \tab interpretation of the interrater reliability as suggested by McHugh (2012). \cr
+\bold{irr}  \tab \code{numeric}  \tab indicating the inter-rater reliability as described in McHugh (2012). \cr
+\bold{se_irr} \tab \code{numeric} \tab indicating standard error for the inter-rater reliability. \cr
+\bold{cl_irr} \tab \code{numeric} \tab indicating lower confidence interval for the inter-rater reliability. \cr
+\bold{cu_irr} \tab \code{numeric} \tab indicating upper confidence interval for the inter-rater reliability. \cr
+\bold{level_of_agreement} \tab \code{character} \tab interpretation of the inter-rater reliability as suggested by McHugh (2012). \cr
 }
 }
 \description{
@@ -48,7 +52,7 @@ A \code{tibble} with screening performance measures. The \code{tibble} includes 
 When both the human and AI title and abstract screening has been done, this function
 allows you to calculate performance measures of the screening, including the overall
 accuracy, specificity and sensitivity of the screening, as well as
-interrater reliability kappa statistics.
+inter-rater reliability kappa statistics.
 }
 \examples{
 x <- AIscreenR:::result_object

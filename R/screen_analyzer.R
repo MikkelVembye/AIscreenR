@@ -6,7 +6,7 @@
 #' When both the human and AI title and abstract screening has been done, this function
 #' allows you to calculate performance measures of the screening, including the overall
 #' accuracy, specificity and sensitivity of the screening, as well as
-#' interrater reliability kappa statistics.
+#' inter-rater reliability kappa statistics.
 #'
 #' @references
 #' Gartlehner, G., Wagner, G., Lux, L., Affengruber, L., Dobrescu, A., Kaminski-Hartenthaler, A., & Viswanathan, M. (2019).
@@ -21,9 +21,12 @@
 #' Assessing the Ability of ChatGPT to Screen Articles for Systematic Reviews.
 #' *ArXiv Preprint ArXiv:2307.06464*.
 #'
-#' @param x Either an object of class `'chatgpt'` or a data set of class `'chatgpt_tbl'`
+#' @param x An object of either class`'gpt'` or `'chatgpt'`
+#'    or a dataset of either class `'gpt_tbl'`, `'chatgpt_tbl'`, or `'gpt_agg_tbl'`
 #' @param human_decision Indicate the variable in the data that contains the human_decision.
-#' This variable must be numeric containing 1 (for included references) and 0 (for excluded references) only.
+#'    This variable must be numeric, containing 1 (for included references) and 0 (for excluded references) only.
+#' @param key_result Logical indicating if only the raw agreement, recall, and specificity measures should be returned.
+#'    Default is `TRUE`.
 #'
 #' @return A `tibble` with screening performance measures. The `tibble` includes the following variables:
 #' \tabular{lll}{
@@ -47,11 +50,11 @@
 #'  \bold{bacc}  \tab \code{numeric}  \tab "capture the accuracy of deciding both inclusion and exclusion classes" (Syriani et al., 2023). \cr
 #'  \bold{F2}  \tab \code{numeric} \tab F-measure that "consider the cost of getting false negatives twice as costly as getting false positives" (Syriani et al., 2023). \cr
 #'  \bold{mcc}  \tab \code{numeric} \tab indicating percent agreement for excluded references (Gartlehner et al., 2019). \cr
-#'  \bold{irr}  \tab \code{numeric}  \tab indicating the interrater reliability as described in McHugh (2012). \cr
-#'  \bold{se_irr} \tab \code{numeric} \tab indicating standard error for the interrater reliability. \cr
-#'  \bold{cl_irr} \tab \code{numeric} \tab indicating lower confidence interval for the interrater reliability. \cr
-#'  \bold{cu_irr} \tab \code{numeric} \tab indicating upper confidence interval for the interrater reliability. \cr
-#'  \bold{level_of_agreement} \tab \code{character} \tab interpretation of the interrater reliability as suggested by McHugh (2012). \cr
+#'  \bold{irr}  \tab \code{numeric}  \tab indicating the inter-rater reliability as described in McHugh (2012). \cr
+#'  \bold{se_irr} \tab \code{numeric} \tab indicating standard error for the inter-rater reliability. \cr
+#'  \bold{cl_irr} \tab \code{numeric} \tab indicating lower confidence interval for the inter-rater reliability. \cr
+#'  \bold{cu_irr} \tab \code{numeric} \tab indicating upper confidence interval for the inter-rater reliability. \cr
+#'  \bold{level_of_agreement} \tab \code{character} \tab interpretation of the inter-rater reliability as suggested by McHugh (2012). \cr
 #' }
 #'
 #' @importFrom stats df
@@ -63,12 +66,26 @@
 #' x |> screen_analyzer() |> print(width=260)
 
 
-screen_analyzer <- function(x, human_decision = human_code){
+screen_analyzer <- function(x, human_decision = human_code, key_result = TRUE){
 
-  if (all(!is_chatgpt(x), !is_chatgpt_tbl(x))) stop("The object must be of either class 'chatgpt' or 'chatgpt_tbl'.")
+
+  if (all(!is_chatgpt(x), !is_chatgpt_tbl(x), !is_gpt(x), !is_gpt_tbl(x), !is_gpt_agg_tbl(x))){
+    stop("The object must be of either class 'gpt, 'gpt_tbl', 'gpt_agg_tbl', 'chatgpt' or 'chatgpt_tbl'.")
+  }
 
   if (is_chatgpt(x)) dat <- x$answer_data_sum
   if (is_chatgpt_tbl(x)) dat <- x
+
+  names <- names(x)
+
+  if(!"answer_data_aggregated" %in% names & is_gpt(x)){
+    dat <- x$answer_data |> dplyr::rename(final_decision_gpt_num = decision_binary, reps = iterations, top_p = topp)
+  } else if("answer_data_aggregated" %in% names & is_gpt(x)) {
+    dat <- x$answer_data_aggregated
+  }
+
+  if (is_gpt_tbl(x)) dat <- x |> dplyr::rename(final_decision_gpt_num = decision_binary, reps = iterations, top_p = topp)
+  if (is_gpt_agg_tbl(x)) dat <- x
 
   hum_decision_name <- as.character(substitute(human_decision))
 
@@ -76,8 +93,8 @@ screen_analyzer <- function(x, human_decision = human_code){
 
   res <-
     dat |>
-    mutate(n_ref = n_distinct(studyid)) |>
-    filter(!is.na(final_decision_gpt_num)) |>
+    dplyr::mutate(n_ref = n_distinct(studyid)) |>
+    dplyr::filter(!is.na(final_decision_gpt_num)) |>
     summarise(
       n_screened = n(),
       n_refs = unique(n_ref),
@@ -101,8 +118,8 @@ screen_analyzer <- function(x, human_decision = human_code){
 
       .by = c(promptid, model, reps, top_p)
     ) |>
-    rowwise() |>
-    mutate(
+    dplyr::rowwise() |>
+    dplyr::mutate(
       # Eq. 6 (Syriani et al., 2023)
       bacc = (recall + specificity)/2,
       # Eq. 7 (Syriani et al., 2023)
@@ -133,15 +150,17 @@ screen_analyzer <- function(x, human_decision = human_code){
         irr > .39 & irr <= .59 ~ "Weak",
         irr > .59 & irr <= .79 ~ "Moderate",
         irr > .79 & irr <= .90 ~ "Strong",
-        irr > .9 ~ "Almost perfect",
+        irr != 1 & irr > .9 ~ "Almost perfect",
+        irr == 1 ~ "Perfect",
         TRUE ~ NA_character_
 
       )
     ) |>
-    ungroup() |>
-    select(-c(rm1:pe, nominator:denominator)) |>
-    relocate(n_refs, .before = n_screened)
+    dplyr::ungroup() |>
+    dplyr::select(-c(rm1:pe, nominator:denominator)) |>
+    dplyr::relocate(n_refs, .before = n_screened)
 
+  if (key_result) res <- res |> dplyr::select(promptid, model, reps, top_p, p_agreement, recall, specificity)
 
   res
 

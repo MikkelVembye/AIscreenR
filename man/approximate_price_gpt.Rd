@@ -73,7 +73,7 @@ app_price <- approximate_price_gpt(
   studyid = studyid,
   title = title,
   abstract = abstract,
-  model = c("gpt-3.5-turbo-0613", "gpt-4"),
+  model = c("gpt-4o-mini", "gpt-4"),
   reps = c(10, 1)
 )
 
