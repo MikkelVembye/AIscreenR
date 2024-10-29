@@ -10,7 +10,7 @@
 [![License: GPL
 (\>=3)](https://img.shields.io/badge/license-GPL-blue)](https://www.gnu.org/licenses/gpl-3.0.html)
 [![R-CMD-check](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml)
-[![status](https://img.shields.io/badge/status-work%20in%20progress-orange)](https://github.com/MikkelVembye/AIscreenR)
+[![status](https://img.shields.io/badge/status-under%20review-orange)](https://github.com/MikkelVembye/AIscreenR)
 [![devel
 Version](https://img.shields.io/badge/devel-0.0.0.9999-brightgreen.svg)](https://mikkelvembye.github.io/AIscreenR/)
 <!-- badges: end -->
@@ -21,14 +21,14 @@ related literature reviews. At the current stage, the main aim of the
 `AIscreenR` package is to support the use and testing of OpenAI’s GPT
 API models as the second screeners of titles and abstracts or
 alternatively to reduce research waste, i.e., the number of references
-needed to be screened by humans. The package allows user to apply
+needed to be screened by humans. The package allows user to utilize
 OpenAI’s GPT API models from the
 [https://api.openai.com/v1/chat/completions](https://platform.openai.com/docs/models/model-endpoint-compatibility)
-endpoint. In future developments, we expect to add further LLMs when
-APIs become available for other models, for example from Claude 2. For
-now, we invite other researchers to test this software so that we as a
-review community can get a better understanding of the performance of
-OpenAI’s GPT API models.
+endpoint. In future developments, we might add further LLMs when APIs
+become available for other models, for example from Claude 2. For now,
+we invite other researchers to test this software so that we as a review
+community can get a better understanding of the performance of OpenAI’s
+GPT API models.
 
 ## Installation
 
@@ -54,7 +54,7 @@ library(dplyr)
 library(future)
 
 # Setting API
-set_api_key(AIscreenR:::testing_key_chatgpt())
+set_api_key()
 
 # Obtain rate limits info (Default is "gpt-4")
 rate_limits <- rate_limits_per_minute()
@@ -74,7 +74,8 @@ rate_limits
 ```
 
 How to load ris files. In this example we have downloaded the ris files
-from the [EPPI-Reviewer](https://eppi.ioe.ac.uk/EPPIReviewer-Web/home).
+from the
+[EPPI-Reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914).
 
 ``` r
 # Loading ris file data via revtools
@@ -111,7 +112,7 @@ head(filges2015_dat, 10)
 #> 10 9431505 EEG spectrum as information carrier               "Sponta…          0
 ```
 
-Example of how to enter a prompt. Can also be done in word (see
+Example of how to enter a prompt. Can also be done in Word (see
 vignette).
 
 ``` r

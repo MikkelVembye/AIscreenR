@@ -1,6 +1,13 @@
 ---
 title: "Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    number_sections: true
+    toc: true
+date: "`r Sys.Date()`"
+bibliography: references.bib
+link-citations: yes
+csl: apa.csl
 vignette: >
   %\VignetteIndexEntry{Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews}
   %\VignetteEncoding{UTF-8}
@@ -30,14 +37,14 @@ options(dplyr.summarise.inform = FALSE) # Avoids summarize info from tidyverse
 <p style='margin-top:1em; text-align:center'>
 <b>Important note</b></p>
 <p style='margin:1em'>
-This is work-in-progress only. For now, see Vembye et al. (2024) for an overview of how and when GPT API models can be used for title and abstract (TAB) screening. For an overview of other research regarding the use of GPT API models for title and abstract screening, see Syriani et al. (2023), Guo et al., (2024), and Gargari et al. (2024). On a related line of research, Alshami et al. (2023), Khraisha et al. (2024), and Issaiy et al. (2024) explored using the ChatGPT web browser interface for TAB screening. Based on our experience, we think that these two lines of research should not be mixed up since the draw on different GPT models. 
+This is work-in-progress only. For now, see [Vembye et al.](https://osf.io/preprints/osf/yrhzm) [-@Vembye2024_gpt] for an overview of how and when GPT API models can be used for title and abstract (TAB) screening. For an overview of other research regarding the use of GPT API models for title and abstract screening, see Syriani et al. [-@Syriani2023; -@Syriani2024], Guo et al., [-@Guo2024], and Gargari et al. [-@Gargari2024]. On a related line of research, Alshami et al. [-@Alshami2023], Khraisha et al. [-@Khraisha2024], and Issaiy et al. [@Issaiy2024] explored using the ChatGPT web browser interface for TAB screening. Based on our experience, we think that these two lines of research should not be mixed up since the draw on different GPT models and setup. 
 </p></span>
 </div>
 
-In this vignette, we show how to conduct title and abstract screening with OpenAI's GPT API models in R. The advantages of conducting the screening with GPT API models via R is 1) that reviewers can easily work with a large number of references, avoiding copy-paste procedures (cf. Khraisha et al., 2024), 2) that the total screening time can be substantially decreased relative to using the ChatGPT interface, since screenings can be done in parallel, 3) that it eases model comparison, and 4) that consistency between GPT answer for the same title and abstract can easily be tested. It is important to stress that the GPT API models used for TAB screening should always be use carefully and be assisted by a human (human-in-the-loop). Consequently, we do not recommend to use the `AIscreenR` as a single screener, unless this an absolutely final solution. .    
+In this vignette, we show how to conduct title and abstract screening with OpenAI's GPT API models in R. More specifically, how to create a test dataset and decide what exact model to use as the second screener. The advantages of conducting the screening with GPT API models via R is 1) that reviewers can easily work with a large number of references, avoiding copy-paste procedures [cf. @Khraisha2024], 2) that the total screening time can be substantially decreased relative to using the ChatGPT interface, since screenings can be done in parallel, 3) that it eases model comparison, and 4) that consistency between GPT answer for the same title and abstract can easily be tested. It is important to stress that the GPT API models used for TAB screening should always be used carefully and be assisted by a human (human-in-the-loop). Consequently, we do not recommend to use the `AIscreenR` as a single screener, unless this an absolutely final solution.   
 
-## Getting started: Loading relevant ris file data for screening
-At this stage, we expect that you have a pile of ris-files, containing titles and abstracts for the references you would like to screen. You can retrieve ris-files in several ways, either directly from research database, a Google Scholar search, or exported from your reference management tool, such as EndNote, Mendeley, and RefMan. Alternatively, you can export ris-file from systematic software tool such as [EPPI-reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914), [Covidence](https://www.covidence.org/), [MetaReviewer](https://www.metareviewer.org/), [`revtools`](http://www.eshackathon.org/revtools/), or whatever software you use. In the example given below, we load ris-files extracted from the [EPPI-reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914). A minor advantage of extracting ris-files from systematic software tools is that they add a unique study ID to each reference. This feature makes it easier to keep track of the screening. Yet, such IDs are automatically generated in the `tabscreen_gpt()` function if unique IDs are missing. When using a GPT API model as the second screener, we recommend that the human screening has been done before uploading ris-file(s) to R. Thereby, it is possible to compare the screenings instantly after the computer screening has been done. In the below example we load ris-files separately for excluded and included ris-files, respectively, and add the `human_code` variable to track the human decision.   
+# Getting started: Loading relevant ris file data for screening
+At this stage, we expect that you have a pile of ris-files, containing titles and abstracts for the references you would like to screen. You can retrieve ris-files in several ways, either directly from research database, a Google Scholar search, or exported from your reference management tool, such as EndNote, Mendeley, and RefMan. Alternatively, you can export ris-file from systematic software tool such as [EPPI-reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914), [Covidence](https://www.covidence.org/), [MetaReviewer](https://www.metareviewer.org/), [`revtools`](http://www.eshackathon.org/revtools/) [@westgate2019], or whatever software you use. In the example given below, we load ris-files extracted from the [EPPI-reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914). A minor advantage of extracting ris-files from systematic software tools is that they add a unique study ID to each reference. This feature makes it easier to keep track of the screening. Yet, such IDs are automatically generated in the `tabscreen_gpt()` function if unique IDs are missing. When using a GPT API model as the second screener, we recommend that the human screening has been done before uploading ris-file(s) to R. Thereby, it is possible to compare the screenings instantly after the computer screening has been done. In the below example we load ris-files separately for excluded and included ris-files, respectively, and add the `human_code` variable to track the human decision.   
 
 ```{r, eval = FALSE, warning=FALSE, message=FALSE}
 # Loading packages 
@@ -103,7 +110,7 @@ filges2015_dat
 #># ℹ Use `print(n = ...)` to see more rows
 ```
 
-## Getting API key (OpenAI)
+# Getting API key (OpenAI)
 
 Before you can use the `AIscreenR` to screen your references, you must generate your own secret API key from OpenAI. To do so you must first ensure that you have created an account at OpenAI (*if you have not done so at this stage, you can sign up [here](https://auth0.openai.com/u/login/identifier?state=hKFo2SBqQjNHSlc1ejIyREpUb01hdDF2OHEzQy12NnJwWlFUN6Fur3VuaXZlcnNhbC1sb2dpbqN0aWTZIEJSOWJaamdKLWswNGlfWDQ2NER1OXJmVUNpVmVzVjZfo2NpZNkgRFJpdnNubTJNdTQyVDNLT3BxZHR3QjNOWXZpSFl6d0Q)).* When having an account, go to [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys) and press the `+ Create new secret key` button (see Figure 1 below) and give your key a name. 
 
@@ -118,7 +125,7 @@ When you have generated your secret API key, remember to store it safely since
 you will not be able see it again. **NOTE**: *If you lose your API key, you can 
 just generate a new one*. 
 
-## Handling your API key 
+# Handling your API key 
 
 When you have retrieved your API, you could in theory add it directly to the 
 `AIscreenR` functions via the `api_key` argument. Yet, this would be an improper
@@ -129,7 +136,7 @@ that your API key has been compromised (e.g., if you push it to a public GitHub 
 To overcome this issue you have several options from here. You can either work with what we call
 permanent or temporary solutions. 
 
-### Permanent solution
+## Permanent solution
 
 The easiest way to work with your API key is to permanently add it to your R environment
 as an environment variable. This can be achieved with `usethis::edit_r_environ()`. In the `.Renviron`
@@ -141,7 +148,7 @@ knitr::include_graphics("helper-stuff/Renviron.png")
 ```
 \ 
 
-### Temporary solution
+## Temporary solution
 
 If you do not want to add you API key permanently to your R environment, you can 
 use `set_api_key()`. When executing `set_api_key()`, you will see a pop-up window in
@@ -156,7 +163,7 @@ knitr::include_graphics("helper-stuff/set_api.png")
 ```
 \ 
 
-## Working with prompts in R
+# Working with prompts in R
 
 Example of how to enter a prompt. 
 
@@ -190,7 +197,7 @@ duration delivered to young people and their families). If not, exclude study.
 for non-opioid drug use? 3) Are the participants within age 11–21?"
 ```
 
-Can also be done in word
+Can also be done in Word
 
 \  
 
@@ -230,7 +237,7 @@ prompts
 ```
 
 
-## Retrieve rate limit information 
+# Retrieve rate limit information 
 
 ```{r,  eval = FALSE}
 # Rate limits across one model (Default is "gpt-3.5-turbo-0613")
@@ -255,7 +262,7 @@ models_rate_limits
 #> 2 gpt-4                              200             10000
 ```
 
-## Approximate price of screening
+# Approximate price of screening
 
 Approximate price of screening
 
@@ -284,7 +291,7 @@ app_obj$price_data
 
 ```
 
-## Screening titles and abstracts
+# Screening titles and abstracts
 ```{r, message=FALSE, eval=FALSE}
 models <- c("gpt-3.5-turbo-0613", "gpt-3.5-turbo-0613", "gpt-4")
 reps <- c(1, 10, 1)
@@ -325,7 +332,7 @@ print(result_object)
 #>  result_object$error_data
 ```
 
-## Screen failed requests
+# Screen failed requests
 
 ```{r, eval=FALSE}
 result_object <- 
@@ -348,7 +355,7 @@ result_object <- AIscreenR:::result_object_no_err
 ```
 
 
-## Getting the results from the screening
+# Getting the results from the screening
 
 ```{r}
 # gpt-3.5 results (prompt 1, top_p = 1, 10 replications)
@@ -365,16 +372,16 @@ sum_dat_gpt4 <-
 ```
 
 
-## Analyzing the screening
+# Analyzing the screening
 
-### Simple table
+## Simple table
 ```{r tables}
 # gpt3.5 result
 table(gpt = sum_dat_gpt3$final_decision_gpt_num, human = sum_dat_gpt3$human_code)
 table(gpt = sum_dat_gpt4$final_decision_gpt_num, human = sum_dat_gpt4$human_code)
 ```
 
-### False included and excluded (by gpt)
+## False included and excluded (by gpt)
 
 ```{r screen_stats}
 screen_perform <- 
@@ -384,7 +391,7 @@ screen_perform <-
 screen_perform
 ```
 
-## Getting detailed descriptions 
+# Getting detailed descriptions 
 
 ```{r}
 # Show example with gpt-4
@@ -393,19 +400,3 @@ screen_perform
 
 
 # References
-Alshami, A., Elsayed, M., Ali, E., Eltoukhy, A. E. E., & Zayed, T. (2023). Harnessing the power of ChatGPT for automating systematic review process: Methodology, case study, limitations, and future directions. *Systems*. 11(7).
-
-Gargari, O. K., Mahmoudi, M. H., Hajisafarali, M., & Samiee, R. (2024). Enhancing title and abstract screening for systematic reviews with GPT-3.5 turbo. *BMJ Evidence-Based Medicine*, 29(1), 69 LP – 70. <https://doi.org/10.1136/bmjebm-2023-112678>
-
-Guo, E., Gupta, M., Deng, J., Park, Y.-J., Paget, M., & Naugler, C. (2024). Automated Paper Screening for Clinical Reviews Using Large Language Models: Data Analysis Study. *Journal of Medical Internet Research*. <https://doi.org/10.2196/48996>
-
-Issaiy, M., Ghanaati, H., Kolahi, S., Shakiba, M., Jalali, A. H., Zarei, D., Kazemian, S., Avanaki, M. A., & Firouznia, K. (2024). Methodological insights into ChatGPT’s screening performance in systematic reviews. *BMC Medical Research Methodology*, 24(1), 78. <https://doi.org/10.1186/s12874-024-02203-8>
-
-Khraisha Q, Put S, Kappenberg J, Warraitch A, Hadfield K (2024). Can large language models replace humans in systematic reviews? Evaluating GPT-4's efficacy in screening and extracting data from peer-reviewed and grey literature in multiple languages. 
-*Research Synthesis Methods*. 1-11. <https://doi.org/10.1002/jrsm.1715>
-
-Syriani, E., David, I., & Kumar, G. (2023). Assessing the Ability of ChatGPT to Screen Articles for Systematic Reviews. *ArXiv Preprint ArXiv:2307.06464.* <http://arxiv.org/pdf/2307.06464>
-
-Vembye, M., Christensen, J., Mølgaard, A. B., Schytt, F.L.W. (2024). GPT API Models Can Function as Highly Reliable Second Screeners of Titles and Abstracts in Systematic Reviews: A Proof of Concept and Common Guidelines. *Open Science Framework (OSF)*. <https://doi.org/10.31219/osf.io/yrhzm>
-
-Westgate MJ (2019). revtools: An R package to support article screening for evidence synthesis. *Research Synthesis Methods*. <https://doi.org/10.1002/jrsm.1374>.
