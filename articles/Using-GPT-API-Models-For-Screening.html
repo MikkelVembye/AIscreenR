@@ -58,6 +58,7 @@
 
       <h1>Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews</h1>
             
+            <h4 data-toc-skip class="date">2024-10-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/MikkelVembye/AIscreenR/blob/main/vignettes/Using-GPT-API-Models-For-Screening.Rmd" class="external-link"><code>vignettes/Using-GPT-API-Models-For-Screening.Rmd</code></a></small>
       <div class="d-none name"><code>Using-GPT-API-Models-For-Screening.Rmd</code></div>
@@ -71,35 +72,38 @@
 <b>Important note</b>
 </p>
 <p style="margin:1em">
-This is work-in-progress only. For now, see Vembye et al. (2024) for an
+This is work-in-progress only. For now, see <a href="https://osf.io/preprints/osf/yrhzm" class="external-link">Vembye et al.</a> <span class="citation">(<a href="#ref-Vembye2024_gpt">2024</a>)</span> for an
 overview of how and when GPT API models can be used for title and
 abstract (TAB) screening. For an overview of other research regarding
 the use of GPT API models for title and abstract screening, see Syriani
-et al. (2023), Guo et al., (2024), and Gargari et al. (2024). On a
-related line of research, Alshami et al. (2023), Khraisha et al. (2024),
-and Issaiy et al. (2024) explored using the ChatGPT web browser
+et al. <span class="citation">(<a href="#ref-Syriani2023">2023</a>, <a href="#ref-Syriani2024">2024</a>)</span>, Guo et al., <span class="citation">(<a href="#ref-Guo2024">2024</a>)</span>, and Gargari
+et al. <span class="citation">(<a href="#ref-Gargari2024">2024</a>)</span>. On a related line of research,
+Alshami et al. <span class="citation">(<a href="#ref-Alshami2023">2023</a>)</span>, Khraisha et al. <span class="citation">(<a href="#ref-Khraisha2024">2024</a>)</span>, and
+Issaiy et al. <span class="citation">(<a href="#ref-Issaiy2024">Issaiy
+et al., 2024</a>)</span> explored using the ChatGPT web browser
 interface for TAB screening. Based on our experience, we think that
 these two lines of research should not be mixed up since the draw on
-different GPT models.
+different GPT models and setup.
 </p>
 <p></p></span>
 </div>
 <p>In this vignette, we show how to conduct title and abstract screening
-with OpenAI’s GPT API models in R. The advantages of conducting the
-screening with GPT API models via R is 1) that reviewers can easily work
-with a large number of references, avoiding copy-paste procedures
-(cf. Khraisha et al., 2024), 2) that the total screening time can be
-substantially decreased relative to using the ChatGPT interface, since
-screenings can be done in parallel, 3) that it eases model comparison,
-and 4) that consistency between GPT answer for the same title and
-abstract can easily be tested. It is important to stress that the GPT
-API models used for TAB screening should always be use carefully and be
-assisted by a human (human-in-the-loop). Consequently, we do not
-recommend to use the <code>AIscreenR</code> as a single screener, unless
-this an absolutely final solution. .</p>
-<div class="section level3">
-<h3 id="getting-started-loading-relevant-ris-file-data-for-screening">Getting started: Loading relevant ris file data for screening<a class="anchor" aria-label="anchor" href="#getting-started-loading-relevant-ris-file-data-for-screening"></a>
-</h3>
+with OpenAI’s GPT API models in R. More specifically, how to create a
+test dataset and decide what exact model to use as the second screener.
+The advantages of conducting the screening with GPT API models via R is
+1) that reviewers can easily work with a large number of references,
+avoiding copy-paste procedures <span class="citation">(cf. <a href="#ref-Khraisha2024">Khraisha et al., 2024</a>)</span>, 2) that the
+total screening time can be substantially decreased relative to using
+the ChatGPT interface, since screenings can be done in parallel, 3) that
+it eases model comparison, and 4) that consistency between GPT answer
+for the same title and abstract can easily be tested. It is important to
+stress that the GPT API models used for TAB screening should always be
+used carefully and be assisted by a human (human-in-the-loop).
+Consequently, we do not recommend to use the <code>AIscreenR</code> as a
+single screener, unless this an absolutely final solution.</p>
+<div class="section level2">
+<h2 id="getting-started-loading-relevant-ris-file-data-for-screening">Getting started: Loading relevant ris file data for screening<a class="anchor" aria-label="anchor" href="#getting-started-loading-relevant-ris-file-data-for-screening"></a>
+</h2>
 <p>At this stage, we expect that you have a pile of ris-files,
 containing titles and abstracts for the references you would like to
 screen. You can retrieve ris-files in several ways, either directly from
@@ -107,9 +111,10 @@ research database, a Google Scholar search, or exported from your
 reference management tool, such as EndNote, Mendeley, and RefMan.
 Alternatively, you can export ris-file from systematic software tool
 such as <a href="https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914" class="external-link">EPPI-reviewer</a>,
-<a href="https://www.covidence.org/" class="external-link">Covidence</a>, <a href="https://www.metareviewer.org/" class="external-link">MetaReviewer</a>, <a href="http://www.eshackathon.org/revtools/" class="external-link"><code>revtools</code></a>,
-or whatever software you use. In the example given below, we load
-ris-files extracted from the <a href="https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914" class="external-link">EPPI-reviewer</a>.
+<a href="https://www.covidence.org/" class="external-link">Covidence</a>, <a href="https://www.metareviewer.org/" class="external-link">MetaReviewer</a>, <a href="http://www.eshackathon.org/revtools/" class="external-link"><code>revtools</code></a>
+<span class="citation">(<a href="#ref-westgate2019">Westgate,
+2019</a>)</span>, or whatever software you use. In the example given
+below, we load ris-files extracted from the <a href="https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914" class="external-link">EPPI-reviewer</a>.
 A minor advantage of extracting ris-files from systematic software tools
 is that they add a unique study ID to each reference. This feature makes
 it easier to keep track of the screening. Yet, such IDs are
@@ -181,9 +186,9 @@ track the human decision.</p>
 <span><span class="co">#&gt;# ℹ 260 more rows</span></span>
 <span><span class="co">#&gt;# ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="getting-api-key-openai">Getting API key (OpenAI)<a class="anchor" aria-label="anchor" href="#getting-api-key-openai"></a>
-</h3>
+<div class="section level2">
+<h2 id="getting-api-key-openai">Getting API key (OpenAI)<a class="anchor" aria-label="anchor" href="#getting-api-key-openai"></a>
+</h2>
 <p>Before you can use the <code>AIscreenR</code> to screen your
 references, you must generate your own secret API key from OpenAI. To do
 so you must first ensure that you have created an account at OpenAI
@@ -202,9 +207,9 @@ below) and give your key a name.</p>
 safely since you will not be able see it again. <strong>NOTE</strong>:
 <em>If you lose your API key, you can just generate a new one</em>.</p>
 </div>
-<div class="section level3">
-<h3 id="handling-your-api-key">Handling your API key<a class="anchor" aria-label="anchor" href="#handling-your-api-key"></a>
-</h3>
+<div class="section level2">
+<h2 id="handling-your-api-key">Handling your API key<a class="anchor" aria-label="anchor" href="#handling-your-api-key"></a>
+</h2>
 <p>When you have retrieved your API, you could in theory add it directly
 to the <code>AIscreenR</code> functions via the <code>api_key</code>
 argument. Yet, this would be an improper way to work the API key since
@@ -215,9 +220,9 @@ the API key if they recognize that your API key has been compromised
 (e.g., if you push it to a public GitHub page). To overcome this issue
 you have several options from here. You can either work with what we
 call permanent or temporary solutions.</p>
-<div class="section level4">
-<h4 id="permanent-solution">Permanent solution<a class="anchor" aria-label="anchor" href="#permanent-solution"></a>
-</h4>
+<div class="section level3">
+<h3 id="permanent-solution">Permanent solution<a class="anchor" aria-label="anchor" href="#permanent-solution"></a>
+</h3>
 <p>The easiest way to work with your API key is to permanently add it to
 your R environment as an environment variable. This can be achieved with
 <code><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">usethis::edit_r_environ()</a></code>. In the <code>.Renviron</code>
@@ -237,9 +242,9 @@ process).  </p>
 </div>
 <p> </p>
 </div>
-<div class="section level4">
-<h4 id="temporary-solution">Temporary solution<a class="anchor" aria-label="anchor" href="#temporary-solution"></a>
-</h4>
+<div class="section level3">
+<h3 id="temporary-solution">Temporary solution<a class="anchor" aria-label="anchor" href="#temporary-solution"></a>
+</h3>
 <p>If you do not want to add you API key permanently to your R
 environment, you can use <code><a href="../reference/set_api_key.html">set_api_key()</a></code>. When executing
 <code><a href="../reference/set_api_key.html">set_api_key()</a></code>, you will see a pop-up window in which you
@@ -259,9 +264,9 @@ package for further details about this solution.  </p>
 <p> </p>
 </div>
 </div>
-<div class="section level3">
-<h3 id="working-with-prompts-in-r">Working with prompts in R<a class="anchor" aria-label="anchor" href="#working-with-prompts-in-r"></a>
-</h3>
+<div class="section level2">
+<h2 id="working-with-prompts-in-r">Working with prompts in R<a class="anchor" aria-label="anchor" href="#working-with-prompts-in-r"></a>
+</h2>
 <p>Example of how to enter a prompt.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">prompt</span> <span class="op">&lt;-</span> <span class="st">"Evaluate the following study based on the selection criteria</span></span>
@@ -291,7 +296,7 @@ package for further details about this solution.  </p>
 <span><span class="st">duration delivered to young people and their families). If not, exclude study.</span></span>
 <span><span class="st">2) Are the participants in outpatient drug treatment primarily</span></span>
 <span><span class="st">for non-opioid drug use? 3) Are the participants within age 11–21?"</span></span></code></pre></div>
-<p>Can also be done in word</p>
+<p>Can also be done in Word</p>
 <p> </p>
 <div class="figure">
 <img src="helper-stuff%2Fwordprompt1.png" alt="*Figure 4 - Prompt 1: With three inclusion critera.*" width="100%"><p class="caption">
@@ -328,9 +333,9 @@ package for further details about this solution.  </p>
 <span></span>
 <span><span class="va">prompts</span> </span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="retrieve-rate-limit-information">Retrieve rate limit information<a class="anchor" aria-label="anchor" href="#retrieve-rate-limit-information"></a>
-</h3>
+<div class="section level2">
+<h2 id="retrieve-rate-limit-information">Retrieve rate limit information<a class="anchor" aria-label="anchor" href="#retrieve-rate-limit-information"></a>
+</h2>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Rate limits across one model (Default is "gpt-3.5-turbo-0613")</span></span>
 <span><span class="va">rate_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -353,9 +358,9 @@ package for further details about this solution.  </p>
 <span><span class="co">#&gt; 1 gpt-3.5-turbo-0613               10000           1000000</span></span>
 <span><span class="co">#&gt; 2 gpt-4                              200             10000</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="approximate-price-of-screening">Approximate price of screening<a class="anchor" aria-label="anchor" href="#approximate-price-of-screening"></a>
-</h3>
+<div class="section level2">
+<h2 id="approximate-price-of-screening">Approximate price of screening<a class="anchor" aria-label="anchor" href="#approximate-price-of-screening"></a>
+</h2>
 <p>Approximate price of screening</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">app_obj</span> <span class="op">&lt;-</span> </span>
@@ -376,9 +381,9 @@ package for further details about this solution.  </p>
 <span><span class="co">#&gt; [1] 3.0573</span></span>
 <span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_data</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="screening-titles-and-abstracts">Screening titles and abstracts<a class="anchor" aria-label="anchor" href="#screening-titles-and-abstracts"></a>
-</h3>
+<div class="section level2">
+<h2 id="screening-titles-and-abstracts">Screening titles and abstracts<a class="anchor" aria-label="anchor" href="#screening-titles-and-abstracts"></a>
+</h2>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-4"</span><span class="op">)</span></span>
 <span><span class="va">reps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span>, <span class="fl">1</span><span class="op">)</span></span>
@@ -418,9 +423,9 @@ package for further details about this solution.  </p>
 <span><span class="co">#&gt; Find error data by executing</span></span>
 <span><span class="co">#&gt;  result_object$error_data</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="screen-failed-requests">Screen failed requests<a class="anchor" aria-label="anchor" href="#screen-failed-requests"></a>
-</h3>
+<div class="section level2">
+<h2 id="screen-failed-requests">Screen failed requests<a class="anchor" aria-label="anchor" href="#screen-failed-requests"></a>
+</h2>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result_object</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">result_object</span> <span class="op">|&gt;</span> </span>
@@ -436,9 +441,9 @@ package for further details about this solution.  </p>
 <span><span class="co">#&gt; Find total price for the screening by executing</span></span>
 <span><span class="co">#&gt;  result_object$price_dollar</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="getting-the-results-from-the-screening">Getting the results from the screening<a class="anchor" aria-label="anchor" href="#getting-the-results-from-the-screening"></a>
-</h3>
+<div class="section level2">
+<h2 id="getting-the-results-from-the-screening">Getting the results from the screening<a class="anchor" aria-label="anchor" href="#getting-the-results-from-the-screening"></a>
+</h2>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># gpt-3.5 results (prompt 1, top_p = 1, 10 replications)</span></span>
 <span><span class="co"># studyid = 21 is not included since it failed during the loop</span></span>
@@ -452,20 +457,20 @@ package for further details about this solution.  </p>
 <span>  <span class="va">result_object</span><span class="op">$</span><span class="va">answer_data_sum</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html" class="external-link">str_detect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"4"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">promptid</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">top_p</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 </div>
+<div class="section level2">
+<h2 id="analyzing-the-screening">Analyzing the screening<a class="anchor" aria-label="anchor" href="#analyzing-the-screening"></a>
+</h2>
 <div class="section level3">
-<h3 id="analyzing-the-screening">Analyzing the screening<a class="anchor" aria-label="anchor" href="#analyzing-the-screening"></a>
+<h3 id="simple-table">Simple table<a class="anchor" aria-label="anchor" href="#simple-table"></a>
 </h3>
-<div class="section level4">
-<h4 id="simple-table">Simple table<a class="anchor" aria-label="anchor" href="#simple-table"></a>
-</h4>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># gpt3.5 result</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span>gpt <span class="op">=</span> <span class="va">sum_dat_gpt3</span><span class="op">$</span><span class="va">final_decision_gpt_num</span>, human <span class="op">=</span> <span class="va">sum_dat_gpt3</span><span class="op">$</span><span class="va">human_code</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span>gpt <span class="op">=</span> <span class="va">sum_dat_gpt4</span><span class="op">$</span><span class="va">final_decision_gpt_num</span>, human <span class="op">=</span> <span class="va">sum_dat_gpt4</span><span class="op">$</span><span class="va">human_code</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="false-included-and-excluded-by-gpt">False included and excluded (by gpt)<a class="anchor" aria-label="anchor" href="#false-included-and-excluded-by-gpt"></a>
-</h4>
+<div class="section level3">
+<h3 id="false-included-and-excluded-by-gpt">False included and excluded (by gpt)<a class="anchor" aria-label="anchor" href="#false-included-and-excluded-by-gpt"></a>
+</h3>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">screen_perform</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">result_object</span> <span class="op">|&gt;</span> </span>
@@ -474,47 +479,70 @@ package for further details about this solution.  </p>
 <span><span class="va">screen_perform</span></span></code></pre></div>
 </div>
 </div>
-<div class="section level3">
-<h3 id="getting-detailed-descriptions">Getting detailed descriptions<a class="anchor" aria-label="anchor" href="#getting-detailed-descriptions"></a>
-</h3>
+<div class="section level2">
+<h2 id="getting-detailed-descriptions">Getting detailed descriptions<a class="anchor" aria-label="anchor" href="#getting-detailed-descriptions"></a>
+</h2>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Show example with gpt-4</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<p>Alshami, A., Elsayed, M., Ali, E., Eltoukhy, A. E. E., &amp; Zayed,
-T. (2023). Harnessing the power of ChatGPT for automating systematic
-review process: Methodology, case study, limitations, and future
-directions. <em>Systems</em>. 11(7).</p>
-<p>Gargari, O. K., Mahmoudi, M. H., Hajisafarali, M., &amp; Samiee, R.
-(2024). Enhancing title and abstract screening for systematic reviews
-with GPT-3.5 turbo. <em>BMJ Evidence-Based Medicine</em>, 29(1), 69 LP –
-70. <a href="https://doi.org/10.1136/bmjebm-2023-112678" class="external-link uri">https://doi.org/10.1136/bmjebm-2023-112678</a></p>
-<p>Guo, E., Gupta, M., Deng, J., Park, Y.-J., Paget, M., &amp; Naugler,
-C. (2024). Automated Paper Screening for Clinical Reviews Using Large
-Language Models: Data Analysis Study. <em>Journal of Medical Internet
-Research</em>. <a href="https://doi.org/10.2196/48996" class="external-link uri">https://doi.org/10.2196/48996</a></p>
-<p>Issaiy, M., Ghanaati, H., Kolahi, S., Shakiba, M., Jalali, A. H.,
-Zarei, D., Kazemian, S., Avanaki, M. A., &amp; Firouznia, K. (2024).
-Methodological insights into ChatGPT’s screening performance in
-systematic reviews. <em>BMC Medical Research Methodology</em>, 24(1),
-78. <a href="https://doi.org/10.1186/s12874-024-02203-8" class="external-link uri">https://doi.org/10.1186/s12874-024-02203-8</a></p>
-<p>Khraisha Q, Put S, Kappenberg J, Warraitch A, Hadfield K (2024). Can
-large language models replace humans in systematic reviews? Evaluating
-GPT-4’s efficacy in screening and extracting data from peer-reviewed and
-grey literature in multiple languages. <em>Research Synthesis
-Methods</em>. 1-11. <a href="https://doi.org/10.1002/jrsm.1715" class="external-link uri">https://doi.org/10.1002/jrsm.1715</a></p>
-<p>Syriani, E., David, I., &amp; Kumar, G. (2023). Assessing the Ability
-of ChatGPT to Screen Articles for Systematic Reviews. <em>ArXiv Preprint
-ArXiv:2307.06464.</em> <a href="http://arxiv.org/pdf/2307.06464" class="external-link uri">http://arxiv.org/pdf/2307.06464</a></p>
-<p>Vembye, M., Christensen, J., Mølgaard, A. B., Schytt, F.L.W. (2024).
-GPT API Models Can Function as Highly Reliable Second Screeners of
-Titles and Abstracts in Systematic Reviews: A Proof of Concept and
-Common Guidelines. <em>Open Science Framework (OSF)</em>. <a href="https://doi.org/10.31219/osf.io/yrhzm" class="external-link uri">https://doi.org/10.31219/osf.io/yrhzm</a></p>
-<p>Westgate MJ (2019). revtools: An R package to support article
-screening for evidence synthesis. <em>Research Synthesis Methods</em>.
-<a href="https://doi.org/10.1002/jrsm.1374" class="external-link uri">https://doi.org/10.1002/jrsm.1374</a>.</p>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0" line-spacing="2">
+<div id="ref-Alshami2023" class="csl-entry">
+Alshami, A., Elsayed, M., Ali, E., Eltoukhy, A. E. E., &amp; Zayed, T.
+(2023). <span class="nocase">Harnessing the power of ChatGPT for
+automating systematic review process: Methodology, case study,
+limitations, and future directions</span>. <em>Systems</em>,
+<em>11</em>(7), 351. <a href="https://doi.org/10.3390/systems11070351" class="external-link">https://doi.org/10.3390/systems11070351</a>
+</div>
+<div id="ref-Gargari2024" class="csl-entry">
+Gargari, O. K., Mahmoudi, M. H., Hajisafarali, M., &amp; Samiee, R.
+(2024). <span class="nocase">Enhancing title and abstract screening for
+systematic reviews with GPT-3.5 turbo</span>. <em>BMJ Evidence-Based
+Medicine</em>, <em>29</em>(1), 69 LP–70. <a href="https://doi.org/10.1136/bmjebm-2023-112678" class="external-link">https://doi.org/10.1136/bmjebm-2023-112678</a>
+</div>
+<div id="ref-Guo2024" class="csl-entry">
+Guo, E., Gupta, M., Deng, J., Park, Y.-J., Paget, M., &amp; Naugler, C.
+(2024). <span class="nocase">Automated paper screening for clinical
+reviews using large language models: Data analysis study</span>. <em>J
+Med Internet Res</em>, <em>26</em>, e48996. <a href="https://doi.org/10.2196/48996" class="external-link">https://doi.org/10.2196/48996</a>
+</div>
+<div id="ref-Issaiy2024" class="csl-entry">
+Issaiy, M., Ghanaati, H., Kolahi, S., Shakiba, M., Jalali, A. H., Zarei,
+D., … Firouznia, K. (2024). <span class="nocase">Methodological insights
+into ChatGPT’s screening performance in systematic reviews</span>.
+<em>BMC Medical Research Methodology</em>, <em>24</em>(1), 78. <a href="https://doi.org/10.1186/s12874-024-02203-8" class="external-link">https://doi.org/10.1186/s12874-024-02203-8</a>
+</div>
+<div id="ref-Khraisha2024" class="csl-entry">
+Khraisha, Q., Put, S., Kappenberg, J., Warraitch, A., &amp; Hadfield, K.
+(2024). <span class="nocase">Can large language models replace humans in
+systematic reviews? Evaluating GPT-4’s efficacy in screening and
+extracting data from peer-reviewed and grey literature in multiple
+languages</span>. <em>Research Synthesis Methods</em>. <a href="https://doi.org/10.1002/jrsm.1715" class="external-link">https://doi.org/10.1002/jrsm.1715</a>
+</div>
+<div id="ref-Syriani2023" class="csl-entry">
+Syriani, E., David, I., &amp; Kumar, G. (2023). <span class="nocase">Assessing the ability of ChatGPT to screen articles for
+systematic reviews</span>. <em>arXiv Preprint arXiv:2307.06464</em>.
+</div>
+<div id="ref-Syriani2024" class="csl-entry">
+Syriani, E., David, I., &amp; Kumar, G. (2024). <span class="nocase">Screening articles for systematic reviews with
+ChatGPT</span>. <em>Journal of Computer Languages</em>, <em>80</em>,
+101287. https://doi.org/<a href="https://doi.org/10.1016/j.cola.2024.101287" class="external-link">https://doi.org/10.1016/j.cola.2024.101287</a>
+</div>
+<div id="ref-Vembye2024_gpt" class="csl-entry">
+Vembye, M. H., Christensen, J., Mølgaard, A. B., &amp; Schytt, F. L. W.
+(2024). <span class="nocase">GPT API Models Can Function as Highly
+Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
+A Proof of Concept and Common Guidelines</span>. <em>Open Science
+Framework</em>. <a href="https://doi.org/10.31219/osf.io/yrhzm" class="external-link">https://doi.org/10.31219/osf.io/yrhzm</a>
+</div>
+<div id="ref-westgate2019" class="csl-entry">
+Westgate, M. J. (2019). <span class="nocase">revtools: An R package to
+support article screening for evidence synthesis</span>. <em>Research
+Synthesis Methods</em>, <em>10</em>(4), 606–614. <a href="https://doi.org/10.1002/jrsm.1374" class="external-link">https://doi.org/10.1002/jrsm.1374</a>
+</div>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
