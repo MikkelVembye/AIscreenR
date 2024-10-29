@@ -8,7 +8,7 @@ Authors@R: c(
            role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-9071-0724"))
            )
-Description: Screening with AI tools, including title and abstract screening with GPT API models from 'OpenAI'.
+Description: Text screening with AI models, including title and abstract screening with large-language models from 'OpenAI'.
 Depends:
     R (>= 4.1.0)
 License: GPL (>= 3)
@@ -20,6 +20,7 @@ Imports:
     tibble,
     httr2,
     stringr,
+    future,
     furrr,
     tidyr,
     tictoc,
@@ -27,11 +28,11 @@ Imports:
     curl,
     purrr,
     lifecycle,
+    conflicted,
     jsonlite
 Suggests: 
     knitr,
     rmarkdown,
-    future,
     usethis,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

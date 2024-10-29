@@ -34,13 +34,12 @@ rate_limits_per_minute <- function(
     api_key = get_api_key()
 ) {
 
-  purrr::map(model, ~ rate_limits_per_minute_engine(model = .x, AI_tool = AI_tool, api_key = api_key)) |>
-    purrr::list_rbind()
+  furrr::future_map_dfr(model, ~ .rate_limits_per_minute_engine(model = .x, AI_tool = AI_tool, api_key = api_key))
 
 }
 
-
-rate_limits_per_minute_engine <- function(
+# Hidden function
+.rate_limits_per_minute_engine <- function(
     model, AI_tool, api_key
     ){
 

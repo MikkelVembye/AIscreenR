@@ -1,6 +1,6 @@
 models <- c("gpt-4o-mini", "gpt-4")
 
-skip <- TRUE
+skip <- FALSE
 
 test_that("General working of rate_limits_per_minute().", {
 
@@ -28,14 +28,14 @@ test_that("General working of rate_limits_per_minute().", {
 
 test_that("rate_limits_per_minute() casts errors correctly.", {
 
-  if(skip) skip()
-  skip_on_cran()
+  #if(skip) skip()
+  #skip_on_cran()
 
   rlpm <- rate_limits_per_minute(model = "gpt-3")
-  expect_identical(unique(rlpm$model), "Error 404 [check gpt model]")
+  expect_identical(unique(rlpm$model), "Error 404: The model `gpt-3` does not exist or you do not have access to it.")
 
-  rlpm <- rate_limits_per_minute(api_key = 1234)
-  expect_identical(unique(rlpm$model), "Error 401 Unauthorized [invalid api]")
+  rlpm <- rate_limits_per_minute(api_key = 1234)$model
+  expect_true(stringr:::str_detect(rlpm, "401"))
 
   expect_error(
     rate_limits_per_minute(AI_tool = "Bard")

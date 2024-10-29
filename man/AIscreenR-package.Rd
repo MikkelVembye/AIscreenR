@@ -6,7 +6,7 @@
 \alias{AIscreenR-package}
 \title{AIscreenR: AI Screening Tools for Systematic Reviews}
 \description{
-Screening with AI tools, including title and abstract screening with GPT API models from 'OpenAI'.
+Text screening with AI models, including title and abstract screening with large-language models from 'OpenAI'.
 }
 \seealso{
 Useful links:

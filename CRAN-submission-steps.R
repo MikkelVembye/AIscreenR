@@ -1,15 +1,13 @@
 # Locally
 devtools::spell_check()                       # fix any spelling errors
-devtools::check()
+devtools::check(remote = TRUE, manual = TRUE)
 
 # Check the package under various architectures, using CRAN build configurations
-devtools::check_win_devel() # Tested 1 note about maintainer
-devtools::check_win_release() # Tested 1 note about maintainer
-devtools::check_win_oldrelease() # Tested 1 note about maintainer
+
 devtools::check_mac_release() # Tested Succeeded
-rhub::check_for_cran() # Tested note about maintainer
-rhub::check_on_debian() # Succeeded
-revdepcheck::revdep_check(num_workers = 4)
+
+
+
 
 # After all checks complete
 devtools::release()                # final checklist, build and submit package

@@ -252,7 +252,7 @@ screen_errors.gpt <- function(
     #.............................
 
     # Adding price data
-    price_dat <- if (token_info) price_gpt(answer_dat) else NULL
+    price_dat <- if (token_info) .price_gpt(answer_dat) else NULL
     price <- if (!is.null(price_dat)) sum(price_dat$total_price_dollar, na.rm = TRUE) else NULL
 
     #.........................................................................

@@ -343,7 +343,7 @@ print(result_object)
 #>  result_object$price_dollar
 ```
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, eval = FALSE}
 result_object <- AIscreenR:::result_object_no_err
 ```
 

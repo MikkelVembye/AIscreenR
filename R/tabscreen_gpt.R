@@ -531,7 +531,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
 
     if(!fine_tuned) {
 
-    app_price_dat <- price_gpt(question_dat)
+    app_price_dat <- .price_gpt(question_dat)
     app_price <- sum(app_price_dat$total_price_dollar, na.rm = TRUE)
 
     # Ensuring the user does not waste money on wrong coding
@@ -637,7 +637,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
     #.............................
 
     # Adding price data
-    price_dat <- if (token_info && !fine_tuned) price_gpt(answer_dat) else NULL
+    price_dat <- if (token_info && !fine_tuned) .price_gpt(answer_dat) else NULL
     price <- if (!is.null(price_dat)) sum(price_dat$total_price_dollar, na.rm = TRUE) else NULL
 
     #.........................................................................

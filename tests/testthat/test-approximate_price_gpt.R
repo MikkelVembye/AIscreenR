@@ -6,25 +6,27 @@ prompt <- prompts[1]
 
 test_that("approximate_price_gpt() takes multiple inputs", {
 
-  skip()
-  #skip_on_ci()
 
   app_obj <- approximate_price_gpt(
-    data = filges2015_dat,
+    data = filges2015_dat[c(1:20),],
     prompt = prompts,
     studyid = studyid,
     title = title,
     abstract = abstract,
     model = c("gpt-4o", "gpt-4"),
-    reps = c(10, 1),
+    reps = c(2, 1),
     top_p = c(0.2, 1)
   )
 
-#  expect_output(print(app_obj), "\\$54\\.506\\.")
- # UPDATE
-  gpt_price_ratio <- app_obj$price_data$input_price_dollar[2]/app_obj$price_data$input_price_dollar[1]
+  expect_output(print(app_obj), "\\$3\\.7862\\.")
+  expect_equal(app_obj$price_dollar, 3.7862, tolerance = 0.1)
 
-  expect_equal(gpt_price_ratio, 2L, tolerance = .01)
+  obj_names_length <- app_obj |> names() |> length()
+  expect_equal(obj_names_length, 2)
+
+  data_var_length <- app_obj$price_data |> names() |> length()
+  expect_equal(data_var_length, 6)
+
 
   app_obj <- approximate_price_gpt(
     data = filges2015_dat[c(1:20),],
@@ -36,17 +38,15 @@ test_that("approximate_price_gpt() takes multiple inputs", {
     reps = 1
   )
 
-#  expect_output(print(app_obj), "\\$0\\.7598\\.")
-
-  gpt_price_ratio <- app_obj$price_data$input_price_dollar[2]/app_obj$price_data$input_price_dollar[1]
-
-  expect_equal(gpt_price_ratio, 20L, tolerance = .01)
+  # Remember to update when prices changes
+  price_ratio <- app_obj$price_data$total_price_dollar[2]/app_obj$price_data$total_price_dollar[1]
+  expect_equal(price_ratio, 6, tolerance = 0.1)
 
 })
 
 test_that("approximate_price_gpt() error structure.", {
 
-  skip()
+  #skip()
   #skip_on_ci()
 
   # UPDATE
