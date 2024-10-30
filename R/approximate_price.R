@@ -14,7 +14,7 @@
 #'
 #' @template common-arg
 #' @param model Character string with the name of the completion model. Can take
-#'   multiple models, including gpt-4 models. Default = `"gpt-3.5-turbo-0613"`.
+#'   multiple models, including gpt-4 models. Default = `"gpt-4o-mini"`.
 #'   Find available model at
 #'   \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.
 #' @param reps Numerical value indicating the number of times the same
@@ -65,7 +65,7 @@ approximate_price_gpt <-
     studyid,
     title,
     abstract,
-    model = "gpt-3.5-turbo-0613",
+    model = "gpt-4o-mini",
     reps = 1,
     top_p = 1,
     token_word_ratio = 1.6

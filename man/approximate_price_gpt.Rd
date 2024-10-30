@@ -10,7 +10,7 @@ approximate_price_gpt(
   studyid,
   title,
   abstract,
-  model = "gpt-3.5-turbo-0613",
+  model = "gpt-4o-mini",
   reps = 1,
   top_p = 1,
   token_word_ratio = 1.6
@@ -29,7 +29,7 @@ automatically.}
 \item{abstract}{Name of variable containing the abstract information.}
 
 \item{model}{Character string with the name of the completion model. Can take
-multiple models, including gpt-4 models. Default = \code{"gpt-3.5-turbo-0613"}.
+multiple models, including gpt-4 models. Default = \code{"gpt-4o-mini"}.
 Find available model at
 \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.}
 

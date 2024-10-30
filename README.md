@@ -188,6 +188,7 @@ test_obj <-
   ) 
 #> * The approximate price of the current (simple) screening will be around $0.0017.
 #> * Consider removing references that has no abstract since these can distort the accuracy of the screening.
+#> Progress: ───────────────────────────────────────────────────────────────────────────────────── 100%
 plan(sequential)
 test_obj
 #> 

@@ -277,6 +277,9 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
   ...
 ){
 
+  if (is_gpt_tbl(data)) data <- data |> dplyr::select(-c(promptid:n)) |> tibble::as_tibble()
+  if (is_gpt_agg_tbl(data)) data <- data |> dplyr::select(-c(promptid:submodel)) |> tibble::as_tibble()
+
   #......................................
   # Start up - Generic stop messages ----
   #......................................
@@ -574,7 +577,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
     if ("No information" %in% abstract_text) {
       message(
         paste0(
-          "* Consider removing references that has no abstract ",
+          "* Consider removing references without abstracts ",
           "since these can distort the accuracy of the screening."
         )
       )

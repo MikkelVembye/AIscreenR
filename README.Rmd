@@ -185,7 +185,8 @@ test_obj <-
     reps = 1 # Number of times the same question is asked to ChatGPT
   ) 
 #> * The approximate price of the current (simple) screening will be around $0.0017.
-#> * Consider removing references that has no abstract since these can distort the accuracy of the screening.
+#> * Consider removing references without abstracts since these can distort the accuracy of the screening.
+#> Progress: ───────────────────────────────────────────────────────────────────────────────────── 100%
 plan(sequential)
 test_obj
 #> 
