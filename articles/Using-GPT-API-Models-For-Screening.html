@@ -83,24 +83,43 @@ Issaiy et al. <span class="citation">(<a href="#ref-Issaiy2024">Issaiy
 et al., 2024</a>)</span> explored using the ChatGPT web browser
 interface for TAB screening. Based on our experience, we think that
 these two lines of research should not be mixed up since the draw on
-different GPT models and setup.
+different GPT models and setups.
 </p>
 <p></p></span>
 </div>
-<p>In this vignette, we show how to conduct title and abstract screening
-with OpenAI’s GPT API models in R. More specifically, how to create a
+<p>Conducting a systematic review is most often resource-demanding. A
+critical first step to ensure the quality of systematic reviews and
+meta-analyses herein involves detecting all eligible references related
+to the literature under review <span class="citation">(<a href="#ref-Polanin2019">Polanin, Pigott, Espelage, &amp; Grotpeter,
+2019</a>)</span>. This entails searching all pertinent literature
+databases relevant to the given review, most often resulting in
+thousands of titles and abstracts to be screened for relevance. Manual
+screening hereof can be a time-consuming and tedious task. However,
+overlooking relevant studies at this stage can be consequential, leading
+to substantially biased results, if the missed studies are
+systematically different from the detected ones. To mitigate this issue,
+we show in this vignette how to use OpenAI’s GPT API models for title
+and abstract screening in R. Specifically we demonstrate how to create a
 test dataset and decide what exact model to use as the second screener.
-The advantages of conducting the screening with GPT API models via R is
-1) that reviewers can easily work with a large number of references,
-avoiding copy-paste procedures <span class="citation">(cf. <a href="#ref-Khraisha2024">Khraisha et al., 2024</a>)</span>, 2) that the
-total screening time can be substantially decreased relative to using
-the ChatGPT interface, since screenings can be done in parallel, 3) that
-it eases model comparison, and 4) that consistency between GPT answer
-for the same title and abstract can easily be tested. It is important to
-stress that the GPT API models used for TAB screening should always be
-used carefully and be assisted by a human (human-in-the-loop).
-Consequently, we do not recommend to use the <code>AIscreenR</code> as a
-single screener, unless this an absolutely final solution.</p>
+Using R to conduct the screening with GPT API models has certain
+advantages:</p>
+<ol style="list-style-type: decimal">
+<li>Reviewers can easily work with a large number of references,
+avoiding copy-paste procedures <span class="citation">(cf. <a href="#ref-Khraisha2024">Khraisha et al., 2024</a>)</span>.<br>
+</li>
+<li>The total screening time can be substantially decreased relative to
+using the ChatGPT interface, since screenings can be done in parallel.
+In theory, you will be able to screening 30000 titles and abstracts per
+minute if screening with one prompt only.</li>
+<li>It eases model comparison.</li>
+<li>Consistency between the GPT answer for the same title and abstract
+can easily be tested.</li>
+</ol>
+<p>Before we get started, it is important to stress that the GPT API
+models used for TAB screening should always be used carefully and be
+assisted by a human (human-in-the-loop). Consequently, we do not
+recommend to use the <code>AIscreenR</code> as a single screener, unless
+this an absolutely final solution.</p>
 <div class="section level2">
 <h2 id="getting-started-loading-relevant-ris-file-data-for-screening">Getting started: Loading relevant ris file data for screening<a class="anchor" aria-label="anchor" href="#getting-started-loading-relevant-ris-file-data-for-screening"></a>
 </h2>
@@ -122,19 +141,27 @@ automatically generated in the <code><a href="../reference/tabscreen_gpt.tools.h
 unique IDs are missing. When using a GPT API model as the second
 screener, we recommend that the human screening has been done before
 uploading ris-file(s) to R. Thereby, it is possible to compare the
-screenings instantly after the computer screening has been done. In the
-below example we load ris-files separately for excluded and included
-ris-files, respectively, and add the <code>human_code</code> variable to
-track the human decision.</p>
+screenings instantly after the computer screening has been done.</p>
+<div class="section level3">
+<h3 id="loading-relevant-packages">Loading relevant packages<a class="anchor" aria-label="anchor" href="#loading-relevant-packages"></a>
+</h3>
+<p>To get started, we load all relevant package that are needed to
+construct and run the screening.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Loading packages </span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mikkelvembye.github.io/AIscreenR/">AIscreenR</a></span><span class="op">)</span> <span class="co"># Used to screen and calculate gpt vs. human performance</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://revtools.net" class="external-link">revtools</a></span><span class="op">)</span>  <span class="co"># Used to load ris-files</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span>    <span class="co"># Used to work with tibbles</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>     <span class="co"># Used to work with tibbles</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://purrr.tidyverse.org/" class="external-link">purrr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://usethis.r-lib.org" class="external-link">usethis</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>     <span class="co"># Used to manipulate data</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://purrr.tidyverse.org/" class="external-link">purrr</a></span><span class="op">)</span>     <span class="co"># For loops </span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://future.futureverse.org" class="external-link">future</a></span><span class="op">)</span>    <span class="co"># Used to conduct screenings in parallel</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="converting-ris-files-to-dataframes">Converting ris-files to dataframes<a class="anchor" aria-label="anchor" href="#converting-ris-files-to-dataframes"></a>
+</h3>
+<p>In the below example we load ris-files separately for excluded and
+included ris-files, respectively, and add the <code>human_code</code>
+variable to track the human decision.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Reading path to risfiles</span></span>
 <span><span class="va">excl_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"excl_tutorial.ris"</span>, package <span class="op">=</span> <span class="st">"AIscreenR"</span><span class="op">)</span></span>
@@ -185,6 +212,7 @@ track the human decision.</p>
 <span><span class="co">#&gt;10 Faber J and Srutova L and P… 9431505      10 EEG … "Sponta…          0</span></span>
 <span><span class="co">#&gt;# ℹ 260 more rows</span></span>
 <span><span class="co">#&gt;# ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="getting-api-key-openai">Getting API key (OpenAI)<a class="anchor" aria-label="anchor" href="#getting-api-key-openai"></a>
@@ -478,6 +506,15 @@ package for further details about this solution.  </p>
 <span></span>
 <span><span class="va">screen_perform</span></span></code></pre></div>
 </div>
+<div class="section level3">
+<h3 id="assess-results-via-a-benchmark-scheme">Assess results via a benchmark scheme<a class="anchor" aria-label="anchor" href="#assess-results-via-a-benchmark-scheme"></a>
+</h3>
+<div class="figure">
+<img src="helper-stuff%2FScreening%20benchmark%20scheme.png" alt="*Figure 6 - Generic benchmark scheme from Vembye et al. (2024)*" width="100%"><p class="caption">
+<em>Figure 6 - Generic benchmark scheme from Vembye et al. (2024)</em>
+</p>
+</div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="getting-detailed-descriptions">Getting detailed descriptions<a class="anchor" aria-label="anchor" href="#getting-detailed-descriptions"></a>
@@ -520,6 +557,12 @@ Khraisha, Q., Put, S., Kappenberg, J., Warraitch, A., &amp; Hadfield, K.
 systematic reviews? Evaluating GPT-4’s efficacy in screening and
 extracting data from peer-reviewed and grey literature in multiple
 languages</span>. <em>Research Synthesis Methods</em>. <a href="https://doi.org/10.1002/jrsm.1715" class="external-link">https://doi.org/10.1002/jrsm.1715</a>
+</div>
+<div id="ref-Polanin2019" class="csl-entry">
+Polanin, J. R., Pigott, T. D., Espelage, D. L., &amp; Grotpeter, J. K.
+(2019). <span class="nocase">Best practice guidelines for abstract
+screening large-evidence systematic reviews and meta-analyses</span>.
+<em>Research Synthesis Methods</em>, <em>10</em>(3), 330–342. <a href="https://doi.org/10.1002/jrsm.1354" class="external-link">https://doi.org/10.1002/jrsm.1354</a>
 </div>
 <div id="ref-Syriani2023" class="csl-entry">
 Syriani, E., David, I., &amp; Kumar, G. (2023). <span class="nocase">Assessing the ability of ChatGPT to screen articles for
