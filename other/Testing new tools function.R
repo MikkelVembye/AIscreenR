@@ -17,10 +17,10 @@ return_dat <-
   studyid = studyid,
   title = title,
   abstract = abstract,
-  model = c("gpt-4o-mini", "ft:gpt-4o-2024-08-06:vivecampbell:fft:A6G4jDPL"),
+  model = c("gpt-4o-mini"),
   top_p = 1,
   rpm = 10000,
-  reps = 1,
+  reps = 5,
   #messages = FALSE,
   decision_description = FALSE,
   progress = TRUE,
@@ -35,9 +35,10 @@ return_dat <-
 
 plan(sequential)
 
-return_dat2 <- return_dat |> screen_errors()
+#return_dat2 <- return_dat |> screen_errors()
 
-return_dat$answer_data |> screen_analyzer(key_result = TRUE) |> print(width = 300)
+analyze_dat <- return_dat |> screen_analyzer(key_result = FALSE)
+analyze_dat |> attr("p_incl_data") |> View()
 
 prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
 

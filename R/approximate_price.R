@@ -5,12 +5,9 @@
 #' `r lifecycle::badge("experimental")`<br>
 #' <br>
 #' This function supports the approximation of the price of the total title and abstract
-#' screening with OpenAI's GPT API models. The function only provide approximately accurate pricing
-#' estimates for screenings drawing on the function calling function `incl_function_simple` (Default)
-#' since the detailed descriptions will increase the completion tokens with an unknown amount
-#' which furthermore is rather model sensitive with gpt-4 models yielding longer
-#' detailed responses relative to gpt-3.5-turbo models.
-#'
+#' screening with OpenAI's GPT API models. The function only provide approximately accurate price
+#' estimates for screenings. When detailed descriptions are used,
+#' this will increase the completion tokens with an unknown amount.
 #'
 #' @template common-arg
 #' @param model Character string with the name of the completion model. Can take
