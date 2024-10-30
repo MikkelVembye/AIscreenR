@@ -186,6 +186,10 @@ screen_analyzer <- function(x, human_decision = human_code, key_result = TRUE){
 
   if (key_result) res <- res |> dplyr::select(promptid, model, reps, top_p, p_agreement, recall, specificity)
 
+#  if (names(answer_data_aggregated) %in% x || is_gpt_agg_tbl(x)){
+#
+#  }
+
   res
 
 }

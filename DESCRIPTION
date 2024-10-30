@@ -20,7 +20,6 @@ Imports:
     tibble,
     httr2,
     stringr,
-    future,
     furrr,
     tidyr,
     tictoc,
@@ -30,6 +29,7 @@ Imports:
     lifecycle,
     jsonlite
 Suggests: 
+    future,
     knitr,
     rmarkdown,
     usethis,
