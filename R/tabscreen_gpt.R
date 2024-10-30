@@ -277,6 +277,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
   ...
 ){
 
+  # Handling inherits
   if (is_gpt_tbl(data)) data <- data |> dplyr::select(-c(promptid:n)) |> tibble::as_tibble()
   if (is_gpt_agg_tbl(data)) data <- data |> dplyr::select(-c(promptid:submodel)) |> tibble::as_tibble()
 

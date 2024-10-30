@@ -62,8 +62,29 @@
 #' @export
 #'
 #' @examples
-#' x <- AIscreenR:::result_object
-#' x |> screen_analyzer() |> print(width=260)
+#' \dontrun{
+#'
+#' library(future)
+#'
+#' set_api_key()
+#'
+#' prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
+#'
+#' plan(multisession)
+#'
+#' res <- tabscreen_gpt(
+#'   data = filges2015_dat[1:2,],
+#'   prompt = prompt,
+#'   studyid = studyid,
+#'   title = title,
+#'   abstract = abstract
+#'   )
+#'
+#' plan(sequential)
+#'
+#' res |> screen_analyzer()
+#'
+#' }
 
 
 screen_analyzer <- function(x, human_decision = human_code, key_result = TRUE){
@@ -126,7 +147,10 @@ screen_analyzer <- function(x, human_decision = human_code, key_result = TRUE){
       F2 = 5 * ((precision*recall)/(4*(precision+recall))),
       # Eq. 8 (Syriani et al., 2023)
       nominator = (human_in_gpt_in*human_ex_gpt_ex)-(human_ex_gpt_in*human_in_gpt_ex),
-      denominator = (2*sqrt((human_in_gpt_in+human_ex_gpt_in)*(human_in_gpt_in+human_in_gpt_ex)*(human_ex_gpt_ex+human_ex_gpt_in)*(human_ex_gpt_ex+human_in_gpt_ex))),
+      denominator = (
+        2*sqrt((human_in_gpt_in+human_ex_gpt_in)*(human_in_gpt_in+human_in_gpt_ex)*
+                 (human_ex_gpt_ex+human_ex_gpt_in)*(human_ex_gpt_ex+human_in_gpt_ex))
+        ),
 
       mcc = nominator/denominator + 0.5,
 

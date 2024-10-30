@@ -28,7 +28,6 @@ Imports:
     curl,
     purrr,
     lifecycle,
-    conflicted,
     jsonlite
 Suggests: 
     knitr,

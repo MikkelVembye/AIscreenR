@@ -5,7 +5,7 @@ output:
     number_sections: true
     toc: true
 date: "`r Sys.Date()`"
-bibliography: references.bib
+bibliography: AIscreenR.bib
 link-citations: yes
 csl: apa.csl
 vignette: >
@@ -37,27 +37,37 @@ options(dplyr.summarise.inform = FALSE) # Avoids summarize info from tidyverse
 <p style='margin-top:1em; text-align:center'>
 <b>Important note</b></p>
 <p style='margin:1em'>
-This is work-in-progress only. For now, see [Vembye et al.](https://osf.io/preprints/osf/yrhzm) [-@Vembye2024_gpt] for an overview of how and when GPT API models can be used for title and abstract (TAB) screening. For an overview of other research regarding the use of GPT API models for title and abstract screening, see Syriani et al. [-@Syriani2023; -@Syriani2024], Guo et al., [-@Guo2024], and Gargari et al. [-@Gargari2024]. On a related line of research, Alshami et al. [-@Alshami2023], Khraisha et al. [-@Khraisha2024], and Issaiy et al. [@Issaiy2024] explored using the ChatGPT web browser interface for TAB screening. Based on our experience, we think that these two lines of research should not be mixed up since the draw on different GPT models and setup. 
+This is work-in-progress only. For now, see [Vembye et al.](https://osf.io/preprints/osf/yrhzm) [-@Vembye2024_gpt] for an overview of how and when GPT API models can be used for title and abstract (TAB) screening. For an overview of other research regarding the use of GPT API models for title and abstract screening, see Syriani et al. [-@Syriani2023; -@Syriani2024], Guo et al., [-@Guo2024], and Gargari et al. [-@Gargari2024]. On a related line of research, Alshami et al. [-@Alshami2023], Khraisha et al. [-@Khraisha2024], and Issaiy et al. [@Issaiy2024] explored using the ChatGPT web browser interface for TAB screening. Based on our experience, we think that these two lines of research should not be mixed up since the draw on different GPT models and setups. 
 </p></span>
 </div>
 
-In this vignette, we show how to conduct title and abstract screening with OpenAI's GPT API models in R. More specifically, how to create a test dataset and decide what exact model to use as the second screener. The advantages of conducting the screening with GPT API models via R is 1) that reviewers can easily work with a large number of references, avoiding copy-paste procedures [cf. @Khraisha2024], 2) that the total screening time can be substantially decreased relative to using the ChatGPT interface, since screenings can be done in parallel, 3) that it eases model comparison, and 4) that consistency between GPT answer for the same title and abstract can easily be tested. It is important to stress that the GPT API models used for TAB screening should always be used carefully and be assisted by a human (human-in-the-loop). Consequently, we do not recommend to use the `AIscreenR` as a single screener, unless this an absolutely final solution.   
+Conducting a systematic review is most often resource-demanding. A critical first step to ensure the quality of systematic reviews and meta-analyses herein involves detecting all eligible references related to the literature under review [@Polanin2019]. This entails searching all pertinent literature databases relevant to the given review, most often resulting in thousands of titles and abstracts to be screened for relevance. Manual screening hereof can be a time-consuming and tedious task. However, overlooking relevant studies at this stage can be consequential, leading to substantially biased results, if the missed studies are systematically different from the detected ones. To mitigate this issue, we show in this vignette how to use OpenAI's GPT API models for title and abstract screening in R. Specifically we demonstrate how to create a test dataset and decide what exact model to use as the second screener. Using R to conduct the screening with GPT API models has certain advantages: 
+
+  1. Reviewers can easily work with a large number of references, avoiding copy-paste procedures 
+  [cf. @Khraisha2024].  
+  2. The total screening time can be substantially decreased relative to using the ChatGPT interface, since screenings can be done in parallel. In theory, you will be able to screening 30000 titles and abstracts per minute if screening with one prompt only. 
+  3. It eases model comparison.
+  4. Consistency between the GPT answer for the same title and abstract can easily be tested.    
+
+Before we get started, it is important to stress that the GPT API models used for TAB screening should always be used carefully and be assisted by a human (human-in-the-loop). Consequently, we do not recommend to use the `AIscreenR` as a single screener, unless this an absolutely final solution.
 
 # Getting started: Loading relevant ris file data for screening
-At this stage, we expect that you have a pile of ris-files, containing titles and abstracts for the references you would like to screen. You can retrieve ris-files in several ways, either directly from research database, a Google Scholar search, or exported from your reference management tool, such as EndNote, Mendeley, and RefMan. Alternatively, you can export ris-file from systematic software tool such as [EPPI-reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914), [Covidence](https://www.covidence.org/), [MetaReviewer](https://www.metareviewer.org/), [`revtools`](http://www.eshackathon.org/revtools/) [@westgate2019], or whatever software you use. In the example given below, we load ris-files extracted from the [EPPI-reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914). A minor advantage of extracting ris-files from systematic software tools is that they add a unique study ID to each reference. This feature makes it easier to keep track of the screening. Yet, such IDs are automatically generated in the `tabscreen_gpt()` function if unique IDs are missing. When using a GPT API model as the second screener, we recommend that the human screening has been done before uploading ris-file(s) to R. Thereby, it is possible to compare the screenings instantly after the computer screening has been done. In the below example we load ris-files separately for excluded and included ris-files, respectively, and add the `human_code` variable to track the human decision.   
+At this stage, we expect that you have a pile of ris-files, containing titles and abstracts for the references you would like to screen. You can retrieve ris-files in several ways, either directly from research database, a Google Scholar search, or exported from your reference management tool, such as EndNote, Mendeley, and RefMan. Alternatively, you can export ris-file from systematic software tool such as [EPPI-reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914), [Covidence](https://www.covidence.org/), [MetaReviewer](https://www.metareviewer.org/), [`revtools`](http://www.eshackathon.org/revtools/) [@westgate2019], or whatever software you use. In the example given below, we load ris-files extracted from the [EPPI-reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914). A minor advantage of extracting ris-files from systematic software tools is that they add a unique study ID to each reference. This feature makes it easier to keep track of the screening. Yet, such IDs are automatically generated in the `tabscreen_gpt()` function if unique IDs are missing. When using a GPT API model as the second screener, we recommend that the human screening has been done before uploading ris-file(s) to R. Thereby, it is possible to compare the screenings instantly after the computer screening has been done.  
 
+## Loading relevant packages
+To get started, we load all relevant package that are needed to construct and run the screening.
 ```{r, eval = FALSE, warning=FALSE, message=FALSE}
 # Loading packages 
 library(AIscreenR) # Used to screen and calculate gpt vs. human performance
 library(revtools)  # Used to load ris-files
 library(tibble)    # Used to work with tibbles
-library(dplyr)     # Used to work with tibbles
-library(purrr)
-library(usethis)
+library(dplyr)     # Used to manipulate data
+library(purrr)     # For loops 
 library(future)    # Used to conduct screenings in parallel
 ```
 
-
+## Converting ris-files to dataframes
+In the below example we load ris-files separately for excluded and included ris-files, respectively, and add the `human_code` variable to track the human decision.  
 ```{r, eval = FALSE}
 # Reading path to risfiles
 excl_path <- system.file("extdata", "excl_tutorial.ris", package = "AIscreenR")
@@ -389,6 +399,12 @@ screen_perform <-
   screen_analyzer() 
 
 screen_perform
+```
+
+## Assess results via a benchmark scheme
+
+```{r eval=TRUE, echo=FALSE, fig.cap='*Figure 6 - Generic benchmark scheme from Vembye et al. (2024)*'}
+knitr::include_graphics("helper-stuff/Screening benchmark scheme.png")
 ```
 
 # Getting detailed descriptions 

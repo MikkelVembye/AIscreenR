@@ -55,8 +55,29 @@ accuracy, specificity and sensitivity of the screening, as well as
 inter-rater reliability kappa statistics.
 }
 \examples{
-x <- AIscreenR:::result_object
-x |> screen_analyzer() |> print(width=260)
+\dontrun{
+
+library(future)
+
+set_api_key()
+
+prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
+
+plan(multisession)
+
+res <- tabscreen_gpt(
+  data = filges2015_dat[1:2,],
+  prompt = prompt,
+  studyid = studyid,
+  title = title,
+  abstract = abstract
+  )
+
+plan(sequential)
+
+res |> screen_analyzer()
+
+}
 }
 \references{
 Gartlehner, G., Wagner, G., Lux, L., Affengruber, L., Dobrescu, A., Kaminski-Hartenthaler, A., & Viswanathan, M. (2019).
