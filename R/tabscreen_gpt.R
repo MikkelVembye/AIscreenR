@@ -668,6 +668,9 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
         dplyr::rename(top_p = topp) |>
         tibble::new_tibble(class = "gpt_agg_tbl")
 
+      attr(answer_dat_aggregated, "incl_cutoff_upper") <- incl_cutoff_upper
+      attr(answer_dat_aggregated, "incl_cutoff_lower") <- incl_cutoff_lower
+
     } else {
 
       answer_dat_aggregated <- NULL

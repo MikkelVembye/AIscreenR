@@ -89,11 +89,12 @@
 
 screen_analyzer <- function(x, human_decision = human_code, key_result = TRUE){
 
-
+  # Stopping rules
   if (all(!is_chatgpt(x), !is_chatgpt_tbl(x), !is_gpt(x), !is_gpt_tbl(x), !is_gpt_agg_tbl(x))){
     stop("The object must be of either class 'gpt, 'gpt_tbl', 'gpt_agg_tbl', 'chatgpt' or 'chatgpt_tbl'.")
   }
 
+  # Preparing data
   if (is_chatgpt(x)) dat <- x$answer_data_sum
   if (is_chatgpt_tbl(x)) dat <- x
 
@@ -108,10 +109,12 @@ screen_analyzer <- function(x, human_decision = human_code, key_result = TRUE){
   if (is_gpt_tbl(x)) dat <- x |> dplyr::rename(final_decision_gpt_num = decision_binary, reps = iterations, top_p = topp)
   if (is_gpt_agg_tbl(x)) dat <- x
 
+  # Ensuring human decision variable
   hum_decision_name <- as.character(substitute(human_decision))
 
   if(!hum_decision_name %in% names(dat)) stop("You must have an variable with the human decision to use this function.")
 
+  # Calculating results performance
   res <- .calc_perform(dat, hum_decision = {{ human_decision }})
 
   if (key_result) res <- res |> dplyr::select(promptid, model, reps, top_p, p_agreement, recall, specificity)
@@ -125,10 +128,12 @@ screen_analyzer <- function(x, human_decision = human_code, key_result = TRUE){
           final_decision_gpt_num = dplyr::if_else(final_decision_gpt == "Include", 1, 0)
         ) |>
         .calc_perform(hum_decision = {{ human_decision }}) |>
-        dplyr::mutate(criteria = dplyr::if_else(.x+0.1 != 1,
-          paste0("Studies have been included in at least ", (.x + 0.1)*100, "% of the ", reps, " screenings."),
-          paste0("Studies have been included in ", (.x + 0.1)*100, "% of the ", reps, " screenings.")
-        )
+        dplyr::mutate(
+          criteria = dplyr::if_else(
+            .x+0.1 != 1,
+            paste0("Studies have been included in at least ", (.x + 0.1)*100, "% of the ", reps, " screenings."),
+            paste0("Studies have been included in all of the ", reps, " screenings.")
+          )
         )
 
     }) |>
@@ -141,6 +146,25 @@ screen_analyzer <- function(x, human_decision = human_code, key_result = TRUE){
     }
 
     attr(res, "p_incl_data") <- res_p_incl
+
+  }
+
+  if (is_gpt_agg_tbl(dat)) {
+
+    p_incl_cut <- attr(dat, "incl_cutoff_lower")
+
+    res <-
+      res |>
+      dplyr::mutate(
+        incl_p_cutoff = p_incl_cut,
+        criteria = dplyr::if_else(
+          p_incl_cut != 1,
+          paste0("Studies have been included in at least ", p_incl_cut * 100, "% of the ", reps, " screenings."),
+          paste0("Studies have been included in all of the ", reps, " screenings.")
+        )
+      )
+
+    if (key_result) res <- res |> dplyr::select(-incl_p_cutoff)
 
   }
 

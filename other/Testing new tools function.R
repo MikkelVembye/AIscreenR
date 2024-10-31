@@ -37,7 +37,8 @@ plan(sequential)
 
 #return_dat2 <- return_dat |> screen_errors()
 
-analyze_dat <- return_dat |> screen_analyzer(key_result = FALSE)
+analyze_dat <- return_dat |> screen_analyzer()
+analyze_dat |> View()
 analyze_dat |> attr("p_incl_data") |> View()
 
 prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
