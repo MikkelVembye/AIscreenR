@@ -37,39 +37,63 @@ options(dplyr.summarise.inform = FALSE) # Avoids summarize info from tidyverse
 <p style='margin-top:1em; text-align:center'>
 <b>Important note</b></p>
 <p style='margin:1em'>
-This is work-in-progress only. For now, see [Vembye et al.](https://osf.io/preprints/osf/yrhzm) [-@Vembye2024_gpt] for an overview of how and when GPT API models can be used for title and abstract (TAB) screening. For an overview of other research regarding the use of GPT API models for title and abstract screening, see Syriani et al. [-@Syriani2023; -@Syriani2024], Guo et al., [-@Guo2024], and Gargari et al. [-@Gargari2024]. On a related line of research, Alshami et al. [-@Alshami2023], Khraisha et al. [-@Khraisha2024], and Issaiy et al. [@Issaiy2024] explored using the ChatGPT web browser interface for TAB screening. Based on our experience, we think that these two lines of research should not be mixed up since the draw on different GPT models and setups. 
+This is work-in-progress only. For now, see [Vembye, Christensen, Mølgaard, & Schytt](https://osf.io/preprints/osf/yrhzm) [-@Vembye2024_gpt] for an overview of how and when GPT API models can be used for title and abstract (TAB) screening. Our most recent results suggest that the `gpt-4o-mini` is very good at screening titles and abstracts with performances at least on par with `gpt-4`. This is a very cheap model (200 times cheaper than `gpt-4`). Therefore to lower the cost, our recommendation is always to test the performance of `gpt-4o-mini` before testing other models.
+
+For an overview of other research regarding the use of GPT API models for title and abstract screening, see Syriani et al. [-@Syriani2023; -@Syriani2024], Guo et al., [-@Guo2024], and Gargari et al. [-@Gargari2024]. On a related line of research, Alshami et al. [-@Alshami2023], Khraisha et al. [-@Khraisha2024], and Issaiy et al. [@Issaiy2024] explored using the ChatGPT web browser interface for TAB screening. Based on our experience, we think that these two lines of research should not be mixed up since the draw on different GPT models and setups.
 </p></span>
 </div>
 
-Conducting a systematic review is most often resource-demanding. A critical first step to ensure the quality of systematic reviews and meta-analyses herein involves detecting all eligible references related to the literature under review [@Polanin2019]. This entails searching all pertinent literature databases relevant to the given review, most often resulting in thousands of titles and abstracts to be screened for relevance. Manual screening hereof can be a time-consuming and tedious task. However, overlooking relevant studies at this stage can be consequential, leading to substantially biased results, if the missed studies are systematically different from the detected ones. To mitigate this issue, we show in this vignette how to use OpenAI's GPT API models for title and abstract screening in R. Specifically we demonstrate how to create a test dataset and decide what exact model to use as the second screener. Using R to conduct the screening with GPT API models has certain advantages: 
+Conducting a systematic review is most often resource-demanding. A critical first step to ensure the quality of systematic reviews and meta-analyses herein involves detecting all eligible references related to the literature under review [@Polanin2019]. This entails searching all pertinent literature databases relevant to the given review, most often resulting in thousands of titles and abstracts to be screened for relevance. Manual screening hereof can be a time-consuming and tedious task. However, overlooking relevant studies at this stage can be consequential, leading to substantially biased results, if the missed studies are systematically different from the detected ones. To mitigate this resource issue, we show in this vignette how to use OpenAI's GPT (Generative Pre-trained Transformer) API (Application Programming Interface) models for title and abstract screening in R. Specifically, we demonstrate how to create a test dataset and assess whether GPT is viable as the second screener in your review [cf. @Vembye2024_gpt]. 
+\ 
+
+You might ask, why use GPT API models from R and not just do the screening with ChatGPT? The answer to this is that using R to conduct the screening with GPT API models has certain advantages: 
 
   1. Reviewers can easily work with a large number of references, avoiding copy-paste procedures 
   [cf. @Khraisha2024].  
-  2. The total screening time can be substantially decreased relative to using the ChatGPT interface, since screenings can be done in parallel. In theory, you will be able to screening 30000 titles and abstracts per minute if screening with one prompt only. 
+  2. The total screening time can be substantially lowered relative to using the ChatGPT interface, since the screening can be done in parallel. In theory, you will be able to screen 30,000 titles and abstracts per minute.
   3. It eases model comparison.
-  4. Consistency between the GPT answer for the same title and abstract can easily be tested.    
+  4. Consistency between the GPT answer for the same title and abstract can easily be tested. In other words, you can conduct multiple screening and make inclusion judgments based on how many times a study has been included across the given number of screenings. 
+  5. When using the `gpt-4o-mini`, it cheaper than subscribing to ChatGPT plus. 
 
-Before we get started, it is important to stress that the GPT API models used for TAB screening should always be used carefully and be assisted by a human (human-in-the-loop). Consequently, we do not recommend to use the `AIscreenR` as a single screener, unless this an absolutely final solution.
+That said, it is also important to stress that the GPT API models used for TAB screening should always be used carefully and be assisted by a human (human-in-the-loop). Consequently, we do not recommend to use the `AIscreenR` as a single screener, unless this an absolutely final solution. When using a GPT API model as the second screener, we also recommend that the human screening has been done before uploading RIS-file(s) to R. Thereby, it is possible to compare the screenings instantly after the computer screening has been done. 
 
-# Getting started: Loading relevant ris file data for screening
-At this stage, we expect that you have a pile of ris-files, containing titles and abstracts for the references you would like to screen. You can retrieve ris-files in several ways, either directly from research database, a Google Scholar search, or exported from your reference management tool, such as EndNote, Mendeley, and RefMan. Alternatively, you can export ris-file from systematic software tool such as [EPPI-reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914), [Covidence](https://www.covidence.org/), [MetaReviewer](https://www.metareviewer.org/), [`revtools`](http://www.eshackathon.org/revtools/) [@westgate2019], or whatever software you use. In the example given below, we load ris-files extracted from the [EPPI-reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914). A minor advantage of extracting ris-files from systematic software tools is that they add a unique study ID to each reference. This feature makes it easier to keep track of the screening. Yet, such IDs are automatically generated in the `tabscreen_gpt()` function if unique IDs are missing. When using a GPT API model as the second screener, we recommend that the human screening has been done before uploading ris-file(s) to R. Thereby, it is possible to compare the screenings instantly after the computer screening has been done.  
+# Get started
+At this point, it can for many reviewers (especially those not used code in R) seem overwhelming to conduct a title and abstract screening in R. However, it important to stress that running your first screening only requires the following steps:
 
-## Loading relevant packages
+  1. Load your RIS-file data and convert it to a data frame
+  2. Handle your API key (this is only necessary the first time you screen)
+  3. Make one or multiple prompts
+  4. Run the screening
+
+And if the human screening has been conducted (as in the example below)
+
+  5. Analyze the screening
+  6. Resolve disagreements 
+
+# Load RIS-file data and convert to data frame
+At this stage, we expect that you have a pile of RIS-files, containing titles and abstracts for the references you would like to screen. You can retrieve RIS-files in several ways, either directly from the research databases, a Google Scholar search, or exported from your reference management tool, such as EndNote, Mendeley, and RefMan. Alternatively, you can export RIS-file from systematic software tool such as [EPPI-reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914), [Covidence](https://www.covidence.org/), [MetaReviewer](https://www.metareviewer.org/), [`revtools`](http://www.eshackathon.org/revtools/) [@westgate2019], or whatever software you use. In the example given below, we load RIS-files extracted from the [EPPI-reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914). A minor advantage of extracting RIS-files from systematic software tools is that they add a unique study ID to each reference. This feature makes it easier to keep track of the screening. Yet, such IDs are automatically generated in the `tabscreen_gpt()` function if unique IDs are missing. 
+
+## Load relevant packages
 To get started, we load all relevant package that are needed to construct and run the screening.
 ```{r, eval = FALSE, warning=FALSE, message=FALSE}
 # Loading packages 
 library(AIscreenR) # Used to screen and calculate gpt vs. human performance
-library(revtools)  # Used to load ris-files
+library(revtools)  # Used to load RIS-files
 library(tibble)    # Used to work with tibbles
 library(dplyr)     # Used to manipulate data
 library(purrr)     # For loops 
 library(future)    # Used to conduct screenings in parallel
 ```
 
-## Converting ris-files to dataframes
-In the below example we load ris-files separately for excluded and included ris-files, respectively, and add the `human_code` variable to track the human decision.  
+## Convert RIS-files to data frames
+Now, we are ready to conduct the first step of the screening, which is to load our RIS-file data into R and convert it to a data frame. This can be done by using `revtools::read_bibliography()` from `revtools`. 
+
+Mention [@Filges2015a].
+
+
+In the below example, we load RIS-files separately for excluded and included RIS-files, respectively. This enables us to add the `human_code` variable that tracks the human decision.  
 ```{r, eval = FALSE}
-# Reading path to risfiles
+# Read path to RIS-file including the file name
 excl_path <- system.file("extdata", "excl_tutorial.ris", package = "AIscreenR")
 
 # Loading EXCLUDED studies
@@ -82,9 +106,10 @@ ris_dat_excl <- revtools::read_bibliography(excl_path) |>
     across(c(author, title, abstract), ~ na_if(., "NA"))
   )
 
-# Loading INCLUDED studies
+# Read path to RIS-files
 incl_path <- system.file("extdata", "incl_tutorial.ris", package = "AIscreenR")
 
+# Loading INCLUDED studies
 ris_dat_incl <- revtools::read_bibliography(incl_path) |> 
   suppressWarnings() |> 
   as_tibble() |>
@@ -93,7 +118,11 @@ ris_dat_incl <- revtools::read_bibliography(incl_path) |>
     human_code = 1,
     across(c(author, title, abstract), ~ na_if(., "NA"))
   )
+```
 
+## Create the test dataset
+
+```{r, eval = FALSE}
 filges2015_dat <- 
   bind_rows(ris_dat_excl, ris_dat_incl) |> 
   mutate(
@@ -120,7 +149,9 @@ filges2015_dat
 #># ℹ Use `print(n = ...)` to see more rows
 ```
 
-# Getting API key (OpenAI)
+# Handle API key 
+
+## Get API key 
 
 Before you can use the `AIscreenR` to screen your references, you must generate your own secret API key from OpenAI. To do so you must first ensure that you have created an account at OpenAI (*if you have not done so at this stage, you can sign up [here](https://auth0.openai.com/u/login/identifier?state=hKFo2SBqQjNHSlc1ejIyREpUb01hdDF2OHEzQy12NnJwWlFUN6Fur3VuaXZlcnNhbC1sb2dpbqN0aWTZIEJSOWJaamdKLWswNGlfWDQ2NER1OXJmVUNpVmVzVjZfo2NpZNkgRFJpdnNubTJNdTQyVDNLT3BxZHR3QjNOWXZpSFl6d0Q)).* When having an account, go to [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys) and press the `+ Create new secret key` button (see Figure 1 below) and give your key a name. 
 
@@ -135,7 +166,7 @@ When you have generated your secret API key, remember to store it safely since
 you will not be able see it again. **NOTE**: *If you lose your API key, you can 
 just generate a new one*. 
 
-# Handling your API key 
+## Manage API key in R
 
 When you have retrieved your API, you could in theory add it directly to the 
 `AIscreenR` functions via the `api_key` argument. Yet, this would be an improper
@@ -144,9 +175,9 @@ your API key would be disclosed when sharing your codes with others, which gives
 access to draw on your OpenAI account. Furthermore, OpenAI will cancel the API key if they recognize 
 that your API key has been compromised (e.g., if you push it to a public GitHub page). 
 To overcome this issue you have several options from here. You can either work with what we call
-permanent or temporary solutions. 
+a permanent or temporary solution. 
 
-## Permanent solution
+### Permanent solution
 
 The easiest way to work with your API key is to permanently add it to your R environment
 as an environment variable. This can be achieved with `usethis::edit_r_environ()`. In the `.Renviron`
@@ -158,7 +189,7 @@ knitr::include_graphics("helper-stuff/Renviron.png")
 ```
 \ 
 
-## Temporary solution
+### Temporary solution
 
 If you do not want to add you API key permanently to your R environment, you can 
 use `set_api_key()`. When executing `set_api_key()`, you will see a pop-up window in
@@ -173,7 +204,7 @@ knitr::include_graphics("helper-stuff/set_api.png")
 ```
 \ 
 
-# Working with prompts in R
+# Prompting in R
 
 Example of how to enter a prompt. 
 
@@ -246,8 +277,9 @@ prompts <-
 prompts 
 ```
 
+# Run screening of titles and abstracts
 
-# Retrieve rate limit information 
+## Retrieve rate limit information 
 
 ```{r,  eval = FALSE}
 # Rate limits across one model (Default is "gpt-3.5-turbo-0613")
@@ -272,36 +304,7 @@ models_rate_limits
 #> 2 gpt-4                              200             10000
 ```
 
-# Approximate price of screening
 
-Approximate price of screening
-
-```{r, echo = FALSE}
-models <- c("gpt-3.5-turbo-0613", "gpt-3.5-turbo-0613", "gpt-4")
-```
-
-```{r, eval = FALSE}
-app_obj <- 
-  approximate_price_gpt(
-    data = filges2015_dat, # Tutorial data embedded in the package
-    prompt = prompts, 
-    studyid = studyid, # indicate the variable with the studyid in the data
-    title = title, # indicate the variable with the titles in the data
-    abstract = abstract, # indicate the variable with the abstracts in the data
-    model = c("gpt-4o", "gpt-4"),
-    reps = 1
-  )
-
-app_obj
-#> The approximate price of the (simple) screening will be around $3.0573.
-
-app_obj$price_dollar
-#> [1] 3.0573
-app_obj$price_data
-
-```
-
-# Screening titles and abstracts
 ```{r, message=FALSE, eval=FALSE}
 models <- c("gpt-3.5-turbo-0613", "gpt-3.5-turbo-0613", "gpt-4")
 reps <- c(1, 10, 1)
@@ -311,7 +314,7 @@ plan(multisession)
 
 result_object <- 
   tabscreen_gpt.original(
-    data = filges2015_dat, # ris-file data create above 
+    data = filges2015_dat, # RIS-file data create above 
     prompt = prompt, # indicate name of the loaded prompt object
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
@@ -342,7 +345,7 @@ print(result_object)
 #>  result_object$error_data
 ```
 
-# Screen failed requests
+## Screen failed requests
 
 ```{r, eval=FALSE}
 result_object <- 
@@ -364,8 +367,7 @@ print(result_object)
 result_object <- AIscreenR:::result_object_no_err
 ```
 
-
-# Getting the results from the screening
+# Analyze screening
 
 ```{r}
 # gpt-3.5 results (prompt 1, top_p = 1, 10 replications)
@@ -380,9 +382,6 @@ sum_dat_gpt4 <-
   result_object$answer_data_sum |> 
   filter(stringr::str_detect(model, "4") & promptid == 1 & top_p == 1)
 ```
-
-
-# Analyzing the screening
 
 ## Simple table
 ```{r tables}
@@ -407,12 +406,42 @@ screen_perform
 knitr::include_graphics("helper-stuff/benchmark_scheme.png")
 ```
 
-# Getting detailed descriptions 
+# Check and resolve disagreements 
+
+## Getting detailed descriptions 
 
 ```{r}
 # Show example with gpt-4
 ```
 
+# Approximate price of full-scale screening
+
+Approximate price of screening
+
+```{r, echo = FALSE}
+models <- c("gpt-3.5-turbo-0613", "gpt-3.5-turbo-0613", "gpt-4")
+```
+
+```{r, eval = FALSE}
+app_obj <- 
+  approximate_price_gpt(
+    data = filges2015_dat, # Tutorial data embedded in the package
+    prompt = prompts, 
+    studyid = studyid, # indicate the variable with the studyid in the data
+    title = title, # indicate the variable with the titles in the data
+    abstract = abstract, # indicate the variable with the abstracts in the data
+    model = c("gpt-4o", "gpt-4"),
+    reps = 1
+  )
+
+app_obj
+#> The approximate price of the (simple) screening will be around $3.0573.
+
+app_obj$price_dollar
+#> [1] 3.0573
+app_obj$price_data
+
+```
 
 
 # References
