@@ -72,11 +72,18 @@
 <b>Important note</b>
 </p>
 <p style="margin:1em">
-This is work-in-progress only. For now, see <a href="https://osf.io/preprints/osf/yrhzm" class="external-link">Vembye et al.</a> <span class="citation">(<a href="#ref-Vembye2024_gpt">2024</a>)</span> for an
-overview of how and when GPT API models can be used for title and
-abstract (TAB) screening. For an overview of other research regarding
-the use of GPT API models for title and abstract screening, see Syriani
-et al. <span class="citation">(<a href="#ref-Syriani2023">2023</a>, <a href="#ref-Syriani2024">2024</a>)</span>, Guo et al., <span class="citation">(<a href="#ref-Guo2024">2024</a>)</span>, and Gargari
+</p>
+<p>This is work-in-progress only. For now, see <a href="https://osf.io/preprints/osf/yrhzm" class="external-link">Vembye, Christensen, Mølgaard,
+&amp; Schytt</a> <span class="citation">(<a href="#ref-Vembye2024_gpt">2024</a>)</span> for an overview of how and
+when GPT API models can be used for title and abstract (TAB) screening.
+Our most recent results suggest that the <code>gpt-4o-mini</code> is
+very good at screening titles and abstracts with performances at least
+on par with <code>gpt-4</code>. This is a very cheap model (200 times
+cheaper than <code>gpt-4</code>). Therefore to lower the cost, our
+recommendation is always to test the performance of
+<code>gpt-4o-mini</code> before testing other models.</p>
+For an overview of other research regarding the use of GPT API models
+for title and abstract screening, see Syriani et al. <span class="citation">(<a href="#ref-Syriani2023">2023</a>, <a href="#ref-Syriani2024">2024</a>)</span>, Guo et al., <span class="citation">(<a href="#ref-Guo2024">2024</a>)</span>, and Gargari
 et al. <span class="citation">(<a href="#ref-Gargari2024">2024</a>)</span>. On a related line of research,
 Alshami et al. <span class="citation">(<a href="#ref-Alshami2023">2023</a>)</span>, Khraisha et al. <span class="citation">(<a href="#ref-Khraisha2024">2024</a>)</span>, and
 Issaiy et al. <span class="citation">(<a href="#ref-Issaiy2024">Issaiy
@@ -84,7 +91,7 @@ et al., 2024</a>)</span> explored using the ChatGPT web browser
 interface for TAB screening. Based on our experience, we think that
 these two lines of research should not be mixed up since the draw on
 different GPT models and setups.
-</p>
+
 <p></p></span>
 </div>
 <p>Conducting a systematic review is most often resource-demanding. A
@@ -97,73 +104,108 @@ thousands of titles and abstracts to be screened for relevance. Manual
 screening hereof can be a time-consuming and tedious task. However,
 overlooking relevant studies at this stage can be consequential, leading
 to substantially biased results, if the missed studies are
-systematically different from the detected ones. To mitigate this issue,
-we show in this vignette how to use OpenAI’s GPT API models for title
-and abstract screening in R. Specifically we demonstrate how to create a
-test dataset and decide what exact model to use as the second screener.
-Using R to conduct the screening with GPT API models has certain
-advantages:</p>
+systematically different from the detected ones. To mitigate this
+resource issue, we show in this vignette how to use OpenAI’s GPT
+(Generative Pre-trained Transformer) API (Application Programming
+Interface) models for title and abstract screening in R. Specifically,
+we demonstrate how to create a test dataset and assess whether GPT is
+viable as the second screener in your review <span class="citation">(cf.
+<a href="#ref-Vembye2024_gpt">Vembye et al., 2024</a>)</span>.  </p>
+<p>You might ask, why use GPT API models from R and not just do the
+screening with ChatGPT? The answer to this is that using R to conduct
+the screening with GPT API models has certain advantages:</p>
 <ol style="list-style-type: decimal">
 <li>Reviewers can easily work with a large number of references,
 avoiding copy-paste procedures <span class="citation">(cf. <a href="#ref-Khraisha2024">Khraisha et al., 2024</a>)</span>.<br>
 </li>
-<li>The total screening time can be substantially decreased relative to
-using the ChatGPT interface, since screenings can be done in parallel.
-In theory, you will be able to screening 30000 titles and abstracts per
-minute if screening with one prompt only.</li>
+<li>The total screening time can be substantially lowered relative to
+using the ChatGPT interface, since the screening can be done in
+parallel. In theory, you will be able to screen 30,000 titles and
+abstracts per minute.</li>
 <li>It eases model comparison.</li>
 <li>Consistency between the GPT answer for the same title and abstract
-can easily be tested.</li>
+can easily be tested. In other words, you can conduct multiple screening
+and make inclusion judgments based on how many times a study has been
+included across the given number of screenings.</li>
+<li>When using the <code>gpt-4o-mini</code>, it cheaper than subscribing
+to ChatGPT plus.</li>
 </ol>
-<p>Before we get started, it is important to stress that the GPT API
-models used for TAB screening should always be used carefully and be
-assisted by a human (human-in-the-loop). Consequently, we do not
-recommend to use the <code>AIscreenR</code> as a single screener, unless
-this an absolutely final solution.</p>
+<p>That said, it is also important to stress that the GPT API models
+used for TAB screening should always be used carefully and be assisted
+by a human (human-in-the-loop). Consequently, we do not recommend to use
+the <code>AIscreenR</code> as a single screener, unless this an
+absolutely final solution. When using a GPT API model as the second
+screener, we also recommend that the human screening has been done
+before uploading RIS-file(s) to R. Thereby, it is possible to compare
+the screenings instantly after the computer screening has been done.</p>
 <div class="section level2">
-<h2 id="getting-started-loading-relevant-ris-file-data-for-screening">Getting started: Loading relevant ris file data for screening<a class="anchor" aria-label="anchor" href="#getting-started-loading-relevant-ris-file-data-for-screening"></a>
+<h2 id="get-started">Get started<a class="anchor" aria-label="anchor" href="#get-started"></a>
 </h2>
-<p>At this stage, we expect that you have a pile of ris-files,
+<p>At this point, it can for many reviewers (especially those not used
+code in R) seem overwhelming to conduct a title and abstract screening
+in R. However, it important to stress that running your first screening
+only requires the following steps:</p>
+<ol style="list-style-type: decimal">
+<li>Load your RIS-file data and convert it to a data frame</li>
+<li>Handle your API key (this is only necessary the first time you
+screen)</li>
+<li>Make one or multiple prompts</li>
+<li>Run the screening</li>
+</ol>
+<p>And if the human screening has been conducted (as in the example
+below)</p>
+<ol start="5" style="list-style-type: decimal">
+<li>Analyze the screening</li>
+<li>Resolve disagreements</li>
+</ol>
+</div>
+<div class="section level2">
+<h2 id="load-ris-file-data-and-convert-to-data-frame">Load RIS-file data and convert to data frame<a class="anchor" aria-label="anchor" href="#load-ris-file-data-and-convert-to-data-frame"></a>
+</h2>
+<p>At this stage, we expect that you have a pile of RIS-files,
 containing titles and abstracts for the references you would like to
-screen. You can retrieve ris-files in several ways, either directly from
-research database, a Google Scholar search, or exported from your
+screen. You can retrieve RIS-files in several ways, either directly from
+the research databases, a Google Scholar search, or exported from your
 reference management tool, such as EndNote, Mendeley, and RefMan.
-Alternatively, you can export ris-file from systematic software tool
+Alternatively, you can export RIS-file from systematic software tool
 such as <a href="https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914" class="external-link">EPPI-reviewer</a>,
 <a href="https://www.covidence.org/" class="external-link">Covidence</a>, <a href="https://www.metareviewer.org/" class="external-link">MetaReviewer</a>, <a href="http://www.eshackathon.org/revtools/" class="external-link"><code>revtools</code></a>
 <span class="citation">(<a href="#ref-westgate2019">Westgate,
 2019</a>)</span>, or whatever software you use. In the example given
-below, we load ris-files extracted from the <a href="https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914" class="external-link">EPPI-reviewer</a>.
-A minor advantage of extracting ris-files from systematic software tools
+below, we load RIS-files extracted from the <a href="https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914" class="external-link">EPPI-reviewer</a>.
+A minor advantage of extracting RIS-files from systematic software tools
 is that they add a unique study ID to each reference. This feature makes
 it easier to keep track of the screening. Yet, such IDs are
 automatically generated in the <code><a href="../reference/tabscreen_gpt.tools.html">tabscreen_gpt()</a></code> function if
-unique IDs are missing. When using a GPT API model as the second
-screener, we recommend that the human screening has been done before
-uploading ris-file(s) to R. Thereby, it is possible to compare the
-screenings instantly after the computer screening has been done.</p>
+unique IDs are missing.</p>
 <div class="section level3">
-<h3 id="loading-relevant-packages">Loading relevant packages<a class="anchor" aria-label="anchor" href="#loading-relevant-packages"></a>
+<h3 id="load-relevant-packages">Load relevant packages<a class="anchor" aria-label="anchor" href="#load-relevant-packages"></a>
 </h3>
 <p>To get started, we load all relevant package that are needed to
 construct and run the screening.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Loading packages </span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mikkelvembye.github.io/AIscreenR/">AIscreenR</a></span><span class="op">)</span> <span class="co"># Used to screen and calculate gpt vs. human performance</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://revtools.net" class="external-link">revtools</a></span><span class="op">)</span>  <span class="co"># Used to load ris-files</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://revtools.net" class="external-link">revtools</a></span><span class="op">)</span>  <span class="co"># Used to load RIS-files</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span>    <span class="co"># Used to work with tibbles</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>     <span class="co"># Used to manipulate data</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://purrr.tidyverse.org/" class="external-link">purrr</a></span><span class="op">)</span>     <span class="co"># For loops </span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://future.futureverse.org" class="external-link">future</a></span><span class="op">)</span>    <span class="co"># Used to conduct screenings in parallel</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="converting-ris-files-to-dataframes">Converting ris-files to dataframes<a class="anchor" aria-label="anchor" href="#converting-ris-files-to-dataframes"></a>
+<h3 id="convert-ris-files-to-data-frames">Convert RIS-files to data frames<a class="anchor" aria-label="anchor" href="#convert-ris-files-to-data-frames"></a>
 </h3>
-<p>In the below example we load ris-files separately for excluded and
-included ris-files, respectively, and add the <code>human_code</code>
-variable to track the human decision.</p>
+<p>Now, we are ready to conduct the first step of the screening, which
+is to load our RIS-file data into R and convert it to a data frame. This
+can be done by using <code><a href="https://rdrr.io/pkg/revtools/man/read_bibliograpy.html" class="external-link">revtools::read_bibliography()</a></code> from
+<code>revtools</code>.</p>
+<p>Mention <span class="citation">(<a href="#ref-Filges2015a">Filges,
+Andersen, &amp; Jørgensen, 2015</a>)</span>.</p>
+<p>In the below example, we load RIS-files separately for excluded and
+included RIS-files, respectively. This enables us to add the
+<code>human_code</code> variable that tracks the human decision.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Reading path to risfiles</span></span>
+<code class="sourceCode R"><span><span class="co"># Read path to RIS-file including the file name</span></span>
 <span><span class="va">excl_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"excl_tutorial.ris"</span>, package <span class="op">=</span> <span class="st">"AIscreenR"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Loading EXCLUDED studies</span></span>
@@ -176,9 +218,10 @@ variable to track the human decision.</p>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">author</span>, <span class="va">title</span>, <span class="va">abstract</span><span class="op">)</span>, <span class="op">~</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/na_if.html" class="external-link">na_if</a></span><span class="op">(</span><span class="va">.</span>, <span class="st">"NA"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Loading INCLUDED studies</span></span>
+<span><span class="co"># Read path to RIS-files</span></span>
 <span><span class="va">incl_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"incl_tutorial.ris"</span>, package <span class="op">=</span> <span class="st">"AIscreenR"</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># Loading INCLUDED studies</span></span>
 <span><span class="va">ris_dat_incl</span> <span class="op">&lt;-</span> <span class="fu">revtools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/revtools/man/read_bibliograpy.html" class="external-link">read_bibliography</a></span><span class="op">(</span><span class="va">incl_path</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -186,9 +229,13 @@ variable to track the human decision.</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    human_code <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">author</span>, <span class="va">title</span>, <span class="va">abstract</span><span class="op">)</span>, <span class="op">~</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/na_if.html" class="external-link">na_if</a></span><span class="op">(</span><span class="va">.</span>, <span class="st">"NA"</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span></span>
-<span><span class="va">filges2015_dat</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="create-the-test-dataset">Create the test dataset<a class="anchor" aria-label="anchor" href="#create-the-test-dataset"></a>
+</h3>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">filges2015_dat</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">ris_dat_excl</span>, <span class="va">ris_dat_incl</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    studyid <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -215,8 +262,11 @@ variable to track the human decision.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="getting-api-key-openai">Getting API key (OpenAI)<a class="anchor" aria-label="anchor" href="#getting-api-key-openai"></a>
+<h2 id="handle-api-key">Handle API key<a class="anchor" aria-label="anchor" href="#handle-api-key"></a>
 </h2>
+<div class="section level3">
+<h3 id="get-api-key">Get API key<a class="anchor" aria-label="anchor" href="#get-api-key"></a>
+</h3>
 <p>Before you can use the <code>AIscreenR</code> to screen your
 references, you must generate your own secret API key from OpenAI. To do
 so you must first ensure that you have created an account at OpenAI
@@ -235,9 +285,9 @@ below) and give your key a name.</p>
 safely since you will not be able see it again. <strong>NOTE</strong>:
 <em>If you lose your API key, you can just generate a new one</em>.</p>
 </div>
-<div class="section level2">
-<h2 id="handling-your-api-key">Handling your API key<a class="anchor" aria-label="anchor" href="#handling-your-api-key"></a>
-</h2>
+<div class="section level3">
+<h3 id="manage-api-key-in-r">Manage API key in R<a class="anchor" aria-label="anchor" href="#manage-api-key-in-r"></a>
+</h3>
 <p>When you have retrieved your API, you could in theory add it directly
 to the <code>AIscreenR</code> functions via the <code>api_key</code>
 argument. Yet, this would be an improper way to work the API key since
@@ -247,10 +297,10 @@ access to draw on your OpenAI account. Furthermore, OpenAI will cancel
 the API key if they recognize that your API key has been compromised
 (e.g., if you push it to a public GitHub page). To overcome this issue
 you have several options from here. You can either work with what we
-call permanent or temporary solutions.</p>
-<div class="section level3">
-<h3 id="permanent-solution">Permanent solution<a class="anchor" aria-label="anchor" href="#permanent-solution"></a>
-</h3>
+call a permanent or temporary solution.</p>
+<div class="section level4">
+<h4 id="permanent-solution">Permanent solution<a class="anchor" aria-label="anchor" href="#permanent-solution"></a>
+</h4>
 <p>The easiest way to work with your API key is to permanently add it to
 your R environment as an environment variable. This can be achieved with
 <code><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">usethis::edit_r_environ()</a></code>. In the <code>.Renviron</code>
@@ -270,9 +320,9 @@ process).  </p>
 </div>
 <p> </p>
 </div>
-<div class="section level3">
-<h3 id="temporary-solution">Temporary solution<a class="anchor" aria-label="anchor" href="#temporary-solution"></a>
-</h3>
+<div class="section level4">
+<h4 id="temporary-solution">Temporary solution<a class="anchor" aria-label="anchor" href="#temporary-solution"></a>
+</h4>
 <p>If you do not want to add you API key permanently to your R
 environment, you can use <code><a href="../reference/set_api_key.html">set_api_key()</a></code>. When executing
 <code><a href="../reference/set_api_key.html">set_api_key()</a></code>, you will see a pop-up window in which you
@@ -292,11 +342,12 @@ package for further details about this solution.  </p>
 <p> </p>
 </div>
 </div>
+</div>
 <div class="section level2">
-<h2 id="working-with-prompts-in-r">Working with prompts in R<a class="anchor" aria-label="anchor" href="#working-with-prompts-in-r"></a>
+<h2 id="prompting-in-r">Prompting in R<a class="anchor" aria-label="anchor" href="#prompting-in-r"></a>
 </h2>
 <p>Example of how to enter a prompt.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">prompt</span> <span class="op">&lt;-</span> <span class="st">"Evaluate the following study based on the selection criteria</span></span>
 <span><span class="st">for a systematic review on the effects of family-based interventions on drug </span></span>
 <span><span class="st">abuse reduction for young people in treatment for non-opioid drug use.</span></span>
@@ -339,7 +390,7 @@ package for further details about this solution.  </p>
 </p>
 </div>
 <p> </p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">word_path</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"word_prompt_1.docx"</span>, package <span class="op">=</span> <span class="st">"AIscreenR"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">prompt1</span> <span class="op">&lt;-</span> </span>
@@ -362,9 +413,12 @@ package for further details about this solution.  </p>
 <span><span class="va">prompts</span> </span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="retrieve-rate-limit-information">Retrieve rate limit information<a class="anchor" aria-label="anchor" href="#retrieve-rate-limit-information"></a>
+<h2 id="run-screening-of-titles-and-abstracts">Run screening of titles and abstracts<a class="anchor" aria-label="anchor" href="#run-screening-of-titles-and-abstracts"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="section level3">
+<h3 id="retrieve-rate-limit-information">Retrieve rate limit information<a class="anchor" aria-label="anchor" href="#retrieve-rate-limit-information"></a>
+</h3>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Rate limits across one model (Default is "gpt-3.5-turbo-0613")</span></span>
 <span><span class="va">rate_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">rate_limits</span></span>
@@ -385,33 +439,6 @@ package for further details about this solution.  </p>
 <span><span class="co">#&gt;   &lt;chr&gt;                            &lt;dbl&gt;             &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt; 1 gpt-3.5-turbo-0613               10000           1000000</span></span>
 <span><span class="co">#&gt; 2 gpt-4                              200             10000</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="approximate-price-of-screening">Approximate price of screening<a class="anchor" aria-label="anchor" href="#approximate-price-of-screening"></a>
-</h2>
-<p>Approximate price of screening</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">app_obj</span> <span class="op">&lt;-</span> </span>
-<span>  <span class="fu"><a href="../reference/approximate_price_gpt.html">approximate_price_gpt</a></span><span class="op">(</span></span>
-<span>    data <span class="op">=</span> <span class="va">filges2015_dat</span>, <span class="co"># Tutorial data embedded in the package</span></span>
-<span>    prompt <span class="op">=</span> <span class="va">prompts</span>, </span>
-<span>    studyid <span class="op">=</span> <span class="va">studyid</span>, <span class="co"># indicate the variable with the studyid in the data</span></span>
-<span>    title <span class="op">=</span> <span class="va">title</span>, <span class="co"># indicate the variable with the titles in the data</span></span>
-<span>    abstract <span class="op">=</span> <span class="va">abstract</span>, <span class="co"># indicate the variable with the abstracts in the data</span></span>
-<span>    model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-4o"</span>, <span class="st">"gpt-4"</span><span class="op">)</span>,</span>
-<span>    reps <span class="op">=</span> <span class="fl">1</span></span>
-<span>  <span class="op">)</span></span>
-<span></span>
-<span><span class="va">app_obj</span></span>
-<span><span class="co">#&gt; The approximate price of the (simple) screening will be around $3.0573.</span></span>
-<span></span>
-<span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_dollar</span></span>
-<span><span class="co">#&gt; [1] 3.0573</span></span>
-<span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_data</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="screening-titles-and-abstracts">Screening titles and abstracts<a class="anchor" aria-label="anchor" href="#screening-titles-and-abstracts"></a>
-</h2>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-3.5-turbo-0613"</span>, <span class="st">"gpt-4"</span><span class="op">)</span></span>
 <span><span class="va">reps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span>, <span class="fl">1</span><span class="op">)</span></span>
@@ -421,7 +448,7 @@ package for further details about this solution.  </p>
 <span></span>
 <span><span class="va">result_object</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu"><a href="../reference/tabscreen_gpt.original.html">tabscreen_gpt.original</a></span><span class="op">(</span></span>
-<span>    data <span class="op">=</span> <span class="va">filges2015_dat</span>, <span class="co"># ris-file data create above </span></span>
+<span>    data <span class="op">=</span> <span class="va">filges2015_dat</span>, <span class="co"># RIS-file data create above </span></span>
 <span>    prompt <span class="op">=</span> <span class="va">prompt</span>, <span class="co"># indicate name of the loaded prompt object</span></span>
 <span>    studyid <span class="op">=</span> <span class="va">studyid</span>, <span class="co"># indicate the variable with the studyid in the data</span></span>
 <span>    title <span class="op">=</span> <span class="va">title</span>, <span class="co"># indicate the variable with the titles in the data</span></span>
@@ -451,9 +478,9 @@ package for further details about this solution.  </p>
 <span><span class="co">#&gt; Find error data by executing</span></span>
 <span><span class="co">#&gt;  result_object$error_data</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="screen-failed-requests">Screen failed requests<a class="anchor" aria-label="anchor" href="#screen-failed-requests"></a>
-</h2>
+<div class="section level3">
+<h3 id="screen-failed-requests">Screen failed requests<a class="anchor" aria-label="anchor" href="#screen-failed-requests"></a>
+</h3>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result_object</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">result_object</span> <span class="op">|&gt;</span> </span>
@@ -469,8 +496,9 @@ package for further details about this solution.  </p>
 <span><span class="co">#&gt; Find total price for the screening by executing</span></span>
 <span><span class="co">#&gt;  result_object$price_dollar</span></span></code></pre></div>
 </div>
+</div>
 <div class="section level2">
-<h2 id="getting-the-results-from-the-screening">Getting the results from the screening<a class="anchor" aria-label="anchor" href="#getting-the-results-from-the-screening"></a>
+<h2 id="analyze-screening">Analyze screening<a class="anchor" aria-label="anchor" href="#analyze-screening"></a>
 </h2>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># gpt-3.5 results (prompt 1, top_p = 1, 10 replications)</span></span>
@@ -484,10 +512,6 @@ package for further details about this solution.  </p>
 <span><span class="va">sum_dat_gpt4</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">result_object</span><span class="op">$</span><span class="va">answer_data_sum</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html" class="external-link">str_detect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"4"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">promptid</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">top_p</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="analyzing-the-screening">Analyzing the screening<a class="anchor" aria-label="anchor" href="#analyzing-the-screening"></a>
-</h2>
 <div class="section level3">
 <h3 id="simple-table">Simple table<a class="anchor" aria-label="anchor" href="#simple-table"></a>
 </h3>
@@ -517,10 +541,37 @@ package for further details about this solution.  </p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="getting-detailed-descriptions">Getting detailed descriptions<a class="anchor" aria-label="anchor" href="#getting-detailed-descriptions"></a>
+<h2 id="check-and-resolve-disagreements">Check and resolve disagreements<a class="anchor" aria-label="anchor" href="#check-and-resolve-disagreements"></a>
 </h2>
+<div class="section level3">
+<h3 id="getting-detailed-descriptions">Getting detailed descriptions<a class="anchor" aria-label="anchor" href="#getting-detailed-descriptions"></a>
+</h3>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Show example with gpt-4</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="approximate-price-of-full-scale-screening">Approximate price of full-scale screening<a class="anchor" aria-label="anchor" href="#approximate-price-of-full-scale-screening"></a>
+</h2>
+<p>Approximate price of screening</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">app_obj</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu"><a href="../reference/approximate_price_gpt.html">approximate_price_gpt</a></span><span class="op">(</span></span>
+<span>    data <span class="op">=</span> <span class="va">filges2015_dat</span>, <span class="co"># Tutorial data embedded in the package</span></span>
+<span>    prompt <span class="op">=</span> <span class="va">prompts</span>, </span>
+<span>    studyid <span class="op">=</span> <span class="va">studyid</span>, <span class="co"># indicate the variable with the studyid in the data</span></span>
+<span>    title <span class="op">=</span> <span class="va">title</span>, <span class="co"># indicate the variable with the titles in the data</span></span>
+<span>    abstract <span class="op">=</span> <span class="va">abstract</span>, <span class="co"># indicate the variable with the abstracts in the data</span></span>
+<span>    model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-4o"</span>, <span class="st">"gpt-4"</span><span class="op">)</span>,</span>
+<span>    reps <span class="op">=</span> <span class="fl">1</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="va">app_obj</span></span>
+<span><span class="co">#&gt; The approximate price of the (simple) screening will be around $3.0573.</span></span>
+<span></span>
+<span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_dollar</span></span>
+<span><span class="co">#&gt; [1] 3.0573</span></span>
+<span><span class="va">app_obj</span><span class="op">$</span><span class="va">price_data</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
@@ -532,6 +583,11 @@ Alshami, A., Elsayed, M., Ali, E., Eltoukhy, A. E. E., &amp; Zayed, T.
 automating systematic review process: Methodology, case study,
 limitations, and future directions</span>. <em>Systems</em>,
 <em>11</em>(7), 351. <a href="https://doi.org/10.3390/systems11070351" class="external-link">https://doi.org/10.3390/systems11070351</a>
+</div>
+<div id="ref-Filges2015a" class="csl-entry">
+Filges, T., Andersen, D., &amp; Jørgensen, A.-M. K. (2015). <span class="nocase">Functional Family Therapy (FFT) for young people in
+treatment for non-opioid drug use: A systematic review</span>.
+<em>Campbell Systematic Reviews</em>, <em>11</em>(1), 1–77. <a href="https://doi.org/10.4073/csr.2015.14" class="external-link">https://doi.org/10.4073/csr.2015.14</a>
 </div>
 <div id="ref-Gargari2024" class="csl-entry">
 Gargari, O. K., Mahmoudi, M. H., Hajisafarali, M., &amp; Samiee, R.
