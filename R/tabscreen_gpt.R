@@ -567,7 +567,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
     if (decision_description){
       message(
         paste0(
-          "* Be aware that getting descriptive, detailed reponses will substantially increase",
+          "* Be aware that getting descriptive, detailed responses will substantially increase",
           " the prize of the screening relative to the noted approximate prize."
         )
       )

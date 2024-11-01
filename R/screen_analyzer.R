@@ -121,17 +121,19 @@ screen_analyzer <- function(x, human_decision = human_code, key_result = TRUE){
 
   if ("answer_data_aggregated" %in% names || is_gpt_agg_tbl(x)){
 
-    res_p_incl <- purrr::map(0:9/10, ~ {
+    res_p_incl <- purrr::map(1:10/10, ~ {
       dat |>
+        dplyr::filter(reps > 1) |>
         dplyr::mutate(
-          final_decision_gpt = dplyr::if_else(incl_p > .x, "Include", "Exclude"),
+          final_decision_gpt = dplyr::if_else(incl_p >= .x, "Include", "Exclude"),
           final_decision_gpt_num = dplyr::if_else(final_decision_gpt == "Include", 1, 0)
         ) |>
         .calc_perform(hum_decision = {{ human_decision }}) |>
         dplyr::mutate(
+          incl_p = .x,
           criteria = dplyr::if_else(
-            .x+0.1 != 1,
-            paste0("Studies have been included in at least ", (.x + 0.1)*100, "% of the ", reps, " screenings."),
+            .x != 1,
+            paste0("Studies have been included in at least ", .x*100, "% of the ", reps, " screenings."),
             paste0("Studies have been included in all of the ", reps, " screenings.")
           )
         )
@@ -142,7 +144,7 @@ screen_analyzer <- function(x, human_decision = human_code, key_result = TRUE){
     if (key_result) {
       res_p_incl <-
         res_p_incl |>
-        dplyr::select(promptid, model, reps, top_p, p_agreement, recall, specificity, criteria)
+        dplyr::select(promptid, model, reps, top_p, p_agreement, recall, specificity, incl_p, criteria)
     }
 
     attr(res, "p_incl_data") <- res_p_incl
@@ -151,22 +153,23 @@ screen_analyzer <- function(x, human_decision = human_code, key_result = TRUE){
 
   if (is_gpt_agg_tbl(dat)) {
 
-    p_incl_cut <- attr(dat, "incl_cutoff_lower")
+   p_incl_cut <- attr(dat, "incl_cutoff_lower")
 
     res <-
       res |>
       dplyr::mutate(
-        incl_p_cutoff = p_incl_cut,
-        criteria = dplyr::if_else(
-          p_incl_cut != 1,
-          paste0("Studies have been included in at least ", p_incl_cut * 100, "% of the ", reps, " screenings."),
-          paste0("Studies have been included in all of the ", reps, " screenings.")
+        incl_p_cutoff = dplyr::if_else(reps == 1, NA_real_, p_incl_cut),
+        criteria = dplyr::case_when(
+          incl_p_cutoff == 1 ~ paste0("Studies have been included in all of the ", reps, " screenings."),
+          incl_p_cutoff != 1 ~ paste0("Studies have been included in at least ", incl_p_cutoff * 100, "% of the ", reps, " screenings."),
+          is.na(incl_p_cutoff) ~ "One screening used.",
+          .default = NA_character_
         )
-      )
+      ) |>
+      dplyr::rename(incl_p = incl_p_cutoff)
 
-    if (key_result) res <- res |> dplyr::select(-incl_p_cutoff)
+ }
 
-  }
 
   res
 
