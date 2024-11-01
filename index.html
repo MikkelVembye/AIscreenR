@@ -99,7 +99,7 @@
 <p>How to load ris files. In this example we have downloaded the ris files from the <a href="https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914" class="external-link">EPPI-Reviewer</a>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Loading ris file data via revtools</span></span>
-<span><span class="va">ris_dat_excl</span> <span class="op">&lt;-</span> <span class="fu">revtools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/revtools/man/read_bibliograpy.html" class="external-link">read_bibliography</a></span><span class="op">(</span><span class="st">"path/FFT_exclude.ris"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">ris_dat_excl</span> <span class="op">&lt;-</span> <span class="fu">revtools</span><span class="fu">::</span><span class="fu">read_bibliography</span><span class="op">(</span><span class="st">"path/FFT_exclude.ris"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>studyid <span class="op">=</span> <span class="va">eppi_id</span>, <span class="va">title</span>, <span class="va">abstract</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -107,7 +107,7 @@
 <span>    human_code <span class="op">=</span> <span class="fl">0</span> <span class="co"># Indicating exclusion</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="va">ris_dat_incl</span> <span class="op">&lt;-</span> <span class="fu">revtools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/revtools/man/read_bibliograpy.html" class="external-link">read_bibliography</a></span><span class="op">(</span><span class="st">"path/FFT_include.ris"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">ris_dat_incl</span> <span class="op">&lt;-</span> <span class="fu">revtools</span><span class="fu">::</span><span class="fu">read_bibliography</span><span class="op">(</span><span class="st">"path/FFT_include.ris"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>studyid <span class="op">=</span> <span class="va">eppi_id</span>, <span class="va">title</span>, <span class="va">abstract</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
