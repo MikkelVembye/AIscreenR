@@ -76,7 +76,7 @@ for guidance on how adequately to conduct title and abstract screening with GPT 
 <span>   model <span class="op">=</span> <span class="st">"gpt-4o-mini"</span>, role <span class="op">=</span> <span class="st">"user"</span>, tools <span class="op">=</span> <span class="cn">NULL</span>, tool_choice <span class="op">=</span> <span class="cn">NULL</span>, top_p <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>   time_info <span class="op">=</span> <span class="cn">TRUE</span>, token_info <span class="op">=</span> <span class="cn">TRUE</span>, api_key <span class="op">=</span> <span class="fu"><a href="get_api_key.html">get_api_key</a></span><span class="op">(</span><span class="op">)</span>, max_tries <span class="op">=</span> <span class="fl">16</span>,</span>
 <span>   max_seconds <span class="op">=</span> <span class="cn">NULL</span>, is_transient <span class="op">=</span> <span class="va">gpt_is_transient</span>, backoff <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>   after <span class="op">=</span> <span class="cn">NULL</span>, rpm <span class="op">=</span> <span class="fl">10000</span>, reps <span class="op">=</span> <span class="fl">1</span>, seed <span class="op">=</span> <span class="cn">NULL</span>, progress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>   after <span class="op">=</span> <span class="cn">NULL</span>, rpm <span class="op">=</span> <span class="fl">10000</span>, reps <span class="op">=</span> <span class="fl">1</span>, seed_par <span class="op">=</span> <span class="cn">NULL</span>, progress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>   decision_description <span class="op">=</span> <span class="cn">FALSE</span>, messages <span class="op">=</span> <span class="cn">TRUE</span>, incl_cutoff_upper <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>   incl_cutoff_lower <span class="op">=</span> <span class="cn">NULL</span>, force <span class="op">=</span> <span class="cn">FALSE</span>, fine_tuned <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
@@ -84,7 +84,7 @@ for guidance on how adequately to conduct title and abstract screening with GPT 
 <span>   model <span class="op">=</span> <span class="st">"gpt-4o-mini"</span>, role <span class="op">=</span> <span class="st">"user"</span>, tools <span class="op">=</span> <span class="cn">NULL</span>, tool_choice <span class="op">=</span> <span class="cn">NULL</span>, top_p <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>   time_info <span class="op">=</span> <span class="cn">TRUE</span>, token_info <span class="op">=</span> <span class="cn">TRUE</span>, api_key <span class="op">=</span> <span class="fu"><a href="get_api_key.html">get_api_key</a></span><span class="op">(</span><span class="op">)</span>, max_tries <span class="op">=</span> <span class="fl">16</span>,</span>
 <span>   max_seconds <span class="op">=</span> <span class="cn">NULL</span>, is_transient <span class="op">=</span> <span class="va">gpt_is_transient</span>, backoff <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>   after <span class="op">=</span> <span class="cn">NULL</span>, rpm <span class="op">=</span> <span class="fl">10000</span>, reps <span class="op">=</span> <span class="fl">1</span>, seed <span class="op">=</span> <span class="cn">NULL</span>, progress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>   after <span class="op">=</span> <span class="cn">NULL</span>, rpm <span class="op">=</span> <span class="fl">10000</span>, reps <span class="op">=</span> <span class="fl">1</span>, seed_par <span class="op">=</span> <span class="cn">NULL</span>, progress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>   decision_description <span class="op">=</span> <span class="cn">FALSE</span>, messages <span class="op">=</span> <span class="cn">TRUE</span>, incl_cutoff_upper <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>   incl_cutoff_lower <span class="op">=</span> <span class="cn">NULL</span>, force <span class="op">=</span> <span class="cn">FALSE</span>, fine_tuned <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -210,7 +210,7 @@ Default is <code>1</code> but when using gpt-3.5-turbo models or gpt-4o-mini,
 we recommend setting this value to <code>10</code> to catch model uncertainty.</p></dd>
 
 
-<dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
+<dt id="arg-seed-par">seed_par<a class="anchor" aria-label="anchor" href="#arg-seed-par"></a></dt>
 <dd><p>Numerical value for a seed to ensure that proper,
 parallel-safe random numbers are produced.</p></dd>
 
