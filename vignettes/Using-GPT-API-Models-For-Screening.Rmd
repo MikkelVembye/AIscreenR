@@ -356,7 +356,7 @@ screen_performance
 
 ## Assess results via a benchmark scheme
 
-```{r eval=TRUE, echo=FALSE, fig.cap='*Figure 6 - Generic benchmark scheme from Vembye et al. (2024)*'}
+```{r eval=TRUE, echo=FALSE, fig.cap='*Figure 5 - Generic benchmark scheme from Vembye et al. (2024)*'}
 knitr::include_graphics("helper-stuff/benchmark_scheme.png")
 ```
 
