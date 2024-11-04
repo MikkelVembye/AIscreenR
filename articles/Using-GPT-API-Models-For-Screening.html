@@ -75,21 +75,21 @@
 <em>This is work-in-progress only. For now, see <a href="https://osf.io/preprints/osf/yrhzm" class="external-link">Vembye, Christensen, Mølgaard,
 &amp; Schytt</a> <span class="citation">(<a href="#ref-Vembye2024_gpt">2024</a>)</span> for an overview of how and
 when GPT API models can be used for title and abstract (TAB) screening.
-Our most recent results suggest that the <code>gpt-4o-mini</code> is a
-good model for screening titles and abstracts with performances in many
-cases on par with <code>gpt-4</code>. This is a very cheap model (200
-times cheaper than <code>gpt-4</code>). Therefore to lower the cost, our
-recommendation is always to test the performance of
-<code>gpt-4o-mini</code> before testing other models. For an overview of
-other research regarding the use of GPT API models for title and
-abstract screening, see Syriani et al. <span class="citation">(<a href="#ref-Syriani2023">2023</a>, <a href="#ref-Syriani2024">2024</a>)</span>, Guo et al., <span class="citation">(<a href="#ref-Guo2024">2024</a>)</span>, and Gargari
-et al. <span class="citation">(<a href="#ref-Gargari2024">2024</a>)</span>. On a related line of research,
+Our most recent results suggest that the <code>gpt-4o-mini</code> is an
+effective model for screening titles and abstracts with performances in
+many cases on par with <code>gpt-4</code>. This is a very cheap model
+(200 times cheaper than <code>gpt-4</code>). Therefore, to reduce costs,
+we recommendation always testing the performance of
+<code>gpt-4o-mini</code> before considering other models. For an
+overview of additional research on the use of GPT API models for title
+and abstract screening, see Syriani et al. <span class="citation">(<a href="#ref-Syriani2023">2023</a>, <a href="#ref-Syriani2024">2024</a>)</span>, Guo et al., <span class="citation">(<a href="#ref-Guo2024">2024</a>)</span>, and Gargari
+et al. <span class="citation">(<a href="#ref-Gargari2024">2024</a>)</span>. In a related line of research,
 Alshami et al. <span class="citation">(<a href="#ref-Alshami2023">2023</a>)</span>, Khraisha et al. <span class="citation">(<a href="#ref-Khraisha2024">2024</a>)</span>, and
 Issaiy et al. <span class="citation">(<a href="#ref-Issaiy2024">Issaiy
-et al., 2024</a>)</span> explored using the ChatGPT web browser
-interface for TAB screening. Based on our experience, we think that
-these two lines of research should not be mixed up since the draw on
-different GPT models and setups.</em>
+et al., 2024</a>)</span> explored the use of the ChatGPT web browser
+interface for TAB screening. Based on our experience, we believe these
+two lines of research should not be conflated, as they rely on different
+GPT models and setups.</em>
 </p>
 <p></p></span>
 </div>
@@ -102,52 +102,53 @@ databases relevant to the given review, most often resulting in
 thousands of titles and abstracts to be screened for relevance. Manual
 screening hereof can be a time-consuming and tedious task. However,
 overlooking relevant studies at this stage can be consequential, leading
-to substantially biased results, if the missed studies are
-systematically different from the detected ones. To mitigate this
-resource issue, we show in this vignette how to use OpenAI’s GPT
+to substantially biased results if the missed studies differ
+systematically from the detected studies. To mitigate this resource
+issue, we demonstrate in this vignette how to use OpenAI’s GPT
 (Generative Pre-trained Transformer) API (Application Programming
 Interface) models for title and abstract screening in R. Specifically,
-we demonstrate how to create a test dataset and assess whether GPT is
-viable as the second screener in your review <span class="citation">(cf.
-<a href="#ref-Vembye2024_gpt">Vembye et al., 2024</a>)</span>.  </p>
-<p>At this point, you might ask, why use GPT API models from R and not
-just do the screening with ChatGPT? The answer to this is that using R
-to conduct the screening with GPT API models has certain advantages:</p>
+we show how to create a test dataset and assess whether GPT is viable as
+the second screener in your review <span class="citation">(cf. <a href="#ref-Vembye2024_gpt">Vembye et al., 2024</a>)</span>.  </p>
+<p>At this point, you might ask, why use GPT API models via R instead of
+simply using ChatGPT for screening? The answer is that using R offer
+certain advantages:</p>
 <ol style="list-style-type: decimal">
 <li>Reviewers can easily work with a large number of references,
-avoiding copy-paste procedures <span class="citation">(cf. <a href="#ref-Khraisha2024">Khraisha et al., 2024</a>)</span>.<br>
+avoiding the need for manual copy-paste procedures <span class="citation">(cf. <a href="#ref-Khraisha2024">Khraisha et al.,
+2024</a>)</span>.<br>
 </li>
-<li>The total screening time can be substantially lowered relative to
-using the ChatGPT interface, since the screening can be done in
-parallel. In theory, you will be able to screen 30,000 titles and
-abstracts per minute.</li>
+<li>The screening time can be substantially reduced compared to using
+the ChatGPT interface, as screening can be performed in parallel. In
+theory, you can screen 30,000 titles and abstracts per minute.</li>
 <li>It eases model comparison.</li>
 <li>Consistency between the GPT answer for the same title and abstract
-can easily be tested. You can also conduct multiple screenings and make
-inclusion judgments based on how many times a study has been included
-across the given number of screenings.</li>
-<li>When using the <code>gpt-4o-mini</code>, it is cheaper than
+can be easily tested. You can also conduct multiple screenings and make
+inclusion judgments based on how often a study is included across a set
+number of screenings.</li>
+<li>When using the <code>gpt-4o-mini</code>, it is often cheaper than
 subscribing to ChatGPT plus.</li>
-<li>Research suggest that GPT API models and the ChatGPT yields quite
-different screening performances.</li>
+<li>Research suggest that GPT API models and the ChatGPT yield notably
+different screening performance, with the latter proving insufficient as
+an independent second screener.</li>
 </ol>
-<p>That said, it is also important to stress that the GPT API models
-used for TAB screening should always be used carefully and be assisted
-by a human (human-in-the-loop). Consequently, we do not recommend to use
-the <code>AIscreenR</code> as a single screener, unless this an
-absolutely final solution. When using a GPT API model as the second
-screener, we also recommend that the human screening has been done
-before uploading RIS-file(s) to R. Thereby, it is possible to compare
-the screenings instantly after the GPT screening has been done.</p>
+<p>That said, we would also like to emphasize that screening with the
+GPT API models should be conducted carefully and always be assisted by
+humans (human-in-the-loop). Consequently, we do not recommend to use the
+a GPT API model as a single screener, unless this an absolutely final
+solution. When using a GPT API model as the second screener, we also
+recommend completing the human screening before uploading RIS-file(s) to
+R. This allows for immediate comparison once the GPT screening is
+complete and ensures humans are then not impacted/biased by the GPT
+decision.</p>
 <div class="section level2">
 <h2 id="get-started">Get started<a class="anchor" aria-label="anchor" href="#get-started"></a>
 </h2>
-<p>For many reviewers (especially those not used to code in R), it can
-seem overwhelming to conduct a title and abstract screening in R. Yet to
-calm this feeling, it is important to stress that running your first
-screening only requires the following rather simple steps:</p>
+<p>For many reviewers, especially those unfamiliar with coding in R,
+conducting a title and abstract screening in R can seem overwhelming.
+However, it’s important to emphasize that running your first screening
+only requires a few relatively simple steps:</p>
 <ol style="list-style-type: decimal">
-<li>Load your RIS-file data and convert it to a data frame.</li>
+<li>Load and convert your RIS-file data to a data frame.</li>
 <li>Handle your API key (this is only necessary the first time you
 screen).</li>
 <li>Make one or multiple prompts.</li>
@@ -156,36 +157,36 @@ screen).</li>
 <p>And if the human screening has been conducted (as in the example
 below):</p>
 <ol start="5" style="list-style-type: decimal">
-<li>Analyze the screening.</li>
-<li>Resolve disagreements.</li>
+<li>Analyze the screening results.</li>
+<li>Investigate and resolve any disagreements.</li>
 </ol>
-<p>We will go through each of these steps one by one in the following
+<p>We will walk through each of these steps one by one in the following
 sections.</p>
 </div>
 <div class="section level2">
-<h2 id="load-ris-file-data-and-convert-to-data-frame">Load RIS-file data and convert to data frame<a class="anchor" aria-label="anchor" href="#load-ris-file-data-and-convert-to-data-frame"></a>
+<h2 id="load-and-convert-to-ris-file-data-to-a-data-frame">Load and convert to RIS file data to a data frame<a class="anchor" aria-label="anchor" href="#load-and-convert-to-ris-file-data-to-a-data-frame"></a>
 </h2>
-<p>At this stage, we expect that you have a pile of RIS-files,
-containing titles and abstracts for the references you would like to
-screen. You can retrieve RIS-files in several ways, either directly from
-the research databases, a Google Scholar search, or exported from your
+<p>At this stage, we expect that you have a colelction of RIS files
+containing titles and abstracts for the references you wish to screen.
+You can obtain RIS files in several ways: directly from the research
+databases, a Google Scholar search; or by exported them from your
 reference management tool, such as EndNote, Mendeley, and RefMan.
-Alternatively, you can export RIS-file from systematic software tool
+Alternatively, you can export RIS files from systematic software tools
 such as <a href="https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914" class="external-link">EPPI-reviewer</a>,
 <a href="https://www.covidence.org/" class="external-link">Covidence</a>, <a href="https://www.metareviewer.org/" class="external-link">MetaReviewer</a>, <a href="http://www.eshackathon.org/revtools/" class="external-link"><code>revtools</code></a>
 <span class="citation">(<a href="#ref-westgate2019">Westgate,
-2019</a>)</span>, or whatever software you use. In the example given
-below, we load RIS-files extracted from the <a href="https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914" class="external-link">EPPI-reviewer</a>.
-A minor advantage of extracting RIS-files from systematic software tools
-is that they add a unique study ID to each reference. This feature makes
-it easier to keep track of the screening. Yet, such IDs are
-automatically generated in the <code><a href="../reference/tabscreen_gpt.tools.html">tabscreen_gpt()</a></code> function if
-unique IDs are missing.</p>
+2019</a>)</span>, among others. In the example below, we load RIS files
+extracted from <a href="https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914" class="external-link">EPPI-reviewer</a>.
+A minor advantage of exporting RIS files from systematic software tools
+is that they often add a unique study ID to each reference, making it
+easier to track the screening process. However, such IDs are
+automatically generated in <code><a href="../reference/tabscreen_gpt.tools.html">tabscreen_gpt()</a></code> if they are
+missing.</p>
 <div class="section level3">
-<h3 id="load-relevant-packages">Load relevant packages<a class="anchor" aria-label="anchor" href="#load-relevant-packages"></a>
+<h3 id="load-relevant-r-packages">Load relevant R packages<a class="anchor" aria-label="anchor" href="#load-relevant-r-packages"></a>
 </h3>
-<p>To get started, we load all relevant package that are needed to
-construct and run the screening.</p>
+<p>To get started, we first load all R package needed to construct and
+run the screening.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Loading packages </span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mikkelvembye.github.io/AIscreenR/">AIscreenR</a></span><span class="op">)</span> <span class="co"># Used to screen and calculate gpt vs. human performance</span></span>
@@ -193,6 +194,7 @@ construct and run the screening.</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span>    <span class="co"># Used to work with tibbles</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>     <span class="co"># Used to manipulate data</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://purrr.tidyverse.org/" class="external-link">purrr</a></span><span class="op">)</span>     <span class="co"># For loops </span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://usethis.r-lib.org" class="external-link">usethis</a></span><span class="op">)</span>   <span class="co"># Used to add the API key the R environment (only relevant the first time you screen)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://future.futureverse.org" class="external-link">future</a></span><span class="op">)</span>    <span class="co"># Used to conduct screenings in parallel</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -200,24 +202,24 @@ construct and run the screening.</p>
 </h3>
 <p>Now, we are ready to conduct the first step of the screening, which
 is to load our RIS-file data into R and convert it to a data frame. This
-can be done by using <code>revtools::read_bibliography()</code> from
+can be done by using <code>read_bibliography()</code> from
 <code>revtools</code>. In the below example, we use RIS-file data from a
 review regarding the effects of the FRIENDS preventive programme on
-anxiety symptoms in children and adolescents <span class="citation">(<a href="#ref-Filges2023">Filges, Smedslund, Eriksen, &amp; Birkefoss,
-2023</a>; <a href="#ref-Filges2024">Filges, Smedslund, Eriksen,
-Birkefoss, &amp; Kildemoes, 2024</a>)</span>. Be aware, that this data
-is used for illustration purposes only. Thus, no hard inferences should
-be drawn from this example. In the example, we assume that the humans
-have started screening and found a bunch of relevant and irrelevant
-studies from which they can create the test data. Thus, we can load the
-RIS-files, which we downloaded from the EPPI-reviewer, separately for
-ex- and included RIS-files, respectively. This enables us to track the
-human decision by adding a <code>human_code</code> variable, where
-<code>1</code> and <code>0</code> indicates whether a study should be
-in- og excluded.</p>
+anxiety symptoms in children and adolescents <span class="citation">(<a href="#ref-Filges2024">Filges, Smedslund, Eriksen, Birkefoss, &amp;
+Kildemoes, 2024</a>)</span>. Be aware, that this data is used for
+illustration purposes only. Thus, no hard inferences should be drawn
+from this example. In the example, we assume that the humans have
+started screening and found a bunch of relevant and irrelevant studies
+from which they can create the test data. Thus, we can load the
+RIS-files, which we downloaded from the EPPI-reviewer separately for the
+in- and excluded RIS-files. This enables us to track the human decision
+by adding a <code>human_code</code> variable, where <code>1</code> and
+<code>0</code> indicates whether a study should be in- or excluded.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Loading EXCLUDED studies</span></span>
-<span><span class="va">ris_dat_excl</span> <span class="op">&lt;-</span> <span class="fu">revtools</span><span class="fu">::</span><span class="fu">read_bibliography</span><span class="op">(</span><span class="st">"./path/to/your/excluded_ris_file.ris"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="co"># NOTE: Find the RIS-files behind this vignette at https://osf.io/kfbvu/</span></span>
+<span></span>
+<span><span class="co"># Loading EXCLUDED studies</span></span>
+<span><span class="va">ris_dat_excl</span> <span class="op">&lt;-</span> <span class="fu">revtools</span><span class="fu">::</span><span class="fu">read_bibliography</span><span class="op">(</span><span class="st">"friends_excl.ris"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># Add the path to your RIS-file here</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">author</span>, <span class="va">eppi_id</span>, <span class="va">title</span>, <span class="va">abstract</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># Using only relevant variables</span></span>
@@ -225,24 +227,55 @@ in- og excluded.</p>
 <span>    human_code <span class="op">=</span> <span class="fl">0</span>, <span class="co">#Tracking the human decision</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">author</span>, <span class="va">title</span>, <span class="va">abstract</span><span class="op">)</span>, <span class="op">~</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/na_if.html" class="external-link">na_if</a></span><span class="op">(</span><span class="va">.</span>, <span class="st">"NA"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
-<span></span>
+<span><span class="co">#&gt; # A tibble: 2,765 × 5</span></span>
+<span><span class="co">#&gt;   author                                                                eppi_id title abstract human_code</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;                                                                 &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;         &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 Lovat C                                                               911525… "'Ba… "Postna…          0</span></span>
+<span><span class="co">#&gt; 2 Kohler Maxie                                                          911023… "\"F… "The ar…          0</span></span>
+<span><span class="co">#&gt; 3 Stevens Eleanor and Wood Jane                                         911020… "\"I… "'Non-o…          0</span></span>
+<span><span class="co">#&gt; 4 Essau C and Conradt J and Ederer E                                    915786… "[An…  NA               0</span></span>
+<span><span class="co">#&gt; 5 K&lt;c3&gt;&lt;a4&gt;ssler P and Breme K                                          915784… "[Ev…  NA               0</span></span>
+<span><span class="co">#&gt; 6 Brubaker Ruth B and Bay Curt and Chacon Daniel W and Carson Madelein… 911523… "93 … "Introd…          0</span></span>
+<span><span class="co">#&gt; 7 Kumar Suresh and Vellymalay N                                         915785… "A C…  NA               0</span></span>
+<span><span class="co">#&gt; 8 Lock S                                                                915784… "A D…  NA               0</span></span>
+<span><span class="co">#&gt; 9 Bosco Nicolina and Giaccherini Susanna and Meringolo Patrizia         911019… "A g… "This a…          0</span></span>
+<span><span class="co">#&gt;10 Abd El Salam, Amira E and AbdAllah Amany M and El Maghawry Hala A     911017… "Eff… "Backgr…          0</span></span>
+<span><span class="co">#&gt;# ℹ 2,755 more rows</span></span>
+<span><span class="co">#&gt;# ℹ Use `print(n = ...)` to see more rows</span></span>
 <span></span>
 <span><span class="co"># Loading INCLUDED studies</span></span>
-<span><span class="va">ris_dat_incl</span> <span class="op">&lt;-</span> <span class="fu">revtools</span><span class="fu">::</span><span class="fu">read_bibliography</span><span class="op">(</span><span class="st">"./path/to/your/included_ris_file.ris"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">ris_dat_incl</span> <span class="op">&lt;-</span> <span class="fu">revtools</span><span class="fu">::</span><span class="fu">read_bibliography</span><span class="op">(</span><span class="st">"friends_incl.ris"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">author</span>, <span class="va">eppi_id</span>, <span class="va">title</span>, <span class="va">abstract</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    human_code <span class="op">=</span> <span class="fl">1</span>, <span class="co">#Tracking the human decision</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">author</span>, <span class="va">title</span>, <span class="va">abstract</span><span class="op">)</span>, <span class="op">~</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/na_if.html" class="external-link">na_if</a></span><span class="op">(</span><span class="va">.</span>, <span class="st">"NA"</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span></code></pre></div>
+<span>  <span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 97 × 5</span></span>
+<span><span class="co">#&gt;   author                                                                eppi_id title abstract human_code</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;                                                                 &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;         &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 G&lt;c3&gt;&lt;b6&gt;kkaya Fu&lt;cc&gt;&lt;88&gt;sun and Gedik Z                              915785… A Sc…  NA               1</span></span>
+<span><span class="co">#&gt; 2 ACTRN12607000254493                                                   911528… Long… "INTERV…          1</span></span>
+<span><span class="co">#&gt; 3 ACTRN12615000382572                                                   911528… The … "INTERV…          1</span></span>
+<span><span class="co">#&gt; 4 Ahlen Johan and Breitholtz Elisabeth and Barrett Paula M and Gallego… 911544… Scho… "Anxiet…          1</span></span>
+<span><span class="co">#&gt; 5 Ahlen Johan and Hursti Timo and Tanner Lindsey and Tokay Zelal and G… 911019… Prev… "Our st…          1</span></span>
+<span><span class="co">#&gt; 6 Green Sarah L                                                         915785… An e…  NA               1</span></span>
+<span><span class="co">#&gt; 7 Anticich Sarah A. J and Barrett Paula M and Silverman Wendy and Lach… 910111… The … "This s…          1</span></span>
+<span><span class="co">#&gt; 8 Barker Leslie Jayne                                                   915785… Prev…  NA               1</span></span>
+<span><span class="co">#&gt; 9 Barrett PM and Moore AF and Sonderegger R                             911527… The … "Young …          1</span></span>
+<span><span class="co">#&gt;10 Barrett PM and Shortt AL and Wescombe K                               911529… Exam…  NA               1</span></span>
+<span><span class="co">#&gt;# ℹ 87 more rows</span></span>
+<span><span class="co">#&gt;# ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="create-the-test-dataset">Create the test dataset<a class="anchor" aria-label="anchor" href="#create-the-test-dataset"></a>
 </h3>
-<p>We have now loaded our reference data, and can construct the test
-data. To speed up the test, we random sample 150 irrelevant and 50
-relevant records with an title and abstract. Again, this is for
+<p>As you see, we have now loaded our reference data and can construct
+the test data by random sample 150 irrelevant <span class="citation">(as
+suggested in <a href="#ref-Vembye2024_gpt">Vembye et al.,
+2024</a>)</span> and 50 relevant records with an title and abstract. For
+this purpose we use <code><a href="../reference/sample_references.html">sample_references()</a></code>. Again, this is for
 illustration purposes only, since you might not necessarily have access
 to 50 relevant records at this stage of the screening. We recommend
 finding at least 10 relevant reference before constructing the test
@@ -290,9 +323,9 @@ no abstract since these can distort the accuracy of the screening.</p>
 <div class="section level2">
 <h2 id="handle-your-api-key">Handle your API key<a class="anchor" aria-label="anchor" href="#handle-your-api-key"></a>
 </h2>
-<p>After the test data has been made, we can move on to the next step of
-the screening, which involves generating your API key and handle it in
-R.</p>
+<p>We now have our test data in place and can move on to the next step
+of the screening, which involves generating your API key and handle it
+in R.</p>
 <div class="section level3">
 <h3 id="get-your-api-key">Get your API key<a class="anchor" aria-label="anchor" href="#get-your-api-key"></a>
 </h3>
@@ -332,22 +365,25 @@ call a permanent or temporary solution.</p>
 </h4>
 <p>The easiest way to work with your API key is to permanently add it to
 your R environment as an environment variable. This can be achieved with
-<code><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">usethis::edit_r_environ()</a></code>. In the <code>.Renviron</code>
-file, write <code>CHATGPT_KEY=your_key</code> as depicted in Figure 2.
-After entering the API key, close and save the <code>.Renviron</code>
-file and restart <code>RStudio</code> (ctrl + shift + F10). From now on,
-the <code>AIscreenR</code> functions will use the
-<code><a href="../reference/get_api_key.html">get_api_key()</a></code> function to retrieve your API key from your R
-environment automatically. By using this approach you don’t have to
-worry more about you API key (unless you update RStudio, deliberately
-delete the key, or get a new computer. Then you must repeat this
-process).  </p>
+<code><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">usethis::edit_r_environ()</a></code>.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Run code to open your .Renviron file</span></span>
+<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">edit_r_environ</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>In the <code>.Renviron</code> file, write
+<code>CHATGPT_KEY=your_key</code> as depicted in Figure 2.  </p>
 <div class="figure">
 <img src="helper-stuff%2FRenviron.png" alt="*Figure 2 - R environment file*" width="100%"><p class="caption">
 <em>Figure 2 - R environment file</em>
 </p>
 </div>
 <p> </p>
+<p>Thereafter, close and save the <code>.Renviron</code> file and
+restart <code>RStudio</code> (ctrl + shift + F10). From now on, the
+<code>AIscreenR</code> functions will use <code><a href="../reference/get_api_key.html">get_api_key()</a></code> to
+retrieve your API key from your R environment automatically. By using
+this approach you do not have to worry more about you API key (unless
+you update RStudio, deliberately delete the key, or get a new computer.
+Then you must repeat this process).</p>
 </div>
 <div class="section level4">
 <h4 id="temporary-solution">Temporary solution<a class="anchor" aria-label="anchor" href="#temporary-solution"></a>
@@ -375,10 +411,10 @@ package for further details about this solution.  </p>
 <div class="section level2">
 <h2 id="prompting-in-r">Prompting in R<a class="anchor" aria-label="anchor" href="#prompting-in-r"></a>
 </h2>
-<p>The next step involves writing you make one or multiple prompts that
-can be used for the screening. This can be done in several ways. You can
-either write your prompt directly in R, as illustrated below</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<p>The next step involves writing one or multiple prompts that can be
+used for the screening. This can be done in several ways. You can either
+write your prompt directly in R, as illustrated below</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">prompt</span> <span class="op">&lt;-</span> <span class="st">"We are screening studies for a systematic literature review. </span></span>
 <span><span class="st">The topic of the systematic review is the effect of the FRIENDS preventive programme on reducing</span></span>
 <span><span class="st">anxiety symptoms in children and adolescents. The FRIENDS programme is a 10-session manualised </span></span>
@@ -397,7 +433,7 @@ either write your prompt directly in R, as illustrated below</p>
 <p> </p>
 <p>Then you can load your prompt(s) via <code>readtext()</code> from the
 <code>readtext</code> package.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">word_path</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"word_prompt_1.docx"</span>, package <span class="op">=</span> <span class="st">"AIscreenR"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">prompt</span> <span class="op">&lt;-</span> </span>
@@ -405,53 +441,61 @@ either write your prompt directly in R, as illustrated below</p>
 <span>      <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove_all</a></span><span class="op">(</span><span class="st">"\n"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="run-screening-of-titles-and-abstracts">Run screening of titles and abstracts<a class="anchor" aria-label="anchor" href="#run-screening-of-titles-and-abstracts"></a>
+<h2 id="run-the-screening">Run the screening<a class="anchor" aria-label="anchor" href="#run-the-screening"></a>
 </h2>
 <p>Now you are actually ready to conduct the title and abstract
-screening via <code><a href="../reference/tabscreen_gpt.tools.html">tabscreen_gpt()</a></code>. To make the
+screening with <code><a href="../reference/tabscreen_gpt.tools.html">tabscreen_gpt()</a></code>. To make the
 <code><a href="../reference/tabscreen_gpt.tools.html">tabscreen_gpt()</a></code> running, you need to specify the following
 information:</p>
 <ol style="list-style-type: decimal">
 <li>The data with the title and abstract information.</li>
-<li>Your prompt(s).</li>
+<li>The prompt(s).</li>
 <li>The variable names of variables containing the titles and
-abstract.</li>
+abstracts.</li>
 <li>The model(s) you want to use for screening.</li>
 </ol>
 <p>Optional</p>
 <ol start="5" style="list-style-type: decimal">
-<li>The variable name of variable containing the study IDs.</li>
-<li>The number of screenings you want to run for the given model
+<li>The variable name of the variable containing the study IDs.</li>
+<li>The number of screenings you want to run with the given model
 (Default is <code>1</code> but with cheap models it can be advantageous
-to conduct multiple screening and make inclusion judgments based on how
+to conduct multiple screenings and make inclusion judgments based on how
 many times a study has been included across the set of screenings).</li>
 <li>Set the request per minutes.</li>
 </ol>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get information about whether you have access to a given model and </span></span>
 <span><span class="co"># how many requests per minutes you are allow to send. </span></span>
 <span><span class="va">models_rpm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span><span class="st">"gpt-4o-mini"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span><span class="op">)</span></span>
+<span><span class="co"># Set parallel plan</span></span>
+<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="va">result_object</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu"><a href="../reference/tabscreen_gpt.tools.html">tabscreen_gpt</a></span><span class="op">(</span></span>
-<span>    data <span class="op">=</span> <span class="va">test_dat</span>, <span class="co"># RIS-file data create above </span></span>
-<span>    prompt <span class="op">=</span> <span class="va">prompt</span>, <span class="co"># indicate name of the loaded prompt object</span></span>
-<span>    studyid <span class="op">=</span> <span class="va">studyid</span>, <span class="co"># indicate the variable with the studyid in the data</span></span>
-<span>    title <span class="op">=</span> <span class="va">title</span>, <span class="co"># indicate the variable with the titles in the data</span></span>
-<span>    abstract <span class="op">=</span> <span class="va">abstract</span>, <span class="co"># indicate the variable with the abstracts in the data</span></span>
+<span>    data <span class="op">=</span> <span class="va">test_dat</span>, <span class="co"># RIS-file data created above </span></span>
+<span>    prompt <span class="op">=</span> <span class="va">prompt</span>, <span class="co"># The prompt made above</span></span>
+<span>    studyid <span class="op">=</span> <span class="va">studyid</span>, <span class="co"># Name of variable containing study IDs</span></span>
+<span>    title <span class="op">=</span> <span class="va">title</span>, <span class="co"># Name of variable containing titles</span></span>
+<span>    abstract <span class="op">=</span> <span class="va">abstract</span>, <span class="co"># Name of variable containing abstracts</span></span>
 <span>    model <span class="op">=</span> <span class="st">"gpt-4o-mini"</span>, <span class="co"># Model choice</span></span>
 <span>    reps <span class="op">=</span> <span class="fl">10</span>, <span class="co"># Using multiple screenings with the cheap gpt-4o-mini model</span></span>
-<span>    rpm <span class="op">=</span> <span class="va">models_rpm</span><span class="op">$</span><span class="va">requests_per_minute</span></span>
+<span>    rpm <span class="op">=</span> <span class="va">models_rpm</span><span class="op">$</span><span class="va">requests_per_minute</span> <span class="co"># Requests per minutes retrieved from the above object</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $0.2237.</span></span>
 <span><span class="co">#&gt; Progress: ───────────────────────────────────────────────────────────────── 100%</span></span>
+<span></span>
+<span><span class="co"># Back to the sequential plan</span></span>
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">sequential</span><span class="op">)</span></span></code></pre></div>
 <p>We have now conducted the test screening and can get the raw results
 as below.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">result_object</span><span class="op">$</span><span class="va">answer_data_aggregated</span> <span class="op">|&gt;</span> </span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># The print output when calling the result object</span></span>
+<span><span class="va">result_object</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Find the final result dataset via result_object$answer_data_aggregated</span></span>
+<span></span>
+<span><span class="va">result_object</span><span class="op">$</span><span class="va">answer_data_aggregated</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">author</span>, <span class="va">human_code</span>, <span class="va">final_decision_gpt</span>, <span class="va">final_decision_gpt_num</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 200 × 4</span></span>
 <span><span class="co">#&gt;   author                                       human_code final_decision_gpt final_decision_gpt_num</span></span>
@@ -475,7 +519,7 @@ as below.</p>
 requests failed for some transient reason, for example because the
 server was overloaded or something else. To recover these failed request
 you can use <code>screen_error()</code>, as done below.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result_object</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">result_object</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/screen_errors.html">screen_errors</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -484,31 +528,49 @@ you can use <code>screen_error()</code>, as done below.</p>
 <div class="section level2">
 <h2 id="analyze-screening">Analyze screening<a class="anchor" aria-label="anchor" href="#analyze-screening"></a>
 </h2>
-<p>To assess whether any GPT API model is suitable as a fully second
-screener of the review, you can use <code>screen_error()</code></p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<p>We have now conducted the test screening and want to assess whehter
+it is viable to use the <code>gpt-4o-mini</code> model as our second
+screener. For the purpose, we can use the
+<code><a href="../reference/screen_analyzer.html">screen_analyzer()</a></code>.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">screen_performance</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">result_object</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/screen_analyzer.html">screen_analyzer</a></span><span class="op">(</span>human_decision <span class="op">=</span> <span class="va">human_code</span><span class="op">)</span> <span class="co"># state the name of the variable containing the human decision. </span></span>
 <span></span>
 <span><span class="va">screen_performance</span></span>
 <span><span class="co">#&gt; # A tibble: 1 × 9</span></span>
-<span><span class="co">#&gt;   promptid model        reps top_p p_agreement recall specificity incl_p criteria                                                        </span></span>
-<span><span class="co">#&gt;      &lt;int&gt; &lt;chr&gt;       &lt;int&gt; &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;                                                           </span></span>
+<span><span class="co">#&gt;   promptid model        reps top_p p_agreement recall specificity incl_p criteria                             </span></span>
+<span><span class="co">#&gt;      &lt;int&gt; &lt;chr&gt;       &lt;int&gt; &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;                      </span></span>
 <span><span class="co">#&gt;1        1 gpt-4o-mini    10     1        0.97   0.92       0.987    0.4 Studies have been included in at least 40% of the 10 screenings.</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="assess-results-via-a-benchmark-scheme">Assess results via a benchmark scheme<a class="anchor" aria-label="anchor" href="#assess-results-via-a-benchmark-scheme"></a>
 </h3>
+<p>But you might ask, how do we assess whether the performances for of
+the model is acceptable as a second screener? To answer this question,
+we have suggested to assess this via benchmarking. In Vembye et al.
+<span class="citation">(<a href="#ref-Vembye2024_gpt">2024</a>)</span>,
+we developed a benchmark scheme based on typical duplicate human
+screening performance from 22 high-quality reviews. This scheme can be
+found in Figure 5.</p>
 <div class="figure">
 <img src="helper-stuff%2Fbenchmark_scheme.png" alt="*Figure 5 - Generic benchmark scheme from Vembye et al. (2024)*" width="100%"><p class="caption">
 <em>Figure 5 - Generic benchmark scheme from Vembye et al. (2024)</em>
 </p>
 </div>
+<p>By using this benchmark scheme, we see that the
+<code>gpt-4o-mini</code> model performs on least on par with typically
+human screening performances. Therefore, the benchmark scheme suggests
+that the model is suitable as a full seconder of the review.</p>
 </div>
 <div class="section level3">
 <h3 id="make-judgments-over-multiple-screenings">Make judgments over multiple screenings<a class="anchor" aria-label="anchor" href="#make-judgments-over-multiple-screenings"></a>
 </h3>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<p>Since we have conducted multiple (i.e., 10) screenings with the
+<code>gpt-4o-mini</code> model, we can change our inclusion decision
+based on the number of times a study record has been included across the
+10 screening. To get this information, one can use the following
+code.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">incl_dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">screen_performance</span>, <span class="st">"p_incl_data"</span><span class="op">)</span></span>
 <span><span class="va">incl_dist</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">recall</span>, <span class="va">specificity</span>, <span class="va">criteria</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 10 × 4</span></span>
@@ -524,19 +586,29 @@ screener of the review, you can use <code>screen_error()</code></p>
 <span><span class="co">#&gt; 8 gpt-4o-mini   0.88       0.987 Studies have been included in at least 80% of the 10 screenings.</span></span>
 <span><span class="co">#&gt; 9 gpt-4o-mini   0.84       0.987 Studies have been included in at least 90% of the 10 screenings.</span></span>
 <span><span class="co">#&gt;10 gpt-4o-mini   0.74       0.987 Studies have been included in all of the 10 screenings.   </span></span></code></pre></div>
+<p>From these results, it appears that we can increase the recall of the
+model if we include a record when it has been included in at least 1 of
+out of the 10 screenings. In this case, we would not lose anything by
+doing so, since the specific measure is rarely impacted by this
+change.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="check-and-resolve-disagreements">Check and resolve disagreements<a class="anchor" aria-label="anchor" href="#check-and-resolve-disagreements"></a>
 </h2>
-<div class="section level3">
-<h3 id="false-excluded-by-gpt">False excluded (by gpt)<a class="anchor" aria-label="anchor" href="#false-excluded-by-gpt"></a>
-</h3>
-</div>
+<p>Even though, the <code>gpt-4o-mini</code> model yielded a highly
+acceptable screening performance, it is relevant to assess the reasons
+for disagreements between the human(s) and the GPT model. This
+information can be useful to further develop ones prompt if for example
+it appears that the GPT model misinterpret some conceptions.</p>
 <div class="section level3">
 <h3 id="getting-detailed-descriptions-for-disaggrement-records">Getting detailed descriptions for disaggrement records<a class="anchor" aria-label="anchor" href="#getting-detailed-descriptions-for-disaggrement-records"></a>
 </h3>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<p>To get detailed descriptions of GPTs reasons for exclusion
+(alternatively inclusion), one can set
+<code>decision_description = TRUE</code>, and run the screening again,
+so done below.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">disagree_dat</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">result_object</span><span class="op">$</span><span class="va">answer_data_aggregated</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">human_code</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">final_decision_gpt_num</span> <span class="op">==</span> <span class="fl">0</span>, <span class="va">incl_p</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span></span>
@@ -545,48 +617,99 @@ screener of the review, you can use <code>screen_error()</code></p>
 <span></span>
 <span><span class="va">result_object_detail</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu"><a href="../reference/tabscreen_gpt.tools.html">tabscreen_gpt</a></span><span class="op">(</span></span>
-<span>    data <span class="op">=</span> <span class="va">disagree_dat</span>, <span class="co"># RIS-file data create above </span></span>
-<span>    prompt <span class="op">=</span> <span class="va">prompt</span>, <span class="co"># indicate name of the loaded prompt object</span></span>
-<span>    studyid <span class="op">=</span> <span class="va">studyid</span>, <span class="co"># indicate the variable with the studyid in the data</span></span>
-<span>    title <span class="op">=</span> <span class="va">title</span>, <span class="co"># indicate the variable with the titles in the data</span></span>
-<span>    abstract <span class="op">=</span> <span class="va">abstract</span>, <span class="co"># indicate the variable with the abstracts in the data</span></span>
-<span>    model <span class="op">=</span> <span class="st">"gpt-4o-mini"</span>, <span class="co"># Model choice</span></span>
+<span>    data <span class="op">=</span> <span class="va">disagree_dat</span>, </span>
+<span>    prompt <span class="op">=</span> <span class="va">prompt</span>, </span>
+<span>    studyid <span class="op">=</span> <span class="va">studyid</span>, </span>
+<span>    title <span class="op">=</span> <span class="va">title</span>, </span>
+<span>    abstract <span class="op">=</span> <span class="va">abstract</span>, </span>
+<span>    model <span class="op">=</span> <span class="st">"gpt-4o-mini"</span>, </span>
 <span>    rpm <span class="op">=</span> <span class="va">models_rpm</span><span class="op">$</span><span class="va">requests_per_minute</span>,</span>
-<span>    decision_description <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>    decision_description <span class="op">=</span> <span class="cn">TRUE</span> <span class="co"># Get detailed screening decisions</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $0.391.</span></span>
+<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $0.0002.</span></span>
 <span><span class="co">#&gt; * Be aware that getting descriptive, detailed responses will substantially </span></span>
 <span><span class="co">#&gt; increase the prize of the screening relative to the noted approximate prize.</span></span>
 <span><span class="co">#&gt; Progress: ───────────────────────────────────────────────────────────────── 100%</span></span>
 <span></span>
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">sequential</span><span class="op">)</span></span></code></pre></div>
-<p>When re-screening disagreements, it might happen that some studies
-will be included, those studies could just be added to the pool of
-included studies.</p>
+<p>For now, we recommend only to get detailed description for records
+where the human(s) and GPT disagree because it can substantially
+increases the cost of the screening with an unknown amount to get this
+type of information. However, it is questionable how substantial this
+issue is with the <code>gpt-4o-mini</code> model.</p>
+<div class="section level4">
+<h4 id="example-of-detailed-answer">Example of detailed answer<a class="anchor" aria-label="anchor" href="#example-of-detailed-answer"></a>
+</h4>
+<p>Here is an example of an abstract that was included by the humans and
+excluded by GPT.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Example of abstract included by the human and excluded by gpt-4o-mini</span></span>
+<span><span class="va">result_object_detail</span><span class="op">$</span><span class="va">answer_data</span><span class="op">$</span><span class="va">abstract</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
+<span><span class="co">#&gt; [1] "Introduction: Many universal school-based preventative intervention trials </span></span>
+<span><span class="co">#&gt; for anxiety have been conducted in Western countries. This pilot study examined </span></span>
+<span><span class="co">#&gt; the efficacy and acceptability of a school-based, universal preventative program </span></span>
+<span><span class="co">#&gt; for anxiety among children aged 8&lt;e2&gt;&lt;80&gt;&lt;93&gt;9 years in Japan. The program was </span></span>
+<span><span class="co">#&gt; based on cognitive-behavioral therapy (CBT) and was informed by similar universal </span></span>
+<span><span class="co">#&gt; programs (i.e., the Fun FRIENDS program; Barrett, 2007a, 2007b). Methods: Seventy-four </span></span>
+<span><span class="co">#&gt; children from a single school were allocated to an intervention or control group. </span></span>
+<span><span class="co">#&gt; The intervention comprised 10 CBT sessions, and assessments were conducted before </span></span>
+<span><span class="co">#&gt; and after the program. The primary outcome measure was the Spence Children's Anxiety Scale (SCAS)</span></span>
+<span><span class="co">#&gt; as children's self-report. Secondary outcome measures were the Depression Self-Rating </span></span>
+<span><span class="co">#&gt; Scale for Children (DSRS-C), Children's Hope Scale (Hope), </span></span>
+<span><span class="co">#&gt; Spence Children's Anxiety Scale-Parent Version (SCAS-P), and Strengths </span></span>
+<span><span class="co">#&gt; and Difficulties Questionnaire-Parent Version (SDQ-P). Results:  The SCAS as the </span></span>
+<span><span class="co">#&gt; primary outcome showed no significant differences between the two groups.</span></span>
+<span><span class="co">#&gt; In addition, DSRS-C, Hope and SDQ-P also showed no significant differences. </span></span>
+<span><span class="co">#&gt; SCAS-P in the intervention group showed significant decrease compared to those </span></span>
+<span><span class="co">#&gt; in the control group. Conclusion: The results of this trial study suggest that </span></span>
+<span><span class="co">#&gt; a school-based universal preventative  program for anxiety may have no significant </span></span>
+<span><span class="co">#&gt; effects on 8&lt;e2&gt;&lt;80&gt;&lt;93&gt;9-year-old children. </span></span>
+<span><span class="co">#&gt; (PsycInfo Database Record (c) 2022 APA, all rights reserved)"</span></span></code></pre></div>
+<p>and this is GPTs detailed response.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Example of explanation for exclusion </span></span>
+<span><span class="co"># Seems reasonable why the records was thrown out by gpt.</span></span>
+<span><span class="va">result_object_detail</span><span class="op">$</span><span class="va">answer_data</span><span class="op">$</span><span class="va">detailed_description</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
+<span><span class="co">#&gt; [1] "The study does not focus on the FRIENDS preventive programme; instead, </span></span>
+<span><span class="co">#&gt; it evaluates a different school-based CBT intervention and references </span></span>
+<span><span class="co">#&gt; the Fun FRIENDS program without investigating its effects directly. </span></span>
+<span><span class="co">#&gt; Additionally, it assesses a general anxiety intervention rather than </span></span>
+<span><span class="co">#&gt; specifically measuring the FRIENDS programme's effectiveness."</span></span></code></pre></div>
+<p>As can be seen from this answer, it is reasonable why the title and
+abstract has not been included by GPT since it is stated in the abstract
+that the intervention was only informed by the Fun Friends program, but
+is different from it. Although, this is not a clear-cut example, it
+indicates that it is always important also to test that a low recall
+measure is not driven by insufficient human screening.</p>
+<p><em>NOTE</em>: When re-screening disagreements, it might happen (due
+to uncertainty in the models) that some (near miss) studies will be
+included, although they were excluded in the first screening. These
+studies could just be added to the pool of included studies.</p>
+</div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="approximate-price-of-full-scale-screening">Approximate price of full-scale screening<a class="anchor" aria-label="anchor" href="#approximate-price-of-full-scale-screening"></a>
 </h2>
-<p>Assume now that you have decided to use a GPT model as your second
-screener, then you would like know how much you have to pay for the full
-screening.</p>
-<p>Approximate price of screening</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<p>When you have decided to use a GPT model as your second screener, you
+would probably like know how much you have to pay for the full
+screening. This information can be obtained by using
+<code><a href="../reference/approximate_price_gpt.html">approximate_price_gpt()</a></code>.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># All ris-file data</span></span>
 <span><span class="va">all_dat</span> <span class="op">&lt;-</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">ris_dat_excl</span>, <span class="va">ris_dat_incl</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">abstract</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">ris_dat_excl</span>, <span class="va">ris_dat_incl</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># Use RIS-file data here</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">abstract</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># Only screen studies with an abstract</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>studyid <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">app_obj</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu"><a href="../reference/approximate_price_gpt.html">approximate_price_gpt</a></span><span class="op">(</span></span>
-<span>    data <span class="op">=</span> <span class="va">all_dat</span>, <span class="co"># Tutorial data embedded in the package</span></span>
+<span>    data <span class="op">=</span> <span class="va">all_dat</span>, </span>
 <span>    prompt <span class="op">=</span> <span class="va">prompt</span>, </span>
-<span>    studyid <span class="op">=</span> <span class="va">studyid</span>, <span class="co"># indicate the variable with the studyid in the data</span></span>
-<span>    title <span class="op">=</span> <span class="va">title</span>, <span class="co"># indicate the variable with the titles in the data</span></span>
-<span>    abstract <span class="op">=</span> <span class="va">abstract</span>, <span class="co"># indicate the variable with the abstracts in the data</span></span>
-<span>    model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-4o-mini"</span>, <span class="st">"gpt-4"</span><span class="op">)</span>,</span>
+<span>    studyid <span class="op">=</span> <span class="va">studyid</span>, </span>
+<span>    title <span class="op">=</span> <span class="va">title</span>, </span>
+<span>    abstract <span class="op">=</span> <span class="va">abstract</span>, </span>
+<span>    model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-4o-mini"</span>, <span class="st">"gpt-4"</span><span class="op">)</span>, <span class="co"># To compare model prizes</span></span>
 <span>    reps <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
@@ -601,10 +724,26 @@ screening.</p>
 <span><span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;            &lt;dbl&gt;              &lt;dbl&gt;               &lt;dbl&gt;              &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt; 1 Prompt 1 gpt-4o-mini         10               2.99               0.111               3.11</span></span>
 <span><span class="co">#&gt; 2 Prompt 1 gpt-4                1              59.9                1.11               61.0  </span></span></code></pre></div>
-<p>When looking at the price it is clear why you want to prioritize the
-use of <code>gpt-4o mini</code>. You could conduct 100 screenings with
-that model, and it would still be half the price of using
-<code>gpt-4</code>.</p>
+<p>When looking at the price, it is clear why one wants to prioritize
+the use of <code>gpt-4o mini</code>. One could conduct 100 screenings
+with the <code>gpt-4o-mini</code> model, and it would still be half the
+price of using <code>gpt-4</code>.</p>
+</div>
+<div class="section level2">
+<h2 id="future-package-updates">Future package updates<a class="anchor" aria-label="anchor" href="#future-package-updates"></a>
+</h2>
+<p>In this vignette, we have shown the first step of conducting an title
+and abstract screening with a GPT API model. In future versions of the
+package, we will add further articles, showing:</p>
+<ol style="list-style-type: decimal">
+<li>How to run the full screening of all titles and abstracts most
+efficiently.</li>
+<li>How to fine-tune a model.</li>
+<li>How to use multiple-prompt screening, that is making one prompt per
+inclusion criteria.</li>
+<li>New functions to assess and resolve disagreements between human and
+GPT decisions.</li>
+</ol>
 </div>
 <div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
@@ -616,13 +755,6 @@ Alshami, A., Elsayed, M., Ali, E., Eltoukhy, A. E. E., &amp; Zayed, T.
 automating systematic review process: Methodology, case study,
 limitations, and future directions</span>. <em>Systems</em>,
 <em>11</em>(7), 351. <a href="https://doi.org/10.3390/systems11070351" class="external-link">https://doi.org/10.3390/systems11070351</a>
-</div>
-<div id="ref-Filges2023" class="csl-entry">
-Filges, T., Smedslund, G., Eriksen, T., &amp; Birkefoss, K. (2023).
-<span class="nocase">PROTOCOL: The FRIENDS preventive programme for
-reducing anxiety symptoms in children and adolescents: A systematic
-review</span>. <em>Campbell Systematic Reviews</em>, <em>19</em>(4),
-e1374. <a href="https://doi.org/10.1002/cl2.1374" class="external-link">https://doi.org/10.1002/cl2.1374</a>
 </div>
 <div id="ref-Filges2024" class="csl-entry">
 Filges, T., Smedslund, G., Eriksen, T., Birkefoss, K., &amp; Kildemoes,
