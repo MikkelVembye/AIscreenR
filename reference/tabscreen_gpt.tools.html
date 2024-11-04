@@ -73,7 +73,7 @@ for guidance on how adequately to conduct title and abstract screening with GPT 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">tabscreen_gpt.tools</span><span class="op">(</span><span class="va">data</span>, <span class="va">prompt</span>, <span class="va">studyid</span>, <span class="va">title</span>, <span class="va">abstract</span>,</span>
-<span>   model <span class="op">=</span> <span class="st">"gpt-4"</span>, role <span class="op">=</span> <span class="st">"user"</span>, tools <span class="op">=</span> <span class="cn">NULL</span>, tool_choice <span class="op">=</span> <span class="cn">NULL</span>, top_p <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>   model <span class="op">=</span> <span class="st">"gpt-4o-mini"</span>, role <span class="op">=</span> <span class="st">"user"</span>, tools <span class="op">=</span> <span class="cn">NULL</span>, tool_choice <span class="op">=</span> <span class="cn">NULL</span>, top_p <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>   time_info <span class="op">=</span> <span class="cn">TRUE</span>, token_info <span class="op">=</span> <span class="cn">TRUE</span>, api_key <span class="op">=</span> <span class="fu"><a href="get_api_key.html">get_api_key</a></span><span class="op">(</span><span class="op">)</span>, max_tries <span class="op">=</span> <span class="fl">16</span>,</span>
 <span>   max_seconds <span class="op">=</span> <span class="cn">NULL</span>, is_transient <span class="op">=</span> <span class="va">gpt_is_transient</span>, backoff <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>   after <span class="op">=</span> <span class="cn">NULL</span>, rpm <span class="op">=</span> <span class="fl">10000</span>, reps <span class="op">=</span> <span class="fl">1</span>, seed <span class="op">=</span> <span class="cn">NULL</span>, progress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -81,7 +81,7 @@ for guidance on how adequately to conduct title and abstract screening with GPT 
 <span>   incl_cutoff_lower <span class="op">=</span> <span class="cn">NULL</span>, force <span class="op">=</span> <span class="cn">FALSE</span>, fine_tuned <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">tabscreen_gpt</span><span class="op">(</span><span class="va">data</span>, <span class="va">prompt</span>, <span class="va">studyid</span>, <span class="va">title</span>, <span class="va">abstract</span>,</span>
-<span>   model <span class="op">=</span> <span class="st">"gpt-4"</span>, role <span class="op">=</span> <span class="st">"user"</span>, tools <span class="op">=</span> <span class="cn">NULL</span>, tool_choice <span class="op">=</span> <span class="cn">NULL</span>, top_p <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>   model <span class="op">=</span> <span class="st">"gpt-4o-mini"</span>, role <span class="op">=</span> <span class="st">"user"</span>, tools <span class="op">=</span> <span class="cn">NULL</span>, tool_choice <span class="op">=</span> <span class="cn">NULL</span>, top_p <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>   time_info <span class="op">=</span> <span class="cn">TRUE</span>, token_info <span class="op">=</span> <span class="cn">TRUE</span>, api_key <span class="op">=</span> <span class="fu"><a href="get_api_key.html">get_api_key</a></span><span class="op">(</span><span class="op">)</span>, max_tries <span class="op">=</span> <span class="fl">16</span>,</span>
 <span>   max_seconds <span class="op">=</span> <span class="cn">NULL</span>, is_transient <span class="op">=</span> <span class="va">gpt_is_transient</span>, backoff <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>   after <span class="op">=</span> <span class="cn">NULL</span>, rpm <span class="op">=</span> <span class="fl">10000</span>, reps <span class="op">=</span> <span class="fl">1</span>, seed <span class="op">=</span> <span class="cn">NULL</span>, progress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -203,9 +203,11 @@ Alternatively, use <code><a href="rate_limits_per_minute.html">rate_limits_per_m
 
 <dt id="arg-reps">reps<a class="anchor" aria-label="anchor" href="#arg-reps"></a></dt>
 <dd><p>Numerical value indicating the number of times the same
-question should be sent to OpenAI's GPT API models. This can be useful to test consistency
-between answers. Default is <code>1</code> but when using 3.5 models, we recommend setting this
-value to <code>10</code>.</p></dd>
+question should be send to the server. This can be useful to test consistency
+between answers, and/or can be used to make inclusion judgments based on how many times
+a study has been included across a the given number of screenings.
+Default is <code>1</code> but when using gpt-3.5-turbo models or gpt-4o-mini,
+we recommend setting this value to <code>10</code> to catch model uncertainty.</p></dd>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
