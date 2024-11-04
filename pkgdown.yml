@@ -3,7 +3,7 @@ pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   Using-GPT-API-Models-For-Screening: Using-GPT-API-Models-For-Screening.html
-last_built: 2024-11-04T05:58Z
+last_built: 2024-11-04T07:46Z
 urls:
   reference: https://mikkelvembye.github.io/AIscreenR/reference
   article: https://mikkelvembye.github.io/AIscreenR/articles

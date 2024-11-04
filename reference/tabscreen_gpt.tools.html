@@ -98,11 +98,11 @@ for guidance on how adequately to conduct title and abstract screening with GPT 
 
 
 <dt id="arg-prompt">prompt<a class="anchor" aria-label="anchor" href="#arg-prompt"></a></dt>
-<dd><p>Prompt(s) to paste before the title and abstract.</p></dd>
+<dd><p>Prompt(s) to be added before the title and abstract.</p></dd>
 
 
 <dt id="arg-studyid">studyid<a class="anchor" aria-label="anchor" href="#arg-studyid"></a></dt>
-<dd><p>Unique ID of study. If missing, this is generated
+<dd><p>Unique Study ID. If missing, this is generated
 automatically.</p></dd>
 
 
@@ -116,9 +116,7 @@ automatically.</p></dd>
 
 <dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
 <dd><p>Character string with the name of the completion model. Can take
-multiple models, including gpt-4 models. Default is <code>"gpt-4"</code> (i.e., gpt-4-0613). This model has
-been shown to outperform the gpt-3.5-turbo models in terms of its ability to detect
-relevant studies (Vembye et al., 2024).
+multiple models. Default is the latest <code>"gpt-4o-mini"</code>.
 Find available model at
 <a href="https://platform.openai.com/docs/models/model-endpoint-compatibility" class="external-link">https://platform.openai.com/docs/models/model-endpoint-compatibility</a>.</p></dd>
 
@@ -151,13 +149,13 @@ Find documentation at
 
 <dt id="arg-time-info">time_info<a class="anchor" aria-label="anchor" href="#arg-time-info"></a></dt>
 <dd><p>Logical indicating whether the run time of each
-request/question should be included in the data. Default = <code>TRUE</code>.</p></dd>
+request/question should be included in the data. Default is <code>TRUE</code>.</p></dd>
 
 
 <dt id="arg-token-info">token_info<a class="anchor" aria-label="anchor" href="#arg-token-info"></a></dt>
-<dd><p>Logical indicating whether the number of prompt and completion tokens
-per request should be included in the output data. Default = <code>TRUE</code>. When <code>TRUE</code>,
-the output object will include price information of the conducted screening.</p></dd>
+<dd><p>Logical indicating whether token information should be included
+in the output data. Default is <code>TRUE</code>. When <code>TRUE</code>, the output object will
+include price information of the conducted screening.</p></dd>
 
 
 <dt id="arg-api-key">api_key<a class="anchor" aria-label="anchor" href="#arg-api-key"></a></dt>
@@ -167,9 +165,7 @@ compromised. The API key can be added to the R environment via <code><a href="se
 or by using <code><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">usethis::edit_r_environ()</a></code>. In the <code>.Renviron</code> file, write <code>CHATGPT_KEY=INSERT_YOUR_KEY_HERE</code>.
 After entering the API key, close and save the <code>.Renviron</code> file and restart <code>RStudio</code> (ctrl + shift + F10).
 Alternatively, one can use <code><a href="https://httr2.r-lib.org/reference/secrets.html" class="external-link">httr2::secret_make_key()</a></code>, <code><a href="https://httr2.r-lib.org/reference/secrets.html" class="external-link">httr2::secret_encrypt()</a></code>, and
-<code><a href="https://httr2.r-lib.org/reference/secrets.html" class="external-link">httr2::secret_decrypt()</a></code> to scramble and decrypt the API key and
-use <code><a href="set_api_key.html">set_api_key()</a></code> to securely automate the use of the
-API key by adding the api key as a locale environment variable.</p></dd>
+<code><a href="https://httr2.r-lib.org/reference/secrets.html" class="external-link">httr2::secret_decrypt()</a></code> to scramble and decrypt the API key.</p></dd>
 
 
 <dt id="arg-max-tries-max-seconds">max_tries, max_seconds<a class="anchor" aria-label="anchor" href="#arg-max-tries-max-seconds"></a></dt>
@@ -200,7 +196,7 @@ should be used instead' (Wickham, 2023).</p></dd>
 
 <dt id="arg-rpm">rpm<a class="anchor" aria-label="anchor" href="#arg-rpm"></a></dt>
 <dd><p>Numerical value indicating the number of requests per minute (rpm)
-available for the specified api key. Find more information at
+available for the specified model. Find more information at
 <a href="https://platform.openai.com/docs/guides/rate-limits/what-are-the-rate-limits-for-our-api" class="external-link">https://platform.openai.com/docs/guides/rate-limits/what-are-the-rate-limits-for-our-api</a>.
 Alternatively, use <code><a href="rate_limits_per_minute.html">rate_limits_per_minute()</a></code>.</p></dd>
 

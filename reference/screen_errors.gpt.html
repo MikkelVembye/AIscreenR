@@ -79,9 +79,7 @@ compromised. The API key can be added to the R environment via <code><a href="se
 or by using <code><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">usethis::edit_r_environ()</a></code>. In the <code>.Renviron</code> file, write <code>CHATGPT_KEY=INSERT_YOUR_KEY_HERE</code>.
 After entering the API key, close and save the <code>.Renviron</code> file and restart <code>RStudio</code> (ctrl + shift + F10).
 Alternatively, one can use <code><a href="https://httr2.r-lib.org/reference/secrets.html" class="external-link">httr2::secret_make_key()</a></code>, <code><a href="https://httr2.r-lib.org/reference/secrets.html" class="external-link">httr2::secret_encrypt()</a></code>, and
-<code><a href="https://httr2.r-lib.org/reference/secrets.html" class="external-link">httr2::secret_decrypt()</a></code> to scramble and decrypt the API key and
-use <code><a href="set_api_key.html">set_api_key()</a></code> to securely automate the use of the
-API key by adding the api key as a locale environment variable.</p></dd>
+<code><a href="https://httr2.r-lib.org/reference/secrets.html" class="external-link">httr2::secret_decrypt()</a></code> to scramble and decrypt the API key.</p></dd>
 
 
 <dt id="arg-max-tries-max-seconds">max_tries, max_seconds<a class="anchor" aria-label="anchor" href="#arg-max-tries-max-seconds"></a></dt>
