@@ -37,45 +37,45 @@ options(dplyr.summarise.inform = FALSE) # Avoids summarize info from tidyverse
 <p style='margin-top:1em; text-align:center'>
 <b>Important note</b></p>
 <p style='margin:1em'>
-*This is work-in-progress only. For now, see [Vembye, Christensen, Mølgaard, & Schytt](https://osf.io/preprints/osf/yrhzm) [-@Vembye2024_gpt] for an overview of how and when GPT API models can be used for title and abstract (TAB) screening. Our most recent results suggest that the `gpt-4o-mini` is a good model for screening titles and abstracts with performances in many cases on par with `gpt-4`. This is a very cheap model (200 times cheaper than `gpt-4`). Therefore to lower the cost, our recommendation is always to test the performance of `gpt-4o-mini` before testing other models. For an overview of other research regarding the use of GPT API models for title and abstract screening, see Syriani et al. [-@Syriani2023; -@Syriani2024], Guo et al., [-@Guo2024], and Gargari et al. [-@Gargari2024]. On a related line of research, Alshami et al. [-@Alshami2023], Khraisha et al. [-@Khraisha2024], and Issaiy et al. [@Issaiy2024] explored using the ChatGPT web browser interface for TAB screening. Based on our experience, we think that these two lines of research should not be mixed up since the draw on different GPT models and setups.*
+*This is work-in-progress only. For now, see [Vembye, Christensen, Mølgaard, & Schytt](https://osf.io/preprints/osf/yrhzm) [-@Vembye2024_gpt] for an overview of how and when GPT API models can be used for title and abstract (TAB) screening. Our most recent results suggest that the `gpt-4o-mini` is an effective model for screening titles and abstracts with performances in many cases on par with `gpt-4`. This is a very cheap model (200 times cheaper than `gpt-4`). Therefore, to reduce costs, we recommendation always testing the performance of `gpt-4o-mini` before considering other models. For an overview of additional research on the use of GPT API models for title and abstract screening, see Syriani et al. [-@Syriani2023; -@Syriani2024], Guo et al., [-@Guo2024], and Gargari et al. [-@Gargari2024]. In a related line of research, Alshami et al. [-@Alshami2023], Khraisha et al. [-@Khraisha2024], and Issaiy et al. [@Issaiy2024] explored the use of the ChatGPT web browser interface for TAB screening. Based on our experience, we believe these two lines of research should not be conflated, as they rely on different GPT models and setups.*
 </p></span>
 </div>
 
-Conducting a systematic review is most often resource-demanding. A critical first step to ensure the quality of systematic reviews and meta-analyses herein involves detecting all eligible references related to the literature under review [@Polanin2019]. This entails searching all pertinent literature databases relevant to the given review, most often resulting in thousands of titles and abstracts to be screened for relevance. Manual screening hereof can be a time-consuming and tedious task. However, overlooking relevant studies at this stage can be consequential, leading to substantially biased results, if the missed studies are systematically different from the detected ones. To mitigate this resource issue, we show in this vignette how to use OpenAI's GPT (Generative Pre-trained Transformer) API (Application Programming Interface) models for title and abstract screening in R. Specifically, we demonstrate how to create a test dataset and assess whether GPT is viable as the second screener in your review [cf. @Vembye2024_gpt]. 
+Conducting a systematic review is most often resource-demanding. A critical first step to ensure the quality of systematic reviews and meta-analyses herein involves detecting all eligible references related to the literature under review [@Polanin2019]. This entails searching all pertinent literature databases relevant to the given review, most often resulting in thousands of titles and abstracts to be screened for relevance. Manual screening hereof can be a time-consuming and tedious task. However, overlooking relevant studies at this stage can be consequential, leading to substantially biased results if the missed studies differ systematically from the detected studies. To mitigate this resource issue, we demonstrate in this vignette how to use OpenAI's GPT (Generative Pre-trained Transformer) API (Application Programming Interface) models for title and abstract screening in R. Specifically, we show how to create a test dataset and assess whether GPT is viable as the second screener in your review [cf. @Vembye2024_gpt]. 
 \ 
 
-At this point, you might ask, why use GPT API models from R and not just do the screening with ChatGPT? The answer to this is that using R to conduct the screening with GPT API models has certain advantages: 
+At this point, you might ask, why use GPT API models via R instead of simply using ChatGPT for screening? The answer is that using R offer certain advantages: 
 
-  1. Reviewers can easily work with a large number of references, avoiding copy-paste procedures 
+  1. Reviewers can easily work with a large number of references, avoiding the need for manual copy-paste procedures
   [cf. @Khraisha2024].  
-  2. The total screening time can be substantially lowered relative to using the ChatGPT interface, since the screening can be done in parallel. In theory, you will be able to screen 30,000 titles and abstracts per minute.
+  2. The screening time can be substantially reduced compared to using the ChatGPT interface, as screening can be performed in parallel. In theory, you can screen 30,000 titles and abstracts per minute.
   3. It eases model comparison.
-  4. Consistency between the GPT answer for the same title and abstract can easily be tested. You can also conduct multiple screenings and make inclusion judgments based on how many times a study has been included across the given number of screenings. 
-  5. When using the `gpt-4o-mini`, it is cheaper than subscribing to ChatGPT plus. 
-  6. Research suggest that GPT API models and the ChatGPT yields quite different screening performances. 
+  4. Consistency between the GPT answer for the same title and abstract can be easily tested. You can also conduct multiple screenings and make inclusion judgments based on how often a study is included across a set number of screenings. 
+  5. When using the `gpt-4o-mini`, it is often cheaper than subscribing to ChatGPT plus. 
+  6. Research suggest that GPT API models and the ChatGPT yield notably different screening performance, with the latter proving insufficient as an independent second screener. 
 
-That said, it is also important to stress that the GPT API models used for TAB screening should always be used carefully and be assisted by a human (human-in-the-loop). Consequently, we do not recommend to use the `AIscreenR` as a single screener, unless this an absolutely final solution. When using a GPT API model as the second screener, we also recommend that the human screening has been done before uploading RIS-file(s) to R. Thereby, it is possible to compare the screenings instantly after the GPT screening has been done. 
+That said, we would also like to emphasize that screening with the GPT API models should be conducted carefully and always be assisted by humans (human-in-the-loop). Consequently, we do not recommend to use the a GPT API model as a single screener, unless this an absolutely final solution. When using a GPT API model as the second screener, we also recommend completing the human screening before uploading RIS-file(s) to R. This allows for immediate comparison once the GPT screening is complete and ensures humans are then not impacted/biased by the GPT decision.
 
 # Get started
-For many reviewers (especially those not used to code in R), it can seem overwhelming to conduct a title and abstract screening in R. Yet to calm this feeling, it is important to stress that running your first screening only requires the following rather simple steps:
+For many reviewers, especially those unfamiliar with coding in R, conducting a title and abstract screening in R can seem overwhelming. However, it’s important to emphasize that running your first screening only requires a few relatively simple steps:
 
-  1. Load your RIS-file data and convert it to a data frame.
+  1. Load and convert your RIS-file data to a data frame.
   2. Handle your API key (this is only necessary the first time you screen).
   3. Make one or multiple prompts.
   4. Run the screening.
 
 And if the human screening has been conducted (as in the example below):
 
-  5. Analyze the screening.
-  6. Resolve disagreements.
+  5. Analyze the screening results.
+  6. Investigate and resolve any disagreements.
   
-We will go through each of these steps one by one in the following sections. 
+We will walk through each of these steps one by one in the following sections. 
 
-# Load RIS-file data and convert to data frame
-At this stage, we expect that you have a pile of RIS-files, containing titles and abstracts for the references you would like to screen. You can retrieve RIS-files in several ways, either directly from the research databases, a Google Scholar search, or exported from your reference management tool, such as EndNote, Mendeley, and RefMan. Alternatively, you can export RIS-file from systematic software tool such as [EPPI-reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914), [Covidence](https://www.covidence.org/), [MetaReviewer](https://www.metareviewer.org/), [`revtools`](http://www.eshackathon.org/revtools/) [@westgate2019], or whatever software you use. In the example given below, we load RIS-files extracted from the [EPPI-reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914). A minor advantage of extracting RIS-files from systematic software tools is that they add a unique study ID to each reference. This feature makes it easier to keep track of the screening. Yet, such IDs are automatically generated in the `tabscreen_gpt()` function if unique IDs are missing. 
+# Load and convert to RIS file data to a data frame
+At this stage, we expect that you have a colelction of RIS files containing titles and abstracts for the references you wish to screen. You can obtain RIS files in several ways:  directly from the research databases, a Google Scholar search; or by exported them from your reference management tool, such as EndNote, Mendeley, and RefMan. Alternatively, you can export RIS files from systematic software tools such as [EPPI-reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914), [Covidence](https://www.covidence.org/), [MetaReviewer](https://www.metareviewer.org/), [`revtools`](http://www.eshackathon.org/revtools/) [@westgate2019], among others. In the example below, we load RIS files extracted from [EPPI-reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914). A minor advantage of exporting RIS files from systematic software tools is that they often add a unique study ID to each reference, making it easier to track the screening process. However, such IDs are automatically generated in `tabscreen_gpt()` if they are missing. 
 
-## Load relevant packages
-To get started, we load all relevant package that are needed to construct and run the screening.
+## Load relevant R packages
+To get started, we first load all R package needed to construct and run the screening.
 ```{r, eval = FALSE, warning=FALSE, message=FALSE}
 # Loading packages 
 library(AIscreenR) # Used to screen and calculate gpt vs. human performance
@@ -83,18 +83,18 @@ library(revtools)  # Used to load RIS-files
 library(tibble)    # Used to work with tibbles
 library(dplyr)     # Used to manipulate data
 library(purrr)     # For loops 
+library(usethis)   # Used to add the API key the R environment (only relevant the first time you screen)
 library(future)    # Used to conduct screenings in parallel
 ```
 
 ## Convert RIS-files to data frames
-Now, we are ready to conduct the first step of the screening, which is to load our RIS-file data into R and convert it to a data frame. This can be done by using `revtools::read_bibliography()` from `revtools`. In the below example, we use RIS-file data from a review regarding the effects of the FRIENDS preventive programme on anxiety symptoms in children and adolescents [@Filges2023; @Filges2024]. Be aware, that this data is used for illustration purposes only. Thus, no hard inferences should be drawn from this example. In the example, we assume that the humans have started screening and found a bunch of relevant and irrelevant studies from which they can create the test data. Thus, we can load the RIS-files, which we downloaded from the EPPI-reviewer, separately for ex- and included RIS-files, respectively. This enables us to track the human decision by adding a `human_code` variable, where `1` and `0` indicates whether a study should be in- og excluded. 
+Now, we are ready to conduct the first step of the screening, which is to load our RIS-file data into R and convert it to a data frame. This can be done by using `read_bibliography()` from `revtools`. In the below example, we use RIS-file data from a review regarding the effects of the FRIENDS preventive programme on anxiety symptoms in children and adolescents [@Filges2024]. Be aware, that this data is used for illustration purposes only. Thus, no hard inferences should be drawn from this example. In the example, we assume that the humans have started screening and found a bunch of relevant and irrelevant studies from which they can create the test data. Thus, we can load the RIS-files, which we downloaded from the EPPI-reviewer separately for the in- and excluded RIS-files. This enables us to track the human decision by adding a `human_code` variable, where `1` and `0` indicates whether a study should be in- or excluded. 
 
-
-```{r, eval = FALSE, echo = FALSE}
-# NOTE: Find the ris-files behind this vignette at https://osf.io/kfbvu/
+```{r}
+# NOTE: Find the RIS-files behind this vignette at https://osf.io/kfbvu/
 
 # Loading EXCLUDED studies
-ris_dat_excl <- revtools::read_bibliography("vignettes/helper-stuff/friends_excl.ris") |> 
+ris_dat_excl <- revtools::read_bibliography("friends_excl.ris") |> # Add the path to your RIS-file here
   suppressWarnings() |> 
   as_tibble() |>
   select(author, eppi_id, title, abstract) |> # Using only relevant variables
@@ -102,10 +102,24 @@ ris_dat_excl <- revtools::read_bibliography("vignettes/helper-stuff/friends_excl
     human_code = 0, #Tracking the human decision
     across(c(author, title, abstract), ~ na_if(., "NA"))
   )
-
+#> # A tibble: 2,765 × 5
+#>   author                                                                eppi_id title abstract human_code
+#>   <chr>                                                                 <chr>   <chr> <chr>         <dbl>
+#> 1 Lovat C                                                               911525… "'Ba… "Postna…          0
+#> 2 Kohler Maxie                                                          911023… "\"F… "The ar…          0
+#> 3 Stevens Eleanor and Wood Jane                                         911020… "\"I… "'Non-o…          0
+#> 4 Essau C and Conradt J and Ederer E                                    915786… "[An…  NA               0
+#> 5 K<c3><a4>ssler P and Breme K                                          915784… "[Ev…  NA               0
+#> 6 Brubaker Ruth B and Bay Curt and Chacon Daniel W and Carson Madelein… 911523… "93 … "Introd…          0
+#> 7 Kumar Suresh and Vellymalay N                                         915785… "A C…  NA               0
+#> 8 Lock S                                                                915784… "A D…  NA               0
+#> 9 Bosco Nicolina and Giaccherini Susanna and Meringolo Patrizia         911019… "A g… "This a…          0
+#>10 Abd El Salam, Amira E and AbdAllah Amany M and El Maghawry Hala A     911017… "Eff… "Backgr…          0
+#># ℹ 2,755 more rows
+#># ℹ Use `print(n = ...)` to see more rows
 
 # Loading INCLUDED studies
-ris_dat_incl <- revtools::read_bibliography("vignettes/helper-stuff/friends_incl.ris") |> 
+ris_dat_incl <- revtools::read_bibliography("friends_incl.ris") |> 
   suppressWarnings() |> 
   as_tibble() |>
   select(author, eppi_id, title, abstract) |>
@@ -113,35 +127,27 @@ ris_dat_incl <- revtools::read_bibliography("vignettes/helper-stuff/friends_incl
     human_code = 1, #Tracking the human decision
     across(c(author, title, abstract), ~ na_if(., "NA"))
   )
+#> # A tibble: 97 × 5
+#>   author                                                                eppi_id title abstract human_code
+#>   <chr>                                                                 <chr>   <chr> <chr>         <dbl>
+#> 1 G<c3><b6>kkaya Fu<cc><88>sun and Gedik Z                              915785… A Sc…  NA               1
+#> 2 ACTRN12607000254493                                                   911528… Long… "INTERV…          1
+#> 3 ACTRN12615000382572                                                   911528… The … "INTERV…          1
+#> 4 Ahlen Johan and Breitholtz Elisabeth and Barrett Paula M and Gallego… 911544… Scho… "Anxiet…          1
+#> 5 Ahlen Johan and Hursti Timo and Tanner Lindsey and Tokay Zelal and G… 911019… Prev… "Our st…          1
+#> 6 Green Sarah L                                                         915785… An e…  NA               1
+#> 7 Anticich Sarah A. J and Barrett Paula M and Silverman Wendy and Lach… 910111… The … "This s…          1
+#> 8 Barker Leslie Jayne                                                   915785… Prev…  NA               1
+#> 9 Barrett PM and Moore AF and Sonderegger R                             911527… The … "Young …          1
+#>10 Barrett PM and Shortt AL and Wescombe K                               911529… Exam…  NA               1
+#># ℹ 87 more rows
+#># ℹ Use `print(n = ...)` to see more rows
 ```
 
-```{r, eval = FALSE}
-# Loading EXCLUDED studies
-ris_dat_excl <- revtools::read_bibliography("./path/to/your/excluded_ris_file.ris") |> 
-  suppressWarnings() |> 
-  as_tibble() |>
-  select(author, eppi_id, title, abstract) |> # Using only relevant variables
-  mutate(
-    human_code = 0, #Tracking the human decision
-    across(c(author, title, abstract), ~ na_if(., "NA"))
-  )
-
-
-# Loading INCLUDED studies
-ris_dat_incl <- revtools::read_bibliography("./path/to/your/included_ris_file.ris") |> 
-  suppressWarnings() |> 
-  as_tibble() |>
-  select(author, eppi_id, title, abstract) |>
-  mutate(
-    human_code = 1, #Tracking the human decision
-    across(c(author, title, abstract), ~ na_if(., "NA"))
-  )
-```
 
 ## Create the test dataset
 
-We have now loaded our reference data, and can construct the test data. To speed up the test, we random sample 150 irrelevant and 50 relevant records with an title and abstract. Again, this is for illustration purposes only, since you might not necessarily have access to 50 relevant records at this stage of the screening. We recommend finding at least 10 relevant reference before constructing the test data. As further described in Vembye et al. [-@Vembye2024_gpt], we remove all records with no abstract since these can distort the accuracy of the screening. 
-
+As you see, we have now loaded our reference data and can construct the test data by random sample 150 irrelevant [as suggested in @Vembye2024_gpt] and 50 relevant records with an title and abstract. For this purpose we use `sample_references()`. Again, this is for illustration purposes only, since you might not necessarily have access to 50 relevant records at this stage of the screening. We recommend finding at least 10 relevant reference before constructing the test data. As further described in Vembye et al. [-@Vembye2024_gpt], we remove all records with no abstract since these can distort the accuracy of the screening. 
 ```{r, eval = FALSE}
 set.seed(09042024)
 
@@ -182,7 +188,7 @@ test_dat
 ```
 
 # Handle your API key 
-After the test data has been made, we can move on to the next step of the screening, which involves generating your API key and handle it in R.  
+We now have our test data in place and can move on to the next step of the screening, which involves generating your API key and handle it in R.  
 
 ## Get your API key 
 
@@ -213,14 +219,22 @@ a permanent or temporary solution.
 ### Permanent solution
 
 The easiest way to work with your API key is to permanently add it to your R environment
-as an environment variable. This can be achieved with `usethis::edit_r_environ()`. In the `.Renviron`
-file, write `CHATGPT_KEY=your_key` as depicted in Figure 2. After entering the API key, close and save the `.Renviron` file and restart `RStudio` (ctrl + shift + F10). From now on, the `AIscreenR` functions will use the `get_api_key()` function to retrieve your API key from your R environment automatically. By using this approach you don't have to worry more about you API key (unless you update RStudio, deliberately delete the key, or get a new computer. Then you must repeat this process).
+as an environment variable. This can be achieved with `usethis::edit_r_environ()`.
+
+```{r}
+# Run code to open your .Renviron file
+usethis::edit_r_environ()
+```
+
+In the `.Renviron` file, write `CHATGPT_KEY=your_key` as depicted in Figure 2. 
 \  
 
 ```{r eval=TRUE, echo=FALSE, fig.cap='*Figure 2 - R environment file*'}
 knitr::include_graphics("helper-stuff/Renviron.png")
 ```
 \ 
+
+Thereafter, close and save the `.Renviron` file and restart `RStudio` (ctrl + shift + F10). From now on, the `AIscreenR` functions will use `get_api_key()` to retrieve your API key from your R environment automatically. By using this approach you do not have to worry more about you API key (unless you update RStudio, deliberately delete the key, or get a new computer. Then you must repeat this process).
 
 ### Temporary solution
 
@@ -240,7 +254,7 @@ knitr::include_graphics("helper-stuff/set_api.png")
 
 # Prompting in R
 
-The next step involves writing you make one or multiple prompts that can be used for the screening. This can be done in several ways. You can either write your prompt directly in R, as illustrated below
+The next step involves writing one or multiple prompts that can be used for the screening. This can be done in several ways. You can either write your prompt directly in R, as illustrated below
 
 ```{r, eval = FALSE}
 prompt <- "We are screening studies for a systematic literature review. 
@@ -272,19 +286,19 @@ prompt <-
       stringr::str_remove_all("\n")
 ```
 
-# Run screening of titles and abstracts
+# Run the screening 
 
-Now you are actually ready to conduct the title and abstract screening via `tabscreen_gpt()`. To make the `tabscreen_gpt()` running, you need to specify the following information:
+Now you are actually ready to conduct the title and abstract screening with `tabscreen_gpt()`. To make the `tabscreen_gpt()` running, you need to specify the following information:
 
  1. The data with the title and abstract information.
- 2. Your prompt(s).
- 3. The variable names of variables containing the titles and abstract.
+ 2. The prompt(s).
+ 3. The variable names of variables containing the titles and abstracts.
  4. The model(s) you want to use for screening. 
  
 Optional
 
- 5. The variable name of variable containing the study IDs.
- 6. The number of screenings you want to run for the given model (Default is `1` but with cheap models it can be advantageous to conduct multiple screening and make inclusion judgments based on how many times a study has been included across the set of screenings).
+ 5. The variable name of the variable containing the study IDs.
+ 6. The number of screenings you want to run with the given model (Default is `1` but with cheap models it can be advantageous to conduct multiple screenings and make inclusion judgments based on how many times a study has been included across the set of screenings).
  7. Set the request per minutes.
 
 ```{r, message=FALSE, eval=FALSE}
@@ -292,27 +306,35 @@ Optional
 # how many requests per minutes you are allow to send. 
 models_rpm <- rate_limits_per_minute("gpt-4o-mini")
 
-plan(multisession)
+# Set parallel plan
+plan(multisession) 
 
 result_object <- 
   tabscreen_gpt(
-    data = test_dat, # RIS-file data create above 
-    prompt = prompt, # indicate name of the loaded prompt object
-    studyid = studyid, # indicate the variable with the studyid in the data
-    title = title, # indicate the variable with the titles in the data
-    abstract = abstract, # indicate the variable with the abstracts in the data
+    data = test_dat, # RIS-file data created above 
+    prompt = prompt, # The prompt made above
+    studyid = studyid, # Name of variable containing study IDs
+    title = title, # Name of variable containing titles
+    abstract = abstract, # Name of variable containing abstracts
     model = "gpt-4o-mini", # Model choice
     reps = 10, # Using multiple screenings with the cheap gpt-4o-mini model
-    rpm = models_rpm$requests_per_minute
+    rpm = models_rpm$requests_per_minute # Requests per minutes retrieved from the above object
   )
 #> * The approximate price of the current (simple) screening will be around $0.2237.
 #> Progress: ───────────────────────────────────────────────────────────────── 100%
+
+# Back to the sequential plan
 plan(sequential)
 ```
 
 We have now conducted the test screening and can get the raw results as below. 
 
 ```{r, message=FALSE, eval=FALSE}
+# The print output when calling the result object
+result_object
+#> 
+#> Find the final result dataset via result_object$answer_data_aggregated
+
 result_object$answer_data_aggregated |> 
   select(author, human_code, final_decision_gpt, final_decision_gpt_num)
 #> # A tibble: 200 × 4
@@ -344,7 +366,7 @@ result_object <-
 ```
 
 # Analyze screening
-To assess whether any GPT API model is suitable as a fully second screener of the review, you can use `screen_error()`
+We have now conducted the test screening and want to assess whehter it is viable to use the `gpt-4o-mini` model as our second screener. For the purpose, we can use the `screen_analyzer()`. 
 
 ```{r screen_stats}
 screen_performance <- 
@@ -353,19 +375,22 @@ screen_performance <-
 
 screen_performance
 #> # A tibble: 1 × 9
-#>   promptid model        reps top_p p_agreement recall specificity incl_p criteria                                                        
-#>      <int> <chr>       <int> <dbl>       <dbl>  <dbl>       <dbl>  <dbl> <chr>                                                           
+#>   promptid model        reps top_p p_agreement recall specificity incl_p criteria                             
+#>      <int> <chr>       <int> <dbl>       <dbl>  <dbl>       <dbl>  <dbl> <chr>                      
 #>1        1 gpt-4o-mini    10     1        0.97   0.92       0.987    0.4 Studies have been included in at least 40% of the 10 screenings.
 ```
 
 ## Assess results via a benchmark scheme
+But you might ask, how do we assess whether the performances for of the model is acceptable as a second screener? To answer this question, we have suggested to assess this via benchmarking. In Vembye et al. [-@Vembye2024_gpt], we developed a benchmark scheme based on typical duplicate human screening performance from 22 high-quality reviews. This scheme can be found in Figure 5. 
 
 ```{r eval=TRUE, echo=FALSE, fig.cap='*Figure 5 - Generic benchmark scheme from Vembye et al. (2024)*'}
 knitr::include_graphics("helper-stuff/benchmark_scheme.png")
 ```
 
-## Make judgments over multiple screenings
+By using this benchmark scheme, we see that the `gpt-4o-mini` model performs on least on par with typically human screening performances. Therefore, the benchmark scheme suggests that the model is suitable as a full seconder of the review.  
 
+## Make judgments over multiple screenings
+Since we have conducted multiple (i.e., 10) screenings with the `gpt-4o-mini` model, we can change our inclusion decision based on the number of times a study record has been included across the 10 screening. To get this information, one can use the following code.
 ```{r}
 incl_dist <- attr(screen_performance, "p_incl_data")
 incl_dist |> select(model, recall, specificity, criteria)
@@ -384,12 +409,15 @@ incl_dist |> select(model, recall, specificity, criteria)
 #>10 gpt-4o-mini   0.74       0.987 Studies have been included in all of the 10 screenings.   
 ```
 
+From these results, it appears that we can increase the recall of the model if we include a record when it has been included in at least 1 of out of the 10 screenings. In this case, we would not lose anything by doing so, since the specific measure is rarely impacted by this change. 
 
 # Check and resolve disagreements 
 
-## False excluded (by gpt)
+Even though, the `gpt-4o-mini` model yielded a highly acceptable screening performance, it is relevant to assess the reasons for disagreements between the human(s) and the GPT model. This information can be useful to further develop ones prompt if for example it appears that the GPT model misinterpret some conceptions.  
 
 ## Getting detailed descriptions for disaggrement records
+
+To get detailed descriptions of GPTs reasons for exclusion (alternatively inclusion), one can set `decision_description = TRUE`, and run the screening again, so done below.
 
 ```{r}
 disagree_dat <- 
@@ -400,16 +428,16 @@ plan(multisession)
 
 result_object_detail <- 
   tabscreen_gpt(
-    data = disagree_dat, # RIS-file data create above 
-    prompt = prompt, # indicate name of the loaded prompt object
-    studyid = studyid, # indicate the variable with the studyid in the data
-    title = title, # indicate the variable with the titles in the data
-    abstract = abstract, # indicate the variable with the abstracts in the data
-    model = "gpt-4o-mini", # Model choice
+    data = disagree_dat, 
+    prompt = prompt, 
+    studyid = studyid, 
+    title = title, 
+    abstract = abstract, 
+    model = "gpt-4o-mini", 
     rpm = models_rpm$requests_per_minute,
-    decision_description = TRUE
+    decision_description = TRUE # Get detailed screening decisions
   )
-#> * The approximate price of the current (simple) screening will be around $0.391.
+#> * The approximate price of the current (simple) screening will be around $0.0002.
 #> * Be aware that getting descriptive, detailed responses will substantially 
 #> increase the prize of the screening relative to the noted approximate prize.
 #> Progress: ───────────────────────────────────────────────────────────────── 100%
@@ -417,66 +445,71 @@ result_object_detail <-
 plan(sequential)
 ```
 
+For now, we recommend only to get detailed description for records where the human(s) and GPT disagree because it can substantially increases the cost of the screening with an unknown amount to get this type of information. However, it is questionable how substantial this issue is with the `gpt-4o-mini` model.  
 
+### Example of detailed answer
 
-```{r, echo = FALSE}
+Here is an example of an abstract that was included by the humans and excluded by GPT.
 
+```{r}
 # Example of abstract included by the human and excluded by gpt-4o-mini
-result_object_reps10_detail$answer_data$abstract[1]
-#> [1] "This study documents significant differences in alliance in a predominantly Latino sample of
-#>  adolescents who either completed or dropped out of a Guided Self-Change treatment program. 
-#>  Therapeutic alliance, working alliance, and patient involvement were assessed via ratings of
-#>  audio-recorded segments of participants' counseling sessions. Descriptive discriminant function
-#>  analysis identified working alliance goals, patient participation, and therapist warmth and 
-#>  friendliness variables as significantly predictive of completion status. These results were
-#>  confirmed via follow-up logistic regression analyses. The use of brief clinical tools to monitor
-#>  and manage alliance among adolescents receiving treatment who are at risk for dropout is 
-#>  discussed. This study documents significant differences in alliance in a predominantly Latino 
-#>  sample of adolescents who either completed or dropped out of a Guided Self-Change treatment program. 
-#>  Therapeutic alliance, working alliance, and patient involvement were assessed via ratings of
-#>  audio-recorded segments of participants' counseling sessions. Descriptive discriminant function 
-#>  analysis identified working alliance goals, patient participation, and therapist warmth and
-#>  friendliness variables as significantly predictive of completion status. These results were 
-#>  confirmed via follow-up logistic regression analyses. The use of brief clinical tools to monitor
-#>  and manage alliance among adolescents receiving treatment who are at risk for dropout is discussed"
+result_object_detail$answer_data$abstract[1]
+#> [1] "Introduction: Many universal school-based preventative intervention trials 
+#> for anxiety have been conducted in Western countries. This pilot study examined 
+#> the efficacy and acceptability of a school-based, universal preventative program 
+#> for anxiety among children aged 8<e2><80><93>9 years in Japan. The program was 
+#> based on cognitive-behavioral therapy (CBT) and was informed by similar universal 
+#> programs (i.e., the Fun FRIENDS program; Barrett, 2007a, 2007b). Methods: Seventy-four 
+#> children from a single school were allocated to an intervention or control group. 
+#> The intervention comprised 10 CBT sessions, and assessments were conducted before 
+#> and after the program. The primary outcome measure was the Spence Children's Anxiety Scale (SCAS)
+#> as children's self-report. Secondary outcome measures were the Depression Self-Rating 
+#> Scale for Children (DSRS-C), Children's Hope Scale (Hope), 
+#> Spence Children's Anxiety Scale-Parent Version (SCAS-P), and Strengths 
+#> and Difficulties Questionnaire-Parent Version (SDQ-P). Results:  The SCAS as the 
+#> primary outcome showed no significant differences between the two groups.
+#> In addition, DSRS-C, Hope and SDQ-P also showed no significant differences. 
+#> SCAS-P in the intervention group showed significant decrease compared to those 
+#> in the control group. Conclusion: The results of this trial study suggest that 
+#> a school-based universal preventative  program for anxiety may have no significant 
+#> effects on 8<e2><80><93>9-year-old children. 
+#> (PsycInfo Database Record (c) 2022 APA, all rights reserved)"
+```
 
+and this is GPTs detailed response.
+```{r}
 # Example of explanation for exclusion 
 # Seems reasonable why the records was thrown out by gpt.
 result_object_detail$answer_data$detailed_description[1]
-#> [1] "This particular study does not meet the inclusion criteria as set out by the systematic review.
-#>  While it does focus on substance abuse treatment in adolescents, it does not specifically indicate 
-#>  that it assesses a family-based intervention, such as Functional Family Therapy, 
-#>  Multidimensional Family Therapy, or Behavioral Family Therapy. Moreover, it does not clearly 
-#>  specify that the participants are primarily in outpatient drug treatment for non-opioid drug 
-#>  use and that their ages are between 11–21 years. The study is more centered around the Guided
-#>  Self-Change treatment program, and its impact on factors such as therapeutic alliance,
-#>  working alliance, and patient involvement. Therefore, it should be excluded from the 
-#>  systematic review."
+#> [1] "The study does not focus on the FRIENDS preventive programme; instead, 
+#> it evaluates a different school-based CBT intervention and references 
+#> the Fun FRIENDS program without investigating its effects directly. 
+#> Additionally, it assesses a general anxiety intervention rather than 
+#> specifically measuring the FRIENDS programme's effectiveness."
 ```
+As can be seen from this answer, it is reasonable why the title and abstract has not been included by GPT since it is stated in the abstract that the intervention was only informed by the Fun Friends program, but is different from it. Although, this is not a clear-cut example, it indicates that it is always important also to test that a low recall measure is not driven by insufficient human screening.  
 
-When re-screening disagreements, it might happen that some studies will be included, those studies could just be added to the pool of included studies. 
+*NOTE*: When re-screening disagreements, it might happen (due to uncertainty in the models) that some (near miss) studies will be included, although they were excluded in the first screening. These studies could just be added to the pool of included studies. 
 
 # Approximate price of full-scale screening
 
-Assume now that you have decided to use a GPT model as your second screener, then you would like know how much you have to pay for the full screening. 
-
-Approximate price of screening
+When you have decided to use a GPT model as your second screener, you would probably like know how much you have to pay for the full screening. This information can be obtained by using `approximate_price_gpt()`.
 
 ```{r, eval = FALSE}
 # All ris-file data
 all_dat <- 
-  bind_rows(ris_dat_excl, ris_dat_incl) |> 
-  filter(!is.na(abstract)) |> 
+  bind_rows(ris_dat_excl, ris_dat_incl) |> # Use RIS-file data here
+  filter(!is.na(abstract)) |> # Only screen studies with an abstract
   mutate(studyid = 1:n())
 
 app_obj <- 
   approximate_price_gpt(
-    data = all_dat, # Tutorial data embedded in the package
+    data = all_dat, 
     prompt = prompt, 
-    studyid = studyid, # indicate the variable with the studyid in the data
-    title = title, # indicate the variable with the titles in the data
-    abstract = abstract, # indicate the variable with the abstracts in the data
-    model = c("gpt-4o-mini", "gpt-4"),
+    studyid = studyid, 
+    title = title, 
+    abstract = abstract, 
+    model = c("gpt-4o-mini", "gpt-4"), # To compare model prizes
     reps = c(10, 1)
   )
 
@@ -493,6 +526,14 @@ app_obj$price_data
 #> 2 Prompt 1 gpt-4                1              59.9                1.11               61.0  
 ```
 
-When looking at the price it is clear why you want to prioritize the use of `gpt-4o mini`. You could conduct 100 screenings with that model, and it would still be half the price of using `gpt-4`.
+When looking at the price, it is clear why one wants to prioritize the use of `gpt-4o mini`. One could conduct 100 screenings with the `gpt-4o-mini` model, and it would still be half the price of using `gpt-4`.
+
+# Future package updates
+In this vignette, we have shown the first step of conducting an title and abstract screening with a GPT API model. In future versions of the package, we will add further articles, showing:
+
+  1. How to run the full screening of all titles and abstracts most efficiently.
+  2. How to fine-tune a model.
+  3. How to use multiple-prompt screening, that is making one prompt per inclusion criteria. 
+  4. New functions to assess and resolve disagreements between human and GPT decisions.
 
 # References
