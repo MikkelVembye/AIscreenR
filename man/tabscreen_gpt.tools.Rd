@@ -24,9 +24,9 @@ tabscreen_gpt(data, prompt, studyid, title, abstract,
 \arguments{
 \item{data}{Dataset containing the titles and abstracts.}
 
-\item{prompt}{Prompt(s) to paste before the title and abstract.}
+\item{prompt}{Prompt(s) to be added before the title and abstract.}
 
-\item{studyid}{Unique ID of study. If missing, this is generated
+\item{studyid}{Unique Study ID. If missing, this is generated
 automatically.}
 
 \item{title}{Name of the variable containing the title information.}
@@ -34,9 +34,7 @@ automatically.}
 \item{abstract}{Name of variable containing the abstract information.}
 
 \item{model}{Character string with the name of the completion model. Can take
-multiple models, including gpt-4 models. Default is \code{"gpt-4"} (i.e., gpt-4-0613). This model has
-been shown to outperform the gpt-3.5-turbo models in terms of its ability to detect
-relevant studies (Vembye et al., 2024).
+multiple models. Default is the latest \code{"gpt-4o-mini"}.
 Find available model at
 \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.}
 
@@ -59,11 +57,11 @@ Find documentation at
 \url{https://platform.openai.com/docs/api-reference/chat/create#chat/create-top_p}.}
 
 \item{time_info}{Logical indicating whether the run time of each
-request/question should be included in the data. Default = \code{TRUE}.}
+request/question should be included in the data. Default is \code{TRUE}.}
 
-\item{token_info}{Logical indicating whether the number of prompt and completion tokens
-per request should be included in the output data. Default = \code{TRUE}. When \code{TRUE},
-the output object will include price information of the conducted screening.}
+\item{token_info}{Logical indicating whether token information should be included
+in the output data. Default is \code{TRUE}. When \code{TRUE}, the output object will
+include price information of the conducted screening.}
 
 \item{api_key}{Numerical value with your personal API key. Default setting draws
 on the \code{\link[=get_api_key]{get_api_key()}} to retrieve the API key from the R environment, so that the key is not
@@ -71,9 +69,7 @@ compromised. The API key can be added to the R environment via \code{\link[=set_
 or by using \code{\link[usethis:edit]{usethis::edit_r_environ()}}. In the \code{.Renviron} file, write \code{CHATGPT_KEY=INSERT_YOUR_KEY_HERE}.
 After entering the API key, close and save the \code{.Renviron} file and restart \code{RStudio} (ctrl + shift + F10).
 Alternatively, one can use \code{\link[httr2:secrets]{httr2::secret_make_key()}}, \code{\link[httr2:secrets]{httr2::secret_encrypt()}}, and
-\code{\link[httr2:secrets]{httr2::secret_decrypt()}} to scramble and decrypt the API key and
-use \code{\link[=set_api_key]{set_api_key()}} to securely automate the use of the
-API key by adding the api key as a locale environment variable.}
+\code{\link[httr2:secrets]{httr2::secret_decrypt()}} to scramble and decrypt the API key.}
 
 \item{max_tries, max_seconds}{'Cap the maximum number of attempts with
 \code{max_tries} or the total elapsed time from the first request with
@@ -94,7 +90,7 @@ that a precise wait time is not available that the \code{backoff} strategy
 should be used instead' (Wickham, 2023).}
 
 \item{rpm}{Numerical value indicating the number of requests per minute (rpm)
-available for the specified api key. Find more information at
+available for the specified model. Find more information at
 \url{https://platform.openai.com/docs/guides/rate-limits/what-are-the-rate-limits-for-our-api}.
 Alternatively, use \code{\link[=rate_limits_per_minute]{rate_limits_per_minute()}}.}
 

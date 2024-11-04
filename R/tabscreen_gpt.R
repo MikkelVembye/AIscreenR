@@ -30,9 +30,7 @@
 #'
 #' @template common-arg
 #' @param model Character string with the name of the completion model. Can take
-#'   multiple models, including gpt-4 models. Default is `"gpt-4"` (i.e., gpt-4-0613). This model has
-#'   been shown to outperform the gpt-3.5-turbo models in terms of its ability to detect
-#'   relevant studies (Vembye et al., 2024).
+#'   multiple models. Default is the latest `"gpt-4o-mini"`.
 #'   Find available model at
 #' \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.
 #' @param role Character string indicating the role of the user. Default is `"user"`.
@@ -50,10 +48,10 @@
 #'   Find documentation at
 #' \url{https://platform.openai.com/docs/api-reference/chat/create#chat/create-top_p}.
 #' @param time_info Logical indicating whether the run time of each
-#'   request/question should be included in the data. Default = `TRUE`.
-#' @param token_info Logical indicating whether the number of prompt and completion tokens
-#'   per request should be included in the output data. Default = `TRUE`. When `TRUE`,
-#'   the output object will include price information of the conducted screening.
+#'   request/question should be included in the data. Default is `TRUE`.
+#' @param token_info Logical indicating whether token information should be included
+#'   in the output data. Default is `TRUE`. When `TRUE`, the output object will
+#'   include price information of the conducted screening.
 #' @template api-key-arg
 #' @param max_tries,max_seconds 'Cap the maximum number of attempts with
 #'  `max_tries` or the total elapsed time from the first request with
@@ -70,13 +68,15 @@
 #'   that a precise wait time is not available that the `backoff` strategy
 #'   should be used instead' (Wickham, 2023).
 #' @param rpm Numerical value indicating the number of requests per minute (rpm)
-#'   available for the specified api key. Find more information at
+#'   available for the specified model. Find more information at
 #'   \url{https://platform.openai.com/docs/guides/rate-limits/what-are-the-rate-limits-for-our-api}.
 #'   Alternatively, use [rate_limits_per_minute()].
 #' @param reps Numerical value indicating the number of times the same
-#'   question should be sent to OpenAI's GPT API models. This can be useful to test consistency
-#'   between answers. Default is `1` but when using 3.5 models, we recommend setting this
-#'   value to `10`.
+#'   question should be send to the server. This can be useful to test consistency
+#'   between answers, and/or can be used to make inclusion judgments based on how many times
+#'   a study has been included across a the given number of screenings.
+#'   Default is `1` but when using gpt-3.5-turbo models or gpt-4o-mini,
+#'   we recommend setting this value to `10` to catch model uncertainty.
 #' @param seed Numerical value for a seed to ensure that proper,
 #'   parallel-safe random numbers are produced.
 #' @param progress Logical indicating whether a progress line should be shown when running
@@ -251,7 +251,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
   studyid,
   title,
   abstract,
-  model = "gpt-4",
+  model = "gpt-4o-mini",
   role = "user",
   tools = NULL,
   tool_choice = NULL,

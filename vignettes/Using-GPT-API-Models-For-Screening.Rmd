@@ -37,9 +37,7 @@ options(dplyr.summarise.inform = FALSE) # Avoids summarize info from tidyverse
 <p style='margin-top:1em; text-align:center'>
 <b>Important note</b></p>
 <p style='margin:1em'>
-This is work-in-progress only. For now, see [Vembye, Christensen, Mølgaard, & Schytt](https://osf.io/preprints/osf/yrhzm) [-@Vembye2024_gpt] for an overview of how and when GPT API models can be used for title and abstract (TAB) screening. Our most recent results suggest that the `gpt-4o-mini` is a good model for screening titles and abstracts with performances in many cases on par with `gpt-4`. This is a very cheap model (200 times cheaper than `gpt-4`). Therefore to lower the cost, our recommendation is always to test the performance of `gpt-4o-mini` before testing other models.
-
-For an overview of other research regarding the use of GPT API models for title and abstract screening, see Syriani et al. [-@Syriani2023; -@Syriani2024], Guo et al., [-@Guo2024], and Gargari et al. [-@Gargari2024]. On a related line of research, Alshami et al. [-@Alshami2023], Khraisha et al. [-@Khraisha2024], and Issaiy et al. [@Issaiy2024] explored using the ChatGPT web browser interface for TAB screening. Based on our experience, we think that these two lines of research should not be mixed up since the draw on different GPT models and setups.
+*This is work-in-progress only. For now, see [Vembye, Christensen, Mølgaard, & Schytt](https://osf.io/preprints/osf/yrhzm) [-@Vembye2024_gpt] for an overview of how and when GPT API models can be used for title and abstract (TAB) screening. Our most recent results suggest that the `gpt-4o-mini` is a good model for screening titles and abstracts with performances in many cases on par with `gpt-4`. This is a very cheap model (200 times cheaper than `gpt-4`). Therefore to lower the cost, our recommendation is always to test the performance of `gpt-4o-mini` before testing other models. For an overview of other research regarding the use of GPT API models for title and abstract screening, see Syriani et al. [-@Syriani2023; -@Syriani2024], Guo et al., [-@Guo2024], and Gargari et al. [-@Gargari2024]. On a related line of research, Alshami et al. [-@Alshami2023], Khraisha et al. [-@Khraisha2024], and Issaiy et al. [@Issaiy2024] explored using the ChatGPT web browser interface for TAB screening. Based on our experience, we think that these two lines of research should not be mixed up since the draw on different GPT models and setups.*
 </p></span>
 </div>
 
@@ -54,6 +52,7 @@ At this point, you might ask, why use GPT API models from R and not just do the 
   3. It eases model comparison.
   4. Consistency between the GPT answer for the same title and abstract can easily be tested. You can also conduct multiple screenings and make inclusion judgments based on how many times a study has been included across the given number of screenings. 
   5. When using the `gpt-4o-mini`, it is cheaper than subscribing to ChatGPT plus. 
+  6. Research suggest that GPT API models and the ChatGPT yields quite different screening performances. 
 
 That said, it is also important to stress that the GPT API models used for TAB screening should always be used carefully and be assisted by a human (human-in-the-loop). Consequently, we do not recommend to use the `AIscreenR` as a single screener, unless this an absolutely final solution. When using a GPT API model as the second screener, we also recommend that the human screening has been done before uploading RIS-file(s) to R. Thereby, it is possible to compare the screenings instantly after the GPT screening has been done. 
 
@@ -88,14 +87,14 @@ library(future)    # Used to conduct screenings in parallel
 ```
 
 ## Convert RIS-files to data frames
-Now, we are ready to conduct the first step of the screening, which is to load our RIS-file data into R and convert it to a data frame. This can be done by using `revtools::read_bibliography()` from `revtools`. In the below example, we use RIS-file data from a review regarding the effects of Functional Family Therapy (FFT) on drug abuse reduction for young people in treatment for non-opioid drug use [@Filges2015a]. Be aware, that this data is used for illustration purposes only. In the example, we assume that the humans have started screening and found a bunch of relevant and irrelevant studies from which they can create the test data. Thus, we can load the RIS-files, which we downloaded from the EPPI-reviewer, separately for ex- and included RIS-files, respectively. This enables us to track the human decision by adding a `human_code` variable, where `1` and `0` indicates whether a study should be in- og excluded. 
+Now, we are ready to conduct the first step of the screening, which is to load our RIS-file data into R and convert it to a data frame. This can be done by using `revtools::read_bibliography()` from `revtools`. In the below example, we use RIS-file data from a review regarding the effects of the FRIENDS preventive programme on anxiety symptoms in children and adolescents [@Filges2023; @Filges2024]. Be aware, that this data is used for illustration purposes only. Thus, no hard inferences should be drawn from this example. In the example, we assume that the humans have started screening and found a bunch of relevant and irrelevant studies from which they can create the test data. Thus, we can load the RIS-files, which we downloaded from the EPPI-reviewer, separately for ex- and included RIS-files, respectively. This enables us to track the human decision by adding a `human_code` variable, where `1` and `0` indicates whether a study should be in- og excluded. 
 
-```{r, eval = FALSE}
-# Read path to RIS-file including the file name
-excl_path <- system.file("extdata", "excl_tutorial.ris", package = "AIscreenR")
+
+```{r, eval = FALSE, echo = FALSE}
+# NOTE: Find the ris-files behind this vignette at https://osf.io/kfbvu/
 
 # Loading EXCLUDED studies
-ris_dat_excl <- revtools::read_bibliography(excl_path) |> 
+ris_dat_excl <- revtools::read_bibliography("vignettes/helper-stuff/friends_excl.ris") |> 
   suppressWarnings() |> 
   as_tibble() |>
   select(author, eppi_id, title, abstract) |> # Using only relevant variables
@@ -104,11 +103,32 @@ ris_dat_excl <- revtools::read_bibliography(excl_path) |>
     across(c(author, title, abstract), ~ na_if(., "NA"))
   )
 
-# Read path to RIS-files
-incl_path <- system.file("extdata", "incl_tutorial.ris", package = "AIscreenR")
 
 # Loading INCLUDED studies
-ris_dat_incl <- revtools::read_bibliography(incl_path) |> 
+ris_dat_incl <- revtools::read_bibliography("vignettes/helper-stuff/friends_incl.ris") |> 
+  suppressWarnings() |> 
+  as_tibble() |>
+  select(author, eppi_id, title, abstract) |>
+  mutate(
+    human_code = 1, #Tracking the human decision
+    across(c(author, title, abstract), ~ na_if(., "NA"))
+  )
+```
+
+```{r, eval = FALSE}
+# Loading EXCLUDED studies
+ris_dat_excl <- revtools::read_bibliography("./path/to/your/excluded_ris_file.ris") |> 
+  suppressWarnings() |> 
+  as_tibble() |>
+  select(author, eppi_id, title, abstract) |> # Using only relevant variables
+  mutate(
+    human_code = 0, #Tracking the human decision
+    across(c(author, title, abstract), ~ na_if(., "NA"))
+  )
+
+
+# Loading INCLUDED studies
+ris_dat_incl <- revtools::read_bibliography("./path/to/your/included_ris_file.ris") |> 
   suppressWarnings() |> 
   as_tibble() |>
   select(author, eppi_id, title, abstract) |>
@@ -223,29 +243,14 @@ knitr::include_graphics("helper-stuff/set_api.png")
 The next step involves writing you make one or multiple prompts that can be used for the screening. This can be done in several ways. You can either write your prompt directly in R, as illustrated below
 
 ```{r, eval = FALSE}
-prompt <- "Evaluate the following study based on the selection criteria 
-for a systematic review on the effects of family-based interventions on drug 
-abuse reduction for young people in treatment for non-opioid drug use. 
-A family-based intervention (FFT) is equivalent to a behavior focused family 
-therapy, where young people’s drug use is understood in relation to family behavior problems. 
-Family-based interventions also include manual-based family therapies as it target young people
-and their families as a system throughout treatment, and thereby recognize the important role
-of the family system in the development and treatment of young people’s drug use problems. 
-FFT was developed in the late 1980s on request from the US National Institute on Drug Abuse (NIDA).
-The development of FFT was initially heavily inspired by the alcohol abuse program Community 
-Reinforcement Approach (CRA), which was aimed at restructuring the environment to 
-reinforce non-alcohol associated activities. FFT was developed to have more emphasis on 
-contingency contracting, impulse control strategies specific to drug use, and increased 
-emphasis on the involvement of family members in treatment. FFT is designed to accommodate 
-diverse populations of youths with a variety of behavioral, cultural and individual preferences.
-FFT has evolved for use in severe behavioral disturbances known to co-exist with substance 
-use and dependence, and the core interventions have been enhanced to address several mental 
-health related problems commonly occurring as comorbid conditions in drug use treatment 
-participant.  For each study, I would like you to assess:  1) Is the study about a family-based
-intervention, such as Functional Family Therapy, Multidimensional Family Therapy, or Behavioral 
-Family Therapy? (Outpatient manual-based interventions of any duration delivered to young people
-and their families). If not, exclude study. 2) Are the participants in outpatient drug treatment
-primarily for non-opioid drug use? 3) Are the participants within age 11–21?"
+prompt <- "We are screening studies for a systematic literature review. 
+The topic of the systematic review is the effect of the FRIENDS preventive programme on reducing
+anxiety symptoms in children and adolescents. The FRIENDS programme is a 10-session manualised 
+cognitive behavioural therapy (CBT) programme which can be used as both prevention and 
+treatment of child and youth anxiety.  The study should focus exclusively on this topic 
+and we are exclusively searching  for studies with a treatment and a comparison group. 
+For each study, I would like you to assess:  1) Is the study about the FRIENDS preventive programme?  
+2) Is the study estimating an effect between a treatment and control/comparison group?"
 ```
 
 Or you can just write it in Word as shown in Figures 4. 
@@ -253,7 +258,7 @@ Or you can just write it in Word as shown in Figures 4.
 \  
 
 ```{r eval=TRUE, echo=FALSE, fig.cap='*Figure 4 - Prompting in Word*'}
-knitr::include_graphics("helper-stuff/wordprompt1.png")
+knitr::include_graphics("helper-stuff/friends_prompt.png")
 ```
 \ 
 
@@ -285,7 +290,7 @@ Optional
 ```{r, message=FALSE, eval=FALSE}
 # Get information about whether you have access to a given model and 
 # how many requests per minutes you are allow to send. 
-models_rpm <- rate_limits_per_minute(c("gpt-4", "gpt-4o-mini"))
+models_rpm <- rate_limits_per_minute("gpt-4o-mini")
 
 plan(multisession)
 
@@ -296,11 +301,11 @@ result_object <-
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
     abstract = abstract, # indicate the variable with the abstracts in the data
-    model = c("gpt-4", "gpt-4o-mini"), # Model choice
-    reps = c(1, 10), # Using multiple screenings with the cheap gpt-4o-mini model
+    model = "gpt-4o-mini", # Model choice
+    reps = 10, # Using multiple screenings with the cheap gpt-4o-mini model
     rpm = models_rpm$requests_per_minute
   )
-#> * The approximate price of the current (simple) screening will be around $7.5133.
+#> * The approximate price of the current (simple) screening will be around $0.2237.
 #> Progress: ───────────────────────────────────────────────────────────────── 100%
 plan(sequential)
 ```
@@ -309,28 +314,28 @@ We have now conducted the test screening and can get the raw results as below.
 
 ```{r, message=FALSE, eval=FALSE}
 result_object$answer_data_aggregated |> 
-  select(author, human_code, model, incl_p, final_decision_gpt, final_decision_gpt_num)
-#> # A tibble: 400 × 6
-#>    author                human_code model incl_p final_decision_gpt final_decision_gpt_num
-#>    <chr>                      <dbl> <chr>  <dbl> <chr>                               <dbl>
-#>  1 Moes and Frea Doug R           0 gpt-4      0 Exclude                                 0
-#>  2 Flemke Kimberly R              0 gpt-4      0 Exclude                                 0
-#>  3 Daniels M Harry and …          0 gpt-4      0 Exclude                                 0
-#>  4 Schwartzman Meredith…          0 gpt-4      0 Exclude                                 0
-#>  5 White Stuart F and F…          0 gpt-4      0 Exclude                                 0
-#>  6 Chao-kai X U and Han…          0 gpt-4      0 Exclude                                 0
-#>  7 Todd Thomas C                  0 gpt-4      0 Exclude                                 0
-#>  8 Kinoshita O and Kama…          0 gpt-4      0 Exclude                                 0
-#>  9 Stratton Peter and R…          0 gpt-4      0 Exclude                                 0
-#> 10 Stevens Sally and Ru…          0 gpt-4      0 Exclude                                 0
-#> # ℹ 390 more rows
-#> # ℹ Use `print(n = ...)` to see more rows
+  select(author, human_code, final_decision_gpt, final_decision_gpt_num)
+#> # A tibble: 200 × 4
+#>   author                                       human_code final_decision_gpt final_decision_gpt_num
+#>   <chr>                                             <dbl> <chr>                               <dbl>
+#> 1 Lara Elvira and Mart<c3><ad>n-Mar<c3><ad>a …          0 Exclude                                 0
+#> 2 Matsumoto Manabu                                      0 Exclude                                 0
+#> 3 Jordan Ann                                            0 Exclude                                 0
+#> 4 Antonova E and Hamid A and Wright B and Kum…          0 Exclude                                 0
+#> 5 Iafusco Dario                                         0 Exclude                                 0
+#> 6 Farrell L J and Barrett P M and Claassens S           0 Include                                 1
+#> 7 Rasalingam G and Rajalingam A and Chandrada…          0 Exclude                                 0
+#> 8 Chappel J N and DuPont R L                            0 Exclude                                 0
+#> 9 Waldrop Deborah P                                     0 Exclude                                 0
+#>10 Ioana-Eva C<c4><83>dariu and Rad Dana                 0 Exclude                                 0
+#># ℹ 190 more rows
+#># ℹ Use `print(n = ...)` to see more rows
 ```
 
 
 ## Screen failed requests
 
-If might happen that you experience that some of your screenings requests failed for some transient reason, for example because the server was overloaded or something else. To recover these failed request you can use `screen_error()`, så below. 
+If might happen that you experience that some of your screenings requests failed for some transient reason, for example because the server was overloaded or something else. To recover these failed request you can use `screen_error()`, as done below. 
 
 ```{r, eval=FALSE}
 result_object <- 
@@ -347,11 +352,10 @@ screen_performance <-
   screen_analyzer(human_decision = human_code) # state the name of the variable containing the human decision. 
 
 screen_performance
-#> # A tibble: 2 × 8
-#>   promptid model        reps top_p p_agreement recall specificity criteria                   
-#>      <int> <chr>       <int> <dbl>       <dbl>  <dbl>       <dbl> <chr>                      
-#> 1        1 gpt-4           1     1        0.91   0.78       0.953 One screening used.        
-#> 2        1 gpt-4o-mini    10     1        0.91   0.72       0.973 Studies have been included…
+#> # A tibble: 1 × 9
+#>   promptid model        reps top_p p_agreement recall specificity incl_p criteria                                                        
+#>      <int> <chr>       <int> <dbl>       <dbl>  <dbl>       <dbl>  <dbl> <chr>                                                           
+#>1        1 gpt-4o-mini    10     1        0.97   0.92       0.987    0.4 Studies have been included in at least 40% of the 10 screenings.
 ```
 
 ## Assess results via a benchmark scheme
@@ -366,18 +370,18 @@ knitr::include_graphics("helper-stuff/benchmark_scheme.png")
 incl_dist <- attr(screen_performance, "p_incl_data")
 incl_dist |> select(model, recall, specificity, criteria)
 #> # A tibble: 10 × 4
-#>    model       recall specificity criteria                                                        
-#>    <chr>        <dbl>       <dbl> <chr>                                                           
-#>  1 gpt-4o-mini   0.74       0.96  Studies have been included in at least 10% of the 10 screenings.
-#>  2 gpt-4o-mini   0.72       0.967 Studies have been included in at least 20% of the 10 screenings.
-#>  3 gpt-4o-mini   0.72       0.967 Studies have been included in at least 30% of the 10 screenings.
-#>  4 gpt-4o-mini   0.72       0.973 Studies have been included in at least 40% of the 10 screenings.
-#>  5 gpt-4o-mini   0.72       0.973 Studies have been included in at least 50% of the 10 screenings.
-#>  6 gpt-4o-mini   0.68       0.973 Studies have been included in at least 60% of the 10 screenings.
-#>  7 gpt-4o-mini   0.68       0.98  Studies have been included in at least 70% of the 10 screenings.
-#>  8 gpt-4o-mini   0.62       0.98  Studies have been included in at least 80% of the 10 screenings.
-#>  9 gpt-4o-mini   0.56       0.98  Studies have been included in at least 90% of the 10 screenings.
-#> 10 gpt-4o-mini   0.46       0.98  Studies have been included in all of the 10 screenings.   
+#>   model       recall specificity criteria                                                        
+#>   <chr>        <dbl>       <dbl> <chr>                                                           
+#> 1 gpt-4o-mini   0.96       0.987 Studies have been included in at least 10% of the 10 screenings.
+#> 2 gpt-4o-mini   0.96       0.987 Studies have been included in at least 20% of the 10 screenings.
+#> 3 gpt-4o-mini   0.94       0.987 Studies have been included in at least 30% of the 10 screenings.
+#> 4 gpt-4o-mini   0.92       0.987 Studies have been included in at least 40% of the 10 screenings.
+#> 5 gpt-4o-mini   0.92       0.987 Studies have been included in at least 50% of the 10 screenings.
+#> 6 gpt-4o-mini   0.92       0.987 Studies have been included in at least 60% of the 10 screenings.
+#> 7 gpt-4o-mini   0.92       0.987 Studies have been included in at least 70% of the 10 screenings.
+#> 8 gpt-4o-mini   0.88       0.987 Studies have been included in at least 80% of the 10 screenings.
+#> 9 gpt-4o-mini   0.84       0.987 Studies have been included in at least 90% of the 10 screenings.
+#>10 gpt-4o-mini   0.74       0.987 Studies have been included in all of the 10 screenings.   
 ```
 
 
@@ -390,7 +394,7 @@ incl_dist |> select(model, recall, specificity, criteria)
 ```{r}
 disagree_dat <- 
   result_object$answer_data_aggregated |> 
-  filter(model == "gpt-4", human_code == 1, final_decision_gpt_num == 0)
+  filter(human_code == 1, final_decision_gpt_num == 0, incl_p == 0)
 
 plan(multisession)
 
@@ -401,9 +405,8 @@ result_object_detail <-
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
     abstract = abstract, # indicate the variable with the abstracts in the data
-    model = "gpt-4", # Model choice
-    rpm = rpm$requests_per_minute,
-    reps = 1,
+    model = "gpt-4o-mini", # Model choice
+    rpm = models_rpm$requests_per_minute,
     decision_description = TRUE
   )
 #> * The approximate price of the current (simple) screening will be around $0.391.
@@ -416,9 +419,9 @@ plan(sequential)
 
 
 
-```{r}
+```{r, echo = FALSE}
 
-# Example of abstract included by the human and excluded by gpt-4
+# Example of abstract included by the human and excluded by gpt-4o-mini
 result_object_reps10_detail$answer_data$abstract[1]
 #> [1] "This study documents significant differences in alliance in a predominantly Latino sample of
 #>  adolescents who either completed or dropped out of a Guided Self-Change treatment program. 
@@ -439,7 +442,7 @@ result_object_reps10_detail$answer_data$abstract[1]
 
 # Example of explanation for exclusion 
 # Seems reasonable why the records was thrown out by gpt.
-result_object_reps10_detail$answer_data$detailed_description[1]
+result_object_detail$answer_data$detailed_description[1]
 #> [1] "This particular study does not meet the inclusion criteria as set out by the systematic review.
 #>  While it does focus on substance abuse treatment in adolescents, it does not specifically indicate 
 #>  that it assesses a family-based intervention, such as Functional Family Therapy, 
@@ -461,13 +464,16 @@ Approximate price of screening
 
 ```{r, eval = FALSE}
 # All ris-file data
-all_dat <- bind_rows(ris_dat_excl, ris_dat_incl)
+all_dat <- 
+  bind_rows(ris_dat_excl, ris_dat_incl) |> 
+  filter(!is.na(abstract)) |> 
+  mutate(studyid = 1:n())
 
 app_obj <- 
   approximate_price_gpt(
     data = all_dat, # Tutorial data embedded in the package
     prompt = prompt, 
-    studyid = eppi_id, # indicate the variable with the studyid in the data
+    studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
     abstract = abstract, # indicate the variable with the abstracts in the data
     model = c("gpt-4o-mini", "gpt-4"),
@@ -475,16 +481,16 @@ app_obj <-
   )
 
 app_obj
-#> The approximate price of the (simple) screening will be around $24.5095.
+#> The approximate price of the (simple) screening will be around $64.1443.
 
 app_obj$price_dollar
-#> [1] 24.5095
+#> [1] 64.1443
 app_obj$price_data
 #> # A tibble: 2 × 6
 #>   prompt   model       iterations input_price_dollar output_price_dollar total_price_dollar
 #>   <chr>    <chr>            <dbl>              <dbl>               <dbl>              <dbl>
-#> 1 Prompt 1 gpt-4o-mini         10              0.452              0.0114              0.463
-#> 2 Prompt 1 gpt-4                1              9.04               0.114               9.15 
+#> 1 Prompt 1 gpt-4o-mini         10               2.99               0.111               3.11
+#> 2 Prompt 1 gpt-4                1              59.9                1.11               61.0  
 ```
 
 When looking at the price it is clear why you want to prioritize the use of `gpt-4o mini`. You could conduct 100 screenings with that model, and it would still be half the price of using `gpt-4`.

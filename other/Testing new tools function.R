@@ -145,6 +145,7 @@ random_selection <- sample(nrow(df_shuffle), floor(nrow(df_shuffle) * 0.1))
 # shuffle random selection
 df_randomSelection <- df_shuffle[random_selection,  ]
 
-
+#
+app
 
 
