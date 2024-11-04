@@ -6,7 +6,7 @@
 \title{Title and abstract screening with GPT API models using function calls via the tools argument}
 \usage{
 tabscreen_gpt.tools(data, prompt, studyid, title, abstract,
-   model = "gpt-4", role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
+   model = "gpt-4o-mini", role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
    time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
    max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
    after = NULL, rpm = 10000, reps = 1, seed = NULL, progress = TRUE,
@@ -14,7 +14,7 @@ tabscreen_gpt.tools(data, prompt, studyid, title, abstract,
    incl_cutoff_lower = NULL, force = FALSE, fine_tuned = FALSE, ...)
 
 tabscreen_gpt(data, prompt, studyid, title, abstract,
-   model = "gpt-4", role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
+   model = "gpt-4o-mini", role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
    time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
    max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
    after = NULL, rpm = 10000, reps = 1, seed = NULL, progress = TRUE,
@@ -95,9 +95,11 @@ available for the specified model. Find more information at
 Alternatively, use \code{\link[=rate_limits_per_minute]{rate_limits_per_minute()}}.}
 
 \item{reps}{Numerical value indicating the number of times the same
-question should be sent to OpenAI's GPT API models. This can be useful to test consistency
-between answers. Default is \code{1} but when using 3.5 models, we recommend setting this
-value to \code{10}.}
+question should be send to the server. This can be useful to test consistency
+between answers, and/or can be used to make inclusion judgments based on how many times
+a study has been included across a the given number of screenings.
+Default is \code{1} but when using gpt-3.5-turbo models or gpt-4o-mini,
+we recommend setting this value to \code{10} to catch model uncertainty.}
 
 \item{seed}{Numerical value for a seed to ensure that proper,
 parallel-safe random numbers are produced.}

@@ -106,7 +106,7 @@
 #'   See \url{https://platform.openai.com/docs/api-reference/chat/create}.
 #'
 #' @usage tabscreen_gpt.tools(data, prompt, studyid, title, abstract,
-#'    model = "gpt-4", role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
+#'    model = "gpt-4o-mini", role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
 #'    time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
 #'    max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
 #'    after = NULL, rpm = 10000, reps = 1, seed = NULL, progress = TRUE,
@@ -114,7 +114,7 @@
 #'    incl_cutoff_lower = NULL, force = FALSE, fine_tuned = FALSE, ...)
 #'
 #'tabscreen_gpt(data, prompt, studyid, title, abstract,
-#'    model = "gpt-4", role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
+#'    model = "gpt-4o-mini", role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
 #'    time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
 #'    max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
 #'    after = NULL, rpm = 10000, reps = 1, seed = NULL, progress = TRUE,
