@@ -9,7 +9,7 @@ tabscreen_gpt.tools(data, prompt, studyid, title, abstract,
    model = "gpt-4o-mini", role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
    time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
    max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
-   after = NULL, rpm = 10000, reps = 1, seed = NULL, progress = TRUE,
+   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
    decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
    incl_cutoff_lower = NULL, force = FALSE, fine_tuned = FALSE, ...)
 
@@ -17,7 +17,7 @@ tabscreen_gpt(data, prompt, studyid, title, abstract,
    model = "gpt-4o-mini", role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
    time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
    max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
-   after = NULL, rpm = 10000, reps = 1, seed = NULL, progress = TRUE,
+   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
    decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
    incl_cutoff_lower = NULL, force = FALSE, fine_tuned = FALSE, ...)
 }
@@ -101,7 +101,7 @@ a study has been included across a the given number of screenings.
 Default is \code{1} but when using gpt-3.5-turbo models or gpt-4o-mini,
 we recommend setting this value to \code{10} to catch model uncertainty.}
 
-\item{seed}{Numerical value for a seed to ensure that proper,
+\item{seed_par}{Numerical value for a seed to ensure that proper,
 parallel-safe random numbers are produced.}
 
 \item{progress}{Logical indicating whether a progress line should be shown when running

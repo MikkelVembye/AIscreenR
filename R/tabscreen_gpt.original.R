@@ -83,7 +83,7 @@
 #'   question should be sent to OpenAI's GPT API models. This can be useful to test consistency
 #'   between answers. Default is `1` but when using 3.5 models, we recommend setting this
 #'   value to `10`.
-#' @param seed Numerical value for a seed to ensure that proper,
+#' @param seed_par Numerical value for a seed to ensure that proper,
 #'   parallel-safe random numbers are produced.
 #' @param progress Logical indicating whether a progress line should be shown when running
 #'   the title and abstract screening in parallel. Default is `TRUE`.
@@ -227,7 +227,7 @@ tabscreen_gpt.original <- function(
   after = NULL,
   rpm = 10000,
   reps = 1,
-  seed = NULL,
+  seed_par = NULL,
   progress = TRUE,
   messages = TRUE,
   incl_cutoff_upper = 0.5,
@@ -308,7 +308,7 @@ tabscreen_gpt.original <- function(
       is_transient = is_transient,
       backoff = backoff,
       after = after,
-      seed = seed,
+      seed_par = seed_par,
       progress = progress,
       messages = messages,
       incl_cutoff_upper = incl_cutoff_upper,
@@ -533,7 +533,7 @@ tabscreen_gpt.original <- function(
     role_gpt = role,
     funcs = functions,
     func_call_name = function_call_name,
-    seeds = seed
+    seeds = seed_par
   ){
 
 
@@ -789,7 +789,7 @@ tabscreen_gpt.original <- function(
 #    }
 
     # RUNNING QUESTIONS
-    furrr_seed <- if (is.null(seed)) TRUE else NULL
+    furrr_seed <- if (is.null(seed_par)) TRUE else NULL
 
     params <- question_dat |>
       dplyr::select(question, model_gpt = model, topp, iterations, req_per_min)
@@ -833,7 +833,7 @@ tabscreen_gpt.original <- function(
       data |>
       dplyr::select(1:topp)
 
-    furrr_seed <- if (is.null(seed)) TRUE else NULL
+    furrr_seed <- if (is.null(seed_par)) TRUE else NULL
 
     answer_dat <-
       question_dat |>

@@ -108,7 +108,7 @@ screen_errors.gpt <- function(
     is_transient <- if (missing(is_transient)) arguments_used$is_transient else is_transient
     backoff <- if (missing(backoff)) arguments_used$backoff else backoff
     after <- if (missing(after)) arguments_used$after else after
-    seed <- arguments_used$seed
+    seed_par <- arguments_used$seed_par
     progress <- arguments_used$progress
     messages <- arguments_used$messages
     incl_cutoff_upper <- arguments_used$incl_cutoff_upper
@@ -129,7 +129,7 @@ screen_errors.gpt <- function(
         backoff = backoff,
         after = after,
         reps = reps,
-        seed = seed,
+        seed_par = seed_par,
         progress = progress,
         messages = messages,
         incl_cutoff_upper = incl_cutoff_upper,
@@ -187,7 +187,7 @@ screen_errors.gpt <- function(
       error_dat |>
       dplyr::select(1:topp)
 
-    furrr_seed <- if (is.null(seed)) TRUE else NULL
+    furrr_seed <- if (is.null(seed_par)) TRUE else NULL
 
     error_dat_recovered <-
       question_dat |>
@@ -198,7 +198,7 @@ screen_errors.gpt <- function(
           role_gpt = role,
           tool = tools,
           t_choice = tool_choice,
-          seeds = seed,
+          seeds = seed_par,
           time_inf = time_info,
           token_inf = token_info,
           apikey = api_key,

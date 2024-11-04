@@ -26,7 +26,7 @@ tabscreen_gpt.original(
   after = NULL,
   rpm = 10000,
   reps = 1,
-  seed = NULL,
+  seed_par = NULL,
   progress = TRUE,
   messages = TRUE,
   incl_cutoff_upper = 0.5,
@@ -115,7 +115,7 @@ question should be sent to OpenAI's GPT API models. This can be useful to test c
 between answers. Default is \code{1} but when using 3.5 models, we recommend setting this
 value to \code{10}.}
 
-\item{seed}{Numerical value for a seed to ensure that proper,
+\item{seed_par}{Numerical value for a seed to ensure that proper,
 parallel-safe random numbers are produced.}
 
 \item{progress}{Logical indicating whether a progress line should be shown when running

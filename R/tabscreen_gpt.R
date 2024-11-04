@@ -77,7 +77,7 @@
 #'   a study has been included across a the given number of screenings.
 #'   Default is `1` but when using gpt-3.5-turbo models or gpt-4o-mini,
 #'   we recommend setting this value to `10` to catch model uncertainty.
-#' @param seed Numerical value for a seed to ensure that proper,
+#' @param seed_par Numerical value for a seed to ensure that proper,
 #'   parallel-safe random numbers are produced.
 #' @param progress Logical indicating whether a progress line should be shown when running
 #'   the title and abstract screening in parallel. Default is `TRUE`.
@@ -109,7 +109,7 @@
 #'    model = "gpt-4o-mini", role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
 #'    time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
 #'    max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
-#'    after = NULL, rpm = 10000, reps = 1, seed = NULL, progress = TRUE,
+#'    after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
 #'    decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
 #'    incl_cutoff_lower = NULL, force = FALSE, fine_tuned = FALSE, ...)
 #'
@@ -117,7 +117,7 @@
 #'    model = "gpt-4o-mini", role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
 #'    time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
 #'    max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
-#'    after = NULL, rpm = 10000, reps = 1, seed = NULL, progress = TRUE,
+#'    after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
 #'    decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
 #'    incl_cutoff_lower = NULL, force = FALSE, fine_tuned = FALSE, ...)
 #'
@@ -266,7 +266,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
   after = NULL,
   rpm = 10000,
   reps = 1,
-  seed = NULL,
+  seed_par = NULL,
   progress = TRUE,
   decision_description = FALSE,
   messages = TRUE,
@@ -403,7 +403,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
       backoff = backoff,
       after = after,
       reps = reps,
-      seed = seed,
+      seed_par = seed_par,
       progress = progress,
       messages = messages,
       decision_description = decision_description,
@@ -589,7 +589,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
     # RUNNING QUESTIONS - the heart of the function ----
     #...................................................
 
-    furrr_seed <- if (is.null(seed)) TRUE else NULL
+    furrr_seed <- if (is.null(seed_par)) TRUE else NULL
 
     params <- question_dat |>
       dplyr::select(question, model_gpt = model, topp, iterations, req_per_min)
@@ -604,7 +604,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
           role_gpt = role,
           tool = tools,
           t_choice = tool_choice,
-          seeds = seed,
+          seeds = seed_par,
           time_inf = time_info,
           token_inf = token_info,
           apikey = api_key,

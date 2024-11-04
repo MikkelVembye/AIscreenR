@@ -111,7 +111,7 @@ screen_errors.chatgpt <- function(
     is_transient <- if (missing(is_transient)) object$arguments_used$is_transient else is_transient
     backoff <- if (missing(backoff)) object$arguments_used$backoff else backoff
     after <- if (missing(after)) object$arguments_used$after else after
-    seed <- object$arguments_used$seed
+    seed_par <- object$arguments_used$seed_par
     progress <- object$arguments_used$progress
     messages <- object$arguments_used$messages
     incl_cutoff_upper <- object$arguments_used$incl_cutoff_upper
@@ -129,7 +129,7 @@ screen_errors.chatgpt <- function(
         is_transient = is_transient,
         backoff = backoff,
         after = after,
-        seed = seed,
+        seed_par = seed_par,
         progress = progress,
         messages = messages,
         incl_cutoff_upper = incl_cutoff_upper,
@@ -210,7 +210,7 @@ screen_errors.chatgpt <- function(
 
 
     error_recoved_dat <-
-      tabscreen_gpt(
+      tabscreen_gpt.original(
         data = error_dat,
         api_key = api_key,
         role = role,
@@ -223,7 +223,7 @@ screen_errors.chatgpt <- function(
         is_transient = is_transient,
         backoff = backoff,
         after = after,
-        seed = seed,
+        seed_par = seed_par,
         progress = progress,
         messages = messages,
         incl_cutoff_upper = incl_cutoff_upper,

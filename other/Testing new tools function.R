@@ -29,8 +29,8 @@ return_dat <-
   #incl_cutoff_upper = 0.5,
   #incl_cutoff_lower = 40,
   #token_info = TRUE,
-  force = TRUE,
-  fine_tuned = TRUE
+  force = FALSE,
+  fine_tuned = FALSE
 ); return_dat
 
 plan(sequential)
