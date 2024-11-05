@@ -18,10 +18,10 @@ Version](https://img.shields.io/badge/devel-0.0.0.9999-brightgreen.svg)](https:/
 The goal of AIscreenR is to use AI tools to support screening processes
 (including title and abstract screening) in systematic reviews and
 related literature reviews. At the current stage, the main aim of the
-`AIscreenR` package is to support the use and test OpenAI’s GPT API
-models as second screeners of titles and abstracts or alternatively to
-reduce the number of references needed to be screened by humans. The
-package allows user to utilize OpenAI’s GPT API models from the
+`AIscreenR` package is test and use OpenAI’s GPT API models as second
+screeners of titles and abstracts or alternatively to reduce the number
+of references needed to be screened by humans. The package allows user
+to utilize OpenAI’s GPT API models from the
 [https://api.openai.com/v1/chat/completions](https://platform.openai.com/docs/models/model-endpoint-compatibility)
 endpoint. In future developments, we may add further LLMs, such as API
 models from Claude 2. For now, we invite other researchers to test this
