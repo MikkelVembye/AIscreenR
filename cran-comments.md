@@ -1,7 +1,7 @@
 ## Submission
 
 This is the first version of AIscreenR. The package provides functions for conducting title and abstract
-screening in systematic reviews by using AI models, such as OpenAI's GPT (Generative Pre-trained Transformer) API (Application Programming Interface) models.
+screening in systematic reviews with AI models, such as OpenAI's GPT (Generative Pre-trained Transformer) API (Application Programming Interface) models.
 
 ## Test environments
 
