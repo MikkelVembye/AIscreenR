@@ -61,7 +61,7 @@ set_api_key <- function(key, env_var = "CHATGPT_KEY") {
 #'
 #'
 #' @examples
-#' if ("CHATGPT_KEY" %in% names(Sys.getenv())){
+#' \dontrun{
 #' get_api_key()
 #' }
 

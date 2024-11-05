@@ -26,7 +26,9 @@ Then write \verb{CHATGPT_KEY=[insert your api key here]} and close the \code{.Re
 Find your personal API key at \url{https://platform.openai.com/account/api-keys}.
 }
 \examples{
+\dontrun{
 get_api_key()
+}
 }
 \seealso{
 \code{\link{set_api_key}}.
