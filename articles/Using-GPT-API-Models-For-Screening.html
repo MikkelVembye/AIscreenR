@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AIscreenR</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Unreleased version">0.0.0.9999</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.0.9999</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +58,7 @@
 
       <h1>Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews</h1>
             
-            <h4 data-toc-skip class="date">2024-11-04</h4>
+            <h4 data-toc-skip class="date">2024-11-05</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/MikkelVembye/AIscreenR/blob/main/vignettes/Using-GPT-API-Models-For-Screening.Rmd" class="external-link"><code>vignettes/Using-GPT-API-Models-For-Screening.Rmd</code></a></small>
       <div class="d-none name"><code>Using-GPT-API-Models-For-Screening.Rmd</code></div>
@@ -85,11 +85,10 @@ overview of additional research on the use of GPT API models for title
 and abstract screening, see Syriani et al. <span class="citation">(<a href="#ref-Syriani2023">2023</a>, <a href="#ref-Syriani2024">2024</a>)</span>, Guo et al., <span class="citation">(<a href="#ref-Guo2024">2024</a>)</span>, and Gargari
 et al. <span class="citation">(<a href="#ref-Gargari2024">2024</a>)</span>. In a related line of research,
 Alshami et al. <span class="citation">(<a href="#ref-Alshami2023">2023</a>)</span>, Khraisha et al. <span class="citation">(<a href="#ref-Khraisha2024">2024</a>)</span>, and
-Issaiy et al. <span class="citation">(<a href="#ref-Issaiy2024">Issaiy
-et al., 2024</a>)</span> explored the use of the ChatGPT web browser
-interface for TAB screening. Based on our experience, we believe these
-two lines of research should not be conflated, as they rely on different
-GPT models and setups.</em>
+Issaiy et al. <span class="citation">(<a href="#ref-Issaiy2024">2024</a>)</span> explored the use of the ChatGPT
+web browser interface for TAB screening. Based on our experience, we
+believe these two lines of research should not be conflated, as they
+rely on different GPT models and setups.</em>
 </p>
 <p></p></span>
 </div>
@@ -141,7 +140,7 @@ R. This allows for immediate comparison once the GPT screening is
 complete and ensures humans are then not impacted/biased by the GPT
 decision.</p>
 <div class="section level2">
-<h2 id="get-started">Get started<a class="anchor" aria-label="anchor" href="#get-started"></a>
+<h2 id="get-started">Get Started<a class="anchor" aria-label="anchor" href="#get-started"></a>
 </h2>
 <p>For many reviewers, especially those unfamiliar with coding in R,
 conducting a title and abstract screening in R can seem overwhelming.
@@ -159,14 +158,15 @@ below):</p>
 <ol start="5" style="list-style-type: decimal">
 <li>Analyze the screening results.</li>
 <li>Investigate and resolve any disagreements.</li>
+<li>Conduct the full title and abstract screening.</li>
 </ol>
 <p>We will walk through each of these steps one by one in the following
 sections.</p>
 </div>
 <div class="section level2">
-<h2 id="load-and-convert-to-ris-file-data-to-a-data-frame">Load and convert to RIS file data to a data frame<a class="anchor" aria-label="anchor" href="#load-and-convert-to-ris-file-data-to-a-data-frame"></a>
+<h2 id="load-and-convert-ris-file-data-to-a-data-frame">Load and Convert RIS File Data to a Data Frame<a class="anchor" aria-label="anchor" href="#load-and-convert-ris-file-data-to-a-data-frame"></a>
 </h2>
-<p>At this stage, we expect that you have a colelction of RIS files
+<p>At this stage, we expect that you have a collection of RIS files
 containing titles and abstracts for the references you wish to screen.
 You can obtain RIS files in several ways: directly from the research
 databases, a Google Scholar search; or by exported them from your
@@ -200,23 +200,24 @@ run the screening.</p>
 <div class="section level3">
 <h3 id="convert-ris-files-to-data-frames">Convert RIS-files to data frames<a class="anchor" aria-label="anchor" href="#convert-ris-files-to-data-frames"></a>
 </h3>
-<p>Now, we are ready to conduct the first step of the screening, which
-is to load our RIS-file data into R and convert it to a data frame. This
-can be done by using <code>read_bibliography()</code> from
+<p>Now, we are ready to conduct the first step of the screening: loading
+the RIS file data into R and converting it to a data frame. This can be
+done by using <code>read_bibliography()</code> from
 <code>revtools</code>. In the below example, we use RIS-file data from a
 review regarding the effects of the FRIENDS preventive programme on
 anxiety symptoms in children and adolescents <span class="citation">(<a href="#ref-Filges2024">Filges, Smedslund, Eriksen, Birkefoss, &amp;
 Kildemoes, 2024</a>)</span>. Be aware, that this data is used for
-illustration purposes only. Thus, no hard inferences should be drawn
-from this example. In the example, we assume that the humans have
-started screening and found a bunch of relevant and irrelevant studies
-from which they can create the test data. Thus, we can load the
-RIS-files, which we downloaded from the EPPI-reviewer separately for the
-in- and excluded RIS-files. This enables us to track the human decision
-by adding a <code>human_code</code> variable, where <code>1</code> and
-<code>0</code> indicates whether a study should be in- or excluded.</p>
+illustrative purposes only. In the example, we assume that the human
+reviewers have already started screening and identified several relevant
+and irrelevant studies, which they will use to create the test data.
+Thus, we can load the RIS-files, which we downloaded from the
+EPPI-reviewer, separately for the in- and excluded RIS files. This
+allows us to track the human decision by adding a
+<code>human_code</code> variable, where <code>1</code> and
+<code>0</code> indicate whether a study is included or excluded,
+respectively.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># NOTE: Find the RIS-files behind this vignette at https://osf.io/kfbvu/</span></span>
+<code class="sourceCode R"><span><span class="co"># NOTE: Find the RIS files behind this vignette at https://osf.io/kfbvu/</span></span>
 <span></span>
 <span><span class="co"># Loading EXCLUDED studies</span></span>
 <span><span class="va">ris_dat_excl</span> <span class="op">&lt;-</span> <span class="fu">revtools</span><span class="fu">::</span><span class="fu">read_bibliography</span><span class="op">(</span><span class="st">"friends_excl.ris"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># Add the path to your RIS-file here</span></span>
@@ -271,16 +272,17 @@ by adding a <code>human_code</code> variable, where <code>1</code> and
 <div class="section level3">
 <h3 id="create-the-test-dataset">Create the test dataset<a class="anchor" aria-label="anchor" href="#create-the-test-dataset"></a>
 </h3>
-<p>As you see, we have now loaded our reference data and can construct
-the test data by random sample 150 irrelevant <span class="citation">(as
-suggested in <a href="#ref-Vembye2024_gpt">Vembye et al.,
-2024</a>)</span> and 50 relevant records with an title and abstract. For
-this purpose we use <code><a href="../reference/sample_references.html">sample_references()</a></code>. Again, this is for
-illustration purposes only, since you might not necessarily have access
-to 50 relevant records at this stage of the screening. We recommend
-finding at least 10 relevant reference before constructing the test
-data. As further described in Vembye et al. <span class="citation">(<a href="#ref-Vembye2024_gpt">2024</a>)</span>, we remove all records with
-no abstract since these can distort the accuracy of the screening.</p>
+<p>Now that we have loaded our reference data, we can construct the test
+data by randomly sampling 150 irrelevant records <span class="citation">(as suggested in <a href="#ref-Vembye2024_gpt">Vembye
+et al., 2024</a>)</span> and 50 relevant records that include both a
+title and an abstract. For this purpose we use
+<code><a href="../reference/sample_references.html">sample_references()</a></code>. Again, this is for illustration
+purposes only, as you may not yet have access to 50 relevant records at
+this stage of screening. We recommend identifying at least 10 relevant
+references before constructing the test data. As further described in
+Vembye et al. <span class="citation">(<a href="#ref-Vembye2024_gpt">2024</a>)</span>, we remove all records
+without abstracts, as these can distort the accuracy of the
+screening.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">09042024</span><span class="op">)</span></span>
 <span></span>
@@ -321,21 +323,20 @@ no abstract since these can distort the accuracy of the screening.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="handle-your-api-key">Handle your API key<a class="anchor" aria-label="anchor" href="#handle-your-api-key"></a>
+<h2 id="handle-your-api-key">Handle Your API Key<a class="anchor" aria-label="anchor" href="#handle-your-api-key"></a>
 </h2>
-<p>We now have our test data in place and can move on to the next step
-of the screening, which involves generating your API key and handle it
-in R.</p>
+<p>Now, We have our test data in place and can move on to the next step
+of the screening: generating your API key and handling it in R.</p>
 <div class="section level3">
 <h3 id="get-your-api-key">Get your API key<a class="anchor" aria-label="anchor" href="#get-your-api-key"></a>
 </h3>
 <p>Before you can use the <code>AIscreenR</code> functions to screen
 your references, you must generate your own secret API key from OpenAI.
-To do so you must first ensure that you have created an account at
-OpenAI (<em>if you have not done so at this stage, you can sign up <a href="https://auth0.openai.com/u/login/identifier?state=hKFo2SBqQjNHSlc1ejIyREpUb01hdDF2OHEzQy12NnJwWlFUN6Fur3VuaXZlcnNhbC1sb2dpbqN0aWTZIEJSOWJaamdKLWswNGlfWDQ2NER1OXJmVUNpVmVzVjZfo2NpZNkgRFJpdnNubTJNdTQyVDNLT3BxZHR3QjNOWXZpSFl6d0Q" class="external-link">here</a>).</em>
-When having an account, go to <a href="https://platform.openai.com/account/api-keys" class="external-link">https://platform.openai.com/account/api-keys</a>
+To do so, first ensure you have an OpenAI account (<em>If you have not
+created one yet, you can sign up <a href="https://auth0.openai.com/u/login/identifier?state=hKFo2SBqQjNHSlc1ejIyREpUb01hdDF2OHEzQy12NnJwWlFUN6Fur3VuaXZlcnNhbC1sb2dpbqN0aWTZIEJSOWJaamdKLWswNGlfWDQ2NER1OXJmVUNpVmVzVjZfo2NpZNkgRFJpdnNubTJNdTQyVDNLT3BxZHR3QjNOWXZpSFl6d0Q" class="external-link">here</a>).</em>
+Once you have an account, go to <a href="https://platform.openai.com/account/api-keys" class="external-link">https://platform.openai.com/account/api-keys</a>
 and press the <code>+ Create new secret key</code> button (see Figure 1
-below) and give your key a name.</p>
+below) and name your key.</p>
 <p> </p>
 <div class="figure">
 <img src="helper-stuff%2FAPI_key_pic.png" alt="*Figure 1 - Generate API key from OpenAI*" width="100%"><p class="caption">
@@ -343,28 +344,29 @@ below) and give your key a name.</p>
 </p>
 </div>
 <p> </p>
-<p>When you have generated your secret API key, remember to store it
-safely since you will not be able see it again. <strong>NOTE</strong>:
-<em>If you lose your API key, you can just generate a new one</em>.</p>
+<p>Once you have generated your secret API key, remember to store it
+safely, as you will not be able to view it again. <strong>NOTE</strong>:
+<em>If you lose your API key, you can simply generate a new
+one</em>.</p>
 </div>
 <div class="section level3">
 <h3 id="manage-your-api-key-in-r">Manage your API key in R<a class="anchor" aria-label="anchor" href="#manage-your-api-key-in-r"></a>
 </h3>
-<p>When you have retrieved your API, you could in theory add it directly
-to the <code>AIscreenR</code> functions via the <code>api_key</code>
-argument. Yet, this would be an improper way to work the API key since
-you would easily compromise your secret key. For example, your API key
-would be disclosed when sharing your codes with others, which gives them
-access to draw on your OpenAI account. Furthermore, OpenAI will cancel
-the API key if they recognize that your API key has been compromised
-(e.g., if you push it to a public GitHub page). To overcome this issue
-you have several options from here. You can either work with what we
-call a permanent or temporary solution.</p>
+<p>After retrieving your API key, you could theoretically add it
+directly to the <code>AIscreenR</code> functions via the
+<code>api_key</code> argument. However, this would be an improper way to
+work the API key, as it could easily compromise your secret key. For
+example, your API key would be exposed when sharing your code with
+others, allowing them to access your OpenAI account. Additionally,
+OpenAI will deactivate the API key if they detect that it has been
+compromised (e.g., if you push it to a public GitHub repository). To
+prevent this issue you have several options from here. You can either
+work with what we call a permanent or a temporary solution.</p>
 <div class="section level4">
 <h4 id="permanent-solution">Permanent solution<a class="anchor" aria-label="anchor" href="#permanent-solution"></a>
 </h4>
-<p>The easiest way to work with your API key is to permanently add it to
-your R environment as an environment variable. This can be achieved with
+<p>The easiest way to manage your API key is to add it permanently to
+your R environment as an environment variable. You can do this by using
 <code><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">usethis::edit_r_environ()</a></code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run code to open your .Renviron file</span></span>
@@ -379,26 +381,26 @@ your R environment as an environment variable. This can be achieved with
 <p> </p>
 <p>Thereafter, close and save the <code>.Renviron</code> file and
 restart <code>RStudio</code> (ctrl + shift + F10). From now on, the
-<code>AIscreenR</code> functions will use <code><a href="../reference/get_api_key.html">get_api_key()</a></code> to
-retrieve your API key from your R environment automatically. By using
-this approach you do not have to worry more about you API key (unless
-you update RStudio, deliberately delete the key, or get a new computer.
-Then you must repeat this process).</p>
+<code>AIscreenR</code> functions will automatically use
+<code><a href="../reference/get_api_key.html">get_api_key()</a></code> to retrieve your API key from your R
+environment. With this approach, you will not need to worry about your
+API key again—unless you update RStudio, delete the key deliberately, or
+get a new computer. In such cases, you will need to repeat this
+process.</p>
 </div>
 <div class="section level4">
 <h4 id="temporary-solution">Temporary solution<a class="anchor" aria-label="anchor" href="#temporary-solution"></a>
 </h4>
 <p>If you do not want to add you API key permanently to your R
 environment, you can use <code><a href="../reference/set_api_key.html">set_api_key()</a></code>. When executing
-<code><a href="../reference/set_api_key.html">set_api_key()</a></code>, you will see a pop-up window in which you
-can enter your API key. This will add your API key as temporary
-environment variable. Consequently, when you restart RStudio, you will
-no longer be able to find your API key in your R environment.
-Alternatively, you can pass a decrypted key to the
-<code><a href="../reference/set_api_key.html">set_api_key()</a></code>, like
+<code><a href="../reference/set_api_key.html">set_api_key()</a></code>, a pop-up window will appear where you can
+enter your API key. This will add your API key as temporary environment
+variable. Consequently, after restarting RStudio, your API key will no
+longer be present in your R environment. Alternatively, you can pass a
+decrypted key to the <code><a href="../reference/set_api_key.html">set_api_key()</a></code>, like
 <code>set_api_key(key = secret_decrypt(encrypt_key, "YOUR_SECRET_KEY_FOR_DECRYTING"))</code>.
-See the <a href="https://httr2.r-lib.org/articles/wrapping-apis.html#basics" class="external-link"><code>HTTR2</code></a>
-package for further details about this solution.  </p>
+For further details on this approach, refer to the <a href="https://httr2.r-lib.org/articles/wrapping-apis.html#basics" class="external-link"><code>HTTR2</code></a>
+package.  </p>
 <div class="figure">
 <img src="helper-stuff%2Fset_api.png" alt="*Figure 3 - Set API key*" width="100%"><p class="caption">
 <em>Figure 3 - Set API key</em>
@@ -411,19 +413,20 @@ package for further details about this solution.  </p>
 <div class="section level2">
 <h2 id="prompting-in-r">Prompting in R<a class="anchor" aria-label="anchor" href="#prompting-in-r"></a>
 </h2>
-<p>The next step involves writing one or multiple prompts that can be
-used for the screening. This can be done in several ways. You can either
-write your prompt directly in R, as illustrated below</p>
+<p>The next step involves writing one or more prompts to be used for
+screening. This can be done in several ways. You can either write your
+prompt directly in R, as illustrated below:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">prompt</span> <span class="op">&lt;-</span> <span class="st">"We are screening studies for a systematic literature review. </span></span>
-<span><span class="st">The topic of the systematic review is the effect of the FRIENDS preventive programme on reducing</span></span>
-<span><span class="st">anxiety symptoms in children and adolescents. The FRIENDS programme is a 10-session manualised </span></span>
-<span><span class="st">cognitive behavioural therapy (CBT) programme which can be used as both prevention and </span></span>
-<span><span class="st">treatment of child and youth anxiety.  The study should focus exclusively on this topic </span></span>
-<span><span class="st">and we are exclusively searching  for studies with a treatment and a comparison group. </span></span>
-<span><span class="st">For each study, I would like you to assess:  1) Is the study about the FRIENDS preventive programme?  </span></span>
+<span><span class="st">The topic of the systematic review is the effect of the FRIENDS preventive programme</span></span>
+<span><span class="st">on reducing anxiety symptoms in children and adolescents. The FRIENDS programme is a </span></span>
+<span><span class="st">10-session manualised  cognitive behavioural therapy (CBT) programme which can be </span></span>
+<span><span class="st">used as both prevention and  treatment of child and youth anxiety.  The study should </span></span>
+<span><span class="st">focus exclusively on this topic  and we are exclusively searching  for studies with </span></span>
+<span><span class="st">a treatment and a comparison group.  For each study, I would like you to assess:  </span></span>
+<span><span class="st">1) Is the study about the FRIENDS preventive programme? </span></span>
 <span><span class="st">2) Is the study estimating an effect between a treatment and control/comparison group?"</span></span></code></pre></div>
-<p>Or you can just write it in Word as shown in Figures 4.</p>
+<p>Or you can simply write it in Word, as shown in Figures 4.</p>
 <p> </p>
 <div class="figure">
 <img src="helper-stuff%2Ffriends_prompt.png" alt="*Figure 4 - Prompting in Word*" width="100%"><p class="caption">
@@ -441,11 +444,11 @@ write your prompt directly in R, as illustrated below</p>
 <span>      <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove_all</a></span><span class="op">(</span><span class="st">"\n"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="run-the-screening">Run the screening<a class="anchor" aria-label="anchor" href="#run-the-screening"></a>
+<h2 id="run-the-test-screening">Run the Test Screening<a class="anchor" aria-label="anchor" href="#run-the-test-screening"></a>
 </h2>
-<p>Now you are actually ready to conduct the title and abstract
-screening with <code><a href="../reference/tabscreen_gpt.tools.html">tabscreen_gpt()</a></code>. To make the
-<code><a href="../reference/tabscreen_gpt.tools.html">tabscreen_gpt()</a></code> running, you need to specify the following
+<p>Now we are actually ready to conduct the title and abstract screening
+with <code><a href="../reference/tabscreen_gpt.tools.html">tabscreen_gpt()</a></code>. To make the
+<code><a href="../reference/tabscreen_gpt.tools.html">tabscreen_gpt()</a></code> running, one needs to specify the following
 information:</p>
 <ol style="list-style-type: decimal">
 <li>The data with the title and abstract information.</li>
@@ -464,7 +467,7 @@ many times a study has been included across the set of screenings).</li>
 <li>Set the request per minutes.</li>
 </ol>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Get information about whether you have access to a given model and </span></span>
+<code class="sourceCode R"><span><span class="co"># Gets information about whether you have access to a given model and </span></span>
 <span><span class="co"># how many requests per minutes you are allow to send. </span></span>
 <span><span class="va">models_rpm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span><span class="st">"gpt-4o-mini"</span><span class="op">)</span></span>
 <span></span>
@@ -526,7 +529,7 @@ you can use <code>screen_error()</code>, as done below.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="analyze-screening">Analyze screening<a class="anchor" aria-label="anchor" href="#analyze-screening"></a>
+<h2 id="analyze-screening">Analyze Screening<a class="anchor" aria-label="anchor" href="#analyze-screening"></a>
 </h2>
 <p>We have now conducted the test screening and want to assess whehter
 it is viable to use the <code>gpt-4o-mini</code> model as our second
@@ -594,7 +597,7 @@ change.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="check-and-resolve-disagreements">Check and resolve disagreements<a class="anchor" aria-label="anchor" href="#check-and-resolve-disagreements"></a>
+<h2 id="check-and-resolve-disagreements">Check and Resolve Disagreements<a class="anchor" aria-label="anchor" href="#check-and-resolve-disagreements"></a>
 </h2>
 <p>Even though, the <code>gpt-4o-mini</code> model yielded a highly
 acceptable screening performance, it is relevant to assess the reasons
@@ -689,7 +692,7 @@ studies could just be added to the pool of included studies.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="approximate-price-of-full-scale-screening">Approximate price of full-scale screening<a class="anchor" aria-label="anchor" href="#approximate-price-of-full-scale-screening"></a>
+<h2 id="approximate-price-of-full-scale-screening">Approximate Price of Full-Scale Screening<a class="anchor" aria-label="anchor" href="#approximate-price-of-full-scale-screening"></a>
 </h2>
 <p>When you have decided to use a GPT model as your second screener, you
 would probably like know how much you have to pay for the full
@@ -730,7 +733,40 @@ with the <code>gpt-4o-mini</code> model, and it would still be half the
 price of using <code>gpt-4</code>.</p>
 </div>
 <div class="section level2">
-<h2 id="future-package-updates">Future package updates<a class="anchor" aria-label="anchor" href="#future-package-updates"></a>
+<h2 id="conduct-the-full-screening">Conduct the Full Screening<a class="anchor" aria-label="anchor" href="#conduct-the-full-screening"></a>
+</h2>
+<p>You are now ready to run the full screening! In this example, it can
+be conducted by substituting the <code>test_dat</code> with
+<code>all_dat</code> in the code used to screen the test data.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Set parallel plan</span></span>
+<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span><span class="op">)</span> </span>
+<span></span>
+<span></span>
+<span><span class="co"># NOT RUN</span></span>
+<span><span class="va">result_object</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu"><a href="../reference/tabscreen_gpt.tools.html">tabscreen_gpt</a></span><span class="op">(</span></span>
+<span>    data <span class="op">=</span> <span class="va">all_dat</span>, <span class="co"># RIS-file data created above </span></span>
+<span>    prompt <span class="op">=</span> <span class="va">prompt</span>, <span class="co"># The prompt made above</span></span>
+<span>    studyid <span class="op">=</span> <span class="va">studyid</span>, <span class="co"># Name of variable containing study IDs</span></span>
+<span>    title <span class="op">=</span> <span class="va">title</span>, <span class="co"># Name of variable containing titles</span></span>
+<span>    abstract <span class="op">=</span> <span class="va">abstract</span>, <span class="co"># Name of variable containing abstracts</span></span>
+<span>    model <span class="op">=</span> <span class="st">"gpt-4o-mini"</span>, <span class="co"># Model choice</span></span>
+<span>    reps <span class="op">=</span> <span class="fl">10</span>, <span class="co"># Using multiple screenings with the cheap gpt-4o-mini model</span></span>
+<span>    rpm <span class="op">=</span> <span class="va">models_rpm</span><span class="op">$</span><span class="va">requests_per_minute</span> <span class="co"># Requests per minutes retrieved from the above object</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $0.2237.</span></span>
+<span><span class="co">#&gt; Progress: ───────────────────────────────────────────────────────────────── 100%</span></span>
+<span></span>
+<span><span class="co"># Back to the sequential plan</span></span>
+<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">sequential</span><span class="op">)</span></span></code></pre></div>
+<p>To steer the screening process when having a large collection of
+RIS-files, it can be advantageous to split the full data into minor
+batches. For example one could screen batches of 1000-2000 references at
+a time. <code><a href="https://rdrr.io/r/base/split.html" class="external-link">base::split()</a></code> can be used for this purpose.</p>
+</div>
+<div class="section level2">
+<h2 id="future-package-updates">Future Package Updates<a class="anchor" aria-label="anchor" href="#future-package-updates"></a>
 </h2>
 <p>In this vignette, we have shown the first step of conducting an title
 and abstract screening with a GPT API model. In future versions of the
