@@ -518,10 +518,10 @@ as below.</p>
 <div class="section level3">
 <h3 id="screen-failed-requests">Screen failed requests<a class="anchor" aria-label="anchor" href="#screen-failed-requests"></a>
 </h3>
-<p>If might happen that you experience that some of your screenings
-requests failed for some transient reason, for example because the
-server was overloaded or something else. To recover these failed request
-you can use <code>screen_error()</code>, as done below.</p>
+<p>If might happen that you experience that some of your screening
+requests failed for some transient reasons, such as server overload or
+other issues. To recover these failed requests, you can use
+<code>screen_error()</code>, as shown below.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result_object</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">result_object</span> <span class="op">|&gt;</span> </span>
@@ -531,9 +531,9 @@ you can use <code>screen_error()</code>, as done below.</p>
 <div class="section level2">
 <h2 id="analyze-screening">Analyze Screening<a class="anchor" aria-label="anchor" href="#analyze-screening"></a>
 </h2>
-<p>We have now conducted the test screening and want to assess whehter
+<p>We have now completed the test screening and want to assess whether
 it is viable to use the <code>gpt-4o-mini</code> model as our second
-screener. For the purpose, we can use the
+screener. For the purpose, we can use
 <code><a href="../reference/screen_analyzer.html">screen_analyzer()</a></code>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">screen_performance</span> <span class="op">&lt;-</span> </span>
@@ -548,31 +548,30 @@ screener. For the purpose, we can use the
 <div class="section level3">
 <h3 id="assess-results-via-a-benchmark-scheme">Assess results via a benchmark scheme<a class="anchor" aria-label="anchor" href="#assess-results-via-a-benchmark-scheme"></a>
 </h3>
-<p>But you might ask, how do we assess whether the performances for of
-the model is acceptable as a second screener? To answer this question,
-we have suggested to assess this via benchmarking. In Vembye et al.
-<span class="citation">(<a href="#ref-Vembye2024_gpt">2024</a>)</span>,
-we developed a benchmark scheme based on typical duplicate human
-screening performance from 22 high-quality reviews. This scheme can be
-found in Figure 5.</p>
+<p>But you might ask, how to assess whether the performances for of the
+model is acceptable as a second screener? To answer this question, we
+recommend assessing it through benchmarking. In Vembye et al. <span class="citation">(<a href="#ref-Vembye2024_gpt">2024</a>)</span>, we
+developed a benchmark scheme based on typical duplicate human screening
+performance from 22 high-quality reviews. This scheme is presented in
+Figure 5.</p>
 <div class="figure">
 <img src="helper-stuff%2Fbenchmark_scheme.png" alt="*Figure 5 - Generic benchmark scheme from Vembye et al. (2024)*" width="100%"><p class="caption">
 <em>Figure 5 - Generic benchmark scheme from Vembye et al. (2024)</em>
 </p>
 </div>
 <p>By using this benchmark scheme, we see that the
-<code>gpt-4o-mini</code> model performs on least on par with typically
-human screening performances. Therefore, the benchmark scheme suggests
-that the model is suitable as a full seconder of the review.</p>
+<code>gpt-4o-mini</code> model performs on least on par withtypical
+human screening performance. Therefore, the benchmark scheme suggests
+that the model is suitable as a full second screener for the review.</p>
 </div>
 <div class="section level3">
 <h3 id="make-judgments-over-multiple-screenings">Make judgments over multiple screenings<a class="anchor" aria-label="anchor" href="#make-judgments-over-multiple-screenings"></a>
 </h3>
 <p>Since we have conducted multiple (i.e., 10) screenings with the
-<code>gpt-4o-mini</code> model, we can change our inclusion decision
-based on the number of times a study record has been included across the
-10 screening. To get this information, one can use the following
-code.</p>
+<code>gpt-4o-mini</code> model, we can adjust our inclusion decision
+based on the number of times a study record has been included across
+these 10 screenings. To obtain this information, you can use the
+following code:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">incl_dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">screen_performance</span>, <span class="st">"p_incl_data"</span><span class="op">)</span></span>
 <span><span class="va">incl_dist</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">recall</span>, <span class="va">specificity</span>, <span class="va">criteria</span><span class="op">)</span></span>
@@ -589,10 +588,10 @@ code.</p>
 <span><span class="co">#&gt; 8 gpt-4o-mini   0.88       0.987 Studies have been included in at least 80% of the 10 screenings.</span></span>
 <span><span class="co">#&gt; 9 gpt-4o-mini   0.84       0.987 Studies have been included in at least 90% of the 10 screenings.</span></span>
 <span><span class="co">#&gt;10 gpt-4o-mini   0.74       0.987 Studies have been included in all of the 10 screenings.   </span></span></code></pre></div>
-<p>From these results, it appears that we can increase the recall of the
-model if we include a record when it has been included in at least 1 of
+<p>From these results, it appears that we can increase the model’s
+recall if we include a record when it has been included in at least 1 of
 out of the 10 screenings. In this case, we would not lose anything by
-doing so, since the specific measure is rarely impacted by this
+doing so, since the specificity measure is rarely affected by this
 change.</p>
 </div>
 </div>
@@ -600,17 +599,17 @@ change.</p>
 <h2 id="check-and-resolve-disagreements">Check and Resolve Disagreements<a class="anchor" aria-label="anchor" href="#check-and-resolve-disagreements"></a>
 </h2>
 <p>Even though, the <code>gpt-4o-mini</code> model yielded a highly
-acceptable screening performance, it is relevant to assess the reasons
-for disagreements between the human(s) and the GPT model. This
-information can be useful to further develop ones prompt if for example
-it appears that the GPT model misinterpret some conceptions.</p>
+acceptable screening performance, it is useful to assess the reasons for
+disagreements between the human reviewers and the GPT model. This
+information can help refine your prompt(s), especially if it appears
+that the GPT model is misinterpreting certain concepts.</p>
 <div class="section level3">
-<h3 id="getting-detailed-descriptions-for-disaggrement-records">Getting detailed descriptions for disaggrement records<a class="anchor" aria-label="anchor" href="#getting-detailed-descriptions-for-disaggrement-records"></a>
+<h3 id="get-detailed-descriptions-for-disaggrement-records">Get detailed descriptions for disaggrement records<a class="anchor" aria-label="anchor" href="#get-detailed-descriptions-for-disaggrement-records"></a>
 </h3>
-<p>To get detailed descriptions of GPTs reasons for exclusion
-(alternatively inclusion), one can set
-<code>decision_description = TRUE</code>, and run the screening again,
-so done below.</p>
+<p>To get detailed descriptions of GPT’s reasons for exclusion
+(alternatively inclusion), you can set
+<code>decision_description = TRUE</code> and run the screening again, as
+shown below.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">disagree_dat</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">result_object</span><span class="op">$</span><span class="va">answer_data_aggregated</span> <span class="op">|&gt;</span> </span>
@@ -635,16 +634,16 @@ so done below.</p>
 <span><span class="co">#&gt; Progress: ───────────────────────────────────────────────────────────────── 100%</span></span>
 <span></span>
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">sequential</span><span class="op">)</span></span></code></pre></div>
-<p>For now, we recommend only to get detailed description for records
-where the human(s) and GPT disagree because it can substantially
-increases the cost of the screening with an unknown amount to get this
-type of information. However, it is questionable how substantial this
-issue is with the <code>gpt-4o-mini</code> model.</p>
+<p>For now, we recommend obtaining detailed descriptions only for
+records where there is disagreement between the human reviewers and GPT,
+as this can significantly increase the screening cost. However, However,
+with the <code>gpt-4o-mini</code> model, the additional cost may be less
+substantial.</p>
 <div class="section level4">
 <h4 id="example-of-detailed-answer">Example of detailed answer<a class="anchor" aria-label="anchor" href="#example-of-detailed-answer"></a>
 </h4>
-<p>Here is an example of an abstract that was included by the humans and
-excluded by GPT.</p>
+<p>Here is an example of an abstract that was included by the human
+reviewers and excluded by GPT.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Example of abstract included by the human and excluded by gpt-4o-mini</span></span>
 <span><span class="va">result_object_detail</span><span class="op">$</span><span class="va">answer_data</span><span class="op">$</span><span class="va">abstract</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
@@ -680,13 +679,13 @@ excluded by GPT.</p>
 <span><span class="co">#&gt; specifically measuring the FRIENDS programme's effectiveness."</span></span></code></pre></div>
 <p>As can be seen from this answer, it is reasonable why the title and
 abstract has not been included by GPT since it is stated in the abstract
-that the intervention was only informed by the Fun Friends program, but
-is different from it. Although, this is not a clear-cut example, it
-indicates that it is always important also to test that a low recall
-measure is not driven by insufficient human screening.</p>
-<p><em>NOTE</em>: When re-screening disagreements, it might happen (due
-to uncertainty in the models) that some (near miss) studies will be
-included, although they were excluded in the first screening. These
+that the intervention was only informed by the Fun Friends program but
+is distinct from it. Although, this is not a clear-cut example, it
+highlights tthe importance of ensuring that a low recall measure is not
+driven by insufficient human screening.</p>
+<p><em>NOTE</em>: When re-screening disagreements, it may happen (due to
+uncertainty in the models) that some near-included studies will be
+included, even though they were excluded in the initial screening. These
 studies could just be added to the pool of included studies.</p>
 </div>
 </div>
@@ -695,9 +694,8 @@ studies could just be added to the pool of included studies.</p>
 <h2 id="approximate-price-of-full-scale-screening">Approximate Price of Full-Scale Screening<a class="anchor" aria-label="anchor" href="#approximate-price-of-full-scale-screening"></a>
 </h2>
 <p>When you have decided to use a GPT model as your second screener, you
-would probably like know how much you have to pay for the full
-screening. This information can be obtained by using
-<code><a href="../reference/approximate_price_gpt.html">approximate_price_gpt()</a></code>.</p>
+will likely want to know the cost of the full screening. You can obtain
+this information by using <code><a href="../reference/approximate_price_gpt.html">approximate_price_gpt()</a></code>.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># All ris-file data</span></span>
 <span><span class="va">all_dat</span> <span class="op">&lt;-</span> </span>
@@ -727,17 +725,17 @@ screening. This information can be obtained by using
 <span><span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;            &lt;dbl&gt;              &lt;dbl&gt;               &lt;dbl&gt;              &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt; 1 Prompt 1 gpt-4o-mini         10               2.99               0.111               3.11</span></span>
 <span><span class="co">#&gt; 2 Prompt 1 gpt-4                1              59.9                1.11               61.0  </span></span></code></pre></div>
-<p>When looking at the price, it is clear why one wants to prioritize
-the use of <code>gpt-4o mini</code>. One could conduct 100 screenings
-with the <code>gpt-4o-mini</code> model, and it would still be half the
-price of using <code>gpt-4</code>.</p>
+<p>When examining the price, it becomes clear why prioritizing the use
+of <code>gpt-4o-mini</code> is beneficial. You could conduct 100
+screenings with the <code>gpt-4o-mini</code> model, and it would still
+cost only half as much as using <code>gpt-4</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="conduct-the-full-screening">Conduct the Full Screening<a class="anchor" aria-label="anchor" href="#conduct-the-full-screening"></a>
 </h2>
-<p>You are now ready to run the full screening! In this example, it can
-be conducted by substituting the <code>test_dat</code> with
-<code>all_dat</code> in the code used to screen the test data.</p>
+<p>You are now ready to run the full screening! In this example, you can
+do so by substituting <code>test_dat</code> with <code>all_dat</code> in
+the code used to screen the test data, as shown below</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Set parallel plan</span></span>
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span><span class="op">)</span> </span>
@@ -760,25 +758,26 @@ be conducted by substituting the <code>test_dat</code> with
 <span></span>
 <span><span class="co"># Back to the sequential plan</span></span>
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">sequential</span><span class="op">)</span></span></code></pre></div>
-<p>To steer the screening process when having a large collection of
-RIS-files, it can be advantageous to split the full data into minor
-batches. For example one could screen batches of 1000-2000 references at
-a time. <code><a href="https://rdrr.io/r/base/split.html" class="external-link">base::split()</a></code> can be used for this purpose.</p>
+<p>To steer the screening process when dealing with a large collection
+of RIS files, it can be beneficial to split the full dataset into
+smaller batches. For example one could screen batches of 1000-2000
+references at a time. You can use <code><a href="https://rdrr.io/r/base/split.html" class="external-link">base::split()</a></code> for this
+purpose.</p>
 </div>
 <div class="section level2">
 <h2 id="future-package-updates">Future Package Updates<a class="anchor" aria-label="anchor" href="#future-package-updates"></a>
 </h2>
-<p>In this vignette, we have shown the first step of conducting an title
-and abstract screening with a GPT API model. In future versions of the
-package, we will add further articles, showing:</p>
+<p>In this vignette, we have demonstrated how to conduct a title and
+abstract screening with a GPT API model. In future versions of the
+package, we plan to add additional articles that will cover:</p>
 <ol style="list-style-type: decimal">
 <li>How to run the full screening of all titles and abstracts most
 efficiently.</li>
 <li>How to fine-tune a model.</li>
-<li>How to use multiple-prompt screening, that is making one prompt per
-inclusion criteria.</li>
-<li>New functions to assess and resolve disagreements between human and
-GPT decisions.</li>
+<li>How to use multiple-prompt screening, i.e., making one prompt per
+inclusion criteria instead of adding all to the same prompt.</li>
+<li>A new report functions to assess and resolve disagreements between
+human and GPT decisions.</li>
 </ol>
 </div>
 <div class="section level2">
