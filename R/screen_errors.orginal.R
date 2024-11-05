@@ -88,6 +88,9 @@ screen_errors.chatgpt <- function(
     after
 ){
 
+
+  lifecycle::deprecate_warn("0.1.0", "screen_errors.chatgpt()", "screen_errors.gpt()")
+
   if (!"error_data" %in% names(object)){
 
     res <- object

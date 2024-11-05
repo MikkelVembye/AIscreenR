@@ -12,6 +12,7 @@ Text screening with AI models, including title and abstract screening with large
 Useful links:
 \itemize{
   \item \url{https://mikkelvembye.github.io/AIscreenR/}
+  \item \url{https://github.com/MikkelVembye/AIscreenR}
   \item Report bugs at \url{https://github.com/MikkelVembye/AIscreenR/issues}
 }
 

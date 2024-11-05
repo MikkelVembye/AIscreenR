@@ -235,6 +235,7 @@ tabscreen_gpt.original <- function(
   force = FALSE
   ){
 
+  lifecycle::deprecate_warn("0.1.0", "tabscreen_gpt.original()", "tabscreen_gpt.tools()")
 
   if (as.Date(Sys.time()) > as.Date("2024-09-13") && model == "gpt-3.5-turbo-0613"){
     stop("The gpt-3.5-turbo-0613 model has deprecated and can no longer be used.")
