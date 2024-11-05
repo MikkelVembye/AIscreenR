@@ -1,4 +1,4 @@
-#' Ris-file data from Functional Family Therapy (FFT) systematic review
+#' RIS file data from Functional Family Therapy (FFT) systematic review
 #'
 #' Bibliometric toy data from a systematic review regarding
 #' Functional Family Therapy (FFT) for Young People in Treatment for

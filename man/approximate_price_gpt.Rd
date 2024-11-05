@@ -34,8 +34,8 @@ Find available model at
 \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.}
 
 \item{reps}{Numerical value indicating the number of times the same
-question should be sent to ChatGPT. This can be useful to test consistency
-between answers. Default is \code{1} but when using 3.5 models, we recommend setting this
+question should be sent to the GPT server. This can be useful to test consistency
+between answers. Default is \code{1} but when using gpt-3.5-turbo or gpt-4o-mini models, we recommend setting this
 value to \code{10}.}
 
 \item{top_p}{'An alternative to sampling with temperature, called nucleus sampling,
@@ -57,9 +57,9 @@ components:
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}\if{html}{\out{<br>}}
 \if{html}{\out{<br>}}
-This function supports the approximation of the price of the total title and abstract
-screening with OpenAI's GPT API models. The function only provide approximately accurate price
-estimates for screenings. When detailed descriptions are used,
+This function supports the approximation of the price of title and abstract
+screenings when using OpenAI's GPT API models. The function only provide approximately accurate price
+estimates. When detailed descriptions are used,
 this will increase the completion tokens with an unknown amount.
 }
 \examples{

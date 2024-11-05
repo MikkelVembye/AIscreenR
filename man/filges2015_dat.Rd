@@ -3,7 +3,7 @@
 \docType{data}
 \name{filges2015_dat}
 \alias{filges2015_dat}
-\title{Ris-file data from Functional Family Therapy (FFT) systematic review}
+\title{RIS file data from Functional Family Therapy (FFT) systematic review}
 \format{
 A \code{tibble} with 270 rows/studies and 6 variables/columns
 

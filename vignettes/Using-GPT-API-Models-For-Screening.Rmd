@@ -378,7 +378,7 @@ But you might ask, how to assess whether the performances for of the model is ac
 knitr::include_graphics("helper-stuff/benchmark_scheme.png")
 ```
 
-By using this benchmark scheme, we see that the `gpt-4o-mini` model performs on least on par withtypical human screening performance. Therefore, the benchmark scheme suggests that the model is suitable as a full second screener for the review.
+By using this benchmark scheme, we see that the `gpt-4o-mini` model performs on least on par with typical human screening performance. Therefore, the benchmark scheme suggests that the model is suitable as a full second screener for the review.
 
 ## Make judgments over multiple screenings
 Since we have conducted multiple (i.e., 10) screenings with the `gpt-4o-mini` model, we can adjust our inclusion decision based on the number of times a study record has been included across these 10 screenings. To obtain this information, you can use the following code:
@@ -406,7 +406,7 @@ From these results, it appears that we can increase the model's recall if we inc
 
 Even though, the `gpt-4o-mini` model yielded a highly acceptable screening performance, it is useful to assess the reasons for disagreements between the human reviewers and the GPT model. This information can help refine your prompt(s), especially if it appears that the GPT model is misinterpreting certain concepts. 
 
-## Get detailed descriptions for disaggrement records
+## Get detailed descriptions for disagreement records
 
 To get detailed descriptions of GPT's reasons for exclusion (alternatively inclusion), you can set `decision_description = TRUE` and run the screening again, as shown below.
 
@@ -467,7 +467,7 @@ result_object_detail$answer_data$abstract[1]
 #> (PsycInfo Database Record (c) 2022 APA, all rights reserved)"
 ```
 
-and this is GPTs detailed response.
+and this is GPT's detailed response.
 ```{r}
 # Example of explanation for exclusion 
 # Seems reasonable why the records was thrown out by gpt.
@@ -478,7 +478,7 @@ result_object_detail$answer_data$detailed_description[1]
 #> Additionally, it assesses a general anxiety intervention rather than 
 #> specifically measuring the FRIENDS programme's effectiveness."
 ```
-As can be seen from this answer, it is reasonable why the title and abstract has not been included by GPT since it is stated in the abstract that the intervention was only informed by the Fun Friends program but is distinct from it. Although, this is not a clear-cut example, it highlights tthe importance of ensuring that a low recall measure is not driven by insufficient human screening.  
+As can be seen from this answer, it is reasonable why the title and abstract has not been included by GPT since it is stated in the abstract that the intervention was only informed by the Fun Friends program but is distinct from it. Although, this is not a clear-cut example, it highlights the importance of ensuring that a low recall measure is not driven by insufficient human screening.  
 
 *NOTE*: When re-screening disagreements, it may happen (due to uncertainty in the models) that some near-included studies will be included,  even though they were excluded in the initial screening. These studies could just be added to the pool of included studies. 
 

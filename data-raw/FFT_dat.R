@@ -48,6 +48,7 @@ write_bibliography(tutorial_ris_dat_excl, "inst/extdata/excl_tutorial.ris", form
 #####################
 # Included references
 #####################
+
 include_ris_raw <- revtools::read_bibliography("data-raw/raw data/FFT_include.ris") |>
   suppressWarnings()
 

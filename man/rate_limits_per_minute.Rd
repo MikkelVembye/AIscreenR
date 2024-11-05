@@ -16,7 +16,7 @@ Default is \code{"gpt-4o-mini"}. Can take multiple values.
 Find available model at
 \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.}
 
-\item{AI_tool}{Character string specifying the AI tool from which the api is
+\item{AI_tool}{Character string specifying the AI tool from which the API is
 issued. Default is \code{"gpt"}.}
 
 \item{api_key}{Numerical value with your personal API key. Default setting draws
@@ -34,7 +34,7 @@ the number of requests and tokens per minute.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}\if{html}{\out{<br>}}
 \if{html}{\out{<br>}}
-\code{rate_limits_per_minute} reports the rate limits for a given api.
+\code{rate_limits_per_minute} reports the rate limits for a given API model.
 The function returns the available requests per minute (RPM) as well as tokens per minute (TPM).
 Find general information at
 \url{https://platform.openai.com/docs/guides/rate-limits/overview}.
