@@ -2,7 +2,7 @@ url: https://mikkelvembye.github.io/AIscreenR/
 template:
   bootstrap: 5
 development:
-  mode: auto
+  mode: release
 
 reference:
   - title: "Screen with GPT API models"
