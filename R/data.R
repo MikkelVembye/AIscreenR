@@ -28,7 +28,7 @@
 "filges2015_dat"
 
 
-#' Model prize data (last updated October 28, 2024)
+#' Model prize data (last updated November 5, 2024)
 #'
 #' Data set containing input and output prizes for all OpenAI's GPT API models.
 #'

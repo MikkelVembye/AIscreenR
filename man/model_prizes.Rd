@@ -3,7 +3,7 @@
 \docType{data}
 \name{model_prizes}
 \alias{model_prizes}
-\title{Model prize data (last updated October 28, 2024)}
+\title{Model prize data (last updated November 5, 2024)}
 \format{
 A \code{data.frame} containing 15 rows/models and 3 variables/columns
 

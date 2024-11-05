@@ -54,12 +54,12 @@ At this point, you might ask, why use GPT API models via R instead of simply usi
   5. When using the `gpt-4o-mini`, it is often cheaper than subscribing to ChatGPT plus. 
   6. Research suggest that GPT API models and the ChatGPT yield notably different screening performance, with the latter proving insufficient as an independent second screener. 
 
-That said, we would also like to emphasize that screening with the GPT API models should be conducted carefully and always be assisted by humans (human-in-the-loop). Consequently, we do not recommend to use the a GPT API model as a single screener, unless this an absolutely final solution. When using a GPT API model as the second screener, we also recommend completing the human screening before uploading RIS-file(s) to R. This allows for immediate comparison once the GPT screening is complete and ensures humans are then not impacted/biased by the GPT decision.
+That said, we would also like to emphasize that screening with the GPT API models should be conducted carefully and always be assisted by humans (human-in-the-loop). Consequently, we do not recommend to use the a GPT API model as a single screener, unless this an absolutely final solution. When using a GPT API model as the second screener, we also recommend completing the human screening before uploading RIS file(s) to R. This allows for immediate comparison once the GPT screening is complete and ensures humans are then not impacted/biased by the GPT decision.
 
 # Get Started
 For many reviewers, especially those unfamiliar with coding in R, conducting a title and abstract screening in R can seem overwhelming. However, it’s important to emphasize that running your first screening only requires a few relatively simple steps:
 
-  1. Load and convert your RIS-file data to a data frame.
+  1. Load and convert your RIS file data to a data frame.
   2. Handle your API key (this is only necessary the first time you screen).
   3. Make one or multiple prompts.
   4. Run the screening.
@@ -80,7 +80,7 @@ To get started, we first load all R package needed to construct and run the scre
 ```{r, eval = FALSE, warning=FALSE, message=FALSE}
 # Loading packages 
 library(AIscreenR) # Used to screen and calculate gpt vs. human performance
-library(revtools)  # Used to load RIS-files
+library(revtools)  # Used to load RIS files
 library(tibble)    # Used to work with tibbles
 library(dplyr)     # Used to manipulate data
 library(purrr)     # For loops 
@@ -88,14 +88,14 @@ library(usethis)   # Used to add the API key the R environment (only relevant th
 library(future)    # Used to conduct screenings in parallel
 ```
 
-## Convert RIS-files to data frames
-Now, we are ready to conduct the first step of the screening: loading the RIS file data into R and converting it to a data frame. This can be done by using `read_bibliography()` from `revtools`. In the below example, we use RIS-file data from a review regarding the effects of the FRIENDS preventive programme on anxiety symptoms in children and adolescents [@Filges2024]. Be aware, that this data is used for illustrative purposes only. In the example, we assume that the human reviewers have already started screening and identified several relevant and irrelevant studies, which they will use to create the test data. Thus, we can load the RIS-files, which we downloaded from the EPPI-reviewer, separately for the in- and excluded RIS files. This allows us to track the human decision by adding a `human_code` variable, where `1` and `0` indicate whether a study is included or excluded, respectively.
+## Convert RIS files to data frames
+Now, we are ready to conduct the first step of the screening: loading the RIS file data into R and converting it to a data frame. This can be done by using `read_bibliography()` from `revtools`. In the below example, we use RIS file data from a review regarding the effects of the FRIENDS preventive programme on anxiety symptoms in children and adolescents [@Filges2024]. Be aware, that this data is used for illustrative purposes only. In the example, we assume that the human reviewers have already started screening and identified several relevant and irrelevant studies, which they will use to create the test data. Thus, we can load the RIS files, which we downloaded from the EPPI-reviewer, separately for the in- and excluded RIS files. This allows us to track the human decision by adding a `human_code` variable, where `1` and `0` indicate whether a study is included or excluded, respectively.
 
 ```{r}
 # NOTE: Find the RIS files behind this vignette at https://osf.io/kfbvu/
 
 # Loading EXCLUDED studies
-ris_dat_excl <- revtools::read_bibliography("friends_excl.ris") |> # Add the path to your RIS-file here
+ris_dat_excl <- revtools::read_bibliography("friends_excl.ris") |> # Add the path to your RIS file here
   suppressWarnings() |> 
   as_tibble() |>
   select(author, eppi_id, title, abstract) |> # Using only relevant variables
@@ -284,13 +284,13 @@ Now we are actually ready to conduct the title and abstract screening with `tabs
 
  1. The data with the title and abstract information.
  2. The prompt(s).
- 3. The variable names of variables containing the titles and abstracts.
+ 3. The names of the variables containing the titles and abstracts.
  4. The model(s) you want to use for screening. 
  
 Optional
 
  5. The variable name of the variable containing the study IDs.
- 6. The number of screenings you want to run with the given model (Default is `1` but with cheap models it can be advantageous to conduct multiple screenings and make inclusion judgments based on how many times a study has been included across the set of screenings).
+ 6. The number of screenings you want to run with the given model (Default is `1` but with cheap models it can be advantageous to conduct multiple screenings and make inclusion judgments based on how many times a study has been included across the given number of screenings).
  7. Set the request per minutes.
 
 ```{r, message=FALSE, eval=FALSE}
@@ -303,7 +303,7 @@ plan(multisession)
 
 result_object <- 
   tabscreen_gpt(
-    data = test_dat, # RIS-file data created above 
+    data = test_dat, # RIS file data created above 
     prompt = prompt, # The prompt made above
     studyid = studyid, # Name of variable containing study IDs
     title = title, # Name of variable containing titles
@@ -348,7 +348,7 @@ result_object$answer_data_aggregated |>
 
 ## Screen failed requests
 
-If might happen that you experience that some of your screening requests failed for some transient reasons, such as server overload or other issues. To recover these failed requests, you can use `screen_error()`, as shown below. 
+It may happen that you experience that some of your screening requests failed for some transient reasons, such as server overload or other issues. To recover these failed requests, you can use `screen_errors()`, as shown below. 
 
 ```{r, eval=FALSE}
 result_object <- 
@@ -487,9 +487,9 @@ As can be seen from this answer, it is reasonable why the title and abstract has
 When you have decided to use a GPT model as your second screener, you will likely want to know the cost of the full screening. You can obtain this information by using `approximate_price_gpt()`.
 
 ```{r, eval = FALSE}
-# All ris-file data
+# All RIS file data
 all_dat <- 
-  bind_rows(ris_dat_excl, ris_dat_incl) |> # Use RIS-file data here
+  bind_rows(ris_dat_excl, ris_dat_incl) |> # Use RIS file data here
   filter(!is.na(abstract)) |> # Only screen studies with an abstract
   mutate(studyid = 1:n())
 
@@ -530,7 +530,7 @@ plan(multisession)
 # NOT RUN
 result_object <- 
   tabscreen_gpt(
-    data = all_dat, # RIS-file data created above 
+    data = all_dat, # RIS file data created above 
     prompt = prompt, # The prompt made above
     studyid = studyid, # Name of variable containing study IDs
     title = title, # Name of variable containing titles

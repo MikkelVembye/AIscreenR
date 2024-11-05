@@ -4,9 +4,9 @@
 #' @description
 #' `r lifecycle::badge("experimental")`<br>
 #' <br>
-#' This function supports the approximation of the price of the total title and abstract
-#' screening with OpenAI's GPT API models. The function only provide approximately accurate price
-#' estimates for screenings. When detailed descriptions are used,
+#' This function supports the approximation of the price of title and abstract
+#' screenings when using OpenAI's GPT API models. The function only provide approximately accurate price
+#' estimates. When detailed descriptions are used,
 #' this will increase the completion tokens with an unknown amount.
 #'
 #' @template common-arg
@@ -15,8 +15,8 @@
 #'   Find available model at
 #'   \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.
 #' @param reps Numerical value indicating the number of times the same
-#'   question should be sent to ChatGPT. This can be useful to test consistency
-#'   between answers. Default is `1` but when using 3.5 models, we recommend setting this
+#'   question should be sent to the GPT server. This can be useful to test consistency
+#'   between answers. Default is `1` but when using gpt-3.5-turbo or gpt-4o-mini models, we recommend setting this
 #'   value to `10`.
 #' @param top_p 'An alternative to sampling with temperature, called nucleus sampling,
 #'   where the model considers the results of the tokens with top_p probability mass.

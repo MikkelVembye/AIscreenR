@@ -27,7 +27,7 @@
 #'   from the original screening conducted with [tabscreen_gpt()] will be used.
 #' @param ... Further argument to pass to the request body. See \url{https://platform.openai.com/docs/api-reference/chat/create}.
 #'  If used in the original screening in [tabscreen_gpt()], the argument(s)
-#'  must be specified again here.
+#'  must be specified here again.
 #'
 #' @return An object of class `'gpt'` or `'chatgpt'` similar to the object returned by [tabscreen_gpt()].
 #' See documentation for [tabscreen_gpt()].

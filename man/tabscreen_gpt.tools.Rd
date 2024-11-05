@@ -109,8 +109,8 @@ the title and abstract screening in parallel. Default is \code{TRUE}.}
 
 \item{decision_description}{Logical indicating whether a detailed description should follow
 the decision made by GPT. Default is \code{FALSE}. When conducting large-scale screening,
-we generally recommend not using this feature since it will increase the cost of the
-screening substantially. We generally recommend using it when encountering disagreements between GPT and
+we generally recommend not using this feature as it will substantially increase the cost of the
+screening. We generally recommend using it when encountering disagreements between GPT and
 human decisions.}
 
 \item{messages}{Logical indicating whether to print messages embedded in the function.
@@ -192,8 +192,8 @@ that is 1 for inclusion and 0 for exclusion. 1.1 decision are coded equal to 1 i
 \bold{n} \tab \code{integer} \tab indicating iteration ID. Is only different from 1, when \code{reps > 1}.  \cr
 }
 \if{html}{\out{<br>}}
-If any requests failed to reach the server, the \code{gpt} object contains an
-error dataset (\code{error_data}) having the same variables as \code{answer_data}
+If any requests failed, the \code{gpt} object contains an
+error dataset (\code{error_data}) containing the same variables as \code{answer_data}
 but with failed request references only.\if{html}{\out{
 <br>
 }}

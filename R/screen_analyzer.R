@@ -32,11 +32,11 @@
 #' \tabular{lll}{
 #'  \bold{promptid} \tab \code{integer} \tab indicating the prompt ID. \cr
 #'  \bold{model} \tab \code{character}   \tab indicating the specific gpt-model used. \cr
-#'  \bold{reps}  \tab \code{integer}  \tab indicating the number of times the same question was sent to ChatGPT. \cr
+#'  \bold{reps}  \tab \code{integer}  \tab indicating the number of times the same question was sent to GPT server. \cr
 #'  \bold{top_p} \tab \code{numeric}  \tab indicating the applied top_p. \cr
 #'  \bold{n_screened} \tab \code{integer} \tab indicating the number of screened references. \cr
 #'  \bold{n_missing} \tab \code{numeric} \tab indicating the number of missing responses. \cr
-#'  \bold{n_refs} \tab \code{integer} \tab indicating the number of references expected to be screened for the given condition. \cr
+#'  \bold{n_refs} \tab \code{integer} \tab indicating the total number of references expected to be screened for the given condition. \cr
 #'  \bold{human_in_gpt_ex} \tab \code{numeric}  \tab indicating the number of references included by humans and excluded by gpt. \cr
 #'  \bold{human_ex_gpt_in} \tab \code{numeric}  \tab indicating the number of references excluded by humans and included by gpt. \cr
 #'  \bold{human_in_gpt_in} \tab \code{numeric}  \tab indicating the number of references included by humans and included by gpt. \cr

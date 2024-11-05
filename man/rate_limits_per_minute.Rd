@@ -5,14 +5,14 @@
 \title{Find updated rate limits for API models}
 \usage{
 rate_limits_per_minute(
-  model = "gpt-4",
+  model = "gpt-4o-mini",
   AI_tool = "gpt",
   api_key = get_api_key()
 )
 }
 \arguments{
 \item{model}{Character string with the name of the completion model.
-Default = \code{"gpt-4"}. Can take multiple strings.
+Default is \code{"gpt-4o-mini"}. Can take multiple values.
 Find available model at
 \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.}
 

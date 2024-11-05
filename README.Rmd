@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 [![devel Version](https://img.shields.io/badge/devel-0.0.0.9999-brightgreen.svg)](https://mikkelvembye.github.io/AIscreenR/)
 <!-- badges: end -->
 
-The goal of AIscreenR is to use AI tools to support screening processes (including title and abstract screening) in systematic reviews and related literature reviews. At the current stage, the main aim of the `AIscreenR` package is to support the use and testing of OpenAI's GPT API models as the second screeners of titles and abstracts or alternatively to reduce research waste, i.e., the number of references needed to be screened by humans. The package allows user to utilize OpenAI's GPT API models from the [https://api.openai.com/v1/chat/completions](https://platform.openai.com/docs/models/model-endpoint-compatibility) endpoint. In future developments, we might add further LLMs when APIs become available for other models, for example from Claude 2. For now, we invite other researchers to test this software so that we as a review community can get a better understanding of the performance of OpenAI's GPT API models.
+The goal of AIscreenR is to use AI tools to support screening processes (including title and abstract screening) in systematic reviews and related literature reviews. At the current stage, the main aim of the `AIscreenR` package is to support the use and test OpenAI's GPT API models as second screeners of titles and abstracts or alternatively to reduce the number of references needed to be screened by humans. The package allows user to utilize OpenAI's GPT API models from the [https://api.openai.com/v1/chat/completions](https://platform.openai.com/docs/models/model-endpoint-compatibility) endpoint. In future developments, we may add further LLMs, such as API models from Claude 2. For now, we invite other researchers to test this software, so that we, as a review community, can get a better understanding of the performance of OpenAI's GPT API models for title and abstract screening in high-quality reviews.
 
 ## Installation
 
@@ -53,16 +53,8 @@ library(future)
 # Setting API
 set_api_key()
 
-# Obtain rate limits info (Default is "gpt-4")
+# Obtain rate limits info (Default is "gpt-4o-mini")
 rate_limits <- rate_limits_per_minute()
-rate_limits
-#> # A tibble: 1 × 3
-#>   model requests_per_minute tokens_per_minute
-#>   <chr>               <dbl>             <dbl>
-#> 1 gpt-4               10000           1000000
-
-# Obtain rate limits info across multiple models
-rate_limits <- rate_limits_per_minute(model = "gpt-4o-mini")
 rate_limits
 #> # A tibble: 1 × 3
 #>   model       requests_per_minute tokens_per_minute
@@ -70,12 +62,15 @@ rate_limits
 #> 1 gpt-4o-mini               30000         150000000
 ```
 
-How to load ris files. In this example we have downloaded the ris files from 
+How to load RIS files. In this example we have downloaded the RIS files from 
 the [EPPI-Reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914). 
 
 ```{r, eval = FALSE}
-# Loading ris file data via revtools
-ris_dat_excl <- revtools::read_bibliography("path/FFT_exclude.ris") |> 
+
+excl_path <- system.file("extdata", "excl_tutorial.ris", package = "AIscreenR")
+
+# Loading RIS file data via revtools
+ris_dat_excl <- revtools::read_bibliography("excl_path") |> 
   suppressWarnings() |> 
   select(studyid = eppi_id, title, abstract) |> 
   as_tibble() |> 
@@ -83,7 +78,9 @@ ris_dat_excl <- revtools::read_bibliography("path/FFT_exclude.ris") |>
     human_code = 0 # Indicating exclusion
   )
 
-ris_dat_incl <- revtools::read_bibliography("path/FFT_include.ris") |> 
+incl_path <- system.file("extdata", "incl_tutorial.ris", package = "AIscreenR")
+
+ris_dat_incl <- revtools::read_bibliography(incl_path) |> 
   suppressWarnings() |> 
   select(studyid = eppi_id, title, abstract) |> 
   as_tibble() |> 
@@ -111,7 +108,7 @@ head(filges2015_dat, 10)
 head(filges2015_dat, 10)
 ```
 
-Example of how to enter a prompt. Can also be done in Word (see vignette).
+Example of how to enter a prompt in R. Can also be done in Word (see vignette).
 
 ```{r, eval = FALSE}
 prompt <- "Evaluate the following study based on the selection criteria
@@ -168,8 +165,8 @@ app_obj$price_data
 #> # ℹ 1 more variable: total_price_dollar <dbl>
 ```
 
-Example of how to conduct simple screening, returning 1 if a reference should be included,
-0 if excluded, and 1.1 if uncertain. 
+Example of how to conduct simple screening, returning `1` if a reference should be included,
+`0` if excluded, and `1.1` if uncertain. 
 
 ```{r, warning=FALSE, eval = FALSE}
 # Subsetting the number of references to speed up the tutorial screening

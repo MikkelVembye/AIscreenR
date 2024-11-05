@@ -49,7 +49,7 @@ from the original screening conducted with \code{\link[=tabscreen_gpt]{tabscreen
 
 \item{...}{Further argument to pass to the request body. See \url{https://platform.openai.com/docs/api-reference/chat/create}.
 If used in the original screening in \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}, the argument(s)
-must be specified again here.}
+must be specified here again.}
 }
 \value{
 An object of class \code{'gpt'} or \code{'chatgpt'} similar to the object returned by \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}.

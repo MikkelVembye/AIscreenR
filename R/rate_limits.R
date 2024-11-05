@@ -4,15 +4,15 @@
 #' @description
 #' `r lifecycle::badge("stable")`<br>
 #' <br>
-#' `rate_limits_per_minute` reports the rate limits for a given api.
+#' `rate_limits_per_minute` reports the rate limits for a given API model.
 #' The function returns the available requests per minute (RPM) as well as tokens per minute (TPM).
 #' Find general information at
 #' \url{https://platform.openai.com/docs/guides/rate-limits/overview}.
 #'
-#' @param AI_tool Character string specifying the AI tool from which the api is
+#' @param AI_tool Character string specifying the AI tool from which the API is
 #' issued. Default is `"gpt"`.
 #' @param model Character string with the name of the completion model.
-#' Default = `"gpt-4"`. Can take multiple strings.
+#' Default is `"gpt-4o-mini"`. Can take multiple values.
 #' Find available model at
 #' \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.
 #' @template api-key-arg
@@ -29,7 +29,7 @@
 #' }
 
 rate_limits_per_minute <- function(
-    model = "gpt-4",
+    model = "gpt-4o-mini",
     AI_tool = "gpt",
     api_key = get_api_key()
 ) {

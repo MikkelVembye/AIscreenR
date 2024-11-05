@@ -83,8 +83,8 @@
 #'   the title and abstract screening in parallel. Default is `TRUE`.
 #' @param decision_description Logical indicating whether a detailed description should follow
 #'   the decision made by GPT. Default is `FALSE`. When conducting large-scale screening,
-#'   we generally recommend not using this feature since it will increase the cost of the
-#'   screening substantially. We generally recommend using it when encountering disagreements between GPT and
+#'   we generally recommend not using this feature as it will substantially increase the cost of the
+#'   screening. We generally recommend using it when encountering disagreements between GPT and
 #'   human decisions.
 #' @param messages Logical indicating whether to print messages embedded in the function.
 #'   Default is `TRUE`.
@@ -161,8 +161,8 @@
 #'  \bold{n} \tab \code{integer} \tab indicating iteration ID. Is only different from 1, when `reps > 1`.  \cr
 #' }
 #' <br>
-#' If any requests failed to reach the server, the `gpt` object contains an
-#' error dataset (`error_data`) having the same variables as `answer_data`
+#' If any requests failed, the `gpt` object contains an
+#' error dataset (`error_data`) containing the same variables as `answer_data`
 #' but with failed request references only.
 #'
 #' <br>
