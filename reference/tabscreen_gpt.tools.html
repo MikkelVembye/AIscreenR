@@ -223,8 +223,8 @@ the title and abstract screening in parallel. Default is <code>TRUE</code>.</p><
 <dt id="arg-decision-description">decision_description<a class="anchor" aria-label="anchor" href="#arg-decision-description"></a></dt>
 <dd><p>Logical indicating whether a detailed description should follow
 the decision made by GPT. Default is <code>FALSE</code>. When conducting large-scale screening,
-we generally recommend not using this feature since it will increase the cost of the
-screening substantially. We generally recommend using it when encountering disagreements between GPT and
+we generally recommend not using this feature as it will substantially increase the cost of the
+screening. We generally recommend using it when encountering disagreements between GPT and
 human decisions.</p></dd>
 
 
@@ -298,8 +298,8 @@ for each title and abstract across multiple repeated questions.</p></dd>
     <p>The <code>answer_data</code> data contains the following <em>mandatory</em> variables:</p><table class="table table"><tr><td><b>studyid</b></td><td><code>integer</code></td><td>indicating the study ID of the reference.</td></tr><tr><td><b>title</b></td><td><code>character</code></td><td>indicating the title of the reference.</td></tr><tr><td><b>abstract</b></td><td><code>character</code></td><td>indicating the abstract of the reference.</td></tr><tr><td><b>promptid</b></td><td><code>integer</code></td><td>indicating the prompt ID.</td></tr><tr><td><b>prompt</b></td><td><code>character</code></td><td>indicating the prompt.</td></tr><tr><td><b>model</b></td><td><code>character</code></td><td>indicating the specific gpt-model used.</td></tr><tr><td><b>iterations</b></td><td><code>numeric</code></td><td>indicating the number of times the same question has been sent to OpenAI's GPT API models.</td></tr><tr><td><b>question</b></td><td><code>character</code></td><td>indicating the final question sent to OpenAI's GPT API models.</td></tr><tr><td><b>top_p</b></td><td><code>numeric</code></td><td>indicating the applied top_p.</td></tr><tr><td><b>decision_gpt</b></td><td><code>character</code></td><td>indicating the raw gpt decision - either <code>"1", "0", "1.1"</code> for inclusion, exclusion, or uncertainty, respectively.</td></tr><tr><td><b>detailed_description</b></td><td><code>character</code></td><td>indicating detailed description of the given decision made by OpenAI's GPT API models.
 ONLY included if the detailed function calling function is used. See 'Examples' below for how to use this function.</td></tr><tr><td><b>decision_binary</b></td><td><code>integer</code></td><td>indicating the binary gpt decision,
 that is 1 for inclusion and 0 for exclusion. 1.1 decision are coded equal to 1 in this case.</td></tr><tr><td><b>prompt_tokens</b></td><td><code>integer</code></td><td>indicating the number of prompt tokens sent to the server for the given request.</td></tr><tr><td><b>completion_tokens</b></td><td><code>integer</code></td><td>indicating the number of completion tokens sent to the server for the given request.</td></tr><tr><td><b>submodel</b></td><td><code>character</code></td><td>indicating the exact (sub)model used for screening.</td></tr><tr><td><b>run_time</b></td><td><code>numeric</code></td><td>indicating the time it took to obtain a response from the server for the given request.</td></tr><tr><td><b>run_date</b></td><td><code>character</code></td><td>indicating the date the given response was received.</td></tr><tr><td><b>n</b></td><td><code>integer</code></td><td>indicating iteration ID. Is only different from 1, when <code>reps &gt; 1</code>.</td></tr></table><p><br>
-If any requests failed to reach the server, the <code>gpt</code> object contains an
-error dataset (<code>error_data</code>) having the same variables as <code>answer_data</code>
+If any requests failed, the <code>gpt</code> object contains an
+error dataset (<code>error_data</code>) containing the same variables as <code>answer_data</code>
 but with failed request references only.
 <br></p>
 

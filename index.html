@@ -58,7 +58,7 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>The goal of AIscreenR is to use AI tools to support screening processes (including title and abstract screening) in systematic reviews and related literature reviews. At the current stage, the main aim of the <code>AIscreenR</code> package is to support the use and testing of OpenAI’s GPT API models as the second screeners of titles and abstracts or alternatively to reduce research waste, i.e., the number of references needed to be screened by humans. The package allows user to utilize OpenAI’s GPT API models from the <a href="https://platform.openai.com/docs/models/model-endpoint-compatibility" class="external-link">https://api.openai.com/v1/chat/completions</a> endpoint. In future developments, we might add further LLMs when APIs become available for other models, for example from Claude 2. For now, we invite other researchers to test this software so that we as a review community can get a better understanding of the performance of OpenAI’s GPT API models.</p>
+<p>The goal of AIscreenR is to use AI tools to support screening processes (including title and abstract screening) in systematic reviews and related literature reviews. At the current stage, the main aim of the <code>AIscreenR</code> package is to support the use and test OpenAI’s GPT API models as second screeners of titles and abstracts or alternatively to reduce the number of references needed to be screened by humans. The package allows user to utilize OpenAI’s GPT API models from the <a href="https://platform.openai.com/docs/models/model-endpoint-compatibility" class="external-link">https://api.openai.com/v1/chat/completions</a> endpoint. In future developments, we may add further LLMs, such as API models from Claude 2. For now, we invite other researchers to test this software, so that we, as a review community, can get a better understanding of the performance of OpenAI’s GPT API models for title and abstract screening in high-quality reviews.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -81,25 +81,20 @@
 <span><span class="co"># Setting API</span></span>
 <span><span class="fu"><a href="reference/set_api_key.html">set_api_key</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Obtain rate limits info (Default is "gpt-4")</span></span>
+<span><span class="co"># Obtain rate limits info (Default is "gpt-4o-mini")</span></span>
 <span><span class="va">rate_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">rate_limits</span></span>
-<span><span class="co">#&gt; # A tibble: 1 × 3</span></span>
-<span><span class="co">#&gt;   model requests_per_minute tokens_per_minute</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;               &lt;dbl&gt;             &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 gpt-4               10000           1000000</span></span>
-<span></span>
-<span><span class="co"># Obtain rate limits info across multiple models</span></span>
-<span><span class="va">rate_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/rate_limits_per_minute.html">rate_limits_per_minute</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"gpt-4o-mini"</span><span class="op">)</span></span>
 <span><span class="va">rate_limits</span></span>
 <span><span class="co">#&gt; # A tibble: 1 × 3</span></span>
 <span><span class="co">#&gt;   model       requests_per_minute tokens_per_minute</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;                     &lt;dbl&gt;             &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt; 1 gpt-4o-mini               30000         150000000</span></span></code></pre></div>
-<p>How to load ris files. In this example we have downloaded the ris files from the <a href="https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914" class="external-link">EPPI-Reviewer</a>.</p>
+<p>How to load RIS files. In this example we have downloaded the RIS files from the <a href="https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914" class="external-link">EPPI-Reviewer</a>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Loading ris file data via revtools</span></span>
-<span><span class="va">ris_dat_excl</span> <span class="op">&lt;-</span> <span class="fu">revtools</span><span class="fu">::</span><span class="fu">read_bibliography</span><span class="op">(</span><span class="st">"path/FFT_exclude.ris"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span></span>
+<span><span class="va">excl_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"excl_tutorial.ris"</span>, package <span class="op">=</span> <span class="st">"AIscreenR"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Loading RIS file data via revtools</span></span>
+<span><span class="va">ris_dat_excl</span> <span class="op">&lt;-</span> <span class="fu">revtools</span><span class="fu">::</span><span class="fu">read_bibliography</span><span class="op">(</span><span class="st">"excl_path"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>studyid <span class="op">=</span> <span class="va">eppi_id</span>, <span class="va">title</span>, <span class="va">abstract</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -107,7 +102,9 @@
 <span>    human_code <span class="op">=</span> <span class="fl">0</span> <span class="co"># Indicating exclusion</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="va">ris_dat_incl</span> <span class="op">&lt;-</span> <span class="fu">revtools</span><span class="fu">::</span><span class="fu">read_bibliography</span><span class="op">(</span><span class="st">"path/FFT_include.ris"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">incl_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"incl_tutorial.ris"</span>, package <span class="op">=</span> <span class="st">"AIscreenR"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ris_dat_incl</span> <span class="op">&lt;-</span> <span class="fu">revtools</span><span class="fu">::</span><span class="fu">read_bibliography</span><span class="op">(</span><span class="va">incl_path</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>studyid <span class="op">=</span> <span class="va">eppi_id</span>, <span class="va">title</span>, <span class="va">abstract</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -130,7 +127,7 @@
 <span><span class="co">#&gt;  8 9432040 Pictorial cognitive task solving and dynamics of… "AIMS: …          0</span></span>
 <span><span class="co">#&gt;  9 9434093 Enhancing the Impact of Parent Training Through … "New an…          0</span></span>
 <span><span class="co">#&gt; 10 9431505 EEG spectrum as information carrier               "Sponta…          0</span></span></code></pre></div>
-<p>Example of how to enter a prompt. Can also be done in Word (see vignette).</p>
+<p>Example of how to enter a prompt in R. Can also be done in Word (see vignette).</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">prompt</span> <span class="op">&lt;-</span> <span class="st">"Evaluate the following study based on the selection criteria</span></span>
 <span><span class="st">for a systematic review on the effects of family-based interventions on drug abuse</span></span>
@@ -181,7 +178,7 @@
 <span><span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;            &lt;dbl&gt;              &lt;dbl&gt;               &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt; 1 Prompt 1 gpt-4o-mini          1             0.0458             0.00178</span></span>
 <span><span class="co">#&gt; # ℹ 1 more variable: total_price_dollar &lt;dbl&gt;</span></span></code></pre></div>
-<p>Example of how to conduct simple screening, returning 1 if a reference should be included, 0 if excluded, and 1.1 if uncertain.</p>
+<p>Example of how to conduct simple screening, returning <code>1</code> if a reference should be included, <code>0</code> if excluded, and <code>1.1</code> if uncertain.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Subsetting the number of references to speed up the tutorial screening</span></span>
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span><span class="op">)</span></span>
@@ -196,7 +193,7 @@
 <span>    reps <span class="op">=</span> <span class="fl">1</span> <span class="co"># Number of times the same question is asked to ChatGPT</span></span>
 <span>  <span class="op">)</span> </span>
 <span><span class="co">#&gt; * The approximate price of the current (simple) screening will be around $0.0017.</span></span>
-<span><span class="co">#&gt; * Consider removing references that has no abstract since these can distort the accuracy of the screening.</span></span>
+<span><span class="co">#&gt; * Consider removing references without abstracts since these can distort the accuracy of the screening.</span></span>
 <span><span class="co">#&gt; Progress: ───────────────────────────────────────────────────────────────────────────────────── 100%</span></span>
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">sequential</span><span class="op">)</span></span>
 <span><span class="va">test_obj</span></span>
