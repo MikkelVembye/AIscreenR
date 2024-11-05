@@ -30,6 +30,12 @@ The goal of AIscreenR is to use AI tools to support screening processes (includi
 
 ## Installation
 
+Install the latest release from CRAN:
+
+```{r, eval = FALSE}
+install.packages("AIscreenR")
+```
+
 You can install the development version of AIscreenR from [GitHub](https://github.com/) with:
 
 ``` r

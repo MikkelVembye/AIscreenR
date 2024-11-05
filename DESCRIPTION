@@ -1,14 +1,14 @@
 Package: AIscreenR
-Title: AI Screening Tools for Systematic Reviews
+Title: AI Screening Tools in R for Systematic Reviewing
 Version: 0.0.0.9999
 Authors@R: c(
     person(given = "Mikkel H.", 
            family = "Vembye", 
            email = "mikkel.vembye@gmail.com", 
-           role = c("aut", "cre"),
+           role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0001-9071-0724"))
            )
-Description: Text screening with AI models, including title and abstract screening with large-language models from 'OpenAI'.
+Description: A collection of functions to screen scientific studies with AI models. The package includes functions to conduct title and abstract screening with large-language models from 'OpenAI'.
 Depends:
     R (>= 4.1.0)
 License: GPL (>= 3)

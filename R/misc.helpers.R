@@ -126,8 +126,6 @@ testing_key_chatgpt <- function() {
 #  )
 #}
 
-
-
 #----------------------------------------------------------------
 #
 #  Question needed to evaluate the gpt_engine

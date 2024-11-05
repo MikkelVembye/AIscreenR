@@ -241,7 +241,7 @@ tabscreen_gpt.original(
   studyid = studyid,
   title = title,
   abstract = abstract,
-  max_tries = 2,
+  max_tries = 2
   )
 
  # Get detailed descriptions of the gpt decisions by using the

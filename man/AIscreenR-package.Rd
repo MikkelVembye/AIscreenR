@@ -4,9 +4,9 @@
 \name{AIscreenR-package}
 \alias{AIscreenR}
 \alias{AIscreenR-package}
-\title{AIscreenR: AI Screening Tools for Systematic Reviews}
+\title{AIscreenR: AI Screening Tools in R for Systematic Reviewing}
 \description{
-Text screening with AI models, including title and abstract screening with large-language models from 'OpenAI'.
+A collection of functions to screen scientific studies with AI models. The package includes functions to conduct title and abstract screening with large-language models from 'OpenAI'.
 }
 \seealso{
 Useful links:
@@ -18,7 +18,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Mikkel H. Vembye \email{mikkel.vembye@gmail.com} (\href{https://orcid.org/0000-0001-9071-0724}{ORCID})
+\strong{Maintainer}: Mikkel H. Vembye \email{mikkel.vembye@gmail.com} (\href{https://orcid.org/0000-0001-9071-0724}{ORCID}) [copyright holder]
 
 }
 \keyword{internal}

@@ -1,3 +1,3 @@
-# AIscreenR 0.0.0.9999
+# AIscreenR 0.1.0
 
-* First devel version
+* This is the first release of AIscreenR.

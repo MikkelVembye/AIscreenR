@@ -37,11 +37,13 @@
 #' @examples
 #'
 #' \dontrun{
+#'
+#' set_api_key()
 #' prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
 #'
 #' obj_with_error <-
 #'   tabscreen_gpt(
-#'     data = filges2015_dat[1:10,],
+#'     data = filges2015_dat[1:2,],
 #'     prompt = prompt,
 #'     studyid = studyid,
 #'     title = title,
