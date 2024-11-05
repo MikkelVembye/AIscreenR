@@ -103,6 +103,8 @@ ris_dat_excl <- revtools::read_bibliography("friends_excl.ris") |> # Add the pat
     human_code = 0, #Tracking the human decision
     across(c(author, title, abstract), ~ na_if(., "NA"))
   )
+
+ris_dat_excl
 #> # A tibble: 2,765 × 5
 #>   author                                                                eppi_id title abstract human_code
 #>   <chr>                                                                 <chr>   <chr> <chr>         <dbl>
@@ -128,6 +130,8 @@ ris_dat_incl <- revtools::read_bibliography("friends_incl.ris") |>
     human_code = 1, #Tracking the human decision
     across(c(author, title, abstract), ~ na_if(., "NA"))
   )
+
+ris_dat_incl
 #> # A tibble: 97 × 5
 #>   author                                                                eppi_id title abstract human_code
 #>   <chr>                                                                 <chr>   <chr> <chr>         <dbl>
@@ -188,7 +192,7 @@ test_dat
 ```
 
 # Handle Your API Key 
-Now, We have our test data in place and can move on to the next step of the screening: generating your API key and handling it in R.  
+Now, we have our test data in place and can move on to the next step of the screening: generating your API key and handling it in R.  
 
 ## Get your API key 
 
