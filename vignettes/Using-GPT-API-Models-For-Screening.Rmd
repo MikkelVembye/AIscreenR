@@ -344,7 +344,7 @@ result_object$answer_data_aggregated |>
 
 ## Screen failed requests
 
-If might happen that you experience that some of your screenings requests failed for some transient reason, for example because the server was overloaded or something else. To recover these failed request you can use `screen_error()`, as done below. 
+If might happen that you experience that some of your screening requests failed for some transient reasons, such as server overload or other issues. To recover these failed requests, you can use `screen_error()`, as shown below. 
 
 ```{r, eval=FALSE}
 result_object <- 
@@ -353,7 +353,7 @@ result_object <-
 ```
 
 # Analyze Screening
-We have now conducted the test screening and want to assess whehter it is viable to use the `gpt-4o-mini` model as our second screener. For the purpose, we can use the `screen_analyzer()`. 
+We have now completed the test screening and want to assess whether it is viable to use the `gpt-4o-mini` model as our second screener. For the purpose, we can use `screen_analyzer()`. 
 
 ```{r screen_stats}
 screen_performance <- 
@@ -368,16 +368,16 @@ screen_performance
 ```
 
 ## Assess results via a benchmark scheme
-But you might ask, how do we assess whether the performances for of the model is acceptable as a second screener? To answer this question, we have suggested to assess this via benchmarking. In Vembye et al. [-@Vembye2024_gpt], we developed a benchmark scheme based on typical duplicate human screening performance from 22 high-quality reviews. This scheme can be found in Figure 5. 
+But you might ask, how to assess whether the performances for of the model is acceptable as a second screener? To answer this question, we recommend assessing it through benchmarking. In Vembye et al. [-@Vembye2024_gpt], we developed a benchmark scheme based on typical duplicate human screening performance from 22 high-quality reviews. This scheme is presented in Figure 5.
 
 ```{r eval=TRUE, echo=FALSE, fig.cap='*Figure 5 - Generic benchmark scheme from Vembye et al. (2024)*'}
 knitr::include_graphics("helper-stuff/benchmark_scheme.png")
 ```
 
-By using this benchmark scheme, we see that the `gpt-4o-mini` model performs on least on par with typically human screening performances. Therefore, the benchmark scheme suggests that the model is suitable as a full seconder of the review.  
+By using this benchmark scheme, we see that the `gpt-4o-mini` model performs on least on par withtypical human screening performance. Therefore, the benchmark scheme suggests that the model is suitable as a full second screener for the review.
 
 ## Make judgments over multiple screenings
-Since we have conducted multiple (i.e., 10) screenings with the `gpt-4o-mini` model, we can change our inclusion decision based on the number of times a study record has been included across the 10 screening. To get this information, one can use the following code.
+Since we have conducted multiple (i.e., 10) screenings with the `gpt-4o-mini` model, we can adjust our inclusion decision based on the number of times a study record has been included across these 10 screenings. To obtain this information, you can use the following code:
 ```{r}
 incl_dist <- attr(screen_performance, "p_incl_data")
 incl_dist |> select(model, recall, specificity, criteria)
@@ -396,15 +396,15 @@ incl_dist |> select(model, recall, specificity, criteria)
 #>10 gpt-4o-mini   0.74       0.987 Studies have been included in all of the 10 screenings.   
 ```
 
-From these results, it appears that we can increase the recall of the model if we include a record when it has been included in at least 1 of out of the 10 screenings. In this case, we would not lose anything by doing so, since the specific measure is rarely impacted by this change. 
+From these results, it appears that we can increase the model's recall if we include a record when it has been included in at least 1 of out of the 10 screenings. In this case, we would not lose anything by doing so, since the specificity measure is rarely affected by this change. 
 
 # Check and Resolve Disagreements 
 
-Even though, the `gpt-4o-mini` model yielded a highly acceptable screening performance, it is relevant to assess the reasons for disagreements between the human(s) and the GPT model. This information can be useful to further develop ones prompt if for example it appears that the GPT model misinterpret some conceptions.  
+Even though, the `gpt-4o-mini` model yielded a highly acceptable screening performance, it is useful to assess the reasons for disagreements between the human reviewers and the GPT model. This information can help refine your prompt(s), especially if it appears that the GPT model is misinterpreting certain concepts. 
 
-## Getting detailed descriptions for disaggrement records
+## Get detailed descriptions for disaggrement records
 
-To get detailed descriptions of GPTs reasons for exclusion (alternatively inclusion), one can set `decision_description = TRUE`, and run the screening again, so done below.
+To get detailed descriptions of GPT's reasons for exclusion (alternatively inclusion), you can set `decision_description = TRUE` and run the screening again, as shown below.
 
 ```{r}
 disagree_dat <- 
@@ -432,11 +432,11 @@ result_object_detail <-
 plan(sequential)
 ```
 
-For now, we recommend only to get detailed description for records where the human(s) and GPT disagree because it can substantially increases the cost of the screening with an unknown amount to get this type of information. However, it is questionable how substantial this issue is with the `gpt-4o-mini` model.  
+For now, we recommend obtaining detailed descriptions only for records where there is disagreement between the human reviewers and GPT, as this can significantly increase the screening cost. However, However, with the `gpt-4o-mini` model, the additional cost may be less substantial.  
 
 ### Example of detailed answer
 
-Here is an example of an abstract that was included by the humans and excluded by GPT.
+Here is an example of an abstract that was included by the human reviewers and excluded by GPT.
 
 ```{r}
 # Example of abstract included by the human and excluded by gpt-4o-mini
@@ -474,13 +474,13 @@ result_object_detail$answer_data$detailed_description[1]
 #> Additionally, it assesses a general anxiety intervention rather than 
 #> specifically measuring the FRIENDS programme's effectiveness."
 ```
-As can be seen from this answer, it is reasonable why the title and abstract has not been included by GPT since it is stated in the abstract that the intervention was only informed by the Fun Friends program, but is different from it. Although, this is not a clear-cut example, it indicates that it is always important also to test that a low recall measure is not driven by insufficient human screening.  
+As can be seen from this answer, it is reasonable why the title and abstract has not been included by GPT since it is stated in the abstract that the intervention was only informed by the Fun Friends program but is distinct from it. Although, this is not a clear-cut example, it highlights tthe importance of ensuring that a low recall measure is not driven by insufficient human screening.  
 
-*NOTE*: When re-screening disagreements, it might happen (due to uncertainty in the models) that some (near miss) studies will be included, although they were excluded in the first screening. These studies could just be added to the pool of included studies. 
+*NOTE*: When re-screening disagreements, it may happen (due to uncertainty in the models) that some near-included studies will be included,  even though they were excluded in the initial screening. These studies could just be added to the pool of included studies. 
 
 # Approximate Price of Full-Scale Screening
 
-When you have decided to use a GPT model as your second screener, you would probably like know how much you have to pay for the full screening. This information can be obtained by using `approximate_price_gpt()`.
+When you have decided to use a GPT model as your second screener, you will likely want to know the cost of the full screening. You can obtain this information by using `approximate_price_gpt()`.
 
 ```{r, eval = FALSE}
 # All ris-file data
@@ -513,10 +513,10 @@ app_obj$price_data
 #> 2 Prompt 1 gpt-4                1              59.9                1.11               61.0  
 ```
 
-When looking at the price, it is clear why one wants to prioritize the use of `gpt-4o mini`. One could conduct 100 screenings with the `gpt-4o-mini` model, and it would still be half the price of using `gpt-4`.
+When examining the price, it becomes clear why prioritizing the use of `gpt-4o-mini` is beneficial. You could conduct 100 screenings with the `gpt-4o-mini` model, and it would still cost only half as much as using `gpt-4`.
 
 # Conduct the Full Screening
-You are now ready to run the full screening! In this example, it can be conducted by substituting the `test_dat` with `all_dat` in the code used to screen the test data. 
+You are now ready to run the full screening!  In this example, you can do so by substituting `test_dat` with `all_dat` in the code used to screen the test data, as shown below
 
 ```{r}
 # Set parallel plan
@@ -542,14 +542,14 @@ result_object <-
 plan(sequential)
 ```
 
-To steer the screening process when having a large collection of RIS-files, it can be advantageous to split the full data into minor batches. For example one could screen batches of 1000-2000 references at a time. `base::split()` can be used for this purpose. 
+To steer the screening process when dealing with a large collection of RIS files, it can be beneficial to split the full dataset into smaller batches. For example one could screen batches of 1000-2000 references at a time. You can use `base::split()` for this purpose. 
 
 # Future Package Updates
-In this vignette, we have shown the first step of conducting an title and abstract screening with a GPT API model. In future versions of the package, we will add further articles, showing:
+In this vignette, we have demonstrated how to conduct a title and abstract screening with a GPT API model. In future versions of the package, we plan to add additional articles that will cover:
 
   1. How to run the full screening of all titles and abstracts most efficiently.
   2. How to fine-tune a model.
-  3. How to use multiple-prompt screening, that is making one prompt per inclusion criteria. 
-  4. New functions to assess and resolve disagreements between human and GPT decisions.
+  3. How to use multiple-prompt screening, i.e., making one prompt per inclusion criteria instead of adding all to the same prompt. 
+  4. A new report functions to assess and resolve disagreements between human and GPT decisions.
 
 # References
