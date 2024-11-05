@@ -84,4 +84,4 @@ There was 1 NOTE:
     Status: 403
     Message: Forbidden
 
-These are all valid URLs used to guide the user.
+These are all valid URLs important for guiding the package user.
