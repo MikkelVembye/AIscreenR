@@ -228,6 +228,8 @@ respectively.</p>
 <span>    human_code <span class="op">=</span> <span class="fl">0</span>, <span class="co">#Tracking the human decision</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">author</span>, <span class="va">title</span>, <span class="va">abstract</span><span class="op">)</span>, <span class="op">~</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/na_if.html" class="external-link">na_if</a></span><span class="op">(</span><span class="va">.</span>, <span class="st">"NA"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="va">ris_dat_excl</span></span>
 <span><span class="co">#&gt; # A tibble: 2,765 × 5</span></span>
 <span><span class="co">#&gt;   author                                                                eppi_id title abstract human_code</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;                                                                 &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;         &lt;dbl&gt;</span></span>
@@ -253,6 +255,8 @@ respectively.</p>
 <span>    human_code <span class="op">=</span> <span class="fl">1</span>, <span class="co">#Tracking the human decision</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">author</span>, <span class="va">title</span>, <span class="va">abstract</span><span class="op">)</span>, <span class="op">~</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/na_if.html" class="external-link">na_if</a></span><span class="op">(</span><span class="va">.</span>, <span class="st">"NA"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="va">ris_dat_incl</span></span>
 <span><span class="co">#&gt; # A tibble: 97 × 5</span></span>
 <span><span class="co">#&gt;   author                                                                eppi_id title abstract human_code</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;                                                                 &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;         &lt;dbl&gt;</span></span>
@@ -325,7 +329,7 @@ screening.</p>
 <div class="section level2">
 <h2 id="handle-your-api-key">Handle Your API Key<a class="anchor" aria-label="anchor" href="#handle-your-api-key"></a>
 </h2>
-<p>Now, We have our test data in place and can move on to the next step
+<p>Now, we have our test data in place and can move on to the next step
 of the screening: generating your API key and handling it in R.</p>
 <div class="section level3">
 <h3 id="get-your-api-key">Get your API key<a class="anchor" aria-label="anchor" href="#get-your-api-key"></a>
