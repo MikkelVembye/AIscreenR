@@ -244,7 +244,6 @@
 #'}
 
 # Main function
-# inspired by the rma.uni and rma functions are made in metafor instead of making an S3 object
 tabscreen_gpt <- tabscreen_gpt.tools <- function(
   data,
   prompt,
@@ -290,7 +289,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
     model <- unique(model)
   }
 
-  # Stop if wrong model are called
+  # Stop if wrong models are called
   if (!fine_tuned){
     if(any(!model %in% model_prizes$model)) stop("Unknown gpt model(s) used - check model name(s).")
   }
@@ -469,7 +468,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
   # Data manipulation ----
   #.......................
 
-  # Ensure that the data contained valid study IDs to distinguish between study records
+  # Ensure that the data contains valid study IDs to distinguish between study records
     study_id <- if (missing(studyid)) 1:nrow(data) else data |> pull({{ studyid }})
 
     dat <-

@@ -59,7 +59,7 @@ Find available model at
 \item{role}{Character string indicate the role of the user. Default is \code{"user"}.}
 
 \item{functions}{Function to steer output. Default is \code{incl_function_simple}.
-To get detailed responses use the \code{AIscreenR:::incl_function}. Also see 'Examples below.
+To get detailed responses use the hidden function call \code{incl_function} from the package. Also see 'Examples below.
 Find further documentation for function calling at
 \url{https://openai.com/blog/function-calling-and-other-api-updates}.}
 
@@ -252,7 +252,7 @@ tabscreen_gpt.original(
    studyid = studyid,
    title = title,
    abstract = abstract,
-   functions = AIscreenR:::incl_function,
+   functions = incl_function,
    function_call_name = list(name = "inclusion_decision"),
    max_tries = 2
  )

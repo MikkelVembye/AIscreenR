@@ -23,13 +23,6 @@ knitr::opts_chunk$set(
   out.width = "100%",
   eval = FALSE
 )
-
-# Add options
-options(pillar.sigfig = 4) # ensure tibble include 4 digits
-options(tibble.width = 220)
-options(dplyr.print_min = 10)
-options(scipen = 20)
-options(dplyr.summarise.inform = FALSE) # Avoids summarize info from tidyverse
 ```
 
 <div class="warning" style='margin-left:2em; margin-right:2em; margin-bottom:2em; margin-top:2em; padding:0.1em; background-color: #d7dbdd; border: solid #bdc3c7 3px'>

@@ -8,7 +8,7 @@ Authors@R: c(
            role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0001-9071-0724"))
            )
-Description: A collection of functions to screen scientific studies with AI models. The package includes functions to conduct title and abstract screening with large-language models from 'OpenAI'.
+Description: Provides functions to conduct title and abstract screening in systematic reviews using large language models, such as the Generative Pre-trained Transformer (GPT) models from 'OpenAI' <https://platform.openai.com/>. These functions can enhance the quality of title and abstract screenings while reducing the total screening time significantly. In addition, the package includes tools for quality assessment of title and abstract screenings, as described in Vembye, Christensen, Mølgaard, and Schytt (2024) <DOI:10.31219/osf.io/yrhzm>.
 Depends:
     R (>= 4.1.0)
 License: GPL (>= 3)

@@ -1,7 +1,10 @@
-## Submission
+## Resubmission
 
-This is the first version of AIscreenR. The package provides functions for conducting title and abstract
-screening in systematic reviews with AI models, such as OpenAI's GPT (Generative Pre-trained Transformer) API (Application Programming Interface) models.
+This is a resubmission. In this version I have:
+  * Updated the DESCRIPTION so it includes a better description of the package's functionality. 
+  * Removed the wrongly used rm(list = ls()) in the test script.
+  * Removed all options() from the vignette. 
+  * Removed the wrongly used `:::`. 
 
 ## Test environments
 

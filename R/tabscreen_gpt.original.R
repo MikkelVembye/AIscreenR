@@ -39,7 +39,7 @@
 #' \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.
 #' @param role Character string indicate the role of the user. Default is `"user"`.
 #' @param functions Function to steer output. Default is `incl_function_simple`.
-#'   To get detailed responses use the `AIscreenR:::incl_function`. Also see 'Examples below.
+#'   To get detailed responses use the hidden function call `incl_function` from the package. Also see 'Examples below.
 #'   Find further documentation for function calling at
 #'   \url{https://openai.com/blog/function-calling-and-other-api-updates}.
 #' @param function_call_name Functions to call.
@@ -197,7 +197,7 @@
 #'    studyid = studyid,
 #'    title = title,
 #'    abstract = abstract,
-#'    functions = AIscreenR:::incl_function,
+#'    functions = incl_function,
 #'    function_call_name = list(name = "inclusion_decision"),
 #'    max_tries = 2
 #'  )

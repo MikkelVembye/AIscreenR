@@ -6,7 +6,7 @@
 \alias{AIscreenR-package}
 \title{AIscreenR: AI Screening Tools in R for Systematic Reviewing}
 \description{
-A collection of functions to screen scientific studies with AI models. The package includes functions to conduct title and abstract screening with large-language models from 'OpenAI'.
+Provides functions to conduct title and abstract screening in systematic reviews using large language models, such as the Generative Pre-trained Transformer (GPT) models from 'OpenAI' \url{https://platform.openai.com/}. These functions can enhance the quality of title and abstract screenings while reducing the total screening time significantly. In addition, the package includes tools for quality assessment of title and abstract screenings, as described in Vembye, Christensen, Mølgaard, and Schytt (2024) \doi{10.31219/osf.io/yrhzm}.
 }
 \seealso{
 Useful links:

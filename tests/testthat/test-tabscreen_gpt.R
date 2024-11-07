@@ -1050,6 +1050,3 @@ test_that("Print and class expectation for chatgpt object.", {
 
 })
 
-
-rm(list=ls())
-
