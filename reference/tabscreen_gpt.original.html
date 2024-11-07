@@ -160,7 +160,7 @@ Find available model at
 
 <dt id="arg-functions">functions<a class="anchor" aria-label="anchor" href="#arg-functions"></a></dt>
 <dd><p>Function to steer output. Default is <code>incl_function_simple</code>.
-To get detailed responses use the <code>AIscreenR:::incl_function</code>. Also see 'Examples below.
+To get detailed responses use the hidden function call <code>incl_function</code> from the package. Also see 'Examples below.
 Find further documentation for function calling at
 <a href="https://openai.com/blog/function-calling-and-other-api-updates" class="external-link">https://openai.com/blog/function-calling-and-other-api-updates</a>.</p></dd>
 
@@ -343,7 +343,7 @@ https://httr2.r-lib.org, https://github.com/r-lib/httr2.</p>
 <span class="r-in"><span>   studyid <span class="op">=</span> <span class="va">studyid</span>,</span></span>
 <span class="r-in"><span>   title <span class="op">=</span> <span class="va">title</span>,</span></span>
 <span class="r-in"><span>   abstract <span class="op">=</span> <span class="va">abstract</span>,</span></span>
-<span class="r-in"><span>   functions <span class="op">=</span> <span class="fu">AIscreenR</span><span class="fu">:::</span><span class="va">incl_function</span>,</span></span>
+<span class="r-in"><span>   functions <span class="op">=</span> <span class="va">incl_function</span>,</span></span>
 <span class="r-in"><span>   function_call_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"inclusion_decision"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>   max_tries <span class="op">=</span> <span class="fl">2</span></span></span>
 <span class="r-in"><span> <span class="op">)</span></span></span>
