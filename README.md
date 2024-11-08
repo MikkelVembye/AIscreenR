@@ -17,7 +17,7 @@ Downloads](https://cranlogs.r-pkg.org/badges/AIscreenR)](https://cranlogs.r-pkg.
 The goal of AIscreenR is to use AI tools to support screening processes
 (including title and abstract screening) in systematic reviews and
 related literature reviews. At the current stage, the main aim of the
-`AIscreenR` package is test and use OpenAI’s GPT API models as second
+`AIscreenR` package is to test and use OpenAI’s GPT API models as second
 screeners of titles and abstracts or alternatively to reduce the number
 of references needed to be screened by humans. The package allows user
 to utilize OpenAI’s GPT API models from the
