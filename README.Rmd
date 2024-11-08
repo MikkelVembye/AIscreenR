@@ -38,10 +38,9 @@ install.packages("AIscreenR")
 
 You can install the development version of AIscreenR from [GitHub](https://github.com/) with:
 
-``` r
+``` {r}
 # install.packages("devtools")
 devtools::install_github("MikkelVembye/AIscreenR")
-
 ```
 
 Setting API key and checking rate limits

@@ -31,6 +31,12 @@ and abstract screening in high-quality reviews.
 
 ## Installation
 
+Install the latest release from CRAN:
+
+``` r
+install.packages("AIscreenR")
+```
+
 You can install the development version of AIscreenR from
 [GitHub](https://github.com/) with:
 
