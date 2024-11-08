@@ -62,12 +62,15 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of AIscreenR from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<p>Install the latest release from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"AIscreenR"</span><span class="op">)</span></span></code></pre></div>
+<p>You can install the development version of AIscreenR from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"MikkelVembye/AIscreenR"</span><span class="op">)</span></span></code></pre></div>
 <p>Setting API key and checking rate limits</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Find your api key at https://platform.openai.com/account/api-keys </span></span>
 <span><span class="co"># Thereafter, either encrypt it with the secret functions from the httr2 package</span></span>
 <span><span class="co"># see https://httr2.r-lib.org/reference/secrets.html or run set_api_key() </span></span>
@@ -89,7 +92,7 @@
 <span><span class="co">#&gt;   &lt;chr&gt;                     &lt;dbl&gt;             &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt; 1 gpt-4o-mini               30000         150000000</span></span></code></pre></div>
 <p>How to load RIS files. In this example we have downloaded the RIS files from the <a href="https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914" class="external-link">EPPI-Reviewer</a>.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">excl_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"excl_tutorial.ris"</span>, package <span class="op">=</span> <span class="st">"AIscreenR"</span><span class="op">)</span></span>
 <span></span>
@@ -128,7 +131,7 @@
 <span><span class="co">#&gt;  9 9434093 Enhancing the Impact of Parent Training Through … "New an…          0</span></span>
 <span><span class="co">#&gt; 10 9431505 EEG spectrum as information carrier               "Sponta…          0</span></span></code></pre></div>
 <p>Example of how to enter a prompt in R. Can also be done in Word (see vignette).</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">prompt</span> <span class="op">&lt;-</span> <span class="st">"Evaluate the following study based on the selection criteria</span></span>
 <span><span class="st">for a systematic review on the effects of family-based interventions on drug abuse</span></span>
 <span><span class="st">reduction for young people in treatment for non-opioid drug use.</span></span>
@@ -155,7 +158,7 @@
 <span><span class="st">2) Are the participants in outpatient drug treatment primarily</span></span>
 <span><span class="st">for non-opioid drug use? 3) Are the participants within age 11–21?"</span></span></code></pre></div>
 <p>Approximate price of screening before running the screening.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">app_obj</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu"><a href="reference/approximate_price_gpt.html">approximate_price_gpt</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">filges2015_dat</span>,</span>
@@ -179,7 +182,7 @@
 <span><span class="co">#&gt; 1 Prompt 1 gpt-4o-mini          1             0.0458             0.00178</span></span>
 <span><span class="co">#&gt; # ℹ 1 more variable: total_price_dollar &lt;dbl&gt;</span></span></code></pre></div>
 <p>Example of how to conduct simple screening, returning <code>1</code> if a reference should be included, <code>0</code> if excluded, and <code>1.1</code> if uncertain.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Subsetting the number of references to speed up the tutorial screening</span></span>
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span><span class="op">)</span></span>
 <span><span class="va">test_obj</span> <span class="op">&lt;-</span> </span>
