@@ -7,12 +7,11 @@
 
 <!-- badges: start -->
 
-[![License: GPL
-(\>=3)](https://img.shields.io/badge/license-GPL-blue)](https://www.gnu.org/licenses/gpl-3.0.html)
 [![R-CMD-check](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml)
-[![status](https://img.shields.io/badge/status-under%20review-orange)](https://github.com/MikkelVembye/AIscreenR)
-[![devel
-Version](https://img.shields.io/badge/devel-0.0.0.9999-brightgreen.svg)](https://mikkelvembye.github.io/AIscreenR/)
+[![CRAN
+Version](https://www.r-pkg.org/badges/version/AIscreenR)](https://cran.r-project.org/package=AIscreenR)
+[![Monthly
+Downloads](https://cranlogs.r-pkg.org/badges/AIscreenR)](https://cranlogs.r-pkg.org/badges/AIscreenR)
 <!-- badges: end -->
 
 The goal of AIscreenR is to use AI tools to support screening processes
