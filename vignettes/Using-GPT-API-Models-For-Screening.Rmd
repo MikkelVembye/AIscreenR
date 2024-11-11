@@ -429,7 +429,7 @@ result_object_detail <-
 plan(sequential)
 ```
 
-For now, we recommend obtaining detailed descriptions only for records where there is disagreement between the human reviewers and GPT, as this can significantly increase the screening cost. However, However, with the `gpt-4o-mini` model, the additional cost may be less substantial.  
+For now, we recommend obtaining detailed descriptions only for records where there is disagreement between the human reviewers and GPT, as this can significantly increase the screening cost. However, with the `gpt-4o-mini` model, the additional cost may be less substantial.  
 
 ### Example of detailed answer
 
