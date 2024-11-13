@@ -474,7 +474,8 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
     dat <-
       data |>
       dplyr::mutate(
-        studyid = study_id
+        studyid = study_id,
+        studyid = factor(studyid, levels = unique(studyid))
       ) |>
       dplyr::relocate(studyid, .before = {{ title }}) |>
       dplyr::relocate({{ abstract }}, .after = {{ title }}) |>
