@@ -73,7 +73,7 @@ To get started, we first load all R package needed to construct and run the scre
 ```{r, eval = FALSE, warning=FALSE, message=FALSE}
 # Loading packages 
 library(AIscreenR) # Used to screen and calculate gpt vs. human performance
-library(revtools)  # Used to load RIS files
+library(synthesisr)  # Used to load RIS files
 library(tibble)    # Used to work with tibbles
 library(dplyr)     # Used to manipulate data
 library(purrr)     # For loops 
@@ -82,14 +82,13 @@ library(future)    # Used to conduct screenings in parallel
 ```
 
 ## Convert RIS files to data frames
-Now, we are ready to conduct the first step of the screening: loading the RIS file data into R and converting it to a data frame. This can be done by using `read_bibliography()` from `revtools`. In the below example, we use RIS file data from a review regarding the effects of the FRIENDS preventive programme on anxiety symptoms in children and adolescents [@Filges2024]. Be aware, that this data is used for illustrative purposes only. In the example, we assume that the human reviewers have already started screening and identified several relevant and irrelevant studies, which they will use to create the test data. Thus, we can load the RIS files, which we downloaded from the EPPI-reviewer, separately for the in- and excluded RIS files. This allows us to track the human decision by adding a `human_code` variable, where `1` and `0` indicate whether a study is included or excluded, respectively.
+Now, we are ready to conduct the first step of the screening: loading the RIS file data into R and converting it to a data frame. This can be done by using `read_refs()` from `synthesisr`. This is an updated version of the `read_bibliography()` function from the `revtools` package that works reliable. In the below example, we use RIS file data from a review regarding the effects of the FRIENDS preventive programme on anxiety symptoms in children and adolescents [@Filges2024]. Be aware, that this data is used for illustrative purposes only. In the example, we assume that the human reviewers have already started screening and identified several relevant and irrelevant studies, which they will use to create the test data. Thus, we can load the RIS files, which we downloaded from the EPPI-reviewer, separately for the in- and excluded RIS files. This allows us to track the human decision by adding a `human_code` variable, where `1` and `0` indicate whether a study is included or excluded, respectively.
 
 ```{r}
 # NOTE: Find the RIS files behind this vignette at https://osf.io/kfbvu/
 
 # Loading EXCLUDED studies
-ris_dat_excl <- revtools::read_bibliography("friends_excl.ris") |> # Add the path to your RIS file here
-  suppressWarnings() |> 
+ris_dat_excl <- read_refs("friends_excl.ris") |> # Add the path to your RIS file here
   as_tibble() |>
   select(author, eppi_id, title, abstract) |> # Using only relevant variables
   mutate(
@@ -115,7 +114,7 @@ ris_dat_excl
 #># ℹ Use `print(n = ...)` to see more rows
 
 # Loading INCLUDED studies
-ris_dat_incl <- revtools::read_bibliography("friends_incl.ris") |> 
+ris_dat_incl <- read_refs("friends_incl.ris") |> 
   suppressWarnings() |> 
   as_tibble() |>
   select(author, eppi_id, title, abstract) |>
@@ -540,6 +539,20 @@ plan(sequential)
 ```
 
 To steer the screening process when dealing with a large collection of RIS files, it can be beneficial to split the full dataset into smaller batches. For example one could screen batches of 1000-2000 references at a time. You can use `base::split()` for this purpose. 
+
+# Convert Relevant Records Back to a RIS File
+
+Once the full screening has been conducted, you may want to load the relevant studies back into your systematic review software tool. To do this, you can use `write_refs()` from the `synthesisr` package. This function converts the data frame containing the included references into a RIS file, which can then be imported into the systematic review software.
+
+```{r}
+incl_refs <- result_object$answer_data_aggregated |> 
+  filter(incl_p >= 0.1) 
+  
+
+write_refs(as.data.frame(incl_refs), file = "file_name.ris", format = "ris")
+```
+
+If you like to convert the data to a bib file, then use `format = "bib"`.
 
 # Future Package Updates
 In this vignette, we have demonstrated how to conduct a title and abstract screening with a GPT API model. In future versions of the package, we plan to add additional articles that will cover:

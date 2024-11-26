@@ -1,14 +1,10 @@
-## Resubmission
+## Submission
 
-This is a resubmission. In this version I have:
-  * Updated the DESCRIPTION so it includes a better description of the package's functionality. 
-  * Removed the wrongly used rm(list = ls()) in the test script.
-  * Removed all options() from the vignette. 
-  * Removed the wrongly used `:::`. 
+This is a patch version update of AIscreenR. The package provides functions for conducting title and abstract screening in systematic reviews with AI models, such as OpenAI's GPT (Generative Pre-trained Transformer) API (Application Programming Interface) models. In this submission, we have corrected a typo in the vignette, and updated the vignette including a more modern approach to handling RIS files. Finally the tabscreen_gpt() now factors the study ID variable to keep the original order of the user's data set.
 
 ## Test environments
 
-* local Windows 10 Enterprise, R 4.4.0
+* local Windows 10 Enterprise, R 4.4.0 and R 4.4.2
 * ubuntu 20.04.3 LTS (on Github), R devel, release, oldrelease
 * macOS-latest (on Github), R release
 * windows-latest (on Github), R release
@@ -88,3 +84,10 @@ There was 1 NOTE:
     Message: Forbidden
 
 These are all valid URLs important for guiding the package user.
+
+## revdepcheck results
+
+We checked 0 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
+
+ * We saw 0 new problems
+ * We failed to check 0 packages
