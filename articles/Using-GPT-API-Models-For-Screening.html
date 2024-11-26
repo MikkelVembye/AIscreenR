@@ -8,8 +8,8 @@
 <title>Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews • AIscreenR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews">
 </head>
 <body>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AIscreenR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +58,7 @@
 
       <h1>Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews</h1>
             
-            <h4 data-toc-skip class="date">2024-11-13</h4>
+            <h4 data-toc-skip class="date">2024-11-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/MikkelVembye/AIscreenR/blob/main/vignettes/Using-GPT-API-Models-For-Screening.Rmd" class="external-link"><code>vignettes/Using-GPT-API-Models-For-Screening.Rmd</code></a></small>
       <div class="d-none name"><code>Using-GPT-API-Models-For-Screening.Rmd</code></div>
@@ -190,7 +190,7 @@ run the screening.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Loading packages </span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mikkelvembye.github.io/AIscreenR/">AIscreenR</a></span><span class="op">)</span> <span class="co"># Used to screen and calculate gpt vs. human performance</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://revtools.net" class="external-link">revtools</a></span><span class="op">)</span>  <span class="co"># Used to load RIS files</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">synthesisr</span><span class="op">)</span>  <span class="co"># Used to load RIS files</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span>    <span class="co"># Used to work with tibbles</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>     <span class="co"># Used to manipulate data</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://purrr.tidyverse.org/" class="external-link">purrr</a></span><span class="op">)</span>     <span class="co"># For loops </span></span>
@@ -202,10 +202,12 @@ run the screening.</p>
 </h3>
 <p>Now, we are ready to conduct the first step of the screening: loading
 the RIS file data into R and converting it to a data frame. This can be
-done by using <code>read_bibliography()</code> from
-<code>revtools</code>. In the below example, we use RIS file data from a
-review regarding the effects of the FRIENDS preventive programme on
-anxiety symptoms in children and adolescents <span class="citation">(<a href="#ref-Filges2024">Filges, Smedslund, Eriksen, Birkefoss, &amp;
+done by using <code>read_refs()</code> from <code>synthesisr</code>.
+This is an updated version of the <code>read_bibliography()</code>
+function from the <code>revtools</code> package that works reliable. In
+the below example, we use RIS file data from a review regarding the
+effects of the FRIENDS preventive programme on anxiety symptoms in
+children and adolescents <span class="citation">(<a href="#ref-Filges2024">Filges, Smedslund, Eriksen, Birkefoss, &amp;
 Kildemoes, 2024</a>)</span>. Be aware, that this data is used for
 illustrative purposes only. In the example, we assume that the human
 reviewers have already started screening and identified several relevant
@@ -220,8 +222,7 @@ respectively.</p>
 <code class="sourceCode R"><span><span class="co"># NOTE: Find the RIS files behind this vignette at https://osf.io/kfbvu/</span></span>
 <span></span>
 <span><span class="co"># Loading EXCLUDED studies</span></span>
-<span><span class="va">ris_dat_excl</span> <span class="op">&lt;-</span> <span class="fu">revtools</span><span class="fu">::</span><span class="fu">read_bibliography</span><span class="op">(</span><span class="st">"friends_excl.ris"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># Add the path to your RIS file here</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">ris_dat_excl</span> <span class="op">&lt;-</span> <span class="fu">read_refs</span><span class="op">(</span><span class="st">"friends_excl.ris"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># Add the path to your RIS file here</span></span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">author</span>, <span class="va">eppi_id</span>, <span class="va">title</span>, <span class="va">abstract</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># Using only relevant variables</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
@@ -247,7 +248,7 @@ respectively.</p>
 <span><span class="co">#&gt;# ℹ Use `print(n = ...)` to see more rows</span></span>
 <span></span>
 <span><span class="co"># Loading INCLUDED studies</span></span>
-<span><span class="va">ris_dat_incl</span> <span class="op">&lt;-</span> <span class="fu">revtools</span><span class="fu">::</span><span class="fu">read_bibliography</span><span class="op">(</span><span class="st">"friends_incl.ris"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">ris_dat_incl</span> <span class="op">&lt;-</span> <span class="fu">read_refs</span><span class="op">(</span><span class="st">"friends_incl.ris"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">author</span>, <span class="va">eppi_id</span>, <span class="va">title</span>, <span class="va">abstract</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -767,6 +768,24 @@ of RIS files, it can be beneficial to split the full dataset into
 smaller batches. For example one could screen batches of 1000-2000
 references at a time. You can use <code><a href="https://rdrr.io/r/base/split.html" class="external-link">base::split()</a></code> for this
 purpose.</p>
+</div>
+<div class="section level2">
+<h2 id="convert-relevant-records-back-to-a-ris-file">Convert Relevant Records Back to a RIS File<a class="anchor" aria-label="anchor" href="#convert-relevant-records-back-to-a-ris-file"></a>
+</h2>
+<p>Once the full screening has been conducted, you may want to load the
+relevant studies back into your systematic review software tool. To do
+this, you can use <code>write_refs()</code> from the
+<code>synthesisr</code> package. This function converts the data frame
+containing the included references into a RIS file, which can then be
+imported into the systematic review software.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">incl_refs</span> <span class="op">&lt;-</span> <span class="va">result_object</span><span class="op">$</span><span class="va">answer_data_aggregated</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">incl_p</span> <span class="op">&gt;=</span> <span class="fl">0.1</span><span class="op">)</span> </span>
+<span>  </span>
+<span></span>
+<span><span class="fu">write_refs</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">incl_refs</span><span class="op">)</span>, file <span class="op">=</span> <span class="st">"file_name.ris"</span>, format <span class="op">=</span> <span class="st">"ris"</span><span class="op">)</span></span></code></pre></div>
+<p>If you like to convert the data to a bib file, then use
+<code>format = "bib"</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="future-package-updates">Future Package Updates<a class="anchor" aria-label="anchor" href="#future-package-updates"></a>
