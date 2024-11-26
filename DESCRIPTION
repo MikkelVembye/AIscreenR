@@ -1,6 +1,6 @@
 Package: AIscreenR
 Title: AI Screening Tools in R for Systematic Reviewing
-Version: 0.1.1
+Version: 0.1.1.9000
 Authors@R: c(
     person(given = "Mikkel H.", 
            family = "Vembye", 
