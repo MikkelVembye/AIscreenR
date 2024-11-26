@@ -52,7 +52,7 @@ Setting API key and checking rate limits
 # see https://httr2.r-lib.org/reference/secrets.html or run set_api_key() 
 # and then enter you key.
 library(AIscreenR)
-library(revtools)
+library(synthesisr)
 library(tibble)
 library(dplyr)
 library(future)
@@ -78,8 +78,7 @@ from the
 excl_path <- system.file("extdata", "excl_tutorial.ris", package = "AIscreenR")
 
 # Loading RIS file data via revtools
-ris_dat_excl <- revtools::read_bibliography("excl_path") |> 
-  suppressWarnings() |> 
+ris_dat_excl <- read_refs("excl_path") |> 
   select(studyid = eppi_id, title, abstract) |> 
   as_tibble() |> 
   mutate(
@@ -88,8 +87,7 @@ ris_dat_excl <- revtools::read_bibliography("excl_path") |>
 
 incl_path <- system.file("extdata", "incl_tutorial.ris", package = "AIscreenR")
 
-ris_dat_incl <- revtools::read_bibliography(incl_path) |> 
-  suppressWarnings() |> 
+ris_dat_incl <- read_refs(incl_path) |> 
   select(studyid = eppi_id, title, abstract) |> 
   as_tibble() |> 
   mutate(
