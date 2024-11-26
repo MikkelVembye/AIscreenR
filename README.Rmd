@@ -73,7 +73,7 @@ the [EPPI-Reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914).
 
 excl_path <- system.file("extdata", "excl_tutorial.ris", package = "AIscreenR")
 
-# Loading RIS file data via revtools
+# Loading RIS file data with synthesisr 
 ris_dat_excl <- read_refs("excl_path") |> 
   select(studyid = eppi_id, title, abstract) |> 
   as_tibble() |> 
