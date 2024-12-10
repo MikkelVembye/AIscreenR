@@ -55,13 +55,13 @@ For many reviewers, especially those unfamiliar with coding in R, conducting a t
   1. Load and convert your RIS file data to a data frame.
   2. Handle your API key (this is only necessary the first time you screen).
   3. Make one or multiple prompts.
-  4. Run the screening.
+  4. Run test screening(s).
 
 And if the human screening has been conducted (as in the example below):
 
-  5. Analyze the screening results.
-  6. Investigate and resolve any disagreements.
-  7. Conduct the full title and abstract screening.
+  5. Analyze the test screening results via benchmarking (cf. Figure 5).
+  6. Investigate and resolve disagreements.
+  7. Conduct the full title and abstract screening, and repeat step 6 at full scale.
   
 We will walk through each of these steps one by one in the following sections. 
 

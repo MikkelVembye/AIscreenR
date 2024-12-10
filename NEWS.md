@@ -1,4 +1,6 @@
-# AIscreenR (development version)
+# AIscreenR 0.1.1.9000 
+
+* Minor change in the setup of the vignette
 
 # AIscreenR 0.1.1 
 
