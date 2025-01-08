@@ -12,6 +12,8 @@
 Version](https://www.r-pkg.org/badges/version/AIscreenR)](https://cran.r-project.org/package=AIscreenR)
 [![Monthly
 Downloads](https://cranlogs.r-pkg.org/badges/AIscreenR)](https://cranlogs.r-pkg.org/badges/AIscreenR)
+[![Total
+Downloads](https://cranlogs.r-pkg.org/badges/grand-total/AIscreenR)](https://cranlogs.r-pkg.org/badges/grand-total/AIscreenR)
 <!-- badges: end -->
 
 The goal of AIscreenR is to use AI tools to support screening processes
