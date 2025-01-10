@@ -110,9 +110,10 @@ generate_ft_data <- function(data, prompt, studyid, title, abstract){
 #'     mutate(true_answer = if_else(human_code == 1, "Include", "Exclude"))
 #'
 #' role_subject <- paste0(
-#'   "Act as a systematic reviewer that is screening study titles and",
-#'   "abstracts for your systematic reviews regarding the the effects of family-based",
-#'   " interventions on drug abuse reduction for young people in treatment for non-opioid drug use"
+#'   "Act as a systematic reviewer that is screening study titles and ",
+#'   "abstracts for your systematic reviews regarding the the effects ",
+#'   "of family-based interventions on drug abuse reduction for young ",
+#'   "people in treatment for non-opioid drug use."
 #' )
 #'
 #' # Saving data in jsonl format (required format by OpenAI)
