@@ -9,6 +9,7 @@
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/AIscreenR-package.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/approximate_price_gpt.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/filges2015_dat.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/reference/generate_ft_data.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/get_api_key.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/index.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/is_chatgpt.html</loc></url>
@@ -29,5 +30,6 @@
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/set_api_key.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.original.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/reference/write_ft_data.html</loc></url>
 </urlset>
 
