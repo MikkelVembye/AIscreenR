@@ -117,9 +117,10 @@ Default is <code>roles = c("system", "user", "assistant")</code>.</p></dd>
 <span class="r-in"><span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>true_answer <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">human_code</span> <span class="op">==</span> <span class="fl">1</span>, <span class="st">"Include"</span>, <span class="st">"Exclude"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">role_subject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="st">"Act as a systematic reviewer that is screening study titles and"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"abstracts for your systematic reviews regarding the the effects of family-based"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">" interventions on drug abuse reduction for young people in treatment for non-opioid drug use"</span></span></span>
+<span class="r-in"><span>  <span class="st">"Act as a systematic reviewer that is screening study titles and "</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"abstracts for your systematic reviews regarding the the effects "</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"of family-based interventions on drug abuse reduction for young "</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"people in treatment for non-opioid drug use."</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Saving data in jsonl format (required format by OpenAI)</span></span></span>
