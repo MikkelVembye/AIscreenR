@@ -197,3 +197,38 @@ recovered <- FFT_res2$error_data |>
     question = stringr::str_remove_all(question, "\\&")
   )
 
+filges2015_dat
+dat <- filges2015_dat[c(1:5, 261:265),]
+prompt <- "Is this study about functional family therapy"
+dat <- generate_ft_data(data = dat, prompt = prompt, studyid = studyid, title = title, abstract = abstract)
+dat
+
+dat <- dat |> transform(true_answer = ifelse(human_code == 1, "Include", "Exclude"))
+
+dat <- filges2015_dat[c(1:5, 261:265),]
+
+prompt <- "Is this study about functional family therapy?"
+
+ft_dat <-
+  generate_ft_data(
+    data = dat,
+    prompt = prompt,
+    studyid = studyid,
+    title = title,
+    abstract = abstract
+  ) |>
+  dplyr::mutate(true_answer = dplyr::if_else(human_code == 1, "Include", "Exclude"))
+
+role_subject <- paste0(
+  "Act as a systematic reviewer that is screening study titles and",
+  "abstracts for your systematic reviews regarding the the effects of family-based",
+  " interventions on drug abuse reduction for young people in treatment for non-opioid drug use"
+)
+
+# Saving data in jsonl format (required format by OpenAI)
+write_ft_data(
+  data = ft_dat,
+  role_and_subject = role_subject,
+  file = "fine_tune_data.jsonl"
+)
+

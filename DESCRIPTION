@@ -6,7 +6,11 @@ Authors@R: c(
            family = "Vembye", 
            email = "mikkel.vembye@gmail.com", 
            role = c("aut", "cre", "cph"),
-           comment = c(ORCID = "0000-0001-9071-0724"))
+           comment = c(ORCID = "0000-0001-9071-0724")),
+    person(given = "Thomas", 
+           family = "Olsen", 
+           email = "thomasolsen123@hotmail.com", 
+           role = c("ctb"))
            )
 Description: Provides functions to conduct title and abstract screening in systematic reviews using large language models, such as the Generative Pre-trained Transformer (GPT) models from 'OpenAI' <https://platform.openai.com/>. These functions can enhance the quality of title and abstract screenings while reducing the total screening time significantly. In addition, the package includes tools for quality assessment of title and abstract screenings, as described in Vembye, Christensen, Mølgaard, and Schytt (2024) <DOI:10.31219/osf.io/yrhzm>.
 Depends:
@@ -14,7 +18,7 @@ Depends:
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Imports:
     dplyr,
     tibble,

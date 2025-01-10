@@ -23,6 +23,12 @@ reference:
     contents:
       - screen_analyzer
 
+  - title: "Fine tuning (ft)"
+    desc: "R functions generate data that can be used for fine tuning of models"
+    contents:
+      - generate_ft_data
+      - write_ft_data
+
   - title: "API management"
     desc: "R functions to ease and automate API management"
     contents:

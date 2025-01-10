@@ -1,6 +1,7 @@
 # AIscreenR 0.1.1.9000 
 
 * Minor change in the setup of the vignette
+* Adding generate_ft_data() and write_fine_tune_data() to generate data for fine tuning
 
 # AIscreenR 0.1.1 
 
