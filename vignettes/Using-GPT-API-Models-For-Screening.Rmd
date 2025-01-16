@@ -1,5 +1,6 @@
 ---
 title: "Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews"
+author: "Mikkel H. Vembye"
 output: 
   rmarkdown::html_vignette:
     number_sections: true
