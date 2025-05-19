@@ -60,7 +60,7 @@
                         <h4 data-toc-skip class="author">Mikkel H.
 Vembye</h4>
             
-            <h4 data-toc-skip class="date">2025-01-16</h4>
+            <h4 data-toc-skip class="date">2025-05-19</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/MikkelVembye/AIscreenR/blob/main/vignettes/Using-GPT-API-Models-For-Screening.Rmd" class="external-link"><code>vignettes/Using-GPT-API-Models-For-Screening.Rmd</code></a></small>
       <div class="d-none name"><code>Using-GPT-API-Models-For-Screening.Rmd</code></div>
@@ -74,7 +74,8 @@ Vembye</h4>
 <b>Important note</b>
 </p>
 <p style="margin:1em">
-<em>This is work-in-progress only. For now, see <a href="https://osf.io/preprints/osf/yrhzm" class="external-link">Vembye, Christensen, Mølgaard,
+<em>Always remember that title and abstract screeening with GPT API
+models can be case sensitive. Therefore, see <a href="https://osf.io/preprints/osf/yrhzm" class="external-link">Vembye, Christensen, Mølgaard,
 &amp; Schytt</a> <span class="citation">(<a href="#ref-Vembye2024_gpt">2024</a>)</span> for an overview of how and
 when GPT API models can be used for title and abstract (TAB) screening.
 Our most recent results suggest that the <code>gpt-4o-mini</code> is an
@@ -348,19 +349,22 @@ and press the <code>+ Create new secret key</code> button (see Figure 1
 below) and name your key.</p>
 <p> </p>
 <div class="figure">
-<img src="helper-stuff%2FAPI_key_pic.png" alt="*Figure 1 - Generate API key from OpenAI*" width="100%"><p class="caption">
+<img src="helper-stuff/API_key_pic.png" alt="*Figure 1 - Generate API key from OpenAI*" width="100%"><p class="caption">
 <em>Figure 1 - Generate API key from OpenAI</em>
 </p>
 </div>
 <p> </p>
 <p>Once you have generated your secret API key, remember to store it
-safely, as you will not be able to view it again. <strong>NOTE</strong>:
+safely, as you will not be able to view it again. <strong>NOTE:</strong>
 <em>If you lose your API key, you can simply generate a new
 one</em>.</p>
 </div>
 <div class="section level3">
 <h3 id="manage-your-api-key-in-r">Manage your API key in R<a class="anchor" aria-label="anchor" href="#manage-your-api-key-in-r"></a>
 </h3>
+<p><strong>NOTE:</strong> <em>If you have already added your API key, as
+prescribed in the <a href="https://ellmer.tidyverse.org/reference/chat_openai.html" class="external-link">ELLMER R
+package</a>, you can skip this step.</em></p>
 <p>After retrieving your API key, you could theoretically add it
 directly to the <code>AIscreenR</code> functions via the
 <code>api_key</code> argument. However, this would be an improper way to
@@ -383,7 +387,7 @@ your R environment as an environment variable. You can do this by using
 <p>In the <code>.Renviron</code> file, write
 <code>CHATGPT_KEY=your_key</code> as depicted in Figure 2.  </p>
 <div class="figure">
-<img src="helper-stuff%2FRenviron.png" alt="*Figure 2 - R environment file*" width="100%"><p class="caption">
+<img src="helper-stuff/Renviron.png" alt="*Figure 2 - R environment file*" width="100%"><p class="caption">
 <em>Figure 2 - R environment file</em>
 </p>
 </div>
@@ -411,7 +415,7 @@ decrypted key to the <code><a href="../reference/set_api_key.html">set_api_key()
 For further details on this approach, refer to the <a href="https://httr2.r-lib.org/articles/wrapping-apis.html#basics" class="external-link"><code>HTTR2</code></a>
 package.  </p>
 <div class="figure">
-<img src="helper-stuff%2Fset_api.png" alt="*Figure 3 - Set API key*" width="100%"><p class="caption">
+<img src="helper-stuff/set_api.png" alt="*Figure 3 - Set API key*" width="100%"><p class="caption">
 <em>Figure 3 - Set API key</em>
 </p>
 </div>
@@ -438,7 +442,7 @@ prompt directly in R, as illustrated below:</p>
 <p>Or you can simply write it in Word, as shown in Figures 4.</p>
 <p> </p>
 <div class="figure">
-<img src="helper-stuff%2Ffriends_prompt.png" alt="*Figure 4 - Prompting in Word*" width="100%"><p class="caption">
+<img src="helper-stuff/friends_prompt.png" alt="*Figure 4 - Prompting in Word*" width="100%"><p class="caption">
 <em>Figure 4 - Prompting in Word</em>
 </p>
 </div>
@@ -564,7 +568,7 @@ developed a benchmark scheme based on typical duplicate human screening
 performance from 22 high-quality reviews. This scheme is presented in
 Figure 5.</p>
 <div class="figure">
-<img src="helper-stuff%2Fbenchmark_scheme.png" alt="*Figure 5 - Generic benchmark scheme from Vembye et al. (2024)*" width="100%"><p class="caption">
+<img src="helper-stuff/benchmark_scheme.png" alt="*Figure 5 - Generic benchmark scheme from Vembye et al. (2024)*" width="100%"><p class="caption">
 <em>Figure 5 - Generic benchmark scheme from Vembye et al. (2024)</em>
 </p>
 </div>
@@ -890,7 +894,7 @@ Synthesis Methods</em>, <em>10</em>(4), 606–614. <a href="https://doi.org/10.1
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
     </footer>
