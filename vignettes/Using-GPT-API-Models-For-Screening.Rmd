@@ -31,7 +31,7 @@ knitr::opts_chunk$set(
 <p style='margin-top:1em; text-align:center'>
 <b>Important note</b></p>
 <p style='margin:1em'>
-*This is work-in-progress only. For now, see [Vembye, Christensen, Mølgaard, & Schytt](https://osf.io/preprints/osf/yrhzm) [-@Vembye2024_gpt] for an overview of how and when GPT API models can be used for title and abstract (TAB) screening. Our most recent results suggest that the `gpt-4o-mini` is an effective model for screening titles and abstracts with performances in many cases on par with `gpt-4`. This is a very cheap model (200 times cheaper than `gpt-4`). Therefore, to reduce costs, we recommendation always testing the performance of `gpt-4o-mini` before considering other models. For an overview of additional research on the use of GPT API models for title and abstract screening, see Syriani et al. [-@Syriani2023; -@Syriani2024], Guo et al., [-@Guo2024], and Gargari et al. [-@Gargari2024]. On a related line of research, Alshami et al. [-@Alshami2023], Khraisha et al. [-@Khraisha2024], and Issaiy et al. [-@Issaiy2024] explored the use of the ChatGPT web browser interface for TAB screening. Based on our experience, we believe these two lines of research should not be conflated, as they rely on different GPT models and setups.*
+*Always remember that title and abstract screeening with GPT API models can be case sensitive. Therefore,  see [Vembye, Christensen, Mølgaard, & Schytt](https://osf.io/preprints/osf/yrhzm) [-@Vembye2024_gpt] for an overview of how and when GPT API models can be used for title and abstract (TAB) screening. Our most recent results suggest that the `gpt-4o-mini` is an effective model for screening titles and abstracts with performances in many cases on par with `gpt-4`. This is a very cheap model (200 times cheaper than `gpt-4`). Therefore, to reduce costs, we recommendation always testing the performance of `gpt-4o-mini` before considering other models. For an overview of additional research on the use of GPT API models for title and abstract screening, see Syriani et al. [-@Syriani2023; -@Syriani2024], Guo et al., [-@Guo2024], and Gargari et al. [-@Gargari2024]. On a related line of research, Alshami et al. [-@Alshami2023], Khraisha et al. [-@Khraisha2024], and Issaiy et al. [-@Issaiy2024] explored the use of the ChatGPT web browser interface for TAB screening. Based on our experience, we believe these two lines of research should not be conflated, as they rely on different GPT models and setups.*
 </p></span>
 </div>
 
@@ -198,9 +198,11 @@ knitr::include_graphics("helper-stuff/API_key_pic.png")
 ```
 \ 
 
-Once you have generated your secret API key, remember to store it safely, as you will not be able to view it again. **NOTE**: *If you lose your API key, you can simply generate a new one*. 
+Once you have generated your secret API key, remember to store it safely, as you will not be able to view it again. **NOTE:** *If you lose your API key, you can simply generate a new one*. 
 
 ## Manage your API key in R
+
+**NOTE:** *If you have already added your API key, as prescribed in the [ELLMER R package](https://ellmer.tidyverse.org/reference/chat_openai.html), you can skip this step.*
 
 After retrieving your API key, you could theoretically add it directly to the `AIscreenR` functions via the `api_key` argument. However, this would be an improper way to work the API key, as it could easily compromise your secret key. For example, your API key would be exposed when sharing your code with others, allowing them to access your OpenAI account. Additionally, OpenAI will deactivate the API key if they detect that it has been compromised (e.g., if you push it to a public GitHub repository).  To prevent  this issue you have several options from here. You can either work with what we call a permanent or a temporary solution. 
 

@@ -38,7 +38,7 @@ set_api_key <- function(key, env_var = "CHATGPT_KEY") {
     key <- askpass::askpass("Please enter your API key")
   }
 
-  if ("CHATGPT_KEY" %in% env_var) Sys.setenv("CHATGPT_KEY" = key)
+  if ("CHATGPT_KEY" %in% env_var) Sys.setenv("CHATGPT_KEY" = key, "OPENAI_API_KEY" = key)
 
 }
 
