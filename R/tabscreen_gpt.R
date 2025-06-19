@@ -305,7 +305,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
 
     gpt4_dat <-
       tibble::tibble(model, reps) |>
-      dplyr::filter(!stringr::str_detect(model, "mini"))
+      dplyr::filter(!stringr::str_detect(model, "mini|nano"))
 
       if(nrow(gpt4_dat) > 0){
 

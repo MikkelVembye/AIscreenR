@@ -18,8 +18,8 @@ test_that("approximate_price_gpt() takes multiple inputs", {
     top_p = c(0.2, 1)
   )
 
-  expect_output(print(app_obj), "\\$3\\.7862\\.")
-  expect_equal(app_obj$price_dollar, 3.7862, tolerance = 0.1)
+  expect_output(print(app_obj), "\\$3\\.3134\\.")
+  expect_equal(app_obj$price_dollar, 3.3134, tolerance = 0.1)
 
   obj_names_length <- app_obj |> names() |> length()
   expect_equal(obj_names_length, 2)
@@ -40,7 +40,7 @@ test_that("approximate_price_gpt() takes multiple inputs", {
 
   # Remember to update when prices changes
   price_ratio <- app_obj$price_data$total_price_dollar[2]/app_obj$price_data$total_price_dollar[1]
-  expect_equal(price_ratio, 6, tolerance = 0.1)
+  expect_equal(price_ratio, 11.87, tolerance = 0.1)
 
 })
 

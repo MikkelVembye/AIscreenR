@@ -1,7 +1,7 @@
 # Testing new tabscreen function
 
 test_dat <-
-  filges2015_dat[c(1:3, 241:243, 251),]
+  filges2015_dat[c(1:3, 241:243),]
 
 paths <- system.file("extdata", "test_prompts.rds", package = "AIscreenR")
 
@@ -17,10 +17,10 @@ return_dat <-
   studyid = studyid,
   title = title,
   abstract = abstract,
-  model = c("gpt-4o-mini"),
-  top_p = 1,
-  rpm = 10000,
-  reps = 5,
+  model = c("gpt-4.1"),
+  #top_p = 1,
+  #rpm = 10000,
+  reps = 2,
   #messages = FALSE,
   decision_description = FALSE,
   progress = TRUE,
@@ -29,7 +29,7 @@ return_dat <-
   #incl_cutoff_upper = 0.5,
   #incl_cutoff_lower = 40,
   #token_info = TRUE,
-  force = FALSE,
+  force = TRUE,
   fine_tuned = FALSE
 ); return_dat
 
