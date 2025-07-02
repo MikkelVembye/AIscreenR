@@ -60,6 +60,7 @@ See documentation for \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}.
 \if{html}{\out{<br>}}
 
 This is a generic function to re-screen of failed title and abstract requests.
+Currently not working. We will soon update this function.
 }
 \examples{
 
