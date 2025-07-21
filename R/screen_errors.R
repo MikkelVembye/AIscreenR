@@ -5,7 +5,7 @@
 #' <br>
 #'
 #'  This is a generic function to re-screen of failed title and abstract requests.
-#'  Currently not working. We will soon update this function.
+#'  Currently not working. We will soon update this function. 
 #'
 #' @param object An object of either class `'gpt'` or `'chatgpt'`.
 #' @template api-key-arg
