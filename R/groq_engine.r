@@ -3,8 +3,8 @@
 #' @description Internal function that sends a single request to the Groq API
 #' @param body Request body list containing model, messages, and other parameters
 #' @param RPM Requests per minute limit for throttling
-#' @param timeinf Logical indicating whether to include timing information
-#' @param tokeninf Logical indicating whether to include token information  
+#' @param time_inf Logical indicating whether to include timing information
+#' @param token_inf Logical indicating whether to include token information  
 #' @param api_key Groq API key
 #' @param max_t Maximum number of retry attempts
 #' @param max_s Maximum seconds for retry attempts
@@ -16,8 +16,8 @@
 .groq_engine <- function(
     body,
     RPM,
-    timeinf,
-    tokeninf, 
+    time_inf,
+    token_inf, 
     api_key, 
     max_t,
     max_s, 
@@ -73,8 +73,8 @@
       decision_val <- NA_character_
       detailed_desc_val <- detail_desc_default
       decision_bin_val <- NA_real_
-      prompt_tok_val <- if(tokeninf && !is.null(resp_json$usage)) resp_json$usage$prompt_tokens else NA_real_
-      completion_tok_val <- if(tokeninf && !is.null(resp_json$usage)) resp_json$usage$completion_tokens else NA_real_
+      prompt_tok_val <- if(token_inf && !is.null(resp_json$usage)) resp_json$usage$prompt_tokens else NA_real_
+      completion_tok_val <- if(token_inf && !is.null(resp_json$usage)) resp_json$usage$completion_tokens else NA_real_
 
       if (!is.null(resp_json$choices[[1]]$message$tool_calls)) {
         tool_call <- resp_json$choices[[1]]$message$tool_calls[[1]]
@@ -143,7 +143,7 @@
         decision_binary = decision_bin_val
       )
       if (detailed) res_list$detailed_description <- detailed_desc_val
-      if (tokeninf) {
+      if (token_inf) {
         res_list$prompt_tokens <- prompt_tok_val
         res_list$completion_tokens <- completion_tok_val
       }
@@ -159,7 +159,7 @@
         decision_binary = NA_real_
       )
       if (detailed) res_list$detailed_description <- detail_desc_default
-      if (tokeninf) {
+      if (token_inf) {
         res_list$prompt_tokens <- NA_real_
         res_list$completion_tokens <- NA_real_
       }
@@ -171,7 +171,7 @@
       decision_binary = NA_real_
     )
     if (detailed) res_list$detailed_description <- detail_desc_default
-    if (tokeninf) {
+    if (token_inf) {
       res_list$prompt_tokens <- NA_real_
       res_list$completion_tokens <- NA_real_
     }
@@ -181,10 +181,10 @@
   time <- tictoc::toc(quiet = TRUE)
   run_time_val <- round(as.numeric(time$toc - time$tic), 1)
 
-  if (timeinf) res <- res |> dplyr::mutate(run_time = run_time_val)
+  if (time_inf) res <- res |> dplyr::mutate(run_time = run_time_val)
 
-  if (!tokeninf && "prompt_tokens" %in% names(res)) res <- res |> dplyr::select(-prompt_tokens)
-  if (!tokeninf && "completion_tokens" %in% names(res)) res <- res |> dplyr::select(-completion_tokens)
+  if (!token_inf && "prompt_tokens" %in% names(res)) res <- res |> dplyr::select(-prompt_tokens)
+  if (!token_inf && "completion_tokens" %in% names(res)) res <- res |> dplyr::select(-completion_tokens)
   
   return(res)
 }
@@ -201,8 +201,8 @@
 #' @param tool Tools specification for function calling
 #' @param t_choice Tool choice specification
 #' @param seeds Random seeds for reproducibility
-#' @param timeinf Logical indicating whether to include timing information
-#' @param tokeninf Logical indicating whether to include token information
+#' @param time_inf Logical indicating whether to include timing information
+#' @param token_inf Logical indicating whether to include token information
 #' @param api_key Groq API key
 #' @param max_t Maximum number of retry attempts
 #' @param max_s Maximum seconds for retry attempts
@@ -222,8 +222,8 @@
     tool, 
     t_choice, 
     seeds, 
-    timeinf,
-    tokeninf,
+    time_inf,
+    token_inf,
     api_key, 
     max_t, 
     max_s, 
@@ -243,9 +243,9 @@
     FALSE
   }
 
-  t_info_wrapper <- if (timeinf) NA_real_ else NULL
-  p_tokens_wrapper <- if (tokeninf) NA_real_ else NULL
-  c_tokens_wrapper <- if (tokeninf) NA_real_ else NULL
+  t_info_wrapper <- if (time_inf) NA_real_ else NULL
+  p_tokens_wrapper <- if (token_inf) NA_real_ else NULL
+  c_tokens_wrapper <- if (token_inf) NA_real_ else NULL
   
   create_error_df <- function(is_detailed) {
     error_list <- list(
@@ -253,11 +253,11 @@
       decision_binary = NA_real_
     )
     if (is_detailed) error_list$detailed_description <- NA_character_
-    if (tokeninf) {
+    if (token_inf) {
       error_list$prompt_tokens <- p_tokens_wrapper
       error_list$completion_tokens <- c_tokens_wrapper
     }
-    if (timeinf) error_list$run_time <- t_info_wrapper
+    if (time_inf) error_list$run_time <- t_info_wrapper
     error_list$run_date <- as.character(Sys.Date())
     
     df <- tibble::as_tibble(error_list)
@@ -266,9 +266,9 @@
     if (is_detailed && !"detailed_description" %in% names(df)) df$detailed_description <- NA_character_
     if (is_detailed) df <- df |> dplyr::relocate(detailed_description, .after = decision_binary)
 
-    if (!tokeninf && "prompt_tokens" %in% names(df)) df <- df |> dplyr::select(-prompt_tokens)
-    if (!tokeninf && "completion_tokens" %in% names(df)) df <- df |> dplyr::select(-completion_tokens)
-    if (!timeinf && "run_time" %in% names(df)) df <- df |> dplyr::select(-run_time)
+    if (!token_inf && "prompt_tokens" %in% names(df)) df <- df |> dplyr::select(-prompt_tokens)
+    if (!token_inf && "completion_tokens" %in% names(df)) df <- df |> dplyr::select(-completion_tokens)
+    if (!time_inf && "run_time" %in% names(df)) df <- df |> dplyr::select(-run_time)
     df
   }
 
@@ -339,8 +339,8 @@
         result <- safe_groq_engine(
           body = api_body, 
           RPM = req_per_min, 
-          timeinf = timeinf,
-          tokeninf = tokeninf,
+          time_inf = time_inf,
+          token_inf = token_inf,
           api_key = api_key,
           max_t = max_t,
           max_s = max_s,

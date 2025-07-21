@@ -31,7 +31,7 @@
 #'   the output object will include price information of the conducted screening.
 #' @param api_key Numerical value with your personal API key. Find at
 #'  \url{https://console.groq.com/keys}. Set with 
-#'  `Sys.setenv(GROQ_KEY = "your-api-key")` or use [get_api_key()].
+#'  `Sys.setenv(GROQ_KEY = "your-api-key")` or use [get_api_key_groq()].
 #' @param max_tries,max_seconds 'Cap the maximum number of attempts with
 #'  `max_tries` or the total elapsed time from the first request with
 #'  `max_seconds`. If neither option is supplied (the default), [httr2::req_perform()]
@@ -188,7 +188,7 @@ tabscreen_groq <- function(
   top_p = 1,
   time_info = TRUE,
   token_info = TRUE,
-  api_key = get_api_key(),
+  api_key = get_api_key_groq(),
   max_tries = 16,
   max_seconds = NULL,
   is_transient = groq_is_transient,
