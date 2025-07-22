@@ -77,4 +77,51 @@
 
 }
 
+# Calculate price for full text screening
+.price_ftscreen <- function(file_paths, prompts, models, reps, decision_description) {
 
+  # Estimate completion tokens based on the decision description flag
+  # These are averages from observing function call token counts.
+  completion_tokens_estimate <- if (decision_description) 110 else 15
+
+  # Create a data frame of all combinations to be processed
+  price_data <-
+    expand.grid(
+      file_path = file_paths,
+      prompt = prompts,
+      model = models,
+      reps = 1:reps,
+      stringsAsFactors = FALSE
+    )
+
+  # Calculate tokens and price for each combination
+  price_data <-
+    price_data |>
+    dplyr::rowwise() |>
+    dplyr::mutate(
+      # Read file content and count words
+      file_content = paste(readLines(file_path, warn = FALSE), collapse = "\n"),
+      # Estimate prompt tokens: words in file + words in prompt, with a multiplier
+      prompt_tokens = round((stringr::str_count(file_content, '\\w+') + stringr::str_count(prompt, '\\w+')) * 1.6),
+      completion_tokens = completion_tokens_estimate
+    ) |>
+    dplyr::ungroup() |>
+    dplyr::select(-file_content) |> # Remove file content column
+    dplyr::rowwise() |>
+    dplyr::mutate(
+      # Calculate input and output price for each run
+      input_price = prompt_tokens * .input_price(model),
+      output_price = completion_tokens * .output_price(model)
+    ) |>
+    dplyr::ungroup()
+
+  # Summarize the total cost
+  total_price <-
+    price_data |>
+    dplyr::summarise(
+      total_price_dollar = sum(input_price, na.rm = TRUE) + sum(output_price, na.rm = TRUE)
+    ) |>
+    dplyr::pull(total_price_dollar)
+
+  return(round(total_price, 4))
+}
