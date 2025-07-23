@@ -2,7 +2,7 @@
 #'
 #' @description
 #' This function supports the conduct of full-text screening with OpenAI API models in R.
-#' It leverages the OpenAI Assistants API to process local documents (e.g., PDFs, text files).
+#' It uses the OpenAI Assistants API to process local documents (e.g., PDFs, text files).
 #' The function allows you to run screening across multiple prompts and with
 #' repeated questions to check for consistency across answers. It uses native function calling
 #' to structure the model's output.
@@ -294,7 +294,7 @@ ftscreen <- function(
   # Main Processing Loop (future_pmap)
   results_list <- furrr::future_pmap(
     .l = pmap_params,
-    .f = .process_single_ft_run, # Moved the main logic to a helper
+    .f = .process_single_ft_run,
     # Pass fixed arguments to the worker function .f
     base_url = base_url, api_key = api_key, top_p = top_p, temperature = temperature,
     decision_description = decision_description, assistant_name = assistant_name,
