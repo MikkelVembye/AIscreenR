@@ -1,0 +1,146 @@
+---
+title: "Generating Fine-Tuning Data"
+output: rmarkdown::html_vignette
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This article demonstrates how to prepare and format your data for fine-tuning OpenAI models using the `AIscreenR` package. The process involves two main functions: `generate_ft_data()` to structure the prompts and `write_ft_data()` to save the data in the required `jsonl` format.
+
+## Setup
+
+First, we load the necessary packages for this workflow. We will use `AIscreenR` for the main functions and `dplyr` for data manipulation.
+
+```{r setup}
+library(AIscreenR)
+library(dplyr)
+```
+
+## Step 1: Prepare the initial data
+
+For this example, we will use the `filges2015_dat` dataset included with the `AIscreenR` package. To create a balanced training set, we'll select 5 studies that were included and 5 that were excluded based on their `human_code`.
+
+```{r prepare-data}
+# Extract 5 irrelevant (human_code == 0) and 5 relevant (human_code == 1) records.
+sample_dat <- filges2015_dat[c(1:5, 261:265), ]
+
+# Define the screening question or prompt for the model.
+prompt <- "Is this study about functional family therapy?"
+```
+
+## Step 2: Generate fine-tuning data structure
+
+The `generate_ft_data()` function takes your raw data and formats it into a structure suitable for fine-tuning. It combines the `title` and `abstract` with your `prompt` to create a complete question for each study.
+
+```{r generate-data}
+ft_data_generated <-
+  generate_ft_data(
+    data = sample_dat,
+    prompt = prompt,
+    studyid = studyid,
+    title = title,
+    abstract = abstract
+  )
+
+# Display the first record to see the structure
+# We use strwrap to make the long 'question' text more readable.
+strwrap(ft_data_generated$question[1])
+```
+
+The output is a tibble of class `ft_data` containing the `studyid`, `title`, `abstract`, and the newly created `question` column that will be used to train the model.
+
+## Step 3: Add true answers and define the model's role
+
+Before writing the data to a file, we need to add the true answers that the model will learn from. In this dataset, the `human_code` variable indicates the correct decision (1 for "Include", 0 for "Exclude"). We will create a `true_answer` column based on this.
+
+We also need to define the `role_and_subject` for the model. This is a system message that tells the fine-tuned model how it should behave.
+
+```{r add-answers}
+ft_data_to_write <-
+  ft_data_generated |>
+  mutate(true_answer = if_else(human_code == 1, "Include", "Exclude"))
+
+role_subject <- paste0(
+  "Act as a systematic reviewer that is screening study titles and ",
+  "abstracts for your systematic reviews regarding the the effects ",
+  "of family-based interventions on drug abuse reduction for young ",
+  "people in treatment for non-opioid drug use."
+)
+```
+
+## Step 4: Write data to a .jsonl file
+
+Finally, we use `write_ft_data()` to convert our data frame into the `jsonl` format required by OpenAI. Each line in the output file will be a JSON object representing a single training example, containing the system message, the user prompt (our question), and the assistant's expected response (the true answer).
+
+The function will write the file to your current working directory.
+
+```{r write-data, eval=FALSE}
+# This code will write a file named "fine_tune_data.jsonl"
+# to your working directory.
+write_ft_data(
+  data = ft_data_to_write,
+  role_and_subject = role_subject,
+  file = "fine_tune_data.jsonl"
+)
+```
+
+After running this code, you will have a `fine_tune_data.jsonl` file ready to be uploaded to the OpenAI platform to start a fine-tuning job.
+
+## (Optional) Step 4: Splitting Data for Training and Validation
+
+When fine-tuning a model, it's a best practice to provide two datasets: one for training and one for validation.
+
+*   **Training Set**: The data the model learns from.
+*   **Validation Set**: Data the model doesn't see during training. OpenAI uses this set periodically to evaluate the model's performance on new, unseen data, which helps to check for overfitting and assess how well the model is generalizing.
+
+A common approach is to use an 80/20 or 90/10 split, where the larger portion is used for training. Here's how you can split your data frame into an 80% training set and a 20% validation set.
+
+```{r split-data, eval=FALSE}
+# Set a seed for reproducibility of the random split
+set.seed(123)
+
+# Shuffle the data to ensure a random split
+shuffled_data <- ft_data_to_write[sample(nrow(ft_data_to_write)), ]
+
+# Define the split point for 80% training data
+split_index <- floor(0.8 * nrow(shuffled_data))
+
+# Create the training and validation sets
+train_dat <- shuffled_data[1:split_index, ]
+validation_dat <- shuffled_data[(split_index + 1):nrow(shuffled_data), ]
+
+# You can check the number of rows in each set
+cat(
+  "Training set rows:", nrow(train_dat),
+  "\nValidation set rows:", nrow(validation_dat)
+)
+```
+
+## Step 5: Write data to .jsonl files
+
+Finally, we use `write_ft_data()` to convert our training and validation data frames into the `jsonl` format required by OpenAI. We will create two separate files.
+
+```{r write-split-data, eval=FALSE}
+# This code will write two files to your working directory.
+
+# Write the training data
+write_ft_data(
+  data = train_dat,
+  role_and_subject = role_subject,
+  file = "training_data.jsonl"
+)
+
+# Write the validation data
+write_ft_data(
+  data = validation_dat,
+  role_and_subject = role_subject,
+  file = "validation_data.jsonl"
+)
+```
+
+After running this code, you will have `training_data.jsonl` and `validation_data.jsonl` files. When you create a fine-tuning job on the OpenAI platform, you can upload both of these files.
