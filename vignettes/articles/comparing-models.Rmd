@@ -1,0 +1,174 @@
+---
+title: "Comparing AI Models for Screening"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Comparing AI Models for Screening}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+## Introduction
+
+The `AIscreenR` package supports several OpenAI models for screening, including `gpt-4.1`, `gpt-4.1-mini`, and `gpt-4.1-nano`.
+In this areticle, we compare the performance of these models on a real-world dataset to evaluate their effectiveness in systematic literature review screening tasks. 
+We will analyze their performance with a single repetition (`reps = 1`). For the faster and more economical `gpt-4.1-mini` and `gpt-4.1-nano` models, we will also investigate the impact of increasing the screening to ten repetitions (`reps = 10`).
+
+## Setup
+
+First, we load the necessary packages for our analysis.
+
+```{r setup}
+library(AIscreenR)
+library(dplyr)
+library(knitr)
+```
+
+## Methodology: Running the Comparison
+
+To compare the models, we performed a screening task on the `friends_dat` dataset. The goal was to identify studies about the FRIENDS preventive programme.
+
+The following prompt was used for all models. It is designed to be very specific about the required output format to ensure consistent results.
+
+```{r prompt, echo=TRUE, eval=FALSE}
+# This is the prompt used for the experiment.
+prompt <- "You are a systematic literature review screening agent. You are equipped with a screening function tool that you MUST use.
+
+MANDATORY BEHAVIOR:
+- Call the provided screening function tool immediately after reading each study
+- Do not provide any response other than the function call
+- The function call is your complete and only response
+
+SCREENING CONTEXT:
+Topic: FRIENDS preventive programme's effect on reducing anxiety symptoms in children/adolescents
+Criteria 1: Study about FRIENDS preventive programme. The FRIENDS programme is a 10-session manualised cognitive behavioural therapy (CBT) programme which can be used as both prevention and treatment of child and youth anxiety. 
+Criteria 2: Study is estimating an effect between a treatment and control/comparison group
+
+WORKFLOW:
+1. Read title and abstract
+2. Make function call with your assessments
+3. End response immediately after function call
+
+CRITICAL: Your entire response must be the function tool call. No additional text before, during, or after the function call."
+```
+
+For each model (`gpt-4.1`, `gpt-4.1-mini`, `gpt-4.1-nano`), we ran the screening using `tabscreen_gpt()`. We ran the process twice: once with a single repetition (`reps = 1`) and once with ten repetitions (`reps = 10`) (only for the models `gpt-4.1-mini`and `gpt-4.1-nano`).
+
+The code to run the screening for a single model looked like this:
+
+```{r run-screen, eval=FALSE}
+# This code was run for each model and repetition setting.
+# It is not evaluated here to save time, as we will load the results directly.
+plan(multisession)
+
+results <- 
+  tabscreen_gpt(
+    data = friends_dat, 
+    prompt = prompt, 
+    model = "gpt-4.1", # This was changed for each model
+    reps = 1 # This was changed to 10 for the second run
+  )
+
+plan(sequential)
+
+# The results were saved to an .rds file for later analysis.
+saveRDS(results, "result_obj_gpt-4.1_rep1.rds")
+```
+
+## Results
+
+We now load the pre-computed results from the screening runs. The performance metrics in the table below were calculated using the `screen_analyzer()` function. The key metrics are:
+
+*   **Recall**: The proportion of truly relevant studies that the model correctly identified. High recall is crucial to avoid missing relevant studies.
+*   **Specificity**: The proportion of truly irrelevant studies that the model correctly identified.
+*   **Balanced Accuracy (bAcc)**: The average of recall and specificity, providing a single measure that balances performance on both relevant and irrelevant studies.
+
+```{r analyze-results, echo=FALSE}
+# This code is adapted from your Quarto file to process the saved .rds files.
+# NOTE: You must ensure the .rds files are in this path or adjust the path accordingly.
+setwd("C:/Users/B375477/Desktop/test_ai")
+models <- c("gpt-4.1-mini", "gpt-4.1-nano", "gpt-4.1")
+model_display_names <- c("gpt-4.1-mini-2025-04-14", "gpt-4.1-nano-2025-04-14", "gpt-4.1-2025-04-14")
+
+results_table <- data.frame()
+
+for (i in 1:length(models)) {
+    model <- models[i]
+    display_name <- model_display_names[i]
+    
+    # Define file paths based on model
+    file_rep1 <- if (model == "gpt-4.1") {
+      paste0("result_obj_", model, "_rep1_newprompt.rds")
+    } else {
+      paste0("result_obj_", model, "_rep1.rds")
+    }
+    
+    file_rep10 <- if (model == "gpt-4.1") {
+      paste0("result_obj_", model, "_rep10_newprompt.rds")
+    } else {
+      paste0("result_obj_", model, "_rep10.rds")
+    }
+
+    # Process 1 repetition
+    if (file.exists(file_rep1)) {
+        result_obj_rep1 <- readRDS(file_rep1) |> screen_analyzer(key_result = FALSE)
+        
+        tp <- result_obj_rep1$human_in_gpt_in
+        fn <- result_obj_rep1$human_in_gpt_ex
+        tn <- result_obj_rep1$human_ex_gpt_ex
+        fp <- result_obj_rep1$human_ex_gpt_in
+        
+        model_row_rep1 <- data.frame(
+            `Review model` = display_name,
+            `Reps` = 1,
+            `Recall` = paste0(round(tp / (tp + fn), 3), " (", tp, "/", tp + fn, ")"),
+            `Specificity` = paste0(round(tn / (tn + fp), 3), " (", tn, "/", tn + fp, ")"),
+            `bAcc` = round(result_obj_rep1$bacc, 3),
+            check.names = FALSE
+        )
+        results_table <- rbind(results_table, model_row_rep1)
+    }
+
+    # Process 10 repetitions
+    if (file.exists(file_rep10)) {
+        result_obj_rep10 <- readRDS(file_rep10) |> screen_analyzer(key_result = FALSE)
+        
+        tp_10 <- result_obj_rep10$human_in_gpt_in
+        fn_10 <- result_obj_rep10$human_in_gpt_ex
+        tn_10 <- result_obj_rep10$human_ex_gpt_ex
+        fp_10 <- result_obj_rep10$human_ex_gpt_in
+        
+        model_row_rep10 <- data.frame(
+            `Review model` = display_name,
+            `Reps` = 10,
+            `Recall` = paste0(round(tp_10 / (tp_10 + fn_10), 3), " (", tp_10, "/", tp_10 + fn_10, ")"),
+            `Specificity` = paste0(round(tn_10 / (tn_10 + fp_10), 3), " (", tn_10, "/", tn_10 + fp_10, ")"),
+            `bAcc` = round(result_obj_rep10$bacc, 3),
+            check.names = FALSE
+        )
+        results_table <- rbind(results_table, model_row_rep10)
+    }
+}
+
+# Display the table
+kable(results_table, align = "lcccc")
+```
+
+## Interpretation
+
+The results table reveals several important patterns:
+
+1.  **Single Repetition Performance**: With a single repetition, all three models achieve an identical recall of 0.844. `gpt-4.1-mini` shows the highest specificity (0.987) and balanced accuracy (0.915), slightly outperforming the larger `gpt-4.1` model. This suggests that for a quick, single-pass screening, `gpt-4.1-mini` offers a very effective balance of performance and cost.
+
+2.  **Effect of Ten Repetitions**: For `gpt-4.1-mini` and `gpt-4.1-nano`, increasing the repetitions to 10 significantly improves performance, boosting the balanced accuracy for both to 0.944. However, they achieve this in different ways:
+    *   `gpt-4.1-nano` sees a dramatic increase in recall to 0.953 (the highest of any test), but its specificity drops to 0.936. This means it is excellent at finding relevant studies but will also incorrectly include more irrelevant ones.
+    *   `gpt-4.1-mini` improves its recall to 0.906 while maintaining very high specificity (0.981). This means it offers a more balanced improvement, increasing recall without including many extra irrelevant studies.
