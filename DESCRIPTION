@@ -31,7 +31,8 @@ Imports:
     curl,
     purrr,
     lifecycle,
-    jsonlite
+    jsonlite,
+    quarto
 Suggests: 
     future,
     knitr,

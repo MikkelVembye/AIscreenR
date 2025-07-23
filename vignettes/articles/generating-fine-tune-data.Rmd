@@ -1,6 +1,10 @@
 ---
 title: "Generating Fine-Tuning Data"
 output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Generating Fine-Tuning Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
