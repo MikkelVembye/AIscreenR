@@ -271,6 +271,34 @@ ftscreen <- function(
   base_url <- "https://api.openai.com/v1"
   actual_is_transient_for_retry <- if (is.function(is_transient)) is_transient else if (is.logical(is_transient) && is_transient) gpt_is_transient else NULL
 
+  # Precompute supplementary once per file (independent of prompts)
+  supp_map <- setNames(
+    vapply(unique(file_path), function(fp) {
+      tryCatch(
+        .run_supplementary_only(
+          base_url = base_url,
+          api_key = api_key,
+          current_file_path = fp,
+          current_model = model[[1]],
+          assistant_name_prefix = assistant_name,
+          assistant_description = assistant_description,
+          tools_supplementary = tools_supplementary,
+          temperature = 0,
+          top_p = 1,
+          rpm = rpm,
+          max_tries = max_tries,
+          max_seconds_val = max_seconds,
+          is_transient_fn_val = actual_is_transient_for_retry,
+          backoff_val = backoff,
+          after_val = after,
+          sleep_time_val = sleep_time
+        ),
+        error = function(e) NA_character_
+      )
+    }, character(1)),
+    unique(file_path)
+  )
+
   # Prepare tasks for furrr::future_pmap.
   combinations <- expand.grid(file_path = file_path, prompt = prompt, model = model, stringsAsFactors = FALSE) |>
     dplyr::mutate(
@@ -287,9 +315,14 @@ ftscreen <- function(
       current_prompt_id = combinations$prompt_idx[combination_idx],
       current_rep_num = rep_num,
       safe_basename = gsub("[^a-zA-Z0-9_.-]", "_", basename(current_file_path)),
-      current_vector_store_name = paste0(vector_stores_name, "_", safe_basename, "_comb", combination_idx, "_rep", rep_num)
+      current_vector_store_name = paste0(vector_stores_name, "_", safe_basename, "_comb", combination_idx, "_rep", rep_num),
+      precomputed_supplementary = unname(supp_map[current_file_path])
     ) |>
-    dplyr::select(current_file_path, current_prompt, current_model, current_rep_num, current_study_id, current_prompt_id, current_vector_store_name)
+    dplyr::select(
+      current_file_path, current_prompt, current_model, current_rep_num,
+      current_study_id, current_prompt_id, current_vector_store_name,
+      precomputed_supplementary
+    )
 
   # Main Processing Loop (future_pmap)
   results_list <- furrr::future_pmap(

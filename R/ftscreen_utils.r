@@ -84,8 +84,7 @@
 
 # --- Argument Validation ---
 .validate_ftscreen_args <- function(args) {
-  possible_models <- c("gpt-4o-mini", "gpt-4.1", "gpt-4.1-mini", "gpt-4.1-nano", "gpt-4o")
-  if (any(!args$model %in% possible_models)) stop("Error: Invalid 'model' provided. Possible models are: ", paste(possible_models, collapse = ", "))
+  if(any(!args$model %in% model_prizes$model)) stop("Unknown gpt model(s) used - check model name(s).")
   if (any(args$model == "gpt-4o") && args$reps > 1 && !args$force) stop("Error: Using 'gpt-4o' with reps > 1 requires setting 'force = TRUE'.")
   if (args$reps > 10 && !args$force) stop("* Are you sure you want to use ", args$reps, " iterations? If so, set 'force = TRUE'")
   
