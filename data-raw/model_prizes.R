@@ -41,7 +41,19 @@ model_prizes <-
 
       # GPT-4.5-preview models
       "gpt-4.5-preview",
-      "gpt-4.5-preview-2025-02-27"
+      "gpt-4.5-preview-2025-02-27",
+
+      # GPT-5 models
+      "gpt-5",
+      "gpt-5-2025-08-07",
+
+      # GPT-5-mini models
+      "gpt-5-mini",
+      "gpt-5-mini-2025-08-07",
+
+      # GPT-5-nano models
+      "gpt-5-nano",
+      "gpt-5-nano-2025-08-07"
     ),
 
     price_in_per_token = c(
@@ -81,7 +93,19 @@ model_prizes <-
 
       # GPT-4.5-preview models
       75/mio,  # gpt-4.5-preview
-      75/mio   # gpt-4.5-preview-2025-02-27
+      75/mio,   # gpt-4.5-preview-2025-02-27
+
+      # GPT-5 models
+      1.25/mio, # gpt-5
+      1.25/mio, # gpt-5-2025-08-07
+
+      # GPT-5-mini models
+      0.25/mio,  # gpt-5-mini
+      0.25/mio,  # gpt-5-mini-2025-08-07
+
+      # GPT-5-nano models
+      0.05/mio, # gpt-5-nano
+      0.05/mio  # gpt-5-nano-2025-
     ),
 
     price_out_per_token = c(
@@ -121,7 +145,19 @@ model_prizes <-
 
       # GPT-4.5-preview models
       150/mio, # gpt-4.5-preview
-      150/mio  # gpt-4.5-preview-2025-02-27
+      150/mio,  # gpt-4.5-preview-2025-02-27
+
+      # GPT-5 models
+      10/mio,  # gpt-5
+      10/mio,  # gpt-5-2025-08-07
+
+      # GPT-5-mini models
+      2/mio,   # gpt-5-mini
+      2/mio,   # gpt-5-mini-2025-08-
+
+      # GPT-5-nano models
+      0.4/mio, # gpt-5-nano
+      0.4/mio  # gpt-5-nano-2025-08-07
     )
   )
 
