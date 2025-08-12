@@ -13,6 +13,7 @@
 #' # Get the API key
 #' key <- get_api_key_groq()
 #' }
+# Ikke hjælper
 get_api_key_groq <- function(env_var = "GROQ_KEY") {
   api_key <- Sys.getenv(env_var)
   if (api_key == "") {
@@ -33,6 +34,7 @@ get_api_key_groq <- function(env_var = "GROQ_KEY") {
 #' # Used internally in tabscreen_groq for retry logic
 #' groq_is_transient(response)
 #' }
+# Hjælper tilføj .
 groq_is_transient <- function(resp) {
   status_code() %in% c(429, 500:503)
 }
@@ -49,6 +51,7 @@ groq_is_transient <- function(resp) {
 #' result <- tabscreen_groq(data, prompt, studyid, title, abstract)
 #' is_groq_tbl(result$answer_data)  # TRUE
 #' }
+# Læg til inherits script
 is_groq_tbl <- function(x) {
   inherits(x, "groq_tbl")
 }
@@ -74,6 +77,7 @@ is_groq_agg_tbl <- function(x) {
 #' @description Internal function to get the HTTP status code from the most recent API call
 #' @return Integer HTTP status code, or 999 if no response available
 #' @keywords internal
+# Hjælper tilføj (./læs punktum). Slet doc. (tjek hvordan den er lavet for GPT fra openai)
 status_code <- function() {
   resp <- httr2::last_response()
   if (!is.null(resp)) {
@@ -89,6 +93,7 @@ status_code <- function() {
 #' @description Internal function to provide user-friendly error messages for HTTP status codes
 #' @return Character string with formatted error message
 #' @keywords internal
+# Hjælper tilføj . Slet doc. (tjek hvordan den er lavet for GPT fra openai)
 status_code_text <- function() {
   resp_last <- httr2::last_response()
   check_string <- "[possibly overload on server]"
@@ -116,6 +121,7 @@ status_code_text <- function() {
 #' @param model Character string with Groq model name
 #' @return Numeric price per input token, or NA if model not found
 #' @keywords internal
+# Læg til hidden price og slet doc? Men tjek at det er korrect
 .input_price_groq <- function(model) {
   result <- groq_model_prices |> 
     dplyr::filter(model == !!model) |> 
@@ -130,6 +136,7 @@ status_code_text <- function() {
 #' @param model Character string with Groq model name
 #' @return Numeric price per output token, or NA if model not found
 #' @keywords internal
+# Læg til hidden price og slet doc? Men tjek at det er korrect
 .output_price_groq <- function(model) {
   result <- groq_model_prices |> 
     dplyr::filter(model == !!model) |> 
@@ -144,6 +151,7 @@ status_code_text <- function() {
 #' @param data Dataset with token usage information and model details
 #' @return Data frame with pricing breakdown by model
 #' @keywords internal
+# Læg til hidden price og slet doc? Men tjek at det er korrect
 .price_groq <- function(data) {
   price_data <- data |>
     dplyr::mutate(
