@@ -142,10 +142,36 @@
 
 # --- Prompt Creation ---
 .create_protocol_prompt <- function(protocol_content) {
-  paste0("You are conducting a systematic literature review using a comprehensive protocol. Please analyze this document following this structured approach:\n\nSTEP 1: First, use the supplementary_check function to determine if this text contains references to supplementary materials, appendices, or additional information.\n\nSTEP 2: PROTOCOL-BASED EVALUATION\n- Carefully review the complete protocol provided below\n- Systematically evaluate the study against EACH criterion in the protocol\n\nPROTOCOL FOR EVALUATION:\n", protocol_content, "\n\nSTEP 3: INCLUSION DECISION\n- Use the appropriate inclusion decision function based on your protocol evaluation.\n- A study should be INCLUDED if it meets ALL the inclusion criteria specified in the protocol.\n- A study should be EXCLUDED if it fails to meet any inclusion criteria OR meets any exclusion criteria.")
+  paste0(
+    "You are conducting a systematic literature review using a predefined protocol.\n\n",
+    "INSTRUCTIONS:\n",
+    "1. Carefully read the full protocol below.\n",
+    "2. Evaluate the study against EACH inclusion and exclusion criterion explicitly.\n",
+    "3. Base your decision only on explicit evidence in the document (no speculation).\n\n",
+    "PROTOCOL:\n",
+    protocol_content,
+    "\n\nINCLUSION DECISION GUIDANCE:\n",
+    "- INCLUDE: All required inclusion criteria are met and no exclusion criteria apply.\n",
+    "- EXCLUDE: Any inclusion criterion is not met or any exclusion criterion applies.\n",
+    "- UNCERTAIN/CHECK: Insufficient information to decide confidently.\n\n",
+    "Return the structured decision using the appropriate function call."
+  )
 }
+
 .create_direct_prompt <- function(prompt) {
-  paste0("Please analyze this document systematically:\n\nSTEP 1: First, use the supplementary_check function to determine if this text contains references to supplementary materials, appendices, or additional information.\n\nSTEP 2: Then, carefully read and analyze the document content to answer this question: ", prompt, "\n\nSTEP 3: Use the appropriate inclusion decision function to provide your final determination.\n\nRemember: If the answer to the prompt is yes, the study should be included in further studies.")
+  paste0(
+    "SCREENING QUESTION (treat this exact text as the ONLY task):\n",
+    prompt, "\n\n",
+    "INSTRUCTIONS:\n",
+    "- Answer ONLY this question; ignore any earlier or unrelated criteria.\n",
+    "- Do NOT reuse reasoning from previous questions; base answer solely on evidence for THIS question.\n",
+    "- If the document gives no clear evidence, return the uncertain/check code (do not invent details).\n",
+    "- Provide a concise rationale that mentions ONLY elements directly tied to THIS question.\n",
+    "- Do not mention other screening questions.\n\n",
+    "OUTPUT:\n",
+    "- Return the inclusion decision via the function call.\n",
+    "- Rationale must begin with: RATIONALE FOR QUESTION: followed by a direct justification."
+  )
 }
 
 # --- Result DataFrame Creation ---

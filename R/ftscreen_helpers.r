@@ -163,9 +163,26 @@
 
   # Assistant with ONLY supplementary tool
   assistant_name <- paste0(assistant_name_prefix, "_supponly_", current_model)
+  supp_instructions <- paste0(
+    "You must ONLY call the supplementary_check function on the attached document and then stop.\n",
+    "Return argument 'supplementary' = 'yes' if the document explicitly REFERENCES supplementary / appendix / supporting material that is NOT fully included in the current file (i.e., external or separate files).\n",
+    "Count as an external reference (set 'yes') when you see phrases like:\n",
+    "  'see supplementary material', 'see supplementary materials', 'see online appendix',\n",
+    "  'available in the supplementary', 'available in the online appendix', 'supporting information available',\n",
+    "  'additional file', 'additional files', 'provided in supplementary', 'provided in supporting information',\n",
+    "  references to 'S1 Table', 'S2 Fig', etc. WHEN the actual S1/S2 content is NOT present in the text.\n",
+    "Also set 'yes' if it states that extra material is available elsewhere (e.g., journal website, repository, online, upon request).\n",
+    "\n",
+    "Return 'no' when:\n",
+    "  (a) The file only contains internal section headings like 'Appendix', 'Appendix A', 'Supplementary Material', 'Supporting Information' AND the content appears to be fully included directly below.\n",
+    "  (b) There is merely a single generic word 'appendix' in narrative text without indicating separate/external material.\n",
+    "  (c) No external/location/availability wording is present.\n",
+    "\n",
+    "Do NOT judge study inclusion. Output only the function call with argument 'supplementary' = 'yes' or 'no'."
+  )
   assistant <- .get_or_create_openai_assistant(
     base_url, api_key, assistant_name, assistant_description,
-    "You must ONLY call the supplementary_check function on the attached document and then stop. Do not make any inclusion decision.",
+    supp_instructions,
     current_model, FALSE, tools_simple = list(), tools_detailed = list(), tools_supplementary = tools_supplementary,
     temperature = 0, top_p = 1, rpm = rpm,
     max_tries_val = max_tries, max_seconds_val = max_seconds_val,

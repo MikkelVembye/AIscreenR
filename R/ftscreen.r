@@ -1,11 +1,25 @@
 #' Full-text screening with OpenAI API models
 #'
 #' @description
-#' This function supports the conduct of full-text screening with OpenAI API models in R.
-#' It uses the OpenAI Assistants API to process local documents (e.g., PDFs, text files).
-#' The function allows you to run screening across multiple prompts and with
-#' repeated questions to check for consistency across answers. It uses native function calling
-#' to structure the model's output.
+#' Performs full-text screening with OpenAI Assistants API models over local documents
+#' (PDF, TXT, DOCX, etc.). You can supply either a single protocol file or one/many
+#' direct prompts; the function can repeat questions (`reps`) to assess answer
+#' consistency. Native (structured) function calling is used to standardize outputs.
+#'
+#' A two-phase workflow is used:
+#' 1. Supplementary detection (precomputation): For every unique input file a
+#'    short, standalone assistant run is executed that ONLY calls the
+#'    `supplementary_check` tool. Its single yes/no outcome is normalized
+#'    ("yes"/"no"/NA) and cached.
+#' 2. Screening runs: Each (file × prompt × repetition × model) run reuses the
+#'    cached supplementary value. The main assistant is created WITHOUT the
+#'    `supplementary_check` tool. This prevents drift, saves tokens,
+#'    and ensures a single authoritative value per file.
+#'
+#' Fallback: If the precomputation fails for a file (result = NA), the screening
+#' runs for that file automatically include the `supplementary_check` tool and
+#' allow the model to call it inline (once per run) so a value can still be
+#' produced.
 #'
 #' @param file_path A character vector of file paths or directories to be screened. Directories will be processed recursively, with files in sub-directories being combined into a single document for screening.
 #' @param prompt A character string containing the screening prompt. Required if `protocol_file_path` is not provided.
@@ -59,13 +73,12 @@
 #' @param sleep_time Time in seconds to wait between checking run status. Default is 8.
 #' @param ... Further arguments to pass to the request body.
 #'
-#' @return An object of class `gpt_ftscreen`. The object is a list containing the following
-#' components:
-#' \item{answer_data}{A data frame with all individual answers from the model.}
-#' \item{answer_data_aggregated}{A data frame with the summarized, probabilistic inclusion decision for each file across multiple repeated questions (only when reps > 1).}
-#' \item{error_data}{A data frame with failed requests (only included if errors occurred).}
-#' \item{run_date}{The date when the screening was conducted.}
-#' \item{n_files, n_prompts, n_models, n_combinations, n_runs}{Counts of inputs and processing runs.}
+#' @return An object of class `gpt_ftscreen` containing:
+#' \item{answer_data}{Row per (file × prompt × repetition × model) with decisions and cached supplementary value.}
+#' \item{answer_data_aggregated}{Aggregated inclusion probabilities (present when multiple prompts, models, or reps).}
+#' \item{error_data}{Rows where a decision could not be derived (if any).}
+#' \item{run_date}{Date of execution.}
+#' \item{n_files, n_prompts, n_models, n_combinations, n_runs}{Processing counts.}
 #'
 #' @note The `answer_data_aggregated` data (only present when reps > 1) contains the following variables:
 #' \tabular{lll}{
@@ -177,7 +190,7 @@ ftscreen <- function(
     decision_description = FALSE,
     assistant_name = "file assistant screening",
     assistant_description = "An assistant to review a file and decide if it should be included or excluded in further studies based on a protocol or prompt.",
-    assistant_instructions = "You are an assistant that helps in reviewing files to determine their relevance based on specific protocols or prompts. IMPORTANT: You must ALWAYS follow this exact sequence: 1. FIRST, check if the text contains any references to supplementary materials, appendices, or additional information using the supplementary_check function. 2. THEN, determine whether the study should be included or excluded based on the protocol or prompt provided. Be explicit about whether the study should be included or excluded in further studies based on the evaluation criteria. If the study meets the protocol criteria, then it should be included in further studies.",
+    assistant_instructions = "You are an assistant that helps in reviewing files to determine their relevance based on specific protocols or prompts. Determine whether the study should be included or excluded based on the protocol or prompt provided. Be explicit about whether the study should be included or excluded in further studies based on the evaluation criteria. If the study meets the protocol criteria, then it should be included in further studies.",
     messages = TRUE,
     reps = 1,
     max_tries = 16,
@@ -342,9 +355,14 @@ ftscreen <- function(
     .progress = progress
   )
 
-  # Result Combination and Error Handling
-  combined_answer_data <- do.call(rbind, results_list)
+  # Result Combination, Ordering and Error Handling
+  combined_answer_data <- dplyr::bind_rows(results_list)
 
+  # Enforce file-first (studyid) then prompt order
+  if (all(c("studyid","promptid") %in% names(combined_answer_data))) {
+    combined_answer_data <- dplyr::arrange(combined_answer_data, studyid, promptid, iterations)
+  }
+  
   if (!time_info && "run_time" %in% names(combined_answer_data)) combined_answer_data$run_time <- NULL
   if (!token_info) {
     if ("prompt_tokens" %in% names(combined_answer_data)) combined_answer_data$prompt_tokens <- NULL
