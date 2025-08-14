@@ -15,7 +15,7 @@
 #'  \bold{question} \tab \code{character} \tab indicating the final question sent to OpenAI's GPT API models for training. \cr
 #' }
 #'
-#' @seealso [write_ft_data()]
+#' @seealso [save_fine_tune_data()]
 #'
 #' @examples
 #' # Extract 5 irrelevant and relevant records, respectively.
@@ -24,7 +24,7 @@
 #' prompt <- "Is this study about functional family therapy?"
 #'
 #' dat <-
-#'   generate_ft_data(
+#'   create_fine_tune_data(
 #'     data = dat,
 #'     prompt = prompt,
 #'     studyid = studyid,
@@ -36,7 +36,7 @@
 #'
 #' @export
 
-generate_ft_data <- function(data, prompt, studyid, title, abstract){
+create_fine_tune_data <- function(data, prompt, studyid, title, abstract){
 
   study_id <- if (missing(studyid)) 1:nrow(data) else data |> pull({{ studyid }})
 
@@ -87,7 +87,7 @@ generate_ft_data <- function(data, prompt, studyid, title, abstract){
 #'
 #' @return A `jsonl` dataset to the set working directory.
 #'
-#' @seealso [generate_ft_data()]
+#' @seealso [create_fine_tune_data()]
 #'
 #'
 #' @examples
@@ -117,7 +117,7 @@ generate_ft_data <- function(data, prompt, studyid, title, abstract){
 #' )
 #'
 #' # Saving data in jsonl format (required format by OpenAI)
-#' write_ft_data(
+#' save_fine_tune_data(
 #'   data = ft_dat,
 #'   role_and_subject = role_subject,
 #'   file = "fine_tune_data.jsonl"
@@ -126,7 +126,7 @@ generate_ft_data <- function(data, prompt, studyid, title, abstract){
 #'
 #' @export
 
-write_ft_data <-
+save_fine_tune_data <-
   function(
     data,
     role_and_subject,
