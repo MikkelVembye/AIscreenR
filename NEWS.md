@@ -1,4 +1,4 @@
-# AIscreenR 0.2.0 
+# AIscreenR 0.2.0
 
 * Minor change in the setup of the vignette
 * Updated prize data, including all up-to-date models
