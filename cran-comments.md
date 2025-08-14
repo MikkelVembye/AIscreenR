@@ -1,10 +1,15 @@
 ## Submission
 
-This is a patch version update of AIscreenR. The package provides functions for conducting title and abstract screening in systematic reviews with AI models, such as OpenAI's GPT (Generative Pre-trained Transformer) API (Application Programming Interface) models. In this submission, we have corrected a typo in the vignette, and updated the vignette including a more modern approach to handling RIS files. Finally the tabscreen_gpt() now factors the study ID variable to keep the original order of the user's data set.
+This is a minor version update of AIscreenR. The package provides functions for conducting title and abstract screening in systematic reviews with AI models, such as OpenAI's GPT (Generative Pre-trained Transformer) API (Application Programming Interface) models. In this submission, we have 
+
+1) made minor changes to in the vignette to make it more clear
+2) updated the prize data so it includes all up-to-date models, including the newly released gpt-5 models
+3) added two new functions that support the data generation for fine tuning OpenAI's models
+4) added Thomas Olsen as co-author of the package
 
 ## Test environments
 
-* local Windows 10 Enterprise, R 4.4.0 and R 4.4.2
+* local Windows 10 Enterprise, R 4.5.1
 * ubuntu 20.04.3 LTS (on Github), R devel, release, oldrelease
 * macOS-latest (on Github), R release
 * windows-latest (on Github), R release
@@ -14,7 +19,7 @@ This is a patch version update of AIscreenR. The package provides functions for 
 
 ## R CMD check results
 
-There were no ERRORs and WARNINGs.
+As for previous versions, there were no ERRORs and WARNINGs.
 
 There was 1 NOTE:
 
