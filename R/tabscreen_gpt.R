@@ -13,10 +13,10 @@
 #' The function draws on the newly developed function calling which is called via the
 #' tools argument in the request body. This is the main different between [tabscreen_gpt.tools()]
 #' and [tabscreen_gpt.original()]. Function calls ensure more reliable and consistent responses to ones
-#' requests. See [Vembye et al. (2024)](https://osf.io/preprints/osf/yrhzm)
+#' requests. See [Vembye, Christensen, Mølgaard, and Schytt. (2025)](https://osf.io/preprints/osf/yrhzm)
 #' for guidance on how adequately to conduct title and abstract screening with GPT models.
 #'
-#' @references Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2024)
+#' @references Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2025)
 #'   \emph{GPT API Models Can Function as Highly Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
 #'   A Proof of Concept and Common Guidelines} \url{https://osf.io/preprints/osf/yrhzm}
 #'
