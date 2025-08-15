@@ -6,6 +6,7 @@ This is a minor version update of AIscreenR. The package provides functions for 
 2) updated the prize data so it includes all up-to-date models, including the newly released gpt-5 models
 3) added two new functions that support the data generation for fine tuning OpenAI's models
 4) added Thomas Olsen as co-author of the package
+5) updated all references in the package
 
 ## Test environments
 
