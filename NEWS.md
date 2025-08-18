@@ -2,7 +2,7 @@
 
 * Minor change in the setup of the vignette
 * Updated prize data, including all up-to-date models
-* Adding create_fine_tune_data() and write_fine_tune_data() to generate data for fine tuning
+* Adding create_fine_tune_data() and write_fine_tune_data() to generate data for fine tuning OpenAI's models
 * Adding Thomas Olsen as co-author
 
 # AIscreenR 0.1.1 

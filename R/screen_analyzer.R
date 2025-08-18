@@ -11,7 +11,7 @@
 #' @references
 #' Gartlehner, G., Wagner, G., Lux, L., Affengruber, L., Dobrescu, A., Kaminski-Hartenthaler, A., & Viswanathan, M. (2019).
 #' Assessing the accuracy of machine-assisted abstract screening with DistillerAI: a user study.
-#' *Systematic Reviews*, 8:277, 1-10. \url{https://doi.org/10.1186/s13643-019-1221-3}
+#' *Systematic Reviews*, 8:277, 1-10. \doi{10.1186/s13643-019-1221-3}
 #'
 #' McHugh, M. L. (2012).
 #' Interrater reliability: The kappa statistic.
