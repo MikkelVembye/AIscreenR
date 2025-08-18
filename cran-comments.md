@@ -27,10 +27,6 @@ There was 1 NOTE:
 
  * On win-builder release, devel, and oldrelease:
   Found the following (possibly) invalid URLs:
-  URL: https://auth0.openai.com/u/login/identifier?state=hKFo2SBqQjNHSlc1ejIyREpUb01hdDF2OHEzQy12NnJwWlFUN6Fur3VuaXZlcnNhbC1sb2dpbqN0aWTZIEJSOWJaamdKLWswNGlfWDQ2NER1OXJmVUNpVmVzVjZfo2NpZNkgRFJpdnNubTJNdTQyVDNLT3BxZHR3QjNOWXZpSFl6d0Q
-    From: inst/doc/Using-GPT-API-Models-For-Screening.html
-    Status: 403
-    Message: Forbidden
   URL: https://openai.com/api/pricing/
     From: man/model_prizes.Rd
     Status: 403
@@ -42,6 +38,11 @@ There was 1 NOTE:
   URL: https://openai.com/pricing
     From: man/tabscreen_gpt.original.Rd
           man/tabscreen_gpt.tools.Rd
+    Status: 403
+    Message: Forbidden
+  URL: https://platform.openai.com/
+    From: DESCRIPTION
+          man/AIscreenR-package.Rd
     Status: 403
     Message: Forbidden
   URL: https://platform.openai.com/account/api-keys
@@ -87,6 +88,10 @@ There was 1 NOTE:
           man/rate_limits_per_minute.Rd
           man/tabscreen_gpt.original.Rd
           man/tabscreen_gpt.tools.Rd
+    Status: 403
+    Message: Forbidden
+  URL: https://platform.openai.com/finetune/
+    From: man/save_fine_tune_data.Rd
     Status: 403
     Message: Forbidden
 
