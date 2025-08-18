@@ -7,6 +7,7 @@ This is a minor version update of AIscreenR. The package provides functions for 
 3) added two new functions that support the data generation for fine tuning OpenAI's models
 4) added Thomas Olsen as co-author of the package
 5) updated all references in the package
+6) changed an invalid URL appearing in the vignette
 
 ## Test environments
 

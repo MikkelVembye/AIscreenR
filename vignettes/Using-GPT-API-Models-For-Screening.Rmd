@@ -189,7 +189,7 @@ Now, we have our test data in place and can move on to the next step of the scre
 
 ## Get your API key 
 
-Before you can use the `AIscreenR` functions to screen your references, you must generate your own secret API key from OpenAI. To do so, first ensure you have an OpenAI account (*If you have not created one yet, you can sign up [here](https://auth0.openai.com/u/login/identifier?state=hKFo2SBqQjNHSlc1ejIyREpUb01hdDF2OHEzQy12NnJwWlFUN6Fur3VuaXZlcnNhbC1sb2dpbqN0aWTZIEJSOWJaamdKLWswNGlfWDQ2NER1OXJmVUNpVmVzVjZfo2NpZNkgRFJpdnNubTJNdTQyVDNLT3BxZHR3QjNOWXZpSFl6d0Q)).* Once you have an account, go to [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys) and press the `+ Create new secret key` button (see Figure 1 below) and name your key. 
+Before you can use the `AIscreenR` functions to screen your references, you must generate your own secret API key from OpenAI. To do so, first ensure you have an OpenAI account (*If you have not created one yet, you can sign up [here](https://auth.openai.com/create-account).* Once you have an account, go to [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys) and press the `+ Create new secret key` button (see Figure 1 below) and name your key. 
 
 \  
 
