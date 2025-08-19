@@ -1,5 +1,7 @@
 # AIscreenR 0.2.0.9000
 
+* Updated Vembye et al. reference in vignette 
+
 # AIscreenR 0.2.0
 
 * Minor change in the setup of the vignette
