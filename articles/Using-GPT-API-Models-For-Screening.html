@@ -60,7 +60,7 @@
                         <h4 data-toc-skip class="author">Mikkel H.
 Vembye</h4>
             
-            <h4 data-toc-skip class="date">2025-08-18</h4>
+            <h4 data-toc-skip class="date">2025-08-19</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/MikkelVembye/AIscreenR/blob/main/vignettes/Using-GPT-API-Models-For-Screening.Rmd" class="external-link"><code>vignettes/Using-GPT-API-Models-For-Screening.Rmd</code></a></small>
       <div class="d-none name"><code>Using-GPT-API-Models-For-Screening.Rmd</code></div>
@@ -75,14 +75,15 @@ Vembye</h4>
 </p>
 <p style="margin:1em">
 <em>Always remember that title and abstract screeening with GPT API
-models can be case sensitive. Therefore, see <a href="https://osf.io/preprints/osf/yrhzm" class="external-link">Vembye, Christensen, Mølgaard,
-&amp; Schytt</a> <span class="citation">(<a href="#ref-Vembye2024_gpt">2024</a>)</span> for an overview of how and
-when GPT API models can be used for title and abstract (TAB) screening.
-Our most recent results suggest that the <code>gpt-4o-mini</code> is an
-effective model for screening titles and abstracts with performances in
-many cases on par with <code>gpt-4</code>. This is a very cheap model
-(200 times cheaper than <code>gpt-4</code>). Therefore, to reduce costs,
-we recommendation always testing the performance of
+models can be case sensitive. Therefore, see <a href="https://psycnet.apa.org/record/2026-37236-001" class="external-link">Vembye,
+Christensen, Mølgaard, &amp; Schytt</a> <span class="citation">(<a href="#ref-vembye_generative_2025">2025</a>)</span> for an overview of
+how and when GPT API models can be used for title and abstract (TAB)
+screening (find the preprint of Vembye et al. 2025 <a href="https://osf.io/preprints/osf/yrhzm" class="external-link">here</a>). Our most recent
+results suggest that the <code>gpt-4o-mini</code> is an effective model
+for screening titles and abstracts with performances in many cases on
+par with <code>gpt-4</code>. This is a very cheap model (200 times
+cheaper than <code>gpt-4</code>). Therefore, to reduce costs, we
+recommendation always testing the performance of
 <code>gpt-4o-mini</code> before considering other models. For an
 overview of additional research on the use of GPT API models for title
 and abstract screening, see Syriani et al. <span class="citation">(<a href="#ref-Syriani2023">2023</a>, <a href="#ref-Syriani2024">2024</a>)</span>, Guo et al., <span class="citation">(<a href="#ref-Guo2024">2024</a>)</span>, and Gargari
@@ -110,7 +111,8 @@ issue, we demonstrate in this vignette how to use OpenAI’s GPT
 (Generative Pre-trained Transformer) API (Application Programming
 Interface) models for title and abstract screening in R. Specifically,
 we show how to create a test dataset and assess whether GPT is viable as
-the second screener in your review <span class="citation">(cf. <a href="#ref-Vembye2024_gpt">Vembye et al., 2024</a>)</span>.  </p>
+the second screener in your review <span class="citation">(cf. <a href="#ref-vembye_generative_2025">Vembye et al., 2025</a>)</span>.
+ </p>
 <p>At this point, you might ask, why use GPT API models via R instead of
 simply using ChatGPT for screening? The answer is that using R offer
 certain advantages:</p>
@@ -283,15 +285,14 @@ respectively.</p>
 <h3 id="create-the-test-dataset">Create the test dataset<a class="anchor" aria-label="anchor" href="#create-the-test-dataset"></a>
 </h3>
 <p>Now that we have loaded our reference data, we can construct the test
-data by randomly sampling 150 irrelevant records <span class="citation">(as suggested in <a href="#ref-Vembye2024_gpt">Vembye
-et al., 2024</a>)</span> and 50 relevant records that include both a
-title and an abstract. For this purpose we use
-<code><a href="../reference/sample_references.html">sample_references()</a></code>. Again, this is for illustration
-purposes only, as you may not yet have access to 50 relevant records at
-this stage of screening. We recommend identifying at least 10 relevant
-references before constructing the test data. As further described in
-Vembye et al. <span class="citation">(<a href="#ref-Vembye2024_gpt">2024</a>)</span>, we remove all records
-without abstracts, as these can distort the accuracy of the
+data by randomly sampling 150 irrelevant records <span class="citation">(as suggested in <a href="#ref-vembye_generative_2025">Vembye et al., 2025</a>)</span> and
+50 relevant records that include both a title and an abstract. For this
+purpose we use <code><a href="../reference/sample_references.html">sample_references()</a></code>. Again, this is for
+illustration purposes only, as you may not yet have access to 50
+relevant records at this stage of screening. We recommend identifying at
+least 10 relevant references before constructing the test data. As
+further described in Vembye et al. <span class="citation">(<a href="#ref-vembye_generative_2025">2025</a>)</span>, we remove all
+records without abstracts, as these can distort the accuracy of the
 screening.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">09042024</span><span class="op">)</span></span>
@@ -563,13 +564,12 @@ screener. For the purpose, we can use
 </h3>
 <p>But you might ask, how to assess whether the performances for of the
 model is acceptable as a second screener? To answer this question, we
-recommend assessing it through benchmarking. In Vembye et al. <span class="citation">(<a href="#ref-Vembye2024_gpt">2024</a>)</span>, we
-developed a benchmark scheme based on typical duplicate human screening
-performance from 22 high-quality reviews. This scheme is presented in
-Figure 5.</p>
+recommend assessing it through benchmarking. In Vembye et al. <span class="citation">(<a href="#ref-vembye_generative_2025">2025</a>)</span>, we developed a
+benchmark scheme based on typical duplicate human screening performance
+from 22 high-quality reviews. This scheme is presented in Figure 5.</p>
 <div class="figure">
-<img src="helper-stuff/benchmark_scheme.png" alt="*Figure 5 - Generic benchmark scheme from Vembye et al. (2024)*" width="100%"><p class="caption">
-<em>Figure 5 - Generic benchmark scheme from Vembye et al. (2024)</em>
+<img src="helper-stuff/benchmark_scheme.png" alt="*Figure 5 - Generic benchmark scheme from Vembye et al. (2025)*" width="100%"><p class="caption">
+<em>Figure 5 - Generic benchmark scheme from Vembye et al. (2025)</em>
 </p>
 </div>
 <p>By using this benchmark scheme, we see that the
@@ -817,68 +817,69 @@ human and GPT decisions.</li>
 <div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0" line-spacing="2">
 <div id="ref-Alshami2023" class="csl-entry">
 Alshami, A., Elsayed, M., Ali, E., Eltoukhy, A. E. E., &amp; Zayed, T.
-(2023). <span class="nocase">Harnessing the power of ChatGPT for
-automating systematic review process: Methodology, case study,
-limitations, and future directions</span>. <em>Systems</em>,
-<em>11</em>(7), 351. <a href="https://doi.org/10.3390/systems11070351" class="external-link">https://doi.org/10.3390/systems11070351</a>
+(2023). Harnessing the power of <span>ChatGPT</span> for automating
+systematic review process: <span>Methodology</span>, case study,
+limitations, and future directions. <em>Systems</em>, <em>11</em>(7),
+351. <a href="https://doi.org/10.3390/systems11070351" class="external-link">https://doi.org/10.3390/systems11070351</a>
 </div>
 <div id="ref-Filges2024" class="csl-entry">
 Filges, T., Smedslund, G., Eriksen, T., Birkefoss, K., &amp; Kildemoes,
-M. W. (2024). <span class="nocase">The FRIENDS preventive programme for
-reducing anxiety symptoms in children and adolescents: A systematic
-review and meta-analysis</span>. <em>Campbell Systematic Reviews</em>,
+M. W. (2024). The <span>FRIENDS</span> preventive programme for reducing
+anxiety symptoms in children and adolescents: <span>A</span> systematic
+review and meta-analysis. <em>Campbell Systematic Reviews</em>,
 <em>20</em>(4), e1443. <a href="https://doi.org/10.1002/cl2.1443" class="external-link">https://doi.org/10.1002/cl2.1443</a>
 </div>
 <div id="ref-Gargari2024" class="csl-entry">
 Gargari, O. K., Mahmoudi, M. H., Hajisafarali, M., &amp; Samiee, R.
-(2024). <span class="nocase">Enhancing title and abstract screening for
-systematic reviews with GPT-3.5 turbo</span>. <em>BMJ Evidence-Based
-Medicine</em>, <em>29</em>(1), 69 LP–70. <a href="https://doi.org/10.1136/bmjebm-2023-112678" class="external-link">https://doi.org/10.1136/bmjebm-2023-112678</a>
+(2024). Enhancing title and abstract screening for systematic reviews
+with <span>GPT</span>-3.5 turbo. <em>BMJ Evidence-Based Medicine</em>,
+<em>29</em>(1), 69 LP–70. <a href="https://doi.org/10.1136/bmjebm-2023-112678" class="external-link">https://doi.org/10.1136/bmjebm-2023-112678</a>
 </div>
 <div id="ref-Guo2024" class="csl-entry">
 Guo, E., Gupta, M., Deng, J., Park, Y.-J., Paget, M., &amp; Naugler, C.
-(2024). <span class="nocase">Automated paper screening for clinical
-reviews using large language models: Data analysis study</span>. <em>J
-Med Internet Res</em>, <em>26</em>, e48996. <a href="https://doi.org/10.2196/48996" class="external-link">https://doi.org/10.2196/48996</a>
+(2024). Automated paper screening for clinical reviews using large
+language models: <span>Data</span> analysis study. <em>J Med Internet
+Res</em>, <em>26</em>, e48996. <a href="https://doi.org/10.2196/48996" class="external-link">https://doi.org/10.2196/48996</a>
 </div>
 <div id="ref-Issaiy2024" class="csl-entry">
 Issaiy, M., Ghanaati, H., Kolahi, S., Shakiba, M., Jalali, A. H., Zarei,
-D., … Firouznia, K. (2024). <span class="nocase">Methodological insights
-into ChatGPT’s screening performance in systematic reviews</span>.
+D., … Firouznia, K. (2024). Methodological insights into
+<span>ChatGPT</span>’s screening performance in systematic reviews.
 <em>BMC Medical Research Methodology</em>, <em>24</em>(1), 78. <a href="https://doi.org/10.1186/s12874-024-02203-8" class="external-link">https://doi.org/10.1186/s12874-024-02203-8</a>
 </div>
 <div id="ref-Khraisha2024" class="csl-entry">
 Khraisha, Q., Put, S., Kappenberg, J., Warraitch, A., &amp; Hadfield, K.
-(2024). <span class="nocase">Can large language models replace humans in
-systematic reviews? Evaluating GPT-4’s efficacy in screening and
+(2024). Can large language models replace humans in systematic reviews?
+<span>Evaluating</span> <span>GPT</span>-4’s efficacy in screening and
 extracting data from peer-reviewed and grey literature in multiple
-languages</span>. <em>Research Synthesis Methods</em>. <a href="https://doi.org/10.1002/jrsm.1715" class="external-link">https://doi.org/10.1002/jrsm.1715</a>
+languages. <em>Research Synthesis Methods</em>. <a href="https://doi.org/10.1002/jrsm.1715" class="external-link">https://doi.org/10.1002/jrsm.1715</a>
 </div>
 <div id="ref-Polanin2019" class="csl-entry">
 Polanin, J. R., Pigott, T. D., Espelage, D. L., &amp; Grotpeter, J. K.
-(2019). <span class="nocase">Best practice guidelines for abstract
-screening large-evidence systematic reviews and meta-analyses</span>.
-<em>Research Synthesis Methods</em>, <em>10</em>(3), 330–342. <a href="https://doi.org/10.1002/jrsm.1354" class="external-link">https://doi.org/10.1002/jrsm.1354</a>
+(2019). Best practice guidelines for abstract screening large-evidence
+systematic reviews and meta-analyses. <em>Research Synthesis
+Methods</em>, <em>10</em>(3), 330–342. <a href="https://doi.org/10.1002/jrsm.1354" class="external-link">https://doi.org/10.1002/jrsm.1354</a>
 </div>
 <div id="ref-Syriani2023" class="csl-entry">
-Syriani, E., David, I., &amp; Kumar, G. (2023). <span class="nocase">Assessing the ability of ChatGPT to screen articles for
-systematic reviews</span>. <em>arXiv Preprint arXiv:2307.06464</em>.
+Syriani, E., David, I., &amp; Kumar, G. (2023). Assessing the ability of
+<span>ChatGPT</span> to screen articles for systematic reviews.
+<em>arXiv Preprint arXiv:2307.06464</em>.
 </div>
 <div id="ref-Syriani2024" class="csl-entry">
-Syriani, E., David, I., &amp; Kumar, G. (2024). <span class="nocase">Screening articles for systematic reviews with
-ChatGPT</span>. <em>Journal of Computer Languages</em>, <em>80</em>,
-101287. <a href="https://doi.org/10.1016/j.cola.2024.101287" class="external-link">https://doi.org/10.1016/j.cola.2024.101287</a>
+Syriani, E., David, I., &amp; Kumar, G. (2024). Screening articles for
+systematic reviews with <span>ChatGPT</span>. <em>Journal of Computer
+Languages</em>, <em>80</em>, 101287. <a href="https://doi.org/10.1016/j.cola.2024.101287" class="external-link">https://doi.org/10.1016/j.cola.2024.101287</a>
 </div>
-<div id="ref-Vembye2024_gpt" class="csl-entry">
+<div id="ref-vembye_generative_2025" class="csl-entry">
 Vembye, M. H., Christensen, J., Mølgaard, A. B., &amp; Schytt, F. L. W.
-(2024). <span class="nocase">GPT API Models Can Function as Highly
-Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
-A Proof of Concept and Common Guidelines</span>. <em>Open Science
-Framework</em>. <a href="https://doi.org/10.31219/osf.io/yrhzm" class="external-link">https://doi.org/10.31219/osf.io/yrhzm</a>
+(2025). Generative pretrained transformer models can function as highly
+reliable second screeners of titles and abstracts in systematic reviews:
+<span>A</span> proof of concept and common guidelines. <em>Psychological
+Methods</em>, (Online first). <a href="https://doi.org/10.1037/met0000769" class="external-link">https://doi.org/10.1037/met0000769</a>
 </div>
 <div id="ref-westgate2019" class="csl-entry">
-Westgate, M. J. (2019). <span class="nocase">revtools: An R package to
-support article screening for evidence synthesis</span>. <em>Research
+Westgate, M. J. (2019). Revtools: <span>An</span> <span>R</span> package
+to support article screening for evidence synthesis. <em>Research
 Synthesis Methods</em>, <em>10</em>(4), 606–614. <a href="https://doi.org/10.1002/jrsm.1374" class="external-link">https://doi.org/10.1002/jrsm.1374</a>
 </div>
 </div>
