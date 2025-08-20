@@ -32,13 +32,17 @@ Imports:
     purrr,
     lifecycle,
     jsonlite,
-    quarto
+    quarto,
+    htmltools
 Suggests: 
     future,
     knitr,
     rmarkdown,
     usethis,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    pdftools,
+    officer,
+    withr,
 Config/testthat/edition: 3
 Config/testthat/parallel: true
 Config/testthat/start-first: tabscreen_gpt, approximate_price_gpt, rate_limits, api_key_functions 

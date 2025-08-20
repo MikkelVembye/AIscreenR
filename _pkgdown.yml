@@ -10,6 +10,7 @@ reference:
     contents:
       - tabscreen_gpt.tools
       - tabscreen_gpt.original
+      - tabscreen_groq
 
   - title: "Screen failed requests"
     desc: "R functions to re-screen failied title and abstract requests"
@@ -34,17 +35,29 @@ reference:
     contents:
       - set_api_key
       - get_api_key
+      - get_api_key_groq
 
   - title: "Rate limits"
     desc: "R functions to find api rate limits"
     contents:
       - rate_limits_per_minute
+    
+  - title: "Full-text screening"
+    desc: "Functions for screening full-text documents"
+    contents:
+      - ftscreen
+
+  - title: "Reports"
+    desc: "Generate disagreement / screening reports for screening disagreements between human and AI decisions"
+    contents:
+      - report
 
   - title: "Datasets"
     desc: "Datasets in the package"
     contents:
       - filges2015_dat
       - model_prizes
+      - disagreements
 
   - title: "Coercion"
     contents:
@@ -53,12 +66,15 @@ reference:
       - is_gpt
       - is_gpt_tbl
       - is_gpt_agg_tbl
+      - is_groq_tbl
+      - is_groq_agg_tbl
 
   - title: "Print methods"
     contents:
       - print.gpt
       - print.chatgpt
       - print.gpt_price
+      - print.groq
 
   - title: "Pricing"
     contents:
@@ -74,3 +90,8 @@ articles:
     navbar: ~
     contents:
       - Using-GPT-API-Models-For-Screening
+  - title: "Guides and articles"
+    contents:
+      - articles/comparing-models
+      - articles/generating-disagreement-reports
+      - articles/generating-fine-tune-data

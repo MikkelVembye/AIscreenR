@@ -101,7 +101,7 @@
 #'  \bold{title} \tab \code{character} \tab The filename of the screened document. \cr
 #'  \bold{promptid} \tab \code{integer} \tab The prompt ID. \cr
 #'  \bold{prompt} \tab \code{character} \tab The prompt used for screening. \cr
-#'  \bold{model} \tab \code{character} \tab The specific model used. \tr
+#'  \bold{model} \tab \code{character} \tab The specific model used. \cr
 #'  \bold{iterations} \tab \code{numeric} \tab The repetition number for the question. \cr
 #'  \bold{decision_gpt} \tab \code{character} \tab The raw decision from the model ('1', '0', or '1.1'). \cr
 #'  \bold{detailed_description} \tab \code{character} \tab A detailed description of the decision (if `decision_description = TRUE`). \cr
@@ -111,7 +111,7 @@
 #'  \bold{prompt_tokens} \tab \code{integer} \tab The number of prompt tokens used. \cr
 #'  \bold{completion_tokens} \tab \code{integer} \tab The number of completion tokens used. \cr
 #' }
-#'
+#' @importFrom stats setNames
 #' @export
 #'
 #' @examples
@@ -362,7 +362,7 @@ ftscreen <- function(
   if (all(c("studyid","promptid") %in% names(combined_answer_data))) {
     combined_answer_data <- dplyr::arrange(combined_answer_data, studyid, promptid, iterations)
   }
-  
+
   if (!time_info && "run_time" %in% names(combined_answer_data)) combined_answer_data$run_time <- NULL
   if (!token_info) {
     if ("prompt_tokens" %in% names(combined_answer_data)) combined_answer_data$prompt_tokens <- NULL

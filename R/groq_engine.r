@@ -155,7 +155,7 @@
 
     } else { 
       res_list <- list(
-        decision_gpt = status_code_text(),
+        decision_gpt = status_code_text_GROQ(),
         decision_binary = NA_real_
       )
       if (detailed) res_list$detailed_description <- detail_desc_default

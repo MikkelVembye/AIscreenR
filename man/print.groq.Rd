@@ -2,7 +2,7 @@
 % Please edit documentation in R/print.groq.r
 \name{print.groq}
 \alias{print.groq}
-\title{Print method for groq objects}
+\title{Print method for 'groq' objects}
 \usage{
 \method{print}{groq}(x, ...)
 }
@@ -12,14 +12,13 @@
 \item{...}{Additional arguments passed to \code{print}.}
 }
 \value{
-Invisibly returns the input object \code{x}. Provides the user with information on how to access the results.
+Information about how to find answer data sets and pricing information.
 }
 \description{
-Print method for groq objects
+Print method for 'groq' objects
 }
 \examples{
 \dontrun{
-# res is an object created by tabscreen_groq()
-print(res)
+print(x)
 }
 }

@@ -31,6 +31,10 @@ report(
 
 \item{gpt_answer}{Column name for the AI's answer.}
 
+\item{human_code}{Column name for the human screening decision (numeric 0/1).}
+
+\item{final_decision_gpt_num}{Column name for the final numeric GPT decision (0/1).}
+
 \item{file}{Name of the output file.}
 
 \item{format}{Format of the output file. Valid formats are 'html', 'pdf', 'docx'.}

@@ -24,7 +24,10 @@
 #' @param document_title Title of the document.
 #' @param document_subtitle Subtitle of the document. Default is an empty string.
 #' @param directory Directory where the output file will be saved. Default is the current working directory.
-#'
+#' @param human_code Column name for the human screening decision (numeric 0/1).
+#' @param final_decision_gpt_num Column name for the final numeric GPT decision (0/1).
+#' @importFrom htmltools htmlEscape
+#' 
 #' @return An object of class `'report'`. The object is a list containing the following components:
 #' \item{file_out}{string indicating the path to the generated report file.}
 #' \item{...}{some additional attributed values/components, including an attributed list with the arguments used in the function.}

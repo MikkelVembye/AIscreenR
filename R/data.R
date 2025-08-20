@@ -43,3 +43,30 @@
 #' @references OpenAI. \emph{Pricing}. \url{https://openai.com/api/pricing/}
 
 "model_prizes"
+
+#' Disagreement sample data
+#'
+#' Example rows where human screening decisions differ from GPT decisions.
+#' Each row is a (study × prompt) screening outcome.
+#'
+#' @format A tibble/data.frame with one row per screened (studyid, promptid) and 17 columns:
+#' \tabular{lll}{
+#'  \bold{author} \tab character \tab Study authors \cr
+#'  \bold{human_code} \tab numeric \tab Human screening decision (1 include, 0 exclude) \cr
+#'  \bold{studyid} \tab integer \tab Unique study identifier \cr
+#'  \bold{title} \tab character \tab Study title \cr
+#'  \bold{abstract} \tab character \tab Study abstract \cr
+#'  \bold{promptid} \tab integer \tab Prompt identifier \cr
+#'  \bold{prompt} \tab character \tab Original short screening prompt text \cr
+#'  \bold{model} \tab character \tab Model used for the run \cr
+#'  \bold{question} \tab character \tab Full constructed question sent to model \cr
+#'  \bold{top_p} \tab numeric \tab Nucleus sampling parameter \cr
+#'  \bold{incl_p} \tab numeric \tab Estimated probability of inclusion (if repetitions) \cr
+#'  \bold{final_decision_gpt} \tab character \tab GPT final label: Include / Exclude / Check \cr
+#'  \bold{final_decision_gpt_num} \tab numeric \tab Numeric GPT decision (1 include/check, 0 exclude) \cr
+#'  \bold{longest_answer} \tab character \tab Longest rationale text returned \cr
+#'  \bold{reps} \tab integer \tab Number of repetitions attempted \cr
+#'  \bold{n_mis_answers} \tab integer \tab Count of missing answers across reps \cr
+#'  \bold{submodel} \tab character \tab Specific model variant (if applicable) \cr
+#' }
+"disagreements"

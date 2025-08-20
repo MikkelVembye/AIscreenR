@@ -79,3 +79,30 @@ is_gpt_tbl <- function(x){
 is_gpt_agg_tbl <- function(x){
   inherits(x, "gpt_agg_tbl")
 }
+
+#-----------------------------------------------------------------------
+# GROQ functions
+#-----------------------------------------------------------------------
+#' Test if the object is a `'groq'` object
+#' 
+#' This function returns `TRUE` for `groq` objects,
+#' and `FALSE` for all other objects.
+#' 
+#' @param x An object
+#' @return `TRUE` if the object inherits from the `groq` class.
+#' @export
+
+is_groq_tbl <- function(x) {
+  inherits(x, "groq_tbl")
+}
+
+#' Test if the object is a `'groq_agg_tbl'` object
+#' This function returns `TRUE` for `groq_agg_tbl` objects,
+#' and `FALSE` for all other objects.
+#' @param x An object
+#' @return `TRUE` if the object inherits from the `groq_agg_tbl
+#' @export
+
+is_groq_agg_tbl <- function(x) {
+  inherits(x, "groq_agg_tbl")
+}

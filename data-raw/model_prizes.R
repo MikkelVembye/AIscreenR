@@ -161,4 +161,64 @@ model_prizes <-
     )
   )
 
+#---------------------------------------------------------------------------
+# GROQ model prices
+#---------------------------------------------------------------------------
+groq_model_prizes <- data.frame(
+  model = c(
+    "gpt-oss-20b-128k",                     # GPT OSS 20B 128k 
+    "gpt-oss-120b-128k",                    # GPT OSS 120B 128k 
+    "kimi-k2-1t-128k",                      # Kimi K2 1T 128k 
+    "meta-llama/llama-4-scout-17b-16e-instruct",    # Llama 4 Scout 
+    "meta-llama/llama-4-maverick-17b-128e-instruct",# Llama 4 Maverick 
+    "llama-guard-4-12b-128k",               # Llama Guard 4 12B 
+    "deepseek-r1-distill-llama-70b",        # DeepSeek R1 Distill Llama 70B 
+    "qwen3-32b-131k",                       # Qwen3 32B 131k
+    "mistral-saba-24b",                     # Mistral Saba 24B 32k 
+    "llama-3.3-70b-versatile",              # Llama 3.3 70B Versatile 
+    "llama-3.1-8b-instant",                 # Llama 3.1 8B Instant
+    "llama3-70b-8192",                      # Llama 3 70B 8k
+    "llama3-8b-8192",                       # Llama 3 8B 8k
+    "gemma2-9b-it",                         # Gemma 2 9B 8k
+    "llama-guard-3-8b"                      # Llama Guard 3 8B
+  ),
+  price_in_per_token = c(
+    0.10/mio,  # gpt-oss-20b-128k
+    0.15/mio,  # gpt-oss-120b-128k
+    1.00/mio,  # kimi-k2-1t-128k
+    0.11/mio,  # llama-4-scout
+    0.20/mio,  # llama-4-maverick
+    0.20/mio,  # llama-guard-4-12b-128k
+    0.75/mio,  # deepseek-r1-distill-llama-70b
+    0.29/mio,  # qwen3-32b-131k
+    0.79/mio,  # mistral-saba-24b
+    0.59/mio,  # llama-3.3-70b-versatile
+    0.05/mio,  # llama-3.1-8b-instant
+    0.59/mio,  # llama3-70b-8192
+    0.05/mio,  # llama3-8b-8192
+    0.20/mio,  # gemma2-9b-it
+    0.20/mio   # llama-guard-3-8b
+  ),
+  price_out_per_token = c(
+    0.50/mio,  # gpt-oss-20b-128k
+    0.75/mio,  # gpt-oss-120b-128k
+    3.00/mio,  # kimi-k2-1t-128k
+    0.34/mio,  # llama-4-scout
+    0.60/mio,  # llama-4-maverick
+    0.20/mio,  # llama-guard-4-12b-128k
+    0.99/mio,  # deepseek-r1-distill-llama-70b
+    0.59/mio,  # qwen3-32b-131k
+    0.79/mio,  # mistral-saba-24b
+    0.79/mio,  # llama-3.3-70b-versatile
+    0.08/mio,  # llama-3.1-8b-instant
+    0.79/mio,  # llama3-70b-8192
+    0.08/mio,  # llama3-8b-8192
+    0.20/mio,  # gemma2-9b-it
+    0.20/mio   # llama-guard-3-8b
+  ),
+  stringsAsFactors = FALSE
+)
+  
+model_prizes <- rbind(model_prizes, groq_model_prizes) # Combine OpenAI and GROQ model prices
+
 use_data(model_prizes, overwrite = TRUE)

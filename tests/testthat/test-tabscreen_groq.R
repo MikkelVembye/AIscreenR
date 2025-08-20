@@ -29,7 +29,7 @@ test_that(".groq_engine return errors correctly", {
     api_key = get_api_key_groq(),
     max_t = 4,
     max_s = 10,
-    is_trans = groq_is_transient,
+    is_trans = .groq_is_transient,
     back = NULL,
     aft = NULL
   )
@@ -58,7 +58,7 @@ test_that(".groq_engine return errors correctly", {
     api_key = 1234,
     max_t = 4,
     max_s = 10,
-    is_trans = groq_is_transient,
+    is_trans = .groq_is_transient,
     back = NULL,
     aft = NULL
   )
@@ -86,7 +86,7 @@ test_that(".groq_engine return errors correctly", {
     api_key = get_api_key_groq(),
     max_t = 4,
     max_s = 10,
-    is_trans = groq_is_transient,
+    is_trans = .groq_is_transient,
     back = NULL,
     aft = NULL
   )
@@ -115,7 +115,7 @@ test_that(".groq_engine return errors correctly", {
     api_key = get_api_key_groq(),
     max_t = 4,
     max_s = 10,
-    is_trans = groq_is_transient(),
+    is_trans = .groq_is_transient(),
     back = NULL,
     aft = NULL
   ) |>
@@ -144,7 +144,7 @@ test_that(".rep_groq_engine controls errrors correctly", {
     api_key = get_api_key_groq(),
     max_t = 4,
     max_s = 10,
-    is_trans = groq_is_transient,
+    is_trans = .groq_is_transient,
     ba = NULL,
     af = NULL
   )
@@ -170,7 +170,7 @@ test_that(".rep_groq_engine controls errrors correctly", {
     api_key = 1,
     max_t = 4,
     max_s = 10,
-    is_trans = groq_is_transient,
+    is_trans = .groq_is_transient,
     ba = NULL,
     af = NULL
   )
@@ -196,7 +196,7 @@ test_that(".rep_groq_engine controls errrors correctly", {
     api_key = get_api_key_groq(),
     max_t = 4,
     max_s = 10,
-    is_trans = groq_is_transient,
+    is_trans = .groq_is_transient,
     ba = NULL,
     af = NULL
   )

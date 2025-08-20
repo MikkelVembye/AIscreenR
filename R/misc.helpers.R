@@ -16,7 +16,11 @@ utils::globalVariables(
     "studyid", "top_p", "n_mis_answers", "screen_errros", "max_tries", "max_seconds", "irr", "se_irr", "cl_irr", "cu_irr",
     "level_of_agreement", "precision", "recall", "npv", "specificity", "bacc", "F2", "mcc", "denominator", "nominator",
     "model_prizes", "price_in_per_token", "price_out_per_token",
-    "submodel", "prompt", "data", "tools", "tool_choice", "is.gpt", "criteria", "incl_p_cutoff", "incl_p")
+    "submodel", "prompt", "data", "tools", "tool_choice", "is.gpt", "criteria", "incl_p_cutoff", "incl_p", "title","supplementary","file_path","file_content","combination_idx","rep_num",
+    "current_file_path","safe_basename","current_prompt","current_model",
+    "current_rep_num","current_study_id","current_prompt_id",
+    "current_vector_store_name","precomputed_supplementary","total_price_dollar"
+    )
 )
 
 
@@ -169,3 +173,32 @@ alone and the combined interventions. Significantly more youths had achieved min
 in the family and combined conditions and in CBT. From pretreatment to 7 months,
 reductions in percentage of days of use were significant for the combined and group interventions,
 and changes in minimal use levels were significant for the family, combined, and group interventions."
+
+#-----------------------------------------------------------------
+# GROQ functions
+#-----------------------------------------------------------------
+
+.groq_is_transient <- function(resp) {
+  status_code() %in% c(429, 500:503)
+}
+
+status_code_text_GROQ <- function() {
+  resp_last <- httr2::last_response()
+  check_string <- "[possibly overload on server]"
+  
+  if (!is.null(resp_last)) {
+    code <- resp_last |> httr2::resp_status()
+    text <- paste("Error", code)
+    
+    if (code == 400) text <- paste("Error", code, "Bad request [check/clean body parameters]")
+    if (code == 401) text <- paste("Error", code, "Unauthorized [invalid api]")
+    if (code == 404) text <- paste("Error", code, "[check model]")
+    if (code == 429 | code == 500) text <- paste("Error", code, check_string)
+    if (code == 503) text <- paste("Error", code, "Service Unavailable")
+    
+    s_code <- text
+  } else {
+    s_code <- "Error [could not reach host]"
+  }
+  s_code
+}

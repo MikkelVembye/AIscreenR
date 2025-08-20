@@ -1,15 +1,14 @@
-#' Print method for groq objects
+#' Print method for 'groq' objects
 #'
 #' @param x A groq object from [tabscreen_groq()].
 #' @param ... Additional arguments passed to `print`.
 #'
-#' @return Invisibly returns the input object `x`. Provides the user with information on how to access the results.
+#' @return Information about how to find answer data sets and pricing information.
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' # res is an object created by tabscreen_groq()
-#' print(res)
+#' print(x)
 #' }
 print.groq <- function(x, ...) {
 

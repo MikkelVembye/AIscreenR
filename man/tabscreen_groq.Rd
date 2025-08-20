@@ -21,7 +21,7 @@ tabscreen_groq(
   api_key = get_api_key_groq(),
   max_tries = 16,
   max_seconds = NULL,
-  is_transient = groq_is_transient,
+  is_transient = .groq_is_transient,
   backoff = NULL,
   after = NULL,
   rpm = 10000,
@@ -140,9 +140,14 @@ for each title and abstract across multiple repeated questions (only when reps >
 }
 \description{
 This function supports the conduct of title and abstract screening with Groq API models in R.
-The function allows you to run title and abstract screening across multiple prompts and with
-repeated questions to check for consistency across answers. This function implements function-like
-behavior through system messages since Groq models don't natively support OpenAI's function calling.
+Specifically, it allows the user to draw on Groq-hosted models (e.g., Llama 3 / 3.1 variants, Mixtral/Mistral, Gemma, DeepSeek, Qwen, and fine-tuned models).
+The function allows to run title and abstract screening across multiple prompts and with
+repeated questions to check for consistency across answers. All of which can be done in parallel.
+The function draws on the newly developed function calling which is called via the
+tools argument in the request body. This is the main different between \code{\link[=tabscreen_gpt.tools]{tabscreen_gpt.tools()}}
+and \code{\link[=tabscreen_gpt.original]{tabscreen_gpt.original()}}. Function calls ensure more reliable and consistent responses to ones
+requests. See \href{https://osf.io/preprints/osf/yrhzm}{Vembye, Christensen, Mølgaard, and Schytt. (2025)}
+for guidance on how adequately to conduct title and abstract screening with Groq models.
 }
 \note{
 The \code{answer_data_aggregated} data (only present when reps > 1) contains the following mandatory variables:
@@ -237,7 +242,7 @@ tabscreen_groq(
 }
 }
 \references{
-Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2024)
+Vembye, M. H., Christensen, J., MÃ¸lgaard, A. B., & Schytt, F. L. W. (2024)
 \emph{GPT API Models Can Function as Highly Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
 A Proof of Concept and Common Guidelines} \url{https://osf.io/preprints/osf/yrhzm}
 }

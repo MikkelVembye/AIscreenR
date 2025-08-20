@@ -155,6 +155,3 @@ approximate_price_gpt <-
     res
 
 }
-
-
-

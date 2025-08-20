@@ -1,7 +1,3 @@
-library(testthat)
-library(AIscreenR)
-library(withr)
-
 # Use a small subset of the disagreements data for testing
 test_data <- disagreements[1, , drop = FALSE]
 
