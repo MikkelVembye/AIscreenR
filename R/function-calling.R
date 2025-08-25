@@ -84,3 +84,59 @@ tools_detailed <- list(
     )
   )
 )
+
+
+#----------------------------------------------------------------
+# GROQ function calling
+#----------------------------------------------------------------
+
+
+tools_simple_groq <- list(
+  list(
+    type = "function",
+    "function" = list(
+      name = "inclusion_decision_simple",
+      description = inclusion_decision_description,
+      parameters = list(
+        type = "object",
+        properties = list(
+          decision_gpt = list(
+            type = "string",
+            description = "List the inclusion decision as '1', '0', or '1.1'",
+            enum = list("1", "0", "1.1")
+          )
+        ),
+        required = list("decision_gpt"),
+        additionalProperties = FALSE
+      )
+    )
+  )
+)
+
+# Combines both simple and detailed descriptions
+
+tools_detailed_groq <- list(
+  list(
+    type = "function",
+    "function" = list(
+      name = "inclusion_decision",
+      description = inclusion_decision_description,
+      parameters = list(
+        type = "object",
+        properties = list(
+          decision_gpt = list(
+            type = "string",
+            description = "List the inclusion decision as '1', '0', or '1.1'",
+            enum = list("1", "0", "1.1")
+          ),
+          detailed_description = list(
+            type = "string",
+            description = "List the detailed description of your inclusion decision"
+          )
+        ),
+        required = list("decision_gpt", "detailed_description"),
+        additionalProperties = FALSE
+      )
+    )
+  )
+)

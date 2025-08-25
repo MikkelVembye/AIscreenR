@@ -225,11 +225,11 @@ tabscreen_groq <- function(
   # Setup functions based on decision_description
   #.......................................
   if(is.null(tools)) {
-    tools <- if(decision_description) tools_detailed else tools_simple
+    tools <- if(decision_description) tools_detailed_groq else tools_simple_groq
   }
   
   if(is.null(tool_choice)) {
-    tool_choice <- if(decision_description) list(name = "inclusion_decision") else list(name = "inclusion_decision_simple")
+    tool_choice <- "required"
   }
   
   #.......................................

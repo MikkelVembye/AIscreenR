@@ -16,8 +16,8 @@
 .groq_engine <- function(
     body,
     RPM,
-    time_inf,
-    token_inf, 
+    timeinf,
+    tokeninf, 
     api_key, 
     max_t,
     max_s, 
@@ -25,16 +25,17 @@
     back, 
     aft 
 ) {
+  # Detect if detailed tool is present based on tools list
   detailed <- FALSE
-  if (!is.null(body$tool_choice)) {
-    if (is.list(body$tool_choice) && 
-        !is.null(body$tool_choice$type) && body$tool_choice$type == "function" &&
-        !is.null(body$tool_choice$'function') && is.list(body$tool_choice$'function') &&
-        !is.null(body$tool_choice$'function'$name)) {
-      detailed <- body$tool_choice$'function'$name == "inclusion_decision"
+  if (!is.null(body$tools) && length(body$tools) > 0) {
+    tool_names <- try(purrr::map_chr(body$tools, function(t) {
+      fn <- t[["function"]]
+      if (!is.null(fn) && !is.null(fn$name)) fn$name else NA_character_
+    }), silent = TRUE)
+    if (!inherits(tool_names, "try-error")) {
+      detailed <- any(tool_names == "inclusion_decision", na.rm = TRUE)
     }
   }
-
   detail_desc_default <- if(detailed) NA_character_ else NULL
   if (max_t == 0) max_t <- is_trans <- NULL
   
@@ -58,134 +59,132 @@
     ) |>
     httr2::req_throttle(RPM/60) |>
     httr2::req_user_agent("AIscreenR (http://mikkelvembye.github.io/AIscreenR/)")
-
+  
   if (curl::has_internet()) {
-    resp_httr <- try(
-      suppressMessages(req |> httr2::req_perform()),
-      silent = TRUE
-    )
+    resp_httr <- try(suppressMessages(req |> httr2::req_perform()), silent = TRUE)
     
-    current_status_code <- status_code()
-
-    if (current_status_code == 200) {
-      resp_json <- resp_httr |> httr2::resp_body_json()
-      
-      decision_val <- NA_character_
-      detailed_desc_val <- detail_desc_default
-      decision_bin_val <- NA_real_
-      prompt_tok_val <- if(token_inf && !is.null(resp_json$usage)) resp_json$usage$prompt_tokens else NA_real_
-      completion_tok_val <- if(token_inf && !is.null(resp_json$usage)) resp_json$usage$completion_tokens else NA_real_
-
-      if (!is.null(resp_json$choices[[1]]$message$tool_calls)) {
-        tool_call <- resp_json$choices[[1]]$message$tool_calls[[1]]
-        if (tool_call$type == "function" && !is.null(tool_call$'function'$arguments)) {
-          func_arguments_json <- tool_call$'function'$arguments
-          func_args <- try(jsonlite::fromJSON(func_arguments_json), silent = TRUE)
-          
-          if (!inherits(func_args, "try-error")) {
-            decision_val <- as.character(func_args$decision_gpt)
-            if (detailed && "detailed_description" %in% names(func_args)) {
-              detailed_desc_val <- as.character(func_args$detailed_description)
-            } else if (detailed) {
-              detailed_desc_val <- NA_character_
+    if (!inherits(resp_httr, "try-error")) {
+      current_status_code <- httr2::resp_status(resp_httr)
+      if (current_status_code == 200) {
+        resp_json <- resp_httr |> httr2::resp_body_json()
+        decision_val <- NA_character_
+        detailed_desc_val <- detail_desc_default
+        decision_bin_val <- NA_real_
+        prompt_tok_val <- if(tokeninf && !is.null(resp_json$usage)) resp_json$usage$prompt_tokens else NA_real_
+        completion_tok_val <- if(tokeninf && !is.null(resp_json$usage)) resp_json$usage$completion_tokens else NA_real_
+        
+        if (!is.null(resp_json$choices[[1]]$message$tool_calls)) {
+          tool_call <- resp_json$choices[[1]]$message$tool_calls[[1]]
+          if (tool_call$type == "function" && !is.null(tool_call$'function'$arguments)) {
+            func_arguments_json <- tool_call$'function'$arguments
+            func_args <- try(jsonlite::fromJSON(func_arguments_json), silent = TRUE)
+            if (!inherits(func_args, "try-error")) {
+              decision_val <- as.character(func_args$decision_gpt)
+              if (detailed && "detailed_description" %in% names(func_args)) {
+                detailed_desc_val <- as.character(func_args$detailed_description)
+              } else if (detailed) {
+                detailed_desc_val <- NA_character_
+              }
+            } else {
+              decision_val <- paste0("Error: Failed to parse tool call arguments. JSON: ", substr(func_arguments_json,1,100))
             }
           } else {
-            decision_val <- paste0("Error: Failed to parse tool call arguments. JSON: ", substr(func_arguments_json,1,100))
+            decision_val <- "Error: Unexpected tool_call structure or missing arguments."
           }
-        } else {
-          decision_val <- "Error: Unexpected tool_call structure or missing arguments."
-        }
-      } else if (!is.null(resp_json$choices[[1]]$message$content)) {
-        content_text <- resp_json$choices[[1]]$message$content
-        parsed_content <- try(jsonlite::fromJSON(content_text), silent = TRUE)
-        
-        if (inherits(parsed_content, "try-error")) {
+        } else if (!is.null(resp_json$choices[[1]]$message$content)) {
+          content_text <- resp_json$choices[[1]]$message$content
+          parsed_content <- try(jsonlite::fromJSON(content_text), silent = TRUE)
+          if (inherits(parsed_content, "try-error")) {
             json_pattern <- "\\{.*\\}"
             json_matches <- regmatches(content_text, regexec(json_pattern, content_text, perl = TRUE))
             if (length(json_matches) > 0 && length(json_matches[[1]]) > 0) {
-                extracted_json <- json_matches[[1]][1]
-                parsed_content <- try(jsonlite::fromJSON(extracted_json), silent = TRUE)
+              extracted_json <- json_matches[[1]][1]
+              parsed_content <- try(jsonlite::fromJSON(extracted_json), silent = TRUE)
             }
-        }
-
-        if (!inherits(parsed_content, "try-error")) {
+          }
+          if (!inherits(parsed_content, "try-error")) {
             if ("decision_gpt" %in% names(parsed_content)) {
-                decision_val <- as.character(parsed_content$decision_gpt)
+              decision_val <- as.character(parsed_content$decision_gpt)
             } else if ("decision" %in% names(parsed_content)) {
-                decision_val <- as.character(parsed_content$decision)
+              decision_val <- as.character(parsed_content$decision)
             } else {
-                decision_val <- "Error: 'decision_gpt' or 'decision' not in content."
+              decision_val <- "Error: 'decision_gpt' or 'decision' not in content."
             }
             if (detailed) {
-                if ("detailed_description" %in% names(parsed_content)) {
-                    detailed_desc_val <- as.character(parsed_content$detailed_description)
-                } else if ("description" %in% names(parsed_content)) {
-                    detailed_desc_val <- as.character(parsed_content$description)
-                } else if ("reasoning" %in% names(parsed_content)) {
-                    detailed_desc_val <- as.character(parsed_content$reasoning)
-                } else if ("explanation" %in% names(parsed_content)) {
-                    detailed_desc_val <- as.character(parsed_content$explanation)
-                } else {
-                    detailed_desc_val <- NA_character_
-                }
+              if ("detailed_description" %in% names(parsed_content)) {
+                detailed_desc_val <- as.character(parsed_content$detailed_description)
+              } else if ("description" %in% names(parsed_content)) {
+                detailed_desc_val <- as.character(parsed_content$description)
+              } else if ("reasoning" %in% names(parsed_content)) {
+                detailed_desc_val <- as.character(parsed_content$reasoning)
+              } else if ("explanation" %in% names(parsed_content)) {
+                detailed_desc_val <- as.character(parsed_content$explanation)
+              } else {
+                detailed_desc_val <- NA_character_
+              }
             }
+          } else {
+            decision_val <- paste0("Error: Failed to parse content as JSON. Content: ", substr(content_text,1,100))
+          }
         } else {
-          decision_val <- paste0("Error: Failed to parse content as JSON. Content: ", substr(content_text,1,100))
+          decision_val <- "Error: No tool_calls and no content in response."
+        }
+        
+        decision_bin_val <- as.numeric(dplyr::if_else(stringr::str_detect(decision_val, "1"), 1, 0, missing = NA_real_))
+        res_list <- list(decision_gpt = decision_val, decision_binary = decision_bin_val)
+        if (detailed) res_list$detailed_description <- detailed_desc_val
+        if (tokeninf) {
+          res_list$prompt_tokens <- prompt_tok_val
+          res_list$completion_tokens <- completion_tok_val
+        }
+        res <- tibble::as_tibble(res_list)
+        if (detailed && "detailed_description" %in% names(res)) {
+          res <- res |> dplyr::relocate(detailed_description, .after = decision_binary)
         }
       } else {
-        decision_val <- "Error: No tool_calls and no content in response."
+        res_list <- list(
+          decision_gpt = httr2::resp_status_desc(resp_httr),
+          decision_binary = NA_real_
+        )
+        if (detailed) res_list$detailed_description <- detail_desc_default
+        if (tokeninf) {
+          res_list$prompt_tokens <- NA_real_
+          res_list$completion_tokens <- NA_real_
+        }
+        res <- tibble::as_tibble(res_list)
       }
-      
-      decision_bin_val <- as.numeric(dplyr::if_else(stringr::str_detect(decision_val, "1"), 1, 0, missing = NA_real_))
-
+    } else {
       res_list <- list(
-        decision_gpt = decision_val,
-        decision_binary = decision_bin_val
-      )
-      if (detailed) res_list$detailed_description <- detailed_desc_val
-      if (token_inf) {
-        res_list$prompt_tokens <- prompt_tok_val
-        res_list$completion_tokens <- completion_tok_val
-      }
-      res <- tibble::as_tibble(res_list)
-      
-      if (detailed && "detailed_description" %in% names(res)) {
-          res <- res |> dplyr::relocate(detailed_description, .after = decision_binary)
-      }
-
-    } else { 
-      res_list <- list(
-        decision_gpt = status_code_text_GROQ(),
+        decision_gpt = "Error: Request failed [network or server]",
         decision_binary = NA_real_
       )
       if (detailed) res_list$detailed_description <- detail_desc_default
-      if (token_inf) {
+      if (tokeninf) {
         res_list$prompt_tokens <- NA_real_
         res_list$completion_tokens <- NA_real_
       }
       res <- tibble::as_tibble(res_list)
     }
-  } else { 
+  } else {
     res_list <- list(
       decision_gpt = "Error: Could not reach host [check internet connection]",
       decision_binary = NA_real_
     )
     if (detailed) res_list$detailed_description <- detail_desc_default
-    if (token_inf) {
+    if (tokeninf) {
       res_list$prompt_tokens <- NA_real_
       res_list$completion_tokens <- NA_real_
     }
     res <- tibble::as_tibble(res_list)
   }
-
+  
   time <- tictoc::toc(quiet = TRUE)
   run_time_val <- round(as.numeric(time$toc - time$tic), 1)
-
-  if (time_inf) res <- res |> dplyr::mutate(run_time = run_time_val)
-
-  if (!token_inf && "prompt_tokens" %in% names(res)) res <- res |> dplyr::select(-prompt_tokens)
-  if (!token_inf && "completion_tokens" %in% names(res)) res <- res |> dplyr::select(-completion_tokens)
-  
+  if (timeinf) res <- res |> dplyr::mutate(run_time = run_time_val)
+  res <- res |> dplyr::mutate(run_date = as.character(Sys.Date()))
+  if (!timeinf && "run_time" %in% names(res)) res <- res |> dplyr::select(-run_time)
+  if (!tokeninf && "prompt_tokens" %in% names(res)) res <- res |> dplyr::select(-prompt_tokens)
+  if (!tokeninf && "completion_tokens" %in% names(res)) res <- res |> dplyr::select(-completion_tokens)
   return(res)
 }
 
@@ -232,17 +231,20 @@
     aft, 
     ... 
 ) {
-  detailed_for_wrapper <- if (is.list(t_choice) && !is.null(t_choice$name)) {
-    t_choice$name == "inclusion_decision"
-  } else if (is.list(t_choice) && !is.null(t_choice$type) && t_choice$type == "function" &&
-             !is.null(t_choice$'function') && !is.null(t_choice$'function'$name)) {
-    t_choice$'function'$name == "inclusion_decision"
-  } else if (is.character(t_choice)) {
-    t_choice == "inclusion_decision"
-  } else {
-    FALSE
+  # Detect detailed mode from tools or explicit choice
+  detailed_for_wrapper <- FALSE
+  if (is.list(tool)) {
+    detailed_for_wrapper <- any(vapply(tool, function(t) {
+      fn <- t[["function"]]
+      !is.null(fn) && identical(fn$name, "inclusion_decision")
+    }, logical(1)))
   }
-
+  if (!detailed_for_wrapper && is.list(t_choice)) {
+    # Also allow explicit selection to trigger detailed mode
+    if (!is.null(t_choice$name) && identical(t_choice$name, "inclusion_decision")) detailed_for_wrapper <- TRUE
+    if (!is.null(t_choice$type) && identical(t_choice$type, "function") &&
+        !is.null(t_choice$`function`) && identical(t_choice$`function`$name, "inclusion_decision")) detailed_for_wrapper <- TRUE
+  }
   t_info_wrapper <- if (time_inf) NA_real_ else NULL
   p_tokens_wrapper <- if (token_inf) NA_real_ else NULL
   c_tokens_wrapper <- if (token_inf) NA_real_ else NULL
@@ -259,19 +261,14 @@
     }
     if (time_inf) error_list$run_time <- t_info_wrapper
     error_list$run_date <- as.character(Sys.Date())
-    
     df <- tibble::as_tibble(error_list)
-    
-    # Ensure column order and presence/absence matches .groq_engine output
     if (is_detailed && !"detailed_description" %in% names(df)) df$detailed_description <- NA_character_
     if (is_detailed) df <- df |> dplyr::relocate(detailed_description, .after = decision_binary)
-
     if (!token_inf && "prompt_tokens" %in% names(df)) df <- df |> dplyr::select(-prompt_tokens)
     if (!token_inf && "completion_tokens" %in% names(df)) df <- df |> dplyr::select(-completion_tokens)
     if (!time_inf && "run_time" %in% names(df)) df <- df |> dplyr::select(-run_time)
     df
   }
-
   safe_groq_engine <- suppressWarnings(
     purrr::possibly(
       .groq_engine,
@@ -281,56 +278,23 @@
   
   api_body <- list(
     model = model_gpt,
-    messages = list(
-      list(
-        role = role_gpt,
-        content = question
-      )
-    ),
+    messages = list(list(role = role_gpt, content = question)),
     top_p = topp
   )
-  
+  # Pass tools through as provided (already Groq/OpenAI compatible)
   if (!is.null(tool)) {
-    groq_tools_list <- list()
-    for (i in seq_along(tool)) {
-      t_item <- tool[[i]]
-      groq_tools_list[[i]] <- list(
-        type = "function",
-        `function` = list(
-          name = t_item$name,
-          description = t_item$description,
-          parameters = t_item$parameters
-        )
-      )
-    }
-    api_body$tools <- groq_tools_list
+    api_body$tools <- tool
   }
-
+  # Pass tool_choice through if provided; support string or object
   if (!is.null(t_choice)) {
-    if (is.character(t_choice) && t_choice %in% c("auto", "none", "required")) {
-      api_body$tool_choice <- t_choice
-    } else if (is.list(t_choice) && !is.null(t_choice$name)) { # Input from tabscreen_groq
-      api_body$tool_choice <- list(
-        type = "function",
-        `function` = list(name = t_choice$name)
-      )
-    } else if (is.character(t_choice)) { 
-       api_body$tool_choice <- list(
-        type = "function",
-        `function` = list(name = t_choice)
-      )
-    } else if (is.list(t_choice) && !is.null(t_choice$type) && t_choice$type == "function") {
-        api_body$tool_choice <- t_choice
-    }
+    api_body$tool_choice <- t_choice
   }
   
   additional_args <- list(...)
   if (length(additional_args) > 0) {
     api_body <- c(api_body, additional_args)
   }
-
   iter_seq <- if(iterations > 1) 1:iterations else 1
-  
   furrr_seed_opt <- if (is.null(seeds)) TRUE else NULL
   
   final_res <-
@@ -339,8 +303,8 @@
         result <- safe_groq_engine(
           body = api_body, 
           RPM = req_per_min, 
-          time_inf = time_inf,
-          token_inf = token_inf,
+          timeinf = time_inf,
+          tokeninf = token_inf,
           api_key = api_key,
           max_t = max_t,
           max_s = max_s,

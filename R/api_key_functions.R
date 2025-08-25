@@ -103,12 +103,12 @@ is_testing <- function() {
 #' @title Get GROQ API key from R environment variable.
 #'
 #' @param env_var Character string indicating the name of the temporary R environment variable with
-#' the API key and the used AI model. Currently, the argument only takes \code{env_var = "GROQ_KEY"}.
+#' the API key and the used AI model. Currently, the argument only takes \code{env_var = "GROQ_API_KEY"}.
 #' See [set_api_key()] to set/create this variable.
 #'
 #' @details `get_api_key_groq()` can be used after executing [set_api_key()] or by adding the
 #' api key permanently to your R environment by using [usethis::edit_r_environ()].
-#' Then write `GROQ_KEY=[insert your api key here]` and close the `.Renviron` window and restart R.
+#' Then write `GROQ_API_KEY=[insert your api key here]` and close the `.Renviron` window and restart R.
 #'
 #' @return The specified API key (NOTE: Avoid exposing this in the console).
 #' @export
@@ -122,10 +122,10 @@ is_testing <- function() {
 #' get_api_key()
 #' }
 
-get_api_key_groq <- function(env_var = "GROQ_KEY") {
+get_api_key_groq <- function(env_var = "GROQ_API_KEY") {
   api_key <- Sys.getenv(env_var)
   if (api_key == "") {
-    stop("GROQ_KEY environment variable not set. Please set it using Sys.setenv(GROQ_KEY = 'your-api-key')")
+    stop("GROQ_API_KEY environment variable not set. Please set it using Sys.setenv(GROQ_KEY = 'your-api-key')")
   }
   return(api_key)
 }
