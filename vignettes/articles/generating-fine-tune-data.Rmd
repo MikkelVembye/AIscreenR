@@ -14,13 +14,13 @@ knitr::opts_chunk$set(
 )
 ```
 
-This article demonstrates how to prepare and format your data for fine-tuning OpenAI models using the `AIscreenR` package. The process involves two main functions: `generate_ft_data()` to structure the prompts and `write_ft_data()` to save the data in the required `jsonl` format.
+This article demonstrates how to prepare and format your data for fine-tuning OpenAI models using the `AIscreenR` package. The process involves two main functions: `generate_ft_data()` to structure the prompts and `write_ft_data()` to save the data in the required `jsonl` format. See OpenAI’s fine-tuning guide for an overview of dataset preparation and format requirements [OpenAI Docs: Fine-tuning guide](https://platform.openai.com/docs/guides/supervised-fine-tuning?monitoring=ui).
 
 ## Setup
 
 First, we load the necessary packages for this workflow. We will use `AIscreenR` for the main functions and `dplyr` for data manipulation.
 
-```{r setup}
+```{r setup, echo=FALSE}
 library(AIscreenR)
 library(dplyr)
 ```
@@ -81,7 +81,7 @@ role_subject <- paste0(
 
 Finally, we use `write_ft_data()` to convert our data frame into the `jsonl` format required by OpenAI. Each line in the output file will be a JSON object representing a single training example, containing the system message, the user prompt (our question), and the assistant's expected response (the true answer).
 
-The function will write the file to your current working directory.
+The function will write the file to your current working directory. OpenAI requires JSON Lines (.jsonl) files for fine-tuning datasets; see the fine-tuning data preparation guide and API reference for file requirements [OpenAI Docs: Fine-tuning guide](https://platform.openai.com/docs/guides/supervised-fine-tuning?monitoring=ui).
 
 ```{r write-data, eval=FALSE}
 # This code will write a file named "fine_tune_data.jsonl"
@@ -100,9 +100,9 @@ After running this code, you will have a `fine_tune_data.jsonl` file ready to be
 When fine-tuning a model, it's a best practice to provide two datasets: one for training and one for validation.
 
 *   **Training Set**: The data the model learns from.
-*   **Validation Set**: Data the model doesn't see during training. OpenAI uses this set periodically to evaluate the model's performance on new, unseen data, which helps to check for overfitting and assess how well the model is generalizing.
+*   **Validation Set**: Data the model doesn't see during training. OpenAI allows you to supply an optional validation file; during training the service periodically evaluates metrics on this validation set and does not use it for gradient updates. This helps monitor generalization and overfitting [Medium: Fine-tuning guide](https://thetechplatform.medium.com/optimizing-your-dataset-a-guide-to-fine-tuning-with-openai-c6bff4054195).
 
-A common approach is to use an 80/20 or 90/10 split, where the larger portion is used for training. Here's how you can split your data frame into an 80% training set and a 20% validation set.
+A common approach is to use an 80/20 or 90/10 split, where the larger portion is used for training.
 
 ```{r split-data, eval=FALSE}
 # Set a seed for reproducibility of the random split
@@ -148,3 +148,8 @@ write_ft_data(
 ```
 
 After running this code, you will have `training_data.jsonl` and `validation_data.jsonl` files. When you create a fine-tuning job on the OpenAI platform, you can upload both of these files.
+
+## References
+
+- OpenAI. Fine-tuning guide. https://platform.openai.com/docs/guides/supervised-fine-tuning?monitoring=uid
+- Medium: Fine-tuning guide. https://thetechplatform.medium.com/optimizing-your-dataset-a-guide-to-fine-tuning-with-openai-c6bff4054195).

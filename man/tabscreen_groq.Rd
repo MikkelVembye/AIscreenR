@@ -2,7 +2,7 @@
 % Please edit documentation in R/tabscreen_groq.r
 \name{tabscreen_groq}
 \alias{tabscreen_groq}
-\title{Title and abstract screening with Groq API models using function-like behavior via system messages}
+\title{Title and abstract screening with GROQ API models using function calls via the tools argument}
 \usage{
 tabscreen_groq(
   data,

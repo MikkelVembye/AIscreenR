@@ -10,7 +10,8 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  out.width = "100%"
 )
 ```
 
@@ -20,65 +21,22 @@ This article explains how to use the `report()` function to generate a structure
 
 First, we load the necessary packages.
 
-```{r setup}
-library(AIscreenR)
+```{r setup, echo=FALSE}
+devtools::load_all() # Fix her!!
 library(dplyr)
+#library(AIscreenR)
 ```
 
 ## Step 1: Prepare Disagreement Data
 
-The `report()` function requires a data frame containing studies where the human decision and the AI decision do not match. For this example, we'll create a small dataset with disagreements between human and AI.
+The `report()` function requires a data frame containing studies where the human decision and the AI decision do not match. For this example, we'll use a small dataset from the package. The data can be found here: `inst/extdata/dis_sub.rda`.
 
-```{r prepare-data}
-# Create a sample disagreements dataset
-disagreements <- data.frame(
-  author = c(
-    "Assanangkornchai, S and Saingam, D and Apakupakul, N and Edwards, JG",
-    "Rasouli M.A. and Zareie B. and Gouya M.M. and Hadavandsiri F.",
-    "Zareie, B. and Rasouli, M. A. and Gouya, M. M. and Akbarpour, S.",
-    "Fink, Robert M. and Windt, Arnold",
-    "Thomas, C. Z. and Surekha, A. and Suguna, A. and Puthur, K. J.",
-    "Ganaba, Rasmané and Marshall, Tom and Sombié, Issiaka",
-    "Olson, Nichole D."
-  ),
-  abstract = c(
-    "Introduction: Substance use during pregnancy contributes to the risk of adverse health outcomes...",
-    "Objective: Alcohol use is more common among female sex workers (FSWs). This study assessed...",
-    "Introduction: Drug use is highly prevalent among female sex workers (FSWs). Some forms...",
-    "Explored the postpartum transitory depression syndrome by evaluating the depression levels...",
-    "Background: Antenatal anxiety can adversely affect pregnancy outcome, have an impact on...",
-    "BACKGROUND: Little is known about the reproductive health of women who survive...",
-    "Delinquent females are at great risk of substance use disorders as they age..."
-  ),
-  final_decision_gpt = rep("Exclude", 7),
-  longest_answer = c(
-    "The study focuses on substance use during pregnancy and investigates factors related to alcohol, smoking, and drug use rather than abortion itself. Although it mentions 'previous abortion' as a factor, it does not examine mental health outcomes directly linked to abortion, nor does it specifically analyze the effects of abortion on mental health.",
-    "The study is focused on alcohol use among female sex workers and analyzes behavioral data associated with alcohol consumption. While it mentions intentional abortion as a factor influencing alcohol use, the study does not specifically address the mental health outcomes of abortion.",
-    "The study is focused on drug use patterns among female sex workers, with no mention of abortion as a primary subject. Although there is a mention of a history of intentional abortion in the results section, the study does not focus on mental health outcomes.",
-    "The study does not focus on abortion itself; rather, it examines depression during pregnancy and the postpartum period, without a direct emphasis on abortion as a primary subject.",
-    "The study focuses on screening for anxiety among antenatal women, but it does not specifically relate to abortion as a central topic, nor does it address mental health outcomes in the context of abortion.",
-    "The study focuses on women's sexual health and contraceptive needs after obstetric complications, and while it does mention post-abortum situations, it does not specifically address the mental health outcomes related to abortion itself.",
-    "The study focuses on the association between substance use disorders, pregnancy, and caretaking among delinquent females. It does not specifically address abortion as a factor influencing mental health outcomes."
-  ),
-  human_code = rep(1, 7),
-  final_decision_gpt_num = rep(0, 7),
-  # Adding studyid for the report function
-  studyid = c(101, 102, 113, 126, 128, 143, 150),
-  # Adding title for the report function  
-  title = c(
-    "Alcohol consumption, smoking, and drug use in pregnancy: prevalence and risk factors in Southern Thailand",
-    "Lifetime and past-month alcohol use and related factors among female sex workers in Iran",
-    "Drug use patterns and related factors among female sex workers in Iran in 2019-2020",
-    "Depression during the prepartum and postpartum period",
-    "Screening for anxiety among antenatal women attending a Taluk Hospital in rural India",
-    "Women's sexual health and contraceptive needs after a severe obstetric complication",
-    "Pregnancy, Caretaking and Substance Use Disorders: A 12-Year Longitudinal Study"
-  )
-)
+```{r prepare-data, echo=FALSE}
+disagreements_path <- system.file("extdata", "dis_sub.rda", package = "AIscreenR")
 
-# View the prepared data
-disagreements |>
-  select(author, abstract, final_decision_gpt, longest_answer, human_code, final_decision_gpt_num)
+data <- load(disagreements_path)
+
+disagreements <- get(data)
 ```
 ## Step 2: Generate the Report
 
@@ -112,18 +70,8 @@ Note that we did not provide a `document_subtitle`. The `report()` function auto
 
 ## Report Output
 
-Running the code above will produce an HTML file named `disagreement_report.html`. Each entry in the report will look similar to this:
+Running the code above will produce an HTML file named `disagreement_report.html`. This will look like this:
 
----
-
-**STUDY-ID: 261:**
-
--- *Title:* 'Functional Family Therapy for Young People in Treatment for Cannabis Abuse'
-
--- *Abstract*: 'This study evaluates the effectiveness of Functional Family Therapy (FFT) compared to treatment as usual for young people with cannabis abuse problems...'
-
--- *Answer (GPT)*: Exclude. The study does not explicitly mention functional family therapy.
-
-*Please add a comment on whether and why you agree with the GPT decision or not:*
-
----
+```{r eval=TRUE, echo=FALSE, fig.cap='*Example disagreement report*'}
+knitr::include_graphics(system.file("figures", "report.png", package = "AIscreenR"))
+```

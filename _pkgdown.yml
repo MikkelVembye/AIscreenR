@@ -41,11 +41,6 @@ reference:
     desc: "R functions to find api rate limits"
     contents:
       - rate_limits_per_minute
-    
-  - title: "Full-text screening"
-    desc: "Functions for screening full-text documents"
-    contents:
-      - ftscreen
 
   - title: "Reports"
     desc: "Generate disagreement / screening reports for screening disagreements between human and AI decisions"
@@ -90,8 +85,18 @@ articles:
     navbar: ~
     contents:
       - Using-GPT-API-Models-For-Screening
-  - title: "Guides and articles"
+
+  - title: Comparing models
+    navbar: ~
     contents:
       - articles/comparing-models
+
+  - title: Generating disagreement reports
+    navbar: ~
+    contents:
       - articles/generating-disagreement-reports
+
+  - title: Generating fine-tuning data
+    navbar: ~
+    contents:
       - articles/generating-fine-tune-data

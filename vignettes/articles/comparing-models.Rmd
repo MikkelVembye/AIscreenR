@@ -27,7 +27,7 @@ We will analyze their performance with a single repetition (`reps = 1`). For the
 
 First, we load the necessary packages for our analysis.
 
-```{r setup}
+```{r setup, echo=FALSE}
 library(AIscreenR)
 library(dplyr)
 library(knitr)
@@ -93,30 +93,32 @@ We now load the pre-computed results from the screening runs. The performance me
 *   **Balanced Accuracy (bAcc)**: The average of recall and specificity, providing a single measure that balances performance on both relevant and irrelevant studies.
 
 ```{r analyze-results, echo=FALSE}
-# This code is adapted from your Quarto file to process the saved .rds files.
-# NOTE: You must ensure the .rds files are in this path or adjust the path accordingly.
-setwd("C:/Users/B375477/Desktop/test_ai")
+data_dir <- system.file("extdata", "comparison-results", package = "AIscreenR")
+
 models <- c("gpt-4.1-mini", "gpt-4.1-nano", "gpt-4.1")
 model_display_names <- c("gpt-4.1-mini-2025-04-14", "gpt-4.1-nano-2025-04-14", "gpt-4.1-2025-04-14")
 
 results_table <- data.frame()
 
-for (i in 1:length(models)) {
-    model <- models[i]
-    display_name <- model_display_names[i]
-    
-    # Define file paths based on model
-    file_rep1 <- if (model == "gpt-4.1") {
-      paste0("result_obj_", model, "_rep1_newprompt.rds")
-    } else {
-      paste0("result_obj_", model, "_rep1.rds")
-    }
-    
-    file_rep10 <- if (model == "gpt-4.1") {
-      paste0("result_obj_", model, "_rep10_newprompt.rds")
-    } else {
-      paste0("result_obj_", model, "_rep10.rds")
-    }
+for (i in seq_along(models)) {
+      model <- models[i]
+      display_name <- model_display_names[i]
+      
+      # Define file names
+      file_rep1_name <- if (model == "gpt-4.1") {
+        "result_obj_gpt-4.1_rep1_newprompt.rds"
+      } else {
+        paste0("result_obj_", model, "_rep1.rds")
+      }
+      
+      file_rep10_name <- if (model == "gpt-4.1") {
+        "result_obj_gpt-4.1_rep10_newprompt.rds"
+      } else {
+        paste0("result_obj_", model, "_rep10.rds")
+      }
+
+      file_rep1 <- file.path(data_dir, file_rep1_name)
+      file_rep10 <- file.path(data_dir, file_rep10_name)
 
     # Process 1 repetition
     if (file.exists(file_rep1)) {
@@ -160,7 +162,7 @@ for (i in 1:length(models)) {
 }
 
 # Display the table
-kable(results_table, align = "lcccc")
+knitr::kable(results_table, align = "lcccc")
 ```
 
 ## Interpretation
