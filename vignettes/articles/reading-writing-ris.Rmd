@@ -1,0 +1,74 @@
+---
+title: "Reading and Writing RIS Files"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Reading and Writing RIS Files}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+## Overview
+
+This vignette introduces two helpers for working with RIS files. The function `read_ris_to_dataframe(file_path)` parses an RIS file into a data frame, preserves the order of RIS tags as they first appear, and collapses repeated tags within a record into a single string separated by semicolon. The function `save_dataframe_to_ris(df, file_path)` writes a data frame back to RIS, writes `TY` first (if present) followed by all other fields, splits semicolon-separated values into multiple RIS tag lines, and terminates each record with `ER  - `.
+
+```{r}
+library(AIscreenR)
+devtools::load_all()
+```
+
+## Read an RIS file
+
+The example below builds a small RIS file in a temporary location and reads it.
+
+```{r}
+ris <- c(
+  "TY  - JOUR",
+  "AU  - Author, One",
+  "AU  - Author, Two",
+  "TI  - An example title",
+  "PY  - 2020",
+  "ER  - ",
+  "",
+  "TY  - CHAP",
+  "TI  - Another title",
+  "AU  - Author, Three",
+  "ER  - "
+)
+
+tmp_in <- tempfile(fileext = ".ris")
+writeLines(ris, tmp_in, useBytes = TRUE)
+
+df <- read_ris_to_dataframe(tmp_in)
+df
+```
+
+Here columns appear in the order tags first occur in the file (for example, `TY`, `AU`, `TI`, `PY`). Repeated tags, such as multiple `AU` lines, are collapsed to a single string with "; ".
+
+## Write a data frame to RIS
+
+Create a data frame and write it to a `.ris` file. Semicolon-separated values are split into multiple lines.
+
+```{r}
+df_out <- data.frame(
+  TY = c("JOUR", "CHAP"),
+  AU = c("Author, One; Author, Two", "Author, Three"),
+  TI = c("An example title", "Another title"),
+  PY = c("2020", ""),
+  stringsAsFactors = FALSE
+)
+
+tmp_out <- tempfile(fileext = ".ris")
+invisible(capture.output(save_dataframe_to_ris(df_out, tmp_out)))
+readLines(tmp_out, encoding = "UTF-8")
+```
+
+Each record writes the `TY` tag first, splits any field value containing ";" into multiple RIS tag lines, and ends with `ER  - ` followed by a blank line.

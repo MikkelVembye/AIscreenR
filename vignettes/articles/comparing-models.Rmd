@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 ## Introduction
 
 The `AIscreenR` package supports several OpenAI models for screening, including `gpt-4.1`, `gpt-4.1-mini`, and `gpt-4.1-nano`.
-In this areticle, we compare the performance of these models on a real-world dataset to evaluate their effectiveness in systematic literature review screening tasks. 
+In this article, we compare the performance of these models on a real-world dataset to evaluate their effectiveness in systematic literature review screening tasks. 
 We will analyze their performance with a single repetition (`reps = 1`). For the faster and more economical `gpt-4.1-mini` and `gpt-4.1-nano` models, we will also investigate the impact of increasing the screening to ten repetitions (`reps = 10`).
 
 ## Setup
