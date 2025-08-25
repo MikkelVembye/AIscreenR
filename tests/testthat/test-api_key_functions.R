@@ -20,4 +20,10 @@ test_that("get_api_key() error.",{
 
 })
 
+test_that("get_api_key_groq() error. ", {
 
+  expect_error(
+    get_api_key_groq(env_var = "something_else")
+  )
+
+})

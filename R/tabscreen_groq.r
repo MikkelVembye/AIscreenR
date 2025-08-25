@@ -150,11 +150,12 @@
 #' @examples
 #' \dontrun{
 #'
-#' # Make sure GROQ_KEY is set
-#' Sys.setenv(GROQ_KEY = "your-api-key")
+#' set_api_key_groq()
 #'
 #' prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
 #'
+#' plan(multisession)
+#' 
 #' tabscreen_groq(
 #'   data = filges2015_dat[1:2,],
 #'   prompt = prompt,
@@ -164,9 +165,12 @@
 #'   model = "llama3-70b-8192",
 #'   max_tries = 2
 #'   )
-#'
+#' plan(sequential)
+#' 
 #'  # Get detailed descriptions of the decisions by using the
-#'  # decision_description option. See example below.
+#'  # decision_description option.
+#' plan(multisession)
+#' 
 #'  tabscreen_groq(
 #'    data = filges2015_dat[1:2,],
 #'    prompt = prompt,
@@ -177,6 +181,7 @@
 #'    decision_description = TRUE,
 #'    max_tries = 2
 #'  )
+#' plan(sequential)
 #'}
 
 tabscreen_groq <- function(
