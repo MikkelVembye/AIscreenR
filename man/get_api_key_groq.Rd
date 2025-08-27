@@ -4,11 +4,11 @@
 \alias{get_api_key_groq}
 \title{Get GROQ API key from R environment variable.}
 \usage{
-get_api_key_groq(env_var = "GROQ_KEY")
+get_api_key_groq(env_var = "GROQ_API_KEY")
 }
 \arguments{
 \item{env_var}{Character string indicating the name of the temporary R environment variable with
-the API key and the used AI model. Currently, the argument only takes \code{env_var = "GROQ_KEY"}.
+the API key and the used AI model. Currently, the argument only takes \code{env_var = "GROQ_API_KEY"}.
 See \code{\link[=set_api_key]{set_api_key()}} to set/create this variable.}
 }
 \value{
@@ -20,14 +20,14 @@ Get GROQ API key from R environment variable.
 \details{
 \code{get_api_key_groq()} can be used after executing \code{\link[=set_api_key]{set_api_key()}} or by adding the
 api key permanently to your R environment by using \code{\link[usethis:edit]{usethis::edit_r_environ()}}.
-Then write \verb{GROQ_KEY=[insert your api key here]} and close the \code{.Renviron} window and restart R.
+Then write \verb{GROQ_API_KEY=[insert your api key here]} and close the \code{.Renviron} window and restart R.
 }
 \note{
 Find your personal API key at \url{https://console.groq.com/keys}.
 }
 \examples{
 \dontrun{
-get_api_key()
+get_api_key_groq()
 }
 }
 \seealso{

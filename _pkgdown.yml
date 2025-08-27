@@ -100,3 +100,8 @@ articles:
     navbar: ~
     contents:
       - articles/generating-fine-tune-data
+
+  - title: Reading and writing RIS files
+    navbar: ~
+    contents:
+      - articles/reading-writing-ris

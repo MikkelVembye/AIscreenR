@@ -75,7 +75,7 @@ the output object will include price information of the conducted screening.}
 
 \item{api_key}{Numerical value with your personal API key. Find at
 \url{https://console.groq.com/keys}. Set with
-\code{Sys.setenv(GROQ_KEY = "your-api-key")} or use \code{\link[=get_api_key_groq]{get_api_key_groq()}}.}
+\code{Sys.setenv(GROQ_API_KEY = "your-api-key")} or use \code{\link[=get_api_key_groq]{get_api_key_groq()}}.}
 
 \item{max_tries, max_seconds}{'Cap the maximum number of attempts with
 \code{max_tries} or the total elapsed time from the first request with
@@ -247,7 +247,7 @@ plan(sequential)
 }
 }
 \references{
-Vembye, M. H., Christensen, J., MÃ¸lgaard, A. B., & Schytt, F. L. W. (2024)
+Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2024)
 \emph{GPT API Models Can Function as Highly Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
 A Proof of Concept and Common Guidelines} \url{https://osf.io/preprints/osf/yrhzm}
 }

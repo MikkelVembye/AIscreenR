@@ -11,7 +11,7 @@
 #' requests. See [Vembye, Christensen, Mølgaard, and Schytt. (2025)](https://osf.io/preprints/osf/yrhzm)
 #' for guidance on how adequately to conduct title and abstract screening with Groq models.
 #'
-#' @references Vembye, M. H., Christensen, J., MÃ¸lgaard, A. B., & Schytt, F. L. W. (2024)
+#' @references Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2024)
 #'   \emph{GPT API Models Can Function as Highly Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
 #'   A Proof of Concept and Common Guidelines} \url{https://osf.io/preprints/osf/yrhzm}
 #'
@@ -36,7 +36,7 @@
 #'   the output object will include price information of the conducted screening.
 #' @param api_key Numerical value with your personal API key. Find at
 #'  \url{https://console.groq.com/keys}. Set with 
-#'  `Sys.setenv(GROQ_KEY = "your-api-key")` or use [get_api_key_groq()].
+#'  `Sys.setenv(GROQ_API_KEY = "your-api-key")` or use [get_api_key_groq()].
 #' @param max_tries,max_seconds 'Cap the maximum number of attempts with
 #'  `max_tries` or the total elapsed time from the first request with
 #'  `max_seconds`. If neither option is supplied (the default), [httr2::req_perform()]
@@ -144,7 +144,7 @@
 #' Find current token pricing at \url{https://console.groq.com/docs/pricing}.
 #'
 #' @importFrom stats df
-#' @import dplyr
+#' 
 #' @export
 #'
 #' @examples

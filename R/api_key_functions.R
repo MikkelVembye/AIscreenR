@@ -119,7 +119,7 @@ is_testing <- function() {
 #'
 #' @examples
 #' \dontrun{
-#' get_api_key()
+#' get_api_key_groq()
 #' }
 
 get_api_key_groq <- function(env_var = "GROQ_API_KEY") {

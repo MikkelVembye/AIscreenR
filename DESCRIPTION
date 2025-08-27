@@ -33,7 +33,8 @@ Imports:
     lifecycle,
     jsonlite,
     quarto,
-    htmltools
+    htmltools,
+    tidyselect
 Suggests: 
     future,
     knitr,
