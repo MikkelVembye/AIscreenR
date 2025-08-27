@@ -87,7 +87,7 @@
             if (detailed && "detailed_description" %in% names(func_args)) {
               detailed_desc_val <- as.character(func_args$detailed_description)
             } else if (detailed) {
-              detailed_desc_val <- NA_character_
+              detailed_desc_val <- cat("NA_character_")
             }
           } else {
             decision_val <- paste0("Error: Failed to parse tool call arguments. JSON: ", substr(func_arguments_json, 1, 100))
