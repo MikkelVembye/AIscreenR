@@ -102,7 +102,7 @@ tools_simple_groq <- list(
         properties = list(
           decision_gpt = list(
             type = "string",
-            description = "List the inclusion decision as '1', '0', or '1.1'",
+            description = "1=Include, 0=Exclude, 1.1=Uncertain",
             enum = list("1", "0", "1.1")
           )
         ),
@@ -126,7 +126,7 @@ tools_detailed_groq <- list(
         properties = list(
           decision_gpt = list(
             type = "string",
-            description = "List the inclusion decision as '1', '0', or '1.1'",
+            description = "1=Include, 0=Exclude, 1.1=Uncertain",
             enum = list("1", "0", "1.1")
           ),
           detailed_description = list(

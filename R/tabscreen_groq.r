@@ -440,7 +440,7 @@ tabscreen_groq <- function(
   # Detailed system that models must follow in order to ensure proper function calling
   forced_fn <- if (decision_description) "inclusion_decision" else "inclusion_decision_simple"
   tool_guard_msg <- paste0(
-    "You are a function-calling agent. For each request (each study and each repetition), ",
+    "You are a function-calling agent. For each request",
     "you must call the tool '", forced_fn, "' exactly once and only this tool. ",
     "Do not write natural language in the message content. Return only via the tool call. ")
 
