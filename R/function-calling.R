@@ -131,7 +131,7 @@ tools_detailed_groq <- list(
           ),
           detailed_description = list(
             type = "string",
-            description = "List the detailed description of your inclusion decision"
+            description = "List the detailed description of your inclusion decision. IMPORTANT: This must match the logic of your decision_gpt exactly."
           )
         ),
         required = list("decision_gpt", "detailed_description"),
