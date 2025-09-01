@@ -102,7 +102,7 @@ tools_simple_groq <- list(
         properties = list(
           decision_gpt = list(
             type = "string",
-            description = "1=Include, 0=Exclude, 1.1=Uncertain",
+            description = "write '1' for Include, '0' for Exclude, '1.1' if the information is ambiguous or missing, not if the abstract is clearly unrelated",
             enum = list("1", "0", "1.1")
           )
         ),
@@ -126,7 +126,7 @@ tools_detailed_groq <- list(
         properties = list(
           decision_gpt = list(
             type = "string",
-            description = "1=Include, 0=Exclude, 1.1=Uncertain",
+            description = "write '1' for Include, '0' for Exclude, '1.1' if the information is ambiguous or missing, not if the abstract is clearly unrelated",
             enum = list("1", "0", "1.1")
           ),
           detailed_description = list(
