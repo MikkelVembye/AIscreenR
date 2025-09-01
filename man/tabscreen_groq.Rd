@@ -250,4 +250,12 @@ plan(sequential)
 Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2024)
 \emph{GPT API Models Can Function as Highly Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
 A Proof of Concept and Common Guidelines} \url{https://osf.io/preprints/osf/yrhzm}
+
+Thomas, J. et al. (2024).
+Responsible AI in Evidence SynthEsis (RAISE): guidance and recommendations.
+\url{https://osf.io/cn7x4}
+
+Wickham H (2023).
+\emph{httr2: Perform HTTP Requests and Process the Responses}.
+\url{https://httr2.r-lib.org}, \url{https://github.com/r-lib/httr2}.
 }

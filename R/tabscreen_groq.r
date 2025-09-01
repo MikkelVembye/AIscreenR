@@ -1,5 +1,8 @@
-﻿#' Title and abstract screening with GROQ API models using function calls via the tools argument
-#'
+﻿#' @title Title and abstract screening with GROQ API models using function calls via the tools argument
+#'  
+#' @name tabscreen_groq
+#' @aliases tabscreen_groq
+#' 
 #' @description
 #' This function supports the conduct of title and abstract screening with Groq API models in R.
 #' Specifically, it allows the user to draw on Groq-hosted models (e.g., Llama 3 / 3.1 variants, Mixtral/Mistral, Gemma, DeepSeek, Qwen, and fine-tuned models).
@@ -15,8 +18,15 @@
 #'   \emph{GPT API Models Can Function as Highly Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
 #'   A Proof of Concept and Common Guidelines} \url{https://osf.io/preprints/osf/yrhzm}
 #'
+#'   Thomas, J. et al. (2024).
+#'   Responsible AI in Evidence SynthEsis (RAISE): guidance and recommendations.
+#'   \url{https://osf.io/cn7x4}
+#'
+#' Wickham H (2023).
+#' \emph{httr2: Perform HTTP Requests and Process the Responses}.
+#' \url{https://httr2.r-lib.org}, \url{https://github.com/r-lib/httr2}.
+#'
 #' @template common-arg
-#' @param ... Further argument to pass to the request body.
 #' @param model Character string with the name of the completion model. Can take
 #'   multiple Groq models. Default = `"llama3-70b-8192"`.
 #'   Find available models at \url{https://console.groq.com/docs/models}.
@@ -74,6 +84,7 @@
 #' @param force Logical argument indicating whether to force the function to use more than
 #'   10 iterations. This argument is developed to avoid the conduct of wrong and extreme sized screening.
 #'   Default is `FALSE`.
+#' @param ... Further argument to pass to the request body.
 #'
 #' @return An object of class \code{"groq"}. The object is a list containing the following
 #' components:
