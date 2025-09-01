@@ -248,9 +248,9 @@ tabscreen_groq <- function(
   #.......................................
   
   # Validate model names
-  if (any(!is.element(model, model_prizes$model)))
+  if (any(!is.element(model, groq_model_prizes$model)))
     stop("Unknown model(s) used. Available models are: ",
-         paste(model_prizes$model, collapse = ", "))
+         paste(groq_model_prizes$model, collapse = ", "))
 
   # Ensuring that users do not conduct wrong screening
   if (max(reps) > 10 && !force){
