@@ -426,6 +426,13 @@ tabscreen_groq <- function(
   #.......................................
   furrr_seed <- if (is.null(seed_par)) TRUE else NULL
 
+  # Detailed system that models must follow in order to ensure proper function calling
+  forced_fn <- if (decision_description) "inclusion_decision" else "inclusion_decision_simple"
+  tool_guard_msg <- paste0(
+    "You are a function-calling agent. For each request (each study and each repetition), ",
+    "you must call the tool '", forced_fn, "' exactly once and only this tool. ",
+    "Do not write natural language in the message content. Return only via the tool call. ",)
+
   params <- question_dat |>
     dplyr::select(question, model_gpt = model, topp, iterations, req_per_min)
 
@@ -438,6 +445,7 @@ tabscreen_groq <- function(
         role_gpt = role,
         tool = tools,
         t_choice = tool_choice,
+        tool_msg = tool_guard_msg,
         seeds = seed_par,
         time_inf = time_info,
         token_inf = token_info,

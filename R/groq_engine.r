@@ -200,6 +200,7 @@
     is_trans, 
     back,
     aft, 
+    system_guard_msg = NULL, # Message to force function calling
     ... 
 ) {
   # Detect detailed mode from tools or explicit choice
@@ -250,12 +251,23 @@
     )
   )
   
+
+  # Build messages: add a system guard in front to force tool usage
+  messages <- if (!is.null(system_guard_msg)) {
+    list(
+      list(role = "system", content = system_guard_msg),
+      list(role = role_gpt, content = question)
+    )
+  } else {
+    list(list(role = role_gpt, content = question))
+  }
+
   api_body <- list(
     model = model_gpt,
-    messages = list(list(role = role_gpt, content = question)),
+    messages = messages,
     top_p = topp
   )
-  # Pass tools through as provided (already Groq/OpenAI compatible)
+  # Pass tools through as provided
   if (!is.null(tool)) {
     api_body$tools <- tool
   }
