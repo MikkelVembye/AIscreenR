@@ -169,7 +169,7 @@ groq_model_prizes <- data.frame(
     "llama-3.1-8b-instant", # llama 3.1 8B Instant
     "llama-3.3-70b-versatile", # llama 3.3 70B Versatile
     "openai/gpt-oss-120b", # GPT-OSS 120B
-    "openai/gpt-oss-20b", # GPT-OSS 20B
+    "openai/gpt-oss-20b" # GPT-OSS 20B
 
   ),
   price_in_per_token = c(
@@ -188,5 +188,5 @@ groq_model_prizes <- data.frame(
 )
   
 model_prizes <- rbind(model_prizes, groq_model_prizes) # Combine OpenAI and GROQ model prices
-
+print(model_prizes)
 use_data(model_prizes, overwrite = TRUE)
