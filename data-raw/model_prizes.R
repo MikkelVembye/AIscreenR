@@ -188,5 +188,5 @@ groq_model_prizes <- data.frame(
 )
   
 model_prizes <- rbind(model_prizes, groq_model_prizes) # Combine OpenAI and GROQ model prices
-print(model_prizes)
-use_data(model_prizes, overwrite = TRUE)
+
+use_data(model_prizes, groq_model_prizes, overwrite = TRUE)
