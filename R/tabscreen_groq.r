@@ -391,10 +391,6 @@ tabscreen_groq <- function(
     ) |>
     dplyr::arrange(promptid, model, topp, iterations, studyid)
 
-    # Expand rows by reps
-    question_dat <- question_dat |>
-      dplyr::slice(rep(1:dplyr::n(), times = question_dat$iterations))
-
   #.......................................
   # Approximate price calculation
   #.......................................
