@@ -228,8 +228,19 @@ tabscreen_groq <- function(
     tools <- if(decision_description) tools_detailed_groq else tools_simple_groq
   }
   
-  if(is.null(tool_choice)) {
-    tool_choice <- "required"
+  # Force the exact function name
+  if (is.null(tool_choice)) {
+    forced_fn <- if (decision_description) "inclusion_decision" else "inclusion_decision_simple"
+    tool_choice <- list(
+      type = "function",
+      "function" = list(name = forced_fn)
+    )
+  } else if (is.character(tool_choice) && identical(tool_choice, "required")) {
+    forced_fn <- if (decision_description) "inclusion_decision" else "inclusion_decision_simple"
+    tool_choice <- list(
+      type = "function",
+      "function" = list(name = forced_fn)
+    )
   }
   
   #.......................................

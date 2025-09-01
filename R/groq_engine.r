@@ -272,7 +272,12 @@
     api_body$tools <- tool
   }
   # Pass tool_choice through if provided; support string or object
-  if (!is.null(t_choice)) {
+  if (is.null(t_choice) || (is.character(t_choice) && identical(t_choice, "required"))) {
+    fn_name <- tryCatch(tool[[1]][["function"]][["name"]], error = function(e) NULL)
+    if (!is.null(fn_name)) {
+      api_body$tool_choice <- list(type = "function", "function" = list(name = fn_name))
+    }
+  } else {
     api_body$tool_choice <- t_choice
   }
   
