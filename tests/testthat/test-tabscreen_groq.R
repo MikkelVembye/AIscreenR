@@ -1,5 +1,3 @@
-# Updated test for tabscreen_groq functions
-
 test_that(".groq_engine return errors correctly", {
 
   tools_choice_name <- list(
@@ -208,24 +206,16 @@ test_that(".rep_groq_engine controls errrors correctly", {
 
 })
 
-# Old tests (tabscreen_gpt.original)
-# The following tests are adapted for tabscreen_groq
+
 paths <- system.file("extdata", "test_prompts.rds", package = "AIscreenR")
 prompts <- readRDS(file = paths)
 
-#prompts <-
-#  purrr::map_chr(
-#    paths, ~ {
-#      readtext::readtext(.x)$text |>
-#        stringr::str_remove_all("\n")
-#    }
-#  )
 
 prompt <- prompts[1]
 prompt2 <- prompts[2]
 
 
-models <- c("llama3-8b-8192", "gemma-7b-it")
+models <- c("llama-3.1-8b-instant", "openai/gpt-oss-20b")
 reps <- c(2, 1)
 rpm <- c(30, 30)
 
