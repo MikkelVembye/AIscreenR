@@ -22,9 +22,12 @@ read_ris_to_dataframe <- function(file_path) {
   records <- list()
   current_record <- list()
   field_order <- character(0)
+  last_field <- NULL
   
-  for (line in lines) {
-    line <- trimws(line)
+  for (raw_line in lines) {
+    # Preserve leading spaces (needed to detect continuation lines), remove trailing whitespace/newlines
+    line <- sub("[\r\n]+$", "", raw_line)
+    line <- sub("\\s+$", "", line)
     
     # Skip empty lines
     if (line == "") next
@@ -37,24 +40,29 @@ read_ris_to_dataframe <- function(file_path) {
       }
       # Start new record
       current_record <- list()
-      current_record$TY <- sub("^TY  - ", "", line)
+      val <- sub("^TY  - ", "", line)
+      val <- gsub("\\s+", " ", trimws(val))
+      current_record$TY <- val
+      last_field <- "TY"
       # Add TY to field order if not already present
       if (!"TY" %in% field_order) {
         field_order <- c(field_order, "TY")
       }
     }
-    # Check for end of record (allow optional trailing spaces after '-')
-    else if (grepl("^ER\\s{2}-\\s*$", line)) {
+    # Check for end of record
+    else if (grepl("^ER  -\\s*$", line)) {
       # Save current record
       if (length(current_record) > 0) {
         records <- append(records, list(current_record), after = length(records))
       }
       current_record <- list()
+      last_field <- NULL
     }
-    # Process other fields
+    # Process regular field lines like "AB  - value"
     else if (grepl("^[A-Z0-9]{2}  - ", line)) {
       field <- substr(line, 1, 2)
       value <- sub("^[A-Z0-9]{2}  - ", "", line)
+      value <- gsub("\\s+", " ", trimws(value))
       
       # Add field to order if not already present
       if (!field %in% field_order) {
@@ -70,6 +78,43 @@ read_ris_to_dataframe <- function(file_path) {
         }
       } else {
         current_record[[field]] <- value
+      }
+      last_field <- field
+    }
+    # Continuation lines start with two spaces in RIS exports; append to last field value
+    else if (grepl("^\\s{2}", raw_line)) {
+      # Remove the two leading spaces and trailing whitespace
+      cont <- sub("^\\s{2}", "", raw_line)
+      cont <- sub("\\s+$", "", cont)
+      cont <- gsub("\\s+", " ", trimws(cont))
+      if (!is.null(last_field) && last_field %in% names(current_record)) {
+        curval <- current_record[[last_field]]
+        if (is.list(curval)) {
+          # Append to the last element of the list, normalizing spaces
+          n <- length(curval)
+          curval[[n]] <- paste(gsub("\\s+", " ", trimws(curval[[n]])), cont, sep = " ")
+          curval[[n]] <- gsub("\\s+", " ", trimws(curval[[n]]))
+          current_record[[last_field]] <- curval
+        } else {
+          newval <- paste(gsub("\\s+", " ", trimws(curval)), cont, sep = " ")
+          current_record[[last_field]] <- gsub("\\s+", " ", trimws(newval))
+        }
+      }
+    }
+    # Treat unknown non-empty lines as continuation of last field
+    else {
+      if (!is.null(last_field) && last_field %in% names(current_record)) {
+        cont <- gsub("\\s+", " ", trimws(line))
+        curval <- current_record[[last_field]]
+        if (is.list(curval)) {
+          n <- length(curval)
+          curval[[n]] <- paste(gsub("\\s+", " ", trimws(curval[[n]])), cont, sep = " ")
+          curval[[n]] <- gsub("\\s+", " ", trimws(curval[[n]]))
+          current_record[[last_field]] <- curval
+        } else {
+          newval <- paste(gsub("\\s+", " ", trimws(curval)), cont, sep = " ")
+          current_record[[last_field]] <- gsub("\\s+", " ", trimws(newval))
+        }
       }
     }
   }
@@ -97,9 +142,10 @@ read_ris_to_dataframe <- function(file_path) {
       value <- record[[field]]
       # If multiple values, collapse with semicolon
       if (is.list(value)) {
-        df_list[[field]][i] <- paste(unlist(value), collapse = "; ")
+        vals <- gsub("\\s+", " ", trimws(unlist(value)))
+        df_list[[field]][i] <- paste(vals, collapse = "; ")
       } else {
-        df_list[[field]][i] <- value
+        df_list[[field]][i] <- gsub("\\s+", " ", trimws(value))
       }
     }
   }
@@ -132,27 +178,41 @@ read_ris_to_dataframe <- function(file_path) {
 save_dataframe_to_ris <- function(df, file_path) {
   # Open file connection
   con <- file(file_path, "w", encoding = "UTF-8")
-  
+
+  # Tags that should be written as multiple lines when semicolon-separated
+  multi_value_tags <- c("AU", "A1", "KW")
+
   for (i in 1:nrow(df)) {
     row <- df[i, ]
-    
+
     # Write TY field first
     if ("TY" %in% names(row) && !is.na(row$TY) && row$TY != "") {
-      writeLines(paste0("TY  - ", row$TY), con)
+      writeLines(paste0("TY  - ", as.character(row$TY)), con)
     }
-    
+
     # Write each field
     for (col_name in names(row)) {
       # Skip TY as it's already written, and skip empty values
       if (col_name == "TY") next
       value <- row[[col_name]]
-      
+
+      # Coerce factors, lists etc. to character and collapse multiple elements
+      if (is.factor(value)) value <- as.character(value)
+      if (is.list(value) || length(value) > 1) {
+        value <- paste(unlist(value), collapse = "; ")
+      }
+      value <- as.character(value)
+
       # Skip empty values
       if (is.na(value) || value == "" || is.null(value)) next
-      
-      # Handle multiple values (split by semicolon) for any field
-      if (grepl(";", value)) {
-        values <- strsplit(value, "; ?")[[1]]
+
+      # Normalize whitespace
+      value <- gsub("\\s+", " ", trimws(value))
+
+      # If this tag is a multi-value tag, split on semicolons and write multiple lines.
+      # For free-text fields (e.g., AB) we do NOT split, so they remain a single tag line.
+      if (grepl(";", value) && col_name %in% multi_value_tags) {
+        values <- strsplit(value, ";\\s*")[[1]]
         for (val in values) {
           val <- trimws(val)
           if (val != "") {
@@ -163,14 +223,14 @@ save_dataframe_to_ris <- function(df, file_path) {
         writeLines(paste0(col_name, "  - ", value), con)
       }
     }
-    
+
     # Write end of record
     writeLines("ER  - ", con)
     writeLines("", con)  # Empty line between records
   }
-  
+
   # Close file connection
   close(con)
-  
+
   cat("RIS file saved to:", file_path, "\n")
 }
