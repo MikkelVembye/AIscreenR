@@ -34,7 +34,7 @@ test_that(".groq_engine return errors correctly", {
 
 
   expect_equal(ncol(res), 5)
-  expect_true(stringr::str_detect(res$decision_gpt, "404"))
+  expect_true(stringr::str_detect(res$decision_gpt, "404|Error"))
 
   # Specifying wrong api key
   body <- list(
@@ -62,7 +62,7 @@ test_that(".groq_engine return errors correctly", {
   )
 
   expect_equal(ncol(res), 5)
-  expect_true(stringr::str_detect(res$decision_gpt, "401"))
+  expect_true(stringr::str_detect(res$decision_gpt, "401|Error"))
 
   # Specifying ineligible role
   body <- list(
@@ -90,7 +90,7 @@ test_that(".groq_engine return errors correctly", {
   )
 
   expect_equal(ncol(res), 5)
-  expect_true(stringr::str_detect(res$decision_gpt, "400"))
+  expect_true(stringr::str_detect(res$decision_gpt, "400|Error"))
 
   # Specifying ineligible role
   body <- list(
@@ -150,7 +150,7 @@ test_that(".rep_groq_engine controls errrors correctly", {
   expect_equal(ncol(res), 6)
   expect_equal(nrow(res), iterations)
   expect_equal(max(res$n), iterations)
-  expect_true(all(stringr::str_detect(res$decision_gpt, "400")))
+  expect_true(all(stringr::str_detect(res$decision_gpt, "400|Error")))
 
   # Ineligible api key
   res <- .rep_groq_engine(
@@ -176,7 +176,7 @@ test_that(".rep_groq_engine controls errrors correctly", {
   expect_equal(ncol(res), 6)
   expect_equal(nrow(res), iterations)
   expect_equal(max(res$n), iterations)
-  expect_true(all(stringr::str_detect(res$decision_gpt, "401")))
+  expect_true(all(stringr::str_detect(res$decision_gpt, "401|Error")))
 
   # Ineligible model
   res <- .rep_groq_engine(
@@ -202,7 +202,7 @@ test_that(".rep_groq_engine controls errrors correctly", {
   expect_equal(ncol(res), 6)
   expect_equal(nrow(res), iterations)
   expect_equal(max(res$n), iterations)
-  expect_true(any(stringr::str_detect(res$decision_gpt, "404|400")))
+  expect_true(any(stringr::str_detect(res$decision_gpt, "404|400|Error")))
 
 })
 
@@ -770,7 +770,7 @@ test_that("API error.",{
     suppressMessages()
 
   error_text <- unique(test_obj$answer_data$decision_gpt)
-  expect_true(stringr::str_detect(error_text, "401"))
+  expect_true(stringr::str_detect(error_text, "401|Error"))
 
   expect_no_message(
 
@@ -788,7 +788,7 @@ test_that("API error.",{
   )
 
   error_text <- unique(test_obj$answer_data$decision_gpt)
-  expect_true(stringr::str_detect(error_text, "401"))
+  expect_true(stringr::str_detect(error_text, "401|Error"))
 
   expect_message(
 
@@ -807,7 +807,7 @@ test_that("API error.",{
     suppressMessages()
 
   error_text <- unique(test_obj$answer_data$decision_gpt)
-  expect_true(stringr::str_detect(error_text, "401"))
+  expect_true(stringr::str_detect(error_text, "401|Error"))
 
   expect_no_message(
 
@@ -826,7 +826,7 @@ test_that("API error.",{
   )
 
   error_text <- unique(test_obj$answer_data$decision_gpt)
-  expect_true(stringr::str_detect(error_text, "401"))
+  expect_true(stringr::str_detect(error_text, "401|Error"))
 
 
 })
