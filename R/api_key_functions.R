@@ -123,9 +123,21 @@ is_testing <- function() {
 #' }
 
 get_api_key_groq <- function(env_var = "GROQ_API_KEY") {
-  api_key <- Sys.getenv(env_var)
-  if (api_key == "") {
-    stop("GROQ_API_KEY environment variable not set. Please set it using Sys.setenv(GROQ_KEY = 'your-api-key')")
+  if ("GROQ_API_KEY" %in% env_var) key <- Sys.getenv("GROQ_API_KEY")
+
+  if (identical(key, "")){
+
+    if (is_testing()) {
+
+      if ("GROQ_API_KEY" %in% env_var) key <- testing_key_groq()
+
+    } else {
+
+      stop("No API key found. Use set_api_key()")
+    }
+
   }
-  return(api_key)
+
+  key
+
 }
