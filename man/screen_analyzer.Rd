@@ -47,12 +47,12 @@ A \code{tibble} with screening performance measures. The \code{tibble} includes 
 }
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}\if{html}{\out{<br>}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}\if{html}{\out{<br>}}
 \if{html}{\out{<br>}}
 When both the human and AI title and abstract screening has been done, this function
 allows you to calculate performance measures of the screening, including the overall
-accuracy, specificity and sensitivity of the screening, as well as
-inter-rater reliability kappa statistics.
+accuracy, specificity/recall, and sensitivity of the screening, as well as
+inter-rater reliability kappa statistics (Gartlehner et al., 2019; McHugh, 2012; Syriani et al., 2024).
 }
 \examples{
 \dontrun{
@@ -82,7 +82,7 @@ res |> screen_analyzer()
 \references{
 Gartlehner, G., Wagner, G., Lux, L., Affengruber, L., Dobrescu, A., Kaminski-Hartenthaler, A., & Viswanathan, M. (2019).
 Assessing the accuracy of machine-assisted abstract screening with DistillerAI: a user study.
-\emph{Systematic Reviews}, 8(1), 277. \doi{10.1186/s13643-019-1221-3}
+\emph{Systematic Reviews}, 8:277, 1-10. \doi{10.1186/s13643-019-1221-3}
 
 McHugh, M. L. (2012).
 Interrater reliability: The kappa statistic.

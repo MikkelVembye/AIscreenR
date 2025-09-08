@@ -28,7 +28,9 @@ endpoint. In future developments, we may add further LLMs, such as API
 models from Claude 2. For now, we invite other researchers to test this
 software, so that we, as a review community, can get a better
 understanding of the performance of OpenAI’s GPT API models for title
-and abstract screening in high-quality reviews.
+and abstract screening in high-quality reviews. For guidance on how to
+conduct reliable title and abstract screenings with GPT API models, see
+[Vembye et al. (2025)](https://psycnet.apa.org/record/2026-37236-001).
 
 ## Installation
 
@@ -220,3 +222,11 @@ all_dat |> select(human_code, decision_binary)
 #>  9          1               1
 #> 10          1               1
 ```
+
+# References
+
+Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W.
+(2025). Generative pretrained transformer models can function as highly
+reliable second screeners of titles and abstracts in systematic reviews:
+A proof of concept and common guidelines. *Psychological Methods*,
+Online first. <https://doi.org/10.1037/met0000769>

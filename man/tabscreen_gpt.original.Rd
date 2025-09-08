@@ -166,7 +166,7 @@ use \code{\link[=tabscreen_gpt.tools]{tabscreen_gpt.tools()}}.
 The function allows to run title and abstract screening across multiple prompts and with
 repeated questions to check for consistency across answers. This function draws
 on the newly developed function calling to better steer the output of the responses.
-This function was used in \href{https://osf.io/preprints/osf/yrhzm}{Vembye et al. (2024)}.
+This function was used in \href{https://osf.io/preprints/osf/yrhzm}{Vembye, Christensen, Mølgaard, and Schytt. (2025)}.
 }
 \note{
 The \code{answer_data_sum} data contains the following mandatory variables:
@@ -259,7 +259,7 @@ tabscreen_gpt.original(
 }
 }
 \references{
-Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2024)
+Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2025)
 \emph{GPT API Models Can Function as Highly Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
 A Proof of Concept and Common Guidelines} \url{https://osf.io/preprints/osf/yrhzm}
 

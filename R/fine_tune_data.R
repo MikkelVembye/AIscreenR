@@ -5,7 +5,7 @@
 #'
 #' @template common-arg
 #'
-#' @return A dataset of class `'ft_data'`.
+#' @return A dataset of class `'fine_tune_data'`.
 #'
 #' @note The dataset contains at least the following variables:
 #' \tabular{lll}{
@@ -15,7 +15,7 @@
 #'  \bold{question} \tab \code{character} \tab indicating the final question sent to OpenAI's GPT API models for training. \cr
 #' }
 #'
-#' @seealso [write_ft_data()]
+#' @seealso [save_fine_tune_data()]
 #'
 #' @examples
 #' # Extract 5 irrelevant and relevant records, respectively.
@@ -24,7 +24,7 @@
 #' prompt <- "Is this study about functional family therapy?"
 #'
 #' dat <-
-#'   generate_ft_data(
+#'   create_fine_tune_data(
 #'     data = dat,
 #'     prompt = prompt,
 #'     studyid = studyid,
@@ -36,7 +36,7 @@
 #'
 #' @export
 
-generate_ft_data <- function(data, prompt, studyid, title, abstract){
+create_fine_tune_data <- function(data, prompt, studyid, title, abstract){
 
   study_id <- if (missing(studyid)) 1:nrow(data) else data |> pull({{ studyid }})
 
@@ -61,7 +61,7 @@ generate_ft_data <- function(data, prompt, studyid, title, abstract){
     dplyr::relocate(c(studyid, {{ title }}, {{ abstract }}), .before = question) |>
     dplyr::select(-question_raw)
 
-  class(dat) <- c("ft_data", class(dat))
+  class(dat) <- c("fine_tune_data", class(dat))
 
   dat
 
@@ -71,11 +71,11 @@ generate_ft_data <- function(data, prompt, studyid, title, abstract){
 #'
 #' @description
 #'  This function creates `jsonl` training data that can be used to fine tune models from OpenAI.
-#'  To generate a fine tuned model, this writing data can be uploaded to
+#'  To generate a fine tuned model, this written data can be uploaded to
 #'  \url{https://platform.openai.com/finetune/}.
 #'
-#' @param data Dataset with questions strings that should be used for training.
-#'  The data must be of class `'ft_data'`, containing two variables named question and true_answer.
+#' @param data The dataset with questions strings that should be used for training.
+#'  The data must be of class `'fine_tune_data'`, containing two variables named question and true_answer.
 #' @param role_and_subject Descriptions of the role of the GPT model and the subject under review, respectively.
 #' @param file A character string naming the file to write to. If not specified the
 #'  written file name and format will be `"fine_tune_data.jsonl"`.
@@ -87,11 +87,10 @@ generate_ft_data <- function(data, prompt, studyid, title, abstract){
 #'
 #' @return A `jsonl` dataset to the set working directory.
 #'
-#' @seealso [generate_ft_data()]
+#' @seealso [create_fine_tune_data()]
 #'
 #'
 #' @examples
-#' \dontrun{
 #' # Extract 5 irrelevant and relevant records, respectively.
 #' library(dplyr)
 #'
@@ -100,7 +99,7 @@ generate_ft_data <- function(data, prompt, studyid, title, abstract){
 #' prompt <- "Is this study about functional family therapy?"
 #'
 #' ft_dat <-
-#'   generate_ft_data(
+#'   create_fine_tune_data(
 #'     data = dat,
 #'     prompt = prompt,
 #'     studyid = studyid,
@@ -117,16 +116,17 @@ generate_ft_data <- function(data, prompt, studyid, title, abstract){
 #' )
 #'
 #' # Saving data in jsonl format (required format by OpenAI)
-#' write_ft_data(
+#' fil <- tempfile("fine_tune_data", fileext = ".jsonl")
+#'
+#' save_fine_tune_data(
 #'   data = ft_dat,
 #'   role_and_subject = role_subject,
-#'   file = "fine_tune_data.jsonl"
+#'   file = fil
 #' )
-#'}
 #'
 #' @export
 
-write_ft_data <-
+save_fine_tune_data <-
   function(
     data,
     role_and_subject,
@@ -137,7 +137,7 @@ write_ft_data <-
 
     # Stop messages
 
-    if (!inherits(data, "ft_data")) stop("The data must be of class 'ft_data'.")
+    if (!inherits(data, "fine_tune_data")) stop("The data must be of class 'fine_tune_data'.")
 
     if (nrow(data) < 10) {
       stop(
@@ -165,7 +165,7 @@ write_ft_data <-
 
     dat_list <- purrr::map(
       1:nrow(data), .f = .create_message,
-      ft_data = data,
+      fine_tune_data = data,
       role_subjet = role_and_subject,
       role = roles
     )
@@ -178,4 +178,19 @@ write_ft_data <-
 
     write(json_data, file = file_name)
 
+  }
+
+# Helper
+.create_message <-
+  function(n, fine_tune_data, role_subjet, role) {
+    list(
+      "messages" = data.frame(
+        role = role,
+        content = c(
+          role_subjet,
+          fine_tune_data$question[n],
+          fine_tune_data$true_answer[n]
+        )
+      )
+    )
   }
