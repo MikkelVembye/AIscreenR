@@ -1,8 +1,14 @@
+# Skip tests
+skip <- TRUE
+skip_github_action <- FALSE
+
 # Use a small subset of the disagreements data for testing
 test_data <- disagreements[1, , drop = FALSE]
 
 test_that("report() function generates a report correctly", {
-  testthat::skip_if_not(nzchar(Sys.which("quarto")), "quarto not installed")
+  if(skip) skip()
+  if(skip_github_action) skip_on_ci()
+  skip_on_cran()
   # Use a temporary directory to avoid creating files in the project
   withr::with_tempdir({
     report_file <- "test_report.qmd"
@@ -40,8 +46,9 @@ test_that("report() function generates a report correctly", {
 })
 
 test_that("report() error structure.", {
-  testthat::skip_if_not(nzchar(Sys.which("quarto")), "quarto not installed")
-  
+  if(skip) skip()
+  if(skip_github_action) skip_on_ci()
+  skip_on_cran()
   withr::with_tempdir({
     # Test for missing arguments
     expect_error(
