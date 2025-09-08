@@ -22,21 +22,14 @@ export(rate_limits_per_minute)
 export(read_ris_to_dataframe)
 export(report)
 export(sample_references)
-<<<<<<< HEAD
 export(save_dataframe_to_ris)
-=======
-export(save_fine_tune_data)
->>>>>>> origin/main
 export(screen_analyzer)
 export(screen_errors)
 export(set_api_key)
 export(tabscreen_gpt)
 export(tabscreen_gpt.original)
-<<<<<<< HEAD
 export(tabscreen_groq)
-export(write_ft_data)
-=======
->>>>>>> origin/main
+export(save_fine_tune_data)
 import(dplyr)
 importFrom(htmltools,htmlEscape)
 importFrom(lifecycle,deprecated)
