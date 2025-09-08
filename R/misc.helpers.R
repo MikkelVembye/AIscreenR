@@ -202,3 +202,11 @@ status_code_text_GROQ <- function() {
   }
   s_code
 }
+
+# Function with encrypt code string
+testing_key_groq <- function() {
+  httr2::secret_decrypt(
+    "4UAcFSIHVz8Z4zED1WEj3k65xFBWlJ8dzavRDGG4dz0pBxEOXtvSkLwK6_fZaZqCr94oVtKBD6DQo82vwa2gljJMTw",
+    "GROQ_KEY"
+  )
+}
