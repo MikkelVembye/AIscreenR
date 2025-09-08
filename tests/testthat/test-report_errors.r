@@ -2,7 +2,7 @@
 test_data <- disagreements[1, , drop = FALSE]
 
 test_that("report() function generates a report correctly", {
-
+  testthat::skip_if_not(nzchar(Sys.which("quarto")), "quarto not installed")
   # Use a temporary directory to avoid creating files in the project
   withr::with_tempdir({
     report_file <- "test_report.qmd"
@@ -40,6 +40,8 @@ test_that("report() function generates a report correctly", {
 })
 
 test_that("report() error structure.", {
+  testthat::skip_if_not(nzchar(Sys.which("quarto")), "quarto not installed")
+  
   withr::with_tempdir({
     # Test for missing arguments
     expect_error(
