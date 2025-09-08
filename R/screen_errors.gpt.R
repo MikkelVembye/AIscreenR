@@ -1,7 +1,7 @@
 #' @title Re-screen failed requests.
 #'
 #' @description
-#' `r lifecycle::badge("experimental")`<br>
+#' `r lifecycle::badge("superseded")`<br>
 #' <br>
 #'
 #' This function supports re-screening of all failed title and abstract requests

@@ -1,7 +1,7 @@
 #' @title Generic function to re-screen failed title and abstract requests.
 #'
 #' @description
-#' `r lifecycle::badge("experimental")`<br>
+#' `r lifecycle::badge("superseded")`<br>
 #' <br>
 #'
 #'  This is a generic function to re-screen of failed title and abstract requests.
