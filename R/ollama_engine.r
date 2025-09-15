@@ -13,14 +13,12 @@
     aft 
 ) {
   detailed <- FALSE
-  if (!is.null(body$tools) && length(body$tools) > 0) {
-    tool_names <- try(purrr::map_chr(body$tools, function(t) {
-      fn <- t[["function"]]
-      if (!is.null(fn) && !is.null(fn$name)) fn$name else NA_character_
-    }), silent = TRUE)
-    if (!inherits(tool_names, "try-error")) {
-      detailed <- any(tool_names == "inclusion_decision", na.rm = TRUE)
-    }
+  if (!is.null(body$tool_choice) &&
+      is.list(body$tool_choice) &&
+      identical(body$tool_choice$type, "function") &&
+      !is.null(body$tool_choice$`function`) &&
+      identical(body$tool_choice$`function`$name, "inclusion_decision")) {
+    detailed <- TRUE
   }
 
   detail_desc_default <- if (detailed) NA_character_ else NULL
