@@ -1,86 +1,179 @@
 #' @encoding UTF-8
-#' @title Title and abstract screening with Ollama API models using function calls
+#' @title Title and abstract screening with OLLAMA API models using function calls via the tools argument
+#'
+#' @name tabscreen_ollama
+#' @aliases tabscreen_ollama
 #'
 #' @description
-#' Conducts title and abstract screening using Ollama-hosted models (e.g., Llama 3, Mixtral, Gemma, DeepSeek, Qwen, and fine-tuned models).
-#' Supports multiple prompts, repeated questions for consistency checks, and parallel execution.
-#' Uses function calling via the `tools` argument for reliable responses.
-#' See Vembye et al. (2025) for guidance on screening with Ollama models.
+#' This function supports the conduct of title and abstract screening with OLLAMA API models in R.
+#' Specifically, it allows the user to draw on locally hosted ollama models (e.g., Llama 3 / 3.1 variants, Mixtral/Mistral, Gemma, DeepSeek and Qwen).
+#' For more information on how to install and use OLLAMA, see \url{https://ollama.com/docs/}.
+#' Be aware that this function requires that you have OLLAMA installed and running on your local machine.
+#' The function allows to run title and abstract screening across multiple prompts and with
+#' repeated questions to check for consistency across answers. All of which can be done in parallel.
+#' The function draws on the newly developed function calling which is called via the
+#' tools argument in the request body. Function calls ensure more reliable and consistent responses to ones
+#' requests. See [Vembye, Christensen, Mølgaard, and Schytt. (2025)](https://osf.io/preprints/osf/yrhzm)
+#' for guidance on how adequately to conduct title and abstract screening with OLLAMA models.
 #'
-#' @references
-#' Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2024).
-#' GPT API Models Can Function as Highly Reliable Second Screeners of Titles and Abstracts in Systematic Reviews: A Proof of Concept and Common Guidelines. \url{https://osf.io/preprints/osf/yrhzm}
+#' @references Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2024)
+#'   \emph{GPT API Models Can Function as Highly Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
+#'   A Proof of Concept and Common Guidelines} \url{https://osf.io/preprints/osf/yrhzm}
 #'
-#' Thomas, J. et al. (2024). Responsible AI in Evidence SynthEsis (RAISE): guidance and recommendations. \url{https://osf.io/cn7x4}
+#'   Thomas, J. et al. (2024).
+#'   Responsible AI in Evidence SynthEsis (RAISE): guidance and recommendations.
+#'   \url{https://osf.io/cn7x4}
 #'
-#' Wickham H (2023). httr2: Perform HTTP Requests and Process the Responses. \url{https://httr2.r-lib.org}
+#' Wickham H (2023).
+#' \emph{httr2: Perform HTTP Requests and Process the Responses}.
+#' \url{https://httr2.r-lib.org}, \url{https://github.com/r-lib/httr2}.
 #'
-#' @param data Data frame containing studies to screen.
-#' @param prompt Character vector of screening prompts.
-#' @param studyid Study ID column or vector.
-#' @param title Title column or vector.
-#' @param abstract Abstract column or vector.
-#' @param model Character string or vector with the name(s) of the Ollama model(s). Default: "llama3.2".
-#' @param role Character string indicating the role of the user. Default: "user".
-#' @param tools List of function definitions for tool calling. Default is set based on `decision_description`.
-#' @param tool_choice Specification for which tool to use. Default is set based on `decision_description`.
-#' @param top_p Numeric. Nucleus sampling parameter. Default: 1.
-#' @param time_info Logical. Include run time for each request. Default: TRUE.
-#' @param max_tries Integer. Maximum number of request attempts. Default: 16.
-#' @param max_seconds Numeric. Maximum total elapsed time for retries.
-#' @param backoff Function for backoff strategy.
-#' @param after Function for wait time after response.
-#' @param rpm Integer or vector. Requests per minute per model. Default: 10000.
-#' @param reps Integer or vector. Number of repeated questions per study. Default: 1.
-#' @param seed_par Numeric. Seed for reproducible parallel random numbers.
-#' @param progress Logical. Show progress bar. Default: TRUE.
-#' @param decision_description Logical. Include detailed decision descriptions. Default: FALSE.
-#' @param messages Logical. Print function messages. Default: TRUE.
-#' @param incl_cutoff_upper Numeric. Probability threshold for inclusion. Default: 0.5.
-#' @param incl_cutoff_lower Numeric. Probability threshold for human check. Default: 0.4.
-#' @param force Logical. Allow more than 10 reps. Default: FALSE.
-#' @param ... Additional arguments passed to the request body.
+#' @template common-arg
+#' @param model Character string with the name of the completion model. Can take
+#'   multiple Groq models. Default = `"llama3-70b-8192"`.
+#'   Find available models at \url{https://console.groq.com/docs/models}.
+#' @param role Character string indicate the role of the user. Default is `"user"`.
+#' @param tools List of function definitions for tool calling. Default behavior is set based on `decision_description` parameter.
+#'   For detailed responses, the function uses tools that include detailed description capabilities.
+#' @param tool_choice Specification for which tool to use. Default behavior is set based on `decision_description` parameter.
+#'   For simple responses uses "inclusion_decision_simple", for detailed responses uses "inclusion_decision".
+#' @param top_p 'An alternative to sampling with temperature, called nucleus sampling,
+#'   where the model considers the results of the tokens with top_p probability mass.
+#'   So 0.1 means only the tokens comprising the top 10% probability mass are considered.
+#'   We generally recommend altering this or temperature but not both.' (Groq). Default is 1.
+#' @param time_info Logical indicating whether the run time of each
+#'   request/question should be included in the data. Default = `TRUE`.
+#' @param max_tries,max_seconds 'Cap the maximum number of attempts with
+#'  `max_tries` or the total elapsed time from the first request with
+#'  `max_seconds`. If neither option is supplied (the default), [httr2::req_perform()]
+#'  will not retry'.
+#' @param is_transient 'A predicate function that takes a single argument
+#'  (the response) and returns `TRUE` or `FALSE` specifying whether or not
+#'  the response represents a transient error'.
+#' @param backoff 'A function that takes a single argument (the number of failed
+#'   attempts so far) and returns the number of seconds to wait'.
+#' @param after 'A function that takes a single argument (the response) and
+#'   returns either a number of seconds to wait or `NULL`, which indicates
+#'   that a precise wait time is not available that the `backoff` strategy
+#'   should be used instead'.
+#' @param rpm Numerical value indicating the number of requests per minute (rpm)
+#'   available for the specified api key.
+#' @param reps Numerical value indicating the number of times the same
+#'   question should be sent to Groq's API models. This can be useful to test consistency
+#'   between answers. Default is `1`.
+#' @param seed_par Numerical value for a seed to ensure that proper,
+#'   parallel-safe random numbers are produced.
+#' @param progress Logical indicating whether a progress line should be shown when running
+#'   the title and abstract screening in parallel. Default is `TRUE`.
+#' @param decision_description Logical indicating whether to include detailed descriptions
+#'   of decisions. Default is `FALSE`.
+#' @param messages Logical indicating whether to print messages embedded in the function.
+#'   Default is `TRUE`.
+#' @param incl_cutoff_upper Numerical value indicating the probability threshold
+#'   for which a studies should be included. Default is 0.5, which indicates that
+#'   titles and abstracts that Groq's API model has included more than 50 percent of the times
+#'   should be included.
+#' @param incl_cutoff_lower Numerical value indicating the probability threshold
+#'   above which studies should be check by a human. Default is 0.4, which means
+#'   that if you ask Groq's API model the same questions 10 times and it includes the
+#'   title and abstract 4 times, we suggest that the study should be check by a human.
+#' @param force Logical argument indicating whether to force the function to use more than
+#'   10 iterations. This argument is developed to avoid the conduct of wrong and extreme sized screening.
+#'   Default is `FALSE`.
+#' @param ... Further argument to pass to the request body.
 #'
-#' @return An object of class "ollama", a list containing:
-#' \describe{
-#'   \item{answer_data_aggregated}{Aggregated inclusion decisions (if reps > 1).}
-#'   \item{answer_data}{All individual answers.}
-#'   \item{error_data}{Failed requests (if any).}
-#'   \item{run_date}{Date of screening.}
+#' @return An object of class \code{"ollama"}. The object is a list containing the following
+#' components:
+#' \item{answer_data_aggregated}{dataset with the summarized, probabilistic inclusion decision
+#' for each title and abstract across multiple repeated questions (only when reps > 1).}
+#' \item{answer_data}{dataset with all individual answers.}
+#' \item{error_data}{dataset with failed requests (only included if errors occurred).}
+#' \item{run_date}{date when the screening was conducted.}
+#'
+#' @note The \code{answer_data_aggregated} data (only present when reps > 1) contains the following mandatory variables:
+#' \tabular{lll}{
+#'  \bold{studyid} \tab \code{integer} \tab indicating the study ID of the reference. \cr
+#'  \bold{title} \tab \code{character} \tab indicating the title of the reference. \cr
+#'  \bold{abstract} \tab \code{character}   \tab indicating the abstract of the reference. \cr
+#'  \bold{promptid} \tab \code{integer} \tab indicating the prompt ID. \cr
+#'  \bold{prompt} \tab \code{character} \tab indicating the prompt. \cr
+#'  \bold{model} \tab \code{character}   \tab indicating the specific model used. \cr
+#'  \bold{question} \tab \code{character} \tab indicating the final question sent to Groq's API models. \cr
+#'  \bold{top_p} \tab \code{numeric}  \tab indicating the applied top_p. \cr
+#'  \bold{incl_p} \tab \code{numeric}  \tab indicating the probability of inclusion calculated across multiple repeated responses on the same title and abstract. \cr
+#'  \bold{final_decision_gpt} \tab \code{character} \tab indicating the final decision reached by model - either 'Include', 'Exclude', or 'Check'. \cr
+#'  \bold{final_decision_gpt_num}  \tab \code{integer}  \tab indicating the final numeric decision reached by model - either 1 or 0. \cr
+#'  \bold{longest_answer}  \tab \code{character} \tab indicating the longest response obtained
+#'  across multiple repeated responses on the same title and abstract. Only included if the detailed function
+#'  is used. See 'Examples' below for how to use this function. \cr
+#'  \bold{reps}  \tab \code{integer}  \tab indicating the number of times the same question has been sent to Groq's API models. \cr
+#'  \bold{n_mis_answers} \tab \code{integer} \tab indicating the number of missing responses. \cr
 #' }
+#' <br>
+#' The \code{answer_data} data contains the following mandatory variables:
+#' \tabular{lll}{
+#'  \bold{studyid} \tab \code{integer} \tab indicating the study ID of the reference. \cr
+#'  \bold{title} \tab \code{character} \tab indicating the title of the reference. \cr
+#'  \bold{abstract} \tab \code{character}   \tab indicating the abstract of the reference. \cr
+#'  \bold{promptid} \tab \code{integer} \tab indicating the prompt ID. \cr
+#'  \bold{prompt} \tab \code{character} \tab indicating the prompt. \cr
+#'  \bold{model} \tab \code{character}   \tab indicating the specific model used. \cr
+#'  \bold{iterations} \tab \code{numeric} \tab indicating the number of times the same question has been sent to Groq's API models. \cr
+#'  \bold{question} \tab \code{character} \tab indicating the final question sent to Groq's API models. \cr
+#'  \bold{top_p}  \tab \code{numeric} \tab indicating the applied top_p. \cr
+#'  \bold{decision_gpt}  \tab \code{character} \tab indicating the raw decision - either \code{"1", "0", "1.1"} for inclusion, exclusion, or uncertainty, respectively. \cr
+#'  \bold{detailed_description}  \tab \code{character} \tab indicating detailed description of the given decision made by Groq's API models.
+#'  Only included if the detailed function is used. See 'Examples' below for how to use this function. \cr
+#'  \bold{decision_binary}  \tab \code{integer} \tab indicating the binary decision,
+#'  that is 1 for inclusion and 0 for exclusion. 1.1 decision are coded equal to 1 in this case. \cr
+#'  \bold{run_time}  \tab \code{numeric} \tab indicating the time it took to obtain a response from the server for the given request. \cr
+#'  \bold{n} \tab \code{integer} \tab indicating request ID.  \cr
+#' }
+#' <br>
+#' If any requests failed to reach the server, the object contains an
+#' error data set (`error_data`) having the same variables as `answer_data`
+#' but with failed request references only.
 #'
 #' @importFrom stats df
+#'
 #' @export
 #'
 #' @examples
 #' \dontrun{
+#'
+#'
 #' prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
+#'
 #' plan(multisession)
-#' tabscreen_ollama(
+#'
+#' tabscreen_groq(
 #'   data = filges2015_dat[1:2,],
 #'   prompt = prompt,
 #'   studyid = studyid,
 #'   title = title,
 #'   abstract = abstract,
-#'   model = "llama3.2",
+#'   model = "llama3.2:latest",
 #'   max_tries = 2
-#' )
+#'   )
 #' plan(sequential)
 #'
-#' # Get detailed descriptions of the decisions
+#'  # Get detailed descriptions of the decisions by using the
+#'  # decision_description option.
 #' plan(multisession)
-#' tabscreen_ollama(
-#'   data = filges2015_dat[1:2,],
-#'   prompt = prompt,
-#'   studyid = studyid,
-#'   title = title,
-#'   abstract = abstract,
-#'   model = "llama3.2",
-#'   decision_description = TRUE,
-#'   max_tries = 2
-#' )
+#'
+#'  tabscreen_groq(
+#'    data = filges2015_dat[1:2,],
+#'    prompt = prompt,
+#'    studyid = studyid,
+#'    title = title,
+#'    abstract = abstract,
+#'    model = "llama3.2:latest",
+#'    decision_description = TRUE,
+#'    max_tries = 2
+#'  )
 #' plan(sequential)
-#' }
+#'}
+
 
 tabscreen_ollama <- function(
   data,
@@ -159,14 +252,13 @@ tabscreen_ollama <- function(
   }, error = function(e) character(0))
   if (length(available_models) > 0) {
     if (!all(model %in% available_models)) {
-      invalid_models <- model[!model %in% available_models]
       stop(paste(
-        "The following model(s) are not available in your local Ollama instance:",
-        paste(invalid_models, collapse = ", ")
+        "Use one of the available models:",
+        paste(available_models, collapse = ", ")
       ))
     }
   } else if (messages) {
-    message("* Could not retrieve models from Ollama (is it running at 127.0.0.1:11434?). Skipping model validation.")
+    message("* Could not retrieve models from Ollama.")
   }
 
   # Ensuring that users do not conduct wrong screening
