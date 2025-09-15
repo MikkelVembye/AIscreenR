@@ -1,3 +1,90 @@
+#' @encoding UTF-8
+#' @title Title and abstract screening with Ollama API models using function calls
+#'
+#' @description
+#' Conducts title and abstract screening using Ollama-hosted models (e.g., Llama 3, Mixtral, Gemma, DeepSeek, Qwen, and fine-tuned models).
+#' Supports multiple prompts, repeated questions for consistency checks, and parallel execution.
+#' Uses function calling via the `tools` argument for reliable responses.
+#' See Vembye et al. (2025) for guidance on screening with Ollama models.
+#'
+#' @references
+#' Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2024).
+#' GPT API Models Can Function as Highly Reliable Second Screeners of Titles and Abstracts in Systematic Reviews: A Proof of Concept and Common Guidelines. \url{https://osf.io/preprints/osf/yrhzm}
+#'
+#' Thomas, J. et al. (2024). Responsible AI in Evidence SynthEsis (RAISE): guidance and recommendations. \url{https://osf.io/cn7x4}
+#'
+#' Wickham H (2023). httr2: Perform HTTP Requests and Process the Responses. \url{https://httr2.r-lib.org}
+#'
+#' @param data Data frame containing studies to screen.
+#' @param prompt Character vector of screening prompts.
+#' @param studyid Study ID column or vector.
+#' @param title Title column or vector.
+#' @param abstract Abstract column or vector.
+#' @param model Character string or vector with the name(s) of the Ollama model(s). Default: "llama3.2".
+#' @param role Character string indicating the role of the user. Default: "user".
+#' @param tools List of function definitions for tool calling. Default is set based on `decision_description`.
+#' @param tool_choice Specification for which tool to use. Default is set based on `decision_description`.
+#' @param top_p Numeric. Nucleus sampling parameter. Default: 1.
+#' @param time_info Logical. Include run time for each request. Default: TRUE.
+#' @param token_info Logical. Include token counts and price info. Default: TRUE.
+#' @param max_tries Integer. Maximum number of request attempts. Default: 16.
+#' @param max_seconds Numeric. Maximum total elapsed time for retries.
+#' @param backoff Function for backoff strategy.
+#' @param after Function for wait time after response.
+#' @param rpm Integer or vector. Requests per minute per model. Default: 10000.
+#' @param reps Integer or vector. Number of repeated questions per study. Default: 1.
+#' @param seed_par Numeric. Seed for reproducible parallel random numbers.
+#' @param progress Logical. Show progress bar. Default: TRUE.
+#' @param decision_description Logical. Include detailed decision descriptions. Default: FALSE.
+#' @param messages Logical. Print function messages. Default: TRUE.
+#' @param incl_cutoff_upper Numeric. Probability threshold for inclusion. Default: 0.5.
+#' @param incl_cutoff_lower Numeric. Probability threshold for human check. Default: 0.4.
+#' @param force Logical. Allow more than 10 reps. Default: FALSE.
+#' @param ... Additional arguments passed to the request body.
+#'
+#' @return An object of class "ollama", a list containing:
+#' \describe{
+#'   \item{answer_data_aggregated}{Aggregated inclusion decisions (if reps > 1).}
+#'   \item{answer_data}{All individual answers.}
+#'   \item{price_dollar}{Total price (USD) of screening.}
+#'   \item{price_data}{Prices per model.}
+#'   \item{error_data}{Failed requests (if any).}
+#'   \item{run_date}{Date of screening.}
+#' }
+#'
+#' @importFrom stats df
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
+#' plan(multisession)
+#' tabscreen_ollama(
+#'   data = filges2015_dat[1:2,],
+#'   prompt = prompt,
+#'   studyid = studyid,
+#'   title = title,
+#'   abstract = abstract,
+#'   model = "llama3.2",
+#'   max_tries = 2
+#' )
+#' plan(sequential)
+#'
+#' # Get detailed descriptions of the decisions
+#' plan(multisession)
+#' tabscreen_ollama(
+#'   data = filges2015_dat[1:2,],
+#'   prompt = prompt,
+#'   studyid = studyid,
+#'   title = title,
+#'   abstract = abstract,
+#'   model = "llama3.2",
+#'   decision_description = TRUE,
+#'   max_tries = 2
+#' )
+#' plan(sequential)
+#' }
+
 tabscreen_ollama <- function(
   data,
   prompt,
