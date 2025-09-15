@@ -6,8 +6,6 @@
     body,
     RPM,
     time_inf,
-    token_inf, 
-    api_key = NULL, 
     max_t,
     max_s, 
     is_trans, 
@@ -123,10 +121,6 @@
   decision_bin_val <- as.numeric(dplyr::if_else(stringr::str_detect(decision_val, "1"), 1, 0, missing = NA_real_))
   res_list <- list(decision_gpt = decision_val, decision_binary = decision_bin_val)
   if (detailed) res_list$detailed_description <- detailed_desc_val
-  if (token_inf) {
-    res_list$prompt_tokens <- NA_real_
-    res_list$completion_tokens <- NA_real_
-  }
   res <- tibble::as_tibble(res_list) |>
     dplyr::relocate(tidyselect::any_of("detailed_description"), .after = tidyselect::all_of("decision_binary"))
 
@@ -152,7 +146,6 @@
     t_choice, 
     seeds, 
     time_inf,
-    token_inf,
     max_t, 
     max_s, 
     is_trans = NULL, 
@@ -175,24 +168,17 @@
   }
 
   t_info_wrapper <- if (time_inf) NA_real_ else NULL
-  p_tokens_wrapper <- if (token_inf) NA_real_ else NULL
-  c_tokens_wrapper <- if (token_inf) NA_real_ else NULL
-  
+
   create_error_df <- function(is_detailed) {
     error_list <- list(
       decision_gpt = "Error [possibly a JSON error from wrapper]",
       decision_binary = NA_real_
     )
     if (is_detailed) error_list$detailed_description <- NA_character_
-    if (token_inf) {
-      error_list$prompt_tokens <- p_tokens_wrapper
-      error_list$completion_tokens <- c_tokens_wrapper
-    }
     if (time_inf) error_list$run_time <- t_info_wrapper
     df <- tibble::as_tibble(error_list)
     if (is_detailed && !"detailed_description" %in% names(df)) df$detailed_description <- NA_character_
     if (is_detailed) df <- df |> dplyr::relocate(tidyselect::any_of("detailed_description"), .after = tidyselect::all_of("decision_binary"))
-    if (!token_inf) df <- df |> dplyr::select(-tidyselect::any_of(c("prompt_tokens", "completion_tokens")))
     if (!time_inf) df <- df |> dplyr::select(-tidyselect::any_of("run_time"))
     df
   }
@@ -244,8 +230,6 @@
           body = api_body, 
           RPM = req_per_min, 
           time_inf = time_inf,
-          token_inf = token_inf,
-          api_key = NULL,
           max_t = max_t,
           max_s = max_s,
           is_trans = is_trans,

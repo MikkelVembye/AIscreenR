@@ -26,7 +26,6 @@
 #' @param tool_choice Specification for which tool to use. Default is set based on `decision_description`.
 #' @param top_p Numeric. Nucleus sampling parameter. Default: 1.
 #' @param time_info Logical. Include run time for each request. Default: TRUE.
-#' @param token_info Logical. Include token counts and price info. Default: TRUE.
 #' @param max_tries Integer. Maximum number of request attempts. Default: 16.
 #' @param max_seconds Numeric. Maximum total elapsed time for retries.
 #' @param backoff Function for backoff strategy.
@@ -46,8 +45,6 @@
 #' \describe{
 #'   \item{answer_data_aggregated}{Aggregated inclusion decisions (if reps > 1).}
 #'   \item{answer_data}{All individual answers.}
-#'   \item{price_dollar}{Total price (USD) of screening.}
-#'   \item{price_data}{Prices per model.}
 #'   \item{error_data}{Failed requests (if any).}
 #'   \item{run_date}{Date of screening.}
 #' }
@@ -98,7 +95,6 @@ tabscreen_ollama <- function(
   tool_choice = NULL,
   top_p = 1,
   time_info = TRUE,
-  token_info = TRUE,
   max_tries = 16,
   max_seconds = NULL,
   backoff = NULL,
@@ -233,7 +229,6 @@ tabscreen_ollama <- function(
       rpm = rpm,
       reps = reps,
       time_info = time_info,
-      token_info = token_info,
       max_tries = max_tries,
       max_seconds = max_seconds,
       backoff = backoff,
@@ -246,10 +241,6 @@ tabscreen_ollama <- function(
       incl_cutoff_lower = incl_cutoff_lower,
       ...
     )
-
-  if ("max_tokens" %in% names(arg_list)){
-    if (arg_list$max_tokens < 11) stop("Cannot retrieve results from server with tokens below 11.")
-  }
 
   #.......................................
   # Data manipulation
@@ -372,7 +363,6 @@ tabscreen_ollama <- function(
         system_guard_msg = tool_guard_msg,
         seeds = seed_par,
         time_inf = time_info,
-        token_inf = token_info,
         max_t = max_tries,
         max_s = max_seconds,
         back = backoff,
@@ -422,16 +412,11 @@ tabscreen_ollama <- function(
   # Returned output
   #.......................................
   res <- list(
-    price_data = price_dat,
-    price_dollar = price,
     answer_data = answer_dat,
     answer_data_aggregated = answer_dat_aggregated,
     error_data = if (n_error > 0) error_refs else NULL,
     run_date = Sys.Date()
   )
-
-  # If token info is not wanted
-  if (!token_info) res[["price_data"]] <- res[["price_dollar"]] <- NULL
 
   # If no screening errors
   if (n_error == 0) res[["error_data"]] <- NULL
