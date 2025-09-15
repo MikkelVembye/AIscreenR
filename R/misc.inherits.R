@@ -106,3 +106,28 @@ is_groq_tbl <- function(x) {
 is_groq_agg_tbl <- function(x) {
   inherits(x, "groq_agg_tbl")
 }
+
+#----------------------------------------------------------------
+# Ollama functions
+#----------------------------------------------------------------
+#' Test if the object is a `'ollama'` object
+#' 
+#' This function returns `TRUE` for `ollama` objects,
+#' and `FALSE` for all other objects.
+#' 
+#' @param x An object
+#' @return `TRUE` if the object inherits from the `ollama` class.
+#' @export
+is_ollama <- function(x) {
+  inherits(x, "ollama_tbl")
+}
+
+#' Test if the object is a `'ollama_agg_tbl'` object
+#' This function returns `TRUE` for `ollama_agg_tbl` objects,
+#' and `FALSE` for all other objects.
+#' @param x An object
+#' @return `TRUE` if the object inherits from the `ollama_agg_tbl
+#' @export
+is_ollama_agg_tbl <- function(x) {
+  inherits(x, "ollama_agg_tbl")
+}

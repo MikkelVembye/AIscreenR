@@ -1,9 +1,9 @@
-﻿#' @encoding UTF-8
+#' @encoding UTF-8
 #' @title Title and abstract screening with GROQ API models using function calls via the tools argument
-#'  
+#'
 #' @name tabscreen_groq
 #' @aliases tabscreen_groq
-#' 
+#'
 #' @description
 #' This function supports the conduct of title and abstract screening with Groq API models in R.
 #' Specifically, it allows the user to draw on Groq-hosted models (e.g., Llama 3 / 3.1 variants, Mixtral/Mistral, Gemma, DeepSeek, Qwen, and fine-tuned models).
@@ -46,7 +46,7 @@
 #'   per request should be included in the output data. Default = `TRUE`. When `TRUE`,
 #'   the output object will include price information of the conducted screening.
 #' @param api_key Numerical value with your personal API key. Find at
-#'  \url{https://console.groq.com/keys}. Set with 
+#'  \url{https://console.groq.com/keys}. Set with
 #'  `Sys.setenv(GROQ_API_KEY = "your-api-key")` or use [get_api_key_groq()].
 #' @param max_tries,max_seconds 'Cap the maximum number of attempts with
 #'  `max_tries` or the total elapsed time from the first request with
@@ -156,7 +156,7 @@
 #' Find current token pricing at \url{https://console.groq.com/docs/pricing}.
 #'
 #' @importFrom stats df
-#' 
+#'
 #' @export
 #'
 #' @examples
@@ -167,7 +167,7 @@
 #' prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
 #'
 #' plan(multisession)
-#' 
+#'
 #' tabscreen_groq(
 #'   data = filges2015_dat[1:2,],
 #'   prompt = prompt,
@@ -178,11 +178,11 @@
 #'   max_tries = 2
 #'   )
 #' plan(sequential)
-#' 
+#'
 #'  # Get detailed descriptions of the decisions by using the
 #'  # decision_description option.
 #' plan(multisession)
-#' 
+#'
 #'  tabscreen_groq(
 #'    data = filges2015_dat[1:2,],
 #'    prompt = prompt,
@@ -226,20 +226,20 @@ tabscreen_groq <- function(
   incl_cutoff_lower = NULL,
   force = FALSE
   ){
-  
+
   #.......................................
   # Handling inherited objects
   #.......................................
   if (is_groq_tbl(data)) data <- data |> dplyr::select(-c(promptid:n)) |> tibble::as_tibble()
   if (is_groq_agg_tbl(data)) data <- data |> dplyr::select(-c(promptid:n_mis_answers)) |> tibble::as_tibble()
-  
+
   #.......................................
   # Setup functions based on decision_description
   #.......................................
   if(is.null(tools)) {
     tools <- if(decision_description) tools_detailed_groq else tools_simple_groq
   }
-  
+
   # Force the exact function name
   if (is.null(tool_choice)) {
     forced_fn <- if (decision_description) "inclusion_decision" else "inclusion_decision_simple"
@@ -254,11 +254,11 @@ tabscreen_groq <- function(
       "function" = list(name = forced_fn)
     )
   }
-  
+
   #.......................................
   # Start up - Validation checks
   #.......................................
-  
+
   # Validate model names
   if (any(!is.element(model, groq_model_prizes$model)))
     stop("Unknown model(s) used. Available models are: ",
@@ -336,7 +336,7 @@ tabscreen_groq <- function(
   #.......................................
   # Data manipulation
   #.......................................
-  
+
   # Handle study ID creation
   if (missing(studyid)){
     dat <-
@@ -410,7 +410,7 @@ tabscreen_groq <- function(
   # Calculating the approximate price using the helper function price_gpt()
   app_price_dat <- .price_gpt(question_dat)
   app_price <- sum(app_price_dat$total_price_dollar, na.rm = TRUE)
-  
+
   # Ensuring the user does not accidentally run an expensive screening
   if (app_price > 15 && !force) {
     stop(paste0(
