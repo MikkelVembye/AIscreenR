@@ -56,7 +56,7 @@ An object of class \code{'gpt'} similar to the object returned by \code{\link[=t
 See documentation for \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}\if{html}{\out{<br>}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}}\if{html}{\out{<br>}}
 \if{html}{\out{<br>}}
 
 This function supports re-screening of all failed title and abstract requests

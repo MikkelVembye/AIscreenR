@@ -118,7 +118,7 @@ is_groq_agg_tbl <- function(x) {
 #' @param x An object
 #' @return `TRUE` if the object inherits from the `ollama` class.
 #' @export
-is_ollama <- function(x) {
+is_ollama_tbl <- function(x) {
   inherits(x, "ollama_tbl")
 }
 
