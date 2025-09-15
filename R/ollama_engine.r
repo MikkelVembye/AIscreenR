@@ -66,10 +66,16 @@
   if (!is.null(tc)) {
     call <- if (is.list(tc) && !is.null(tc[[1]])) tc[[1]] else tc
     fn_obj <- call[["function"]]
-    if (identical(call$type, "function") && !is.null(fn_obj) && !is.null(fn_obj[["arguments"]])) {
-      func_arguments_json <- fn_obj[["arguments"]]
-      func_args <- try(jsonlite::fromJSON(func_arguments_json), silent = TRUE)
-      if (!inherits(func_args, "try-error")) {
+    if (!is.null(fn_obj)) {
+      args_raw <- fn_obj[["arguments"]]
+      func_args <- NULL
+      if (is.list(args_raw)) {
+        func_args <- args_raw
+      } else if (is.character(args_raw)) {
+        parsed <- try(jsonlite::fromJSON(args_raw), silent = TRUE)
+        if (!inherits(parsed, "try-error")) func_args <- parsed
+      }
+      if (!is.null(func_args)) {
         if (!is.null(func_args$decision_gpt)) {
           decision_val <- as.character(func_args$decision_gpt)
         } else if (!is.null(func_args$decision)) {
@@ -80,6 +86,12 @@
         if (detailed) {
           if (!is.null(func_args$detailed_description)) {
             detailed_desc_val <- as.character(func_args$detailed_description)
+          } else if (!is.null(func_args$description)) {
+            detailed_desc_val <- as.character(func_args$description)
+          } else if (!is.null(func_args$reasoning)) {
+            detailed_desc_val <- as.character(func_args$reasoning)
+          } else if (!is.null(func_args$explanation)) {
+            detailed_desc_val <- as.character(func_args$explanation)
           } else {
             detailed_desc_val <- NA_character_
           }
