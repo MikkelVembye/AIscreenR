@@ -56,7 +56,7 @@
     httr2::req_user_agent("AIscreenR (http://mikkelvembye.github.io/AIscreenR/)")
 
   resp <- req |> httr2::req_perform() |> httr2::resp_body_json()
-
+    print(resp)
   decision_val <- NA_character_
   detailed_desc_val <- detail_desc_default
 
