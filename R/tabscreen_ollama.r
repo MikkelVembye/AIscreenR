@@ -182,7 +182,7 @@ tabscreen_ollama <- function(
   title,
   abstract,
   ...,
-  model = "llama3.2",
+  model = "llama3.2:latest",
   role = "user",
   tools = NULL,
   tool_choice = NULL,

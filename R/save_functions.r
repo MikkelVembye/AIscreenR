@@ -25,22 +25,24 @@ read_ris_to_dataframe <- function(file_path) {
   last_field <- NULL
   
   for (raw_line in lines) {
-    # Preserve leading spaces (needed to detect continuation lines), remove trailing whitespace/newlines
-    line <- sub("[\r\n]+$", "", raw_line)
-    line <- sub("\\s+$", "", line)
+    # Remove only newline/CR characters but preserve other trailing spaces
+    line_nl <- sub("[\r\n]+$", "", raw_line)
     
-    # Skip empty lines
-    if (line == "") next
+    # Skip lines that are empty once trimmed
+    if (trimws(line_nl) == "") next
+    
+    # Use the version that preserves trailing spaces for tag detection
+    line_preserve <- line_nl
     
     # Check if line starts a new record
-    if (startsWith(line, "TY  - ")) {
+    if (startsWith(line_preserve, "TY  - ")) {
       # If we have a current record, save it
       if (length(current_record) > 0) {
         records <- append(records, list(current_record), after = length(records))
       }
       # Start new record
       current_record <- list()
-      val <- sub("^TY  - ", "", line)
+      val <- sub("^TY  - ", "", line_preserve)
       val <- gsub("\\s+", " ", trimws(val))
       current_record$TY <- val
       last_field <- "TY"
@@ -50,7 +52,7 @@ read_ris_to_dataframe <- function(file_path) {
       }
     }
     # Check for end of record
-    else if (grepl("^ER  -\\s*$", line)) {
+    else if (grepl("^ER  -\\s*$", line_preserve)) {
       # Save current record
       if (length(current_record) > 0) {
         records <- append(records, list(current_record), after = length(records))
@@ -59,9 +61,9 @@ read_ris_to_dataframe <- function(file_path) {
       last_field <- NULL
     }
     # Process regular field lines like "AB  - value"
-    else if (grepl("^[A-Z0-9]{2}  - ", line)) {
-      field <- substr(line, 1, 2)
-      value <- sub("^[A-Z0-9]{2}  - ", "", line)
+    else if (grepl("^[A-Z0-9]{2}  - ", line_preserve)) {
+      field <- substr(line_preserve, 1, 2)
+      value <- sub("^[A-Z0-9]{2}  - ", "", line_preserve)
       value <- gsub("\\s+", " ", trimws(value))
       
       # Add field to order if not already present
@@ -82,10 +84,9 @@ read_ris_to_dataframe <- function(file_path) {
       last_field <- field
     }
     # Continuation lines start with two spaces in RIS exports; append to last field value
-    else if (grepl("^\\s{2}", raw_line)) {
-      # Remove the two leading spaces and trailing whitespace
-      cont <- sub("^\\s{2}", "", raw_line)
-      cont <- sub("\\s+$", "", cont)
+    else if (grepl("^\\s{2}", line_nl)) {
+      # Remove the two leading spaces and trailing whitespace from the continuation
+      cont <- sub("^\\s{2}", "", line_nl)
       cont <- gsub("\\s+", " ", trimws(cont))
       if (!is.null(last_field) && last_field %in% names(current_record)) {
         curval <- current_record[[last_field]]
@@ -104,7 +105,7 @@ read_ris_to_dataframe <- function(file_path) {
     # Treat unknown non-empty lines as continuation of last field
     else {
       if (!is.null(last_field) && last_field %in% names(current_record)) {
-        cont <- gsub("\\s+", " ", trimws(line))
+        cont <- gsub("\\s+", " ", trimws(line_nl))
         curval <- current_record[[last_field]]
         if (is.list(curval)) {
           n <- length(curval)
@@ -180,7 +181,7 @@ save_dataframe_to_ris <- function(df, file_path) {
   con <- file(file_path, "w", encoding = "UTF-8")
 
   # Tags that should be written as multiple lines when semicolon-separated
-  multi_value_tags <- c("AU", "A1", "KW")
+  multi_value_tags <- c("AU", "A1", "KW", "M1")
 
   for (i in 1:nrow(df)) {
     row <- df[i, ]
