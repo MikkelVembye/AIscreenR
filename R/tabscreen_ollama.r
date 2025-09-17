@@ -413,7 +413,7 @@ tabscreen_ollama <- function(
       message(
         paste0(
           "* Be aware that getting detailed reponses ",
-          "will substantially increase the time of the screening relative to the noted approximate prize."
+          "will substantially increase the time of the screening."
         )
       )
     }

@@ -8,7 +8,6 @@
     time_inf,
     max_t,
     max_s, 
-    is_trans, 
     back, 
     aft 
 ) {
@@ -23,7 +22,7 @@
 
   detail_desc_default <- if (detailed) NA_character_ else NULL
 
-  if (max_t == 0) max_t <- is_trans <- NULL
+  if (max_t == 0) max_t <- NULL
   
   tictoc::tic()
 
@@ -46,7 +45,6 @@
     httr2::req_retry(
       max_tries = max_t,
       max_seconds = max_s,
-      is_transient = is_trans,
       backoff = back,
       after = aft
     ) |>
@@ -157,7 +155,6 @@
     time_inf,
     max_t, 
     max_s, 
-    is_trans = NULL, 
     back,
     aft, 
     system_guard_msg = NULL, 
@@ -241,7 +238,6 @@
           time_inf = time_inf,
           max_t = max_t,
           max_s = max_s,
-          is_trans = is_trans,
           back = back,
           aft = aft
         )
