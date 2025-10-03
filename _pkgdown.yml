@@ -105,3 +105,8 @@ articles:
     navbar: ~
     contents:
       - articles/reading-writing-ris
+  
+  - title: "Title/Abstract Screening with Local Ollama Models"
+    navbar: ~
+    contents:
+      - articles/screening-ollama
