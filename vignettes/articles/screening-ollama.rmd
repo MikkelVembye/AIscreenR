@@ -1,0 +1,158 @@
+---
+Title: Title/Abstract Screening with Local Ollama Models
+Output: rmarkdown::html_document
+Vignette: >
+  %\VignetteIndexEntry{Title/Abstract Screening with Local Ollama Models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+
+# Introduction
+Screening titles and abstracts through online APIs can raise privacy concerns and reproducibility challenges. This vignette introduces `tabscreen_ollama()`, a function that uses locally hosted Ollama models screen titles and abstracts while maintaining data privacy and control.
+This function builds on the `tabscreen_gpt()` approach, adapting it for local execution with Ollama models. Therefore, the output structure and key arguments remain the same but data remains on the local machine.
+This gives users full control over model versions and data handling, making it suitable for sensitive or regulated datasets.
+Furthermore, this approach allows users to use all Ollama models including their own custom or finetuned models as long as these are installed within the ollama framework.
+Using Ollama locally also eliminates the need for API keys. The user should however be aware that Ollama models are typically large and require substantial local compute resources (e.g., RAM, disk space, and possibly a GPU) to run efficiently.
+
+# Get started
+First the user is requiered to install Ollama locally. Please refer to the [Ollama documentation](https://ollama.com/docs/) for installation instructions.
+The user is also requiered to have installed the preferred Ollama model(s) locally. You can check which models you have installed by running `ollama list` in your terminal.
+Available models can be found in the [Ollama model directory](https://ollama.com/models). To install a model, run `ollama pull <model_name>` in your terminal or install directly in the Ollama app.
+Be aware that not all models support function-calling. Be sure to use a model that supports this feature, e.g., `llama3.2:latest`.
+
+## Data
+Data is requiered to be in the same format as for `tabscreen_gpt()`, i.e. a data.frame or tibble with at least three columns: `studyid`, `title`, and `abstract`.
+For demonstration purposes, we use a small example dataset from the `AIscreenR` package.
+
+```{r eval=FALSE, echo=FALSE}
+# Load example data
+data("filges2015_dat", package = "AIscreenR")
+filges2015_dat <- filges2015_dat[1:5, ] # Using only first 5 rows for demonstration
+head(filges2015_dat)
+```
+
+## Load relevant packages
+We load the required packages.
+```{r, eval = FALSE, warning=FALSE, message=FALSE}
+# Loading packages
+library(AIscreenR)  # Used to screen and calculate gpt vs. human performance
+library(synthesisr) # Used to load RIS files
+library(tibble)     # Used to work with tibbles
+library(dplyr)      # Used to manipulate data
+library(purrr)      # For loops 
+library(usethis)    # Used to add the API key the R environment (only relevant the first time you screen)
+library(future)     # Used to conduct screenings in parallel
+```
+
+## Prompting
+The user should define a clear and specific prompt to guide the model's screening decisions. Below is an example prompt for identifying studies related to Functional Family Therapy (FFT).
+```{r echo=FALSE, eval=FALSE}
+prompt <- "Evaluate the following study based on the selection criteria
+ for a systematic review on the effects of family-based interventions on drug abuse
+ reduction for young people in treatment for non-opioid drug use.
+ A family-based intervention (FFT) is equivalent to a behavior focused
+ family therapy, where young people’s drug use is understood in relation to family
+ behavior problems. Family-based interventions also includes manual-based family therapies as
+ it targets young people and their families as a system throughout treatment, and thereby recognizes
+ the important role of the family system in the development and treatment of young people’s drug use
+ problems. FFT was developed in the late 1980s on request from the US National Institute on Drug Abuse
+ (NIDA). The development of FFT was initially heavily inspired by the alcohol abuse program
+ Community Reinforcement Approach (CRA), which was aimed at restructuring the environment
+ to reinforce non-alcohol associated activities. FFT developed to have more emphasis on
+ contingency contracting, impulse control strategies specific to drug use,
+ and increased emphasis on involvement of family members in treatment.
+ FFT is designed to accommodate diverse populations of youths with a variety of behavioral,
+ cultural and individual preferences. FFT has evolved for use in severe behavioral disturbances
+ known to co-exist with substance use and dependence, and the core interventions
+ have been enhanced to address several mental health related problems commonly occurring
+ as comorbid conditions in drug use treatment participant.  For each study,
+ I would like you to assess:  1) Is the study about a family-based intervention,
+ such as Functional Family Therapy, Multidimensional Family Therapy, or
+ Behavioral Family Therapy? (Outpatient manual-based interventions of any
+ duration delivered to young people and their families). If not, exclude study.
+ 2) Are the participants in outpatient drug treatment primarily
+ for non-opioid drug use? 3) Are the participants within age 11–21?"
+```
+
+## Running tabscreen_ollama()
+We can now run the `tabscreen_ollama()` function with our data and prompt.
+For this example, we use the `llama3.2:latest` model, which supports function-calling.
+We also choose not to get explanations for the decisions (decision_description = FALSE).
+A lot of other arguments are available, please see the function documentation for details.
+
+```{r eval=FALSE}
+
+# Set parallel processing plan
+future::plan(future::multisession)
+
+# Running tabscreen_ollama
+result_object <- tabscreen_ollama(
+  data = filges2015_dat,      # data.frame / tibble with title & abstract
+  prompt = prompt,            # screening prompt
+  studyid = studyid,          # column with unique study IDs
+  title = title,              # column with study titles
+  abstract = abstract,        # column with study abstracts
+  model = "llama3.2:latest",  # specify the local Ollama model to use
+)
+
+#> Progress: ───────────────────────────────────────────────────────────────── 100%
+
+# Back to the sequential plan
+plan(sequential)
+```
+
+# Get the results
+The results are stored in a list with several components. The main output from the GPT is in `results$answer_data`.
+Here we can select and display relevant columns to compare human and model decisions.
+Other components include `error_data` (failed requests) and, if reps > 1, `answer_data_aggregated` (summary per study across reps).
+From the `results` object, we can also see metadata such as `run_date` and `arg_list`.
+
+```{r eval=FALSE}
+# Select the relevant output columns
+
+results$answer_data |> dplyr::select(author, human_code, decision_gpt, decision_binary)
+#> A tibble: 5 × 4
+#>  author                                 human_code decision_gpt decision_binary
+#>  <chr>                                       <dbl> <chr>                  <dbl>
+#> 1 Holloway R G and Gramling R and Kelly…          0 1                          1
+#> 2 Morawska Alina and Stallman Helen M a…          0 0                          0
+#> 3 Michel C M and Pascual-Marqui R D and…          0 0                          0
+#> 4 Paul Howard A                                   0 0                          0
+#> 5 Feinberg I and De Bie E and Davis N M…          0 1                          1
+```
+
+Here we compare the human screening decisions with the model's decisions. 
+Use results$answer_data to inspect individual responses. 
+Key columns are decision_gpt (0 = exclude, 1 = include, 1.1 = unsure) and decision_binary (0 = exclude, 1 = include). 
+If you set reps > 1, the results will include answer_data_aggregated
+and final_decision_gpt (aggregated decision), which help assess stability across repeated queries. 
+Increasing reps improves reliability of incl_p but increases runtime and local resource use. 
+Model behaviour depends on the chosen model, prompt wording, and other parameters. 
+Experiment with prompt wording, model choice, and the incl_cutoff threshold to improve screening accuracy for your task. 
+Consider setting decision_description = TRUE so the model returns brief explanations (which can support chain-of-thought 
+reasoning). See [Chain of thought](https://www.ibm.com/think/topics/chain-of-thoughts) for more information.
+
+# Conclusion
+Some key advantages of using tabscreen_ollama() are that it keeps data local for improved privacy, 
+removes per-request billing (costs are limited to hardware and maintenance), 
+gives full control over model choice (including custom or fine-tuned models), 
+and improves reproducibility by allowing model versions to be pinned and runs to be performed offline.
+It is however important to note that local models may require substantial compute resources,
+and may not be as up-to-date as cloud-hosted models. Furthermore small models which are easier and more 
+convenient to run locally may not perform as well as larger models available in the cloud.
+
+References and resources
+- Ollama documentation: https://ollama.com/docs/
+- Ollama models directory: https://ollama.com/models
+- Chain-of-thought background: https://www.ibm.com/think/topics/chain-of-thoughts
