@@ -55,7 +55,8 @@
   resp <- req |> httr2::req_perform() |> httr2::resp_body_json()
   decision_val <- NA_character_
   detailed_desc_val <- detail_desc_default
-
+  print("This is the raw response from ollama:")
+  print(resp)
   tc <- NULL
   if (!is.null(resp$message) && !is.null(resp$message$tool_calls)) tc <- resp$message$tool_calls
 
@@ -119,7 +120,29 @@
           detailed_desc_val <- as.character(dd)
         }
       } else {
-        decision_val <- paste0("Error: Failed to parse content as JSON. Content: ", substr(content_text, 1, 100))
+        content_no_tags <- stringr::str_replace_all(content_text, c("<think>" = "", "</think>" = ""))
+        matches <- stringr::str_extract_all(content_no_tags, "(?<!\\d)(1\\.1|1|0)(?!\\d)")[[1]]
+        matches <- matches[!is.na(matches)]
+        if (length(matches) > 0) {
+          decision_candidate <- tail(matches, 1)
+          decision_val <- as.character(decision_candidate)
+          if (detailed) {
+            thought_match <- stringr::str_match(content_text, "(?s)<think>(.*?)</think>")
+            if (!is.na(thought_match[, 2])) {
+              detailed_desc_val <- stringr::str_squish(thought_match[, 2])
+            } else {
+              desc_candidate <- stringr::str_squish(
+                stringr::str_remove(
+                  content_no_tags,
+                  paste0("(?<!\\d)", decision_candidate, "(?!\\d)\\.?\\s*$")
+                )
+              )
+              detailed_desc_val <- if (nzchar(desc_candidate)) desc_candidate else detail_desc_default
+            }
+          }
+        } else {
+          decision_val <- paste0("Error: Failed to parse content as JSON. Content: ", substr(content_text, 1, 100))
+        }
       }
     } else {
       decision_val <- "Error: No tool_calls and no content in response."

@@ -440,8 +440,11 @@ tabscreen_ollama <- function(
   forced_fn <- if (decision_description) "inclusion_decision" else "inclusion_decision_simple"
   tool_guard_msg <- paste0(
     "You are a function-calling agent. For each request",
-    "you must call the tool '", forced_fn, "' exactly once and only this tool. ",
-    "Do not write natural language in the message content. Return only via the tool call. ")
+    "Rules: You must strictly follow the rules below when answering. ",
+    "1) You must answer via a function call only. ",
+    "2) You must use the tool '", forced_fn, "' and no other tool. ",
+    "3) You must not write any text outside the tool call. ",
+    "IMPORTANT: Do not write natural language in the message content. Return only via the tool call. ")
 
   params <- question_dat |>
     dplyr::select(question, model_gpt = model, topp, iterations, req_per_min)
