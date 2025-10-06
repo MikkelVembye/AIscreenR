@@ -13,7 +13,8 @@
     max_s,
     is_trans,
     back,
-    aft
+    aft,
+    endpoint_url
   ){
 
     # Logical argument indicating whether detailed screening description is
@@ -35,7 +36,7 @@
 
     # Creating the request
     req <-
-      httr2::request(url) |>
+      httr2::request(endpoint_url) |>
       httr2::req_method("POST") |>
       httr2::req_headers(
         "Content-Type" = "application/json",
@@ -203,6 +204,7 @@
     istrans,
     ba,
     af,
+    endpoint_url,
     ...
 ){
 
@@ -256,7 +258,8 @@
       max_s = maxs,
       is_trans = istrans,
       back = ba,
-      aft = af
+      aft = af,
+      endpoint_url = endpoint_url
     ),
     .options = furrr::furrr_options(seed = furrr_seed)
   ) |>

@@ -9,7 +9,8 @@
     max_t,
     max_s, 
     back, 
-    aft 
+    aft,
+    endpoint_url 
 ) {
   detailed <- FALSE
   if (!is.null(body$tool_choice) &&
@@ -26,7 +27,7 @@
   
   tictoc::tic()
 
-  url <- "http://127.0.0.1:11434/api/chat"
+  url <- endpoint_url
   
   headers <- list(
     content_type = "application/json",
@@ -38,7 +39,7 @@
   if (is.null(body$stream)) body$stream <- FALSE
 
   req <-
-    httr2::request(url) |>
+    httr2::request(endpoint_url) |>
     httr2::req_method("POST") |>
     httr2::req_headers(!!!headers) |>
     httr2::req_body_json(body) |>
@@ -158,6 +159,7 @@
     back,
     aft, 
     system_guard_msg = NULL, 
+    endpoint_url,
     ... 
 ) {
   detailed_for_wrapper <- FALSE
@@ -239,7 +241,8 @@
           max_t = max_t,
           max_s = max_s,
           back = back,
-          aft = aft
+          aft = aft,
+          endpoint_url = endpoint_url
         )
         result <- dplyr::mutate(result, n = i)
         return(result)

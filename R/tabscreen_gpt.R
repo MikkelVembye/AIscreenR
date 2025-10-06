@@ -250,6 +250,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
   studyid,
   title,
   abstract,
+  api_url = "https://api.openai.com/v1/chat/completions",
   model = "gpt-4o-mini",
   role = "user",
   tools = NULL,
@@ -410,6 +411,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
       incl_cutoff_lower = incl_cutoff_lower,
       force = force,
       custom_model = custom_model,
+      api_url = api_url,
       ...
     )
 
@@ -613,6 +615,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
           istrans = is_transient,
           ba = backoff,
           af = after,
+          endpoint_url = api_url,
           ...,
           .options = furrr::furrr_options(seed = furrr_seed),
           .progress = progress

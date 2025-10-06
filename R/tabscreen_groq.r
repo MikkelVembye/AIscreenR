@@ -202,6 +202,7 @@ tabscreen_groq <- function(
   studyid,
   title,
   abstract,
+  api_url = "https://api.groq.com/openai/v1/chat/completions",
   ...,
   model = "llama3-70b-8192",
   role = "user",
@@ -326,6 +327,7 @@ tabscreen_groq <- function(
       decision_description = decision_description,
       incl_cutoff_upper = incl_cutoff_upper,
       incl_cutoff_lower = incl_cutoff_lower,
+      api_url = api_url,
       ...
     )
 
@@ -479,6 +481,7 @@ tabscreen_groq <- function(
         is_trans = is_transient,
         back = backoff,
         aft = after,
+        endpoint_url = api_url,
         ...,
         .options = furrr::furrr_options(seed = furrr_seed),
         .progress = progress

@@ -12,7 +12,8 @@
     max_s, 
     is_trans, 
     back, 
-    aft 
+    aft,
+    endpoint_url
 ) {
   # Detect if detailed tool is present based on tools list
   detailed <- FALSE
@@ -39,7 +40,7 @@
   
   # Creating the request
   req <-
-    httr2::request(url) |>
+    httr2::request(endpoint_url) |>
     httr2::req_method("POST") |>
     httr2::req_headers(
       "Content-Type" = "application/json",
@@ -199,6 +200,7 @@
     back,
     aft, 
     system_guard_msg = NULL, # Message to force function calling
+    endpoint_url,
     ... 
 ) {
   # Detect detailed mode from tools or explicit choice
@@ -301,7 +303,8 @@
           max_s = max_s,
           is_trans = is_trans,
           back = back,
-          aft = aft
+          aft = aft,
+          endpoint_url = endpoint_url
         )
         result <- dplyr::mutate(result, n = i)
         return(result)

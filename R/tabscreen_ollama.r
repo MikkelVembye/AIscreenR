@@ -181,6 +181,7 @@ tabscreen_ollama <- function(
   studyid,
   title,
   abstract,
+  api_url = "http://127.0.0.1:11434/api/chat",
   ...,
   model = "llama3.2:latest",
   role = "user",
@@ -236,10 +237,10 @@ tabscreen_ollama <- function(
   #.......................................
 
   # Validate model names
-  models_url <- "http://127.0.0.1:11434/api/tags"
-  # Try to query local Ollama for available models. If not reachable, skip validation with a message.
+  tags_url <- sub("/chat/?$", "/tags", api_url)
+  if (identical(tags_url, api_url)) tags_url <- paste0(gsub("/$", "", api_url), "/tags")
   available_models <- tryCatch({
-    httr2::request(models_url) |>
+    httr2::request(tags_url) |>
       httr2::req_method("GET") |>
       httr2::req_user_agent("AIscreenR (local-ollama)") |>
       httr2::req_perform() |>
@@ -331,6 +332,7 @@ tabscreen_ollama <- function(
       decision_description = decision_description,
       incl_cutoff_upper = incl_cutoff_upper,
       incl_cutoff_lower = incl_cutoff_lower,
+      api_url = api_url,
       ...
     )
 
@@ -459,6 +461,7 @@ tabscreen_ollama <- function(
         max_s = max_seconds,
         back = backoff,
         aft = after,
+        endpoint_url = api_url,
         ...,
         .options = furrr::furrr_options(seed = furrr_seed),
         .progress = progress
