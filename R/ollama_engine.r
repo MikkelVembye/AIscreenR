@@ -100,14 +100,8 @@
     }
   } else {
     content_text <- tryCatch(resp$message$content, error = function(e) "")
-    clean_content <- ""
     if (nzchar(content_text)) {
-      clean_content <- gsub("(?is)<think>.*?</think>", "", content_text, perl = TRUE)
-      clean_content <- gsub("(?is)</?think>", "", clean_content, perl = TRUE)
-      clean_content <- trimws(clean_content)
-    }
-    if (nzchar(clean_content)) {
-      parsed_content <- try(jsonlite::fromJSON(clean_content), silent = TRUE)
+      parsed_content <- try(jsonlite::fromJSON(content_text), silent = TRUE)
       if (!inherits(parsed_content, "try-error")) {
         if (!is.null(parsed_content$decision_gpt)) {
           decision_val <- as.character(parsed_content$decision_gpt)
@@ -121,19 +115,11 @@
           if (!is.null(parsed_content$detailed_description)) dd <- parsed_content$detailed_description
           else if (!is.null(parsed_content$description)) dd <- parsed_content$description
           else if (!is.null(parsed_content$reasoning)) dd <- parsed_content$reasoning
-          else if (!is_null(parsed_content$explanation)) dd <- parsed_content$explanation
+          else if (!is.null(parsed_content$explanation)) dd <- parsed_content$explanation
           detailed_desc_val <- as.character(dd)
         }
       } else {
-        plain_choice <- stringr::str_extract(clean_content, "(?<![0-9])(1\\.1|1|0)(?![0-9.])")
-        if (!is.na(plain_choice)) {
-          decision_val <- plain_choice
-          if (detailed && (is.null(detailed_desc_val) || is.na(detailed_desc_val))) {
-            detailed_desc_val <- clean_content
-          }
-        } else {
-          decision_val <- paste0("Error: Failed to parse content as JSON. Content: ", substr(clean_content, 1, 100))
-        }
+        decision_val <- paste0("Error: Failed to parse content as JSON. Content: ", substr(content_text, 1, 100))
       }
     } else {
       decision_val <- "Error: No tool_calls and no content in response."
