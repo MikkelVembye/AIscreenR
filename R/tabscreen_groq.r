@@ -28,6 +28,7 @@
 #' \url{https://httr2.r-lib.org}, \url{https://github.com/r-lib/httr2}.
 #'
 #' @template common-arg
+#' @param api_url Character string with the endpoint URL for Groq's API. Default is `"https://api.groq.com/v1"`.
 #' @param model Character string with the name of the completion model. Can take
 #'   multiple Groq models. Default = `"llama3-70b-8192"`.
 #'   Find available models at \url{https://console.groq.com/docs/models}.

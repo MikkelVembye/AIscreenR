@@ -11,6 +11,7 @@ tabscreen_groq(
   studyid,
   title,
   abstract,
+  api_url = "https://api.groq.com/openai/v1/chat/completions",
   ...,
   model = "llama3-70b-8192",
   role = "user",
@@ -47,6 +48,8 @@ automatically.}
 \item{title}{Name of the variable containing the title information.}
 
 \item{abstract}{Name of variable containing the abstract information.}
+
+\item{api_url}{Character string with the endpoint URL for Groq's API. Default is \code{"https://api.groq.com/v1"}.}
 
 \item{...}{Further argument to pass to the request body.}
 

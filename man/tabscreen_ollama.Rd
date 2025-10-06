@@ -11,6 +11,7 @@ tabscreen_ollama(
   studyid,
   title,
   abstract,
+  api_url = "http://127.0.0.1:11434/api/chat",
   ...,
   model = "llama3.2:latest",
   role = "user",
@@ -44,6 +45,8 @@ automatically.}
 \item{title}{Name of the variable containing the title information.}
 
 \item{abstract}{Name of variable containing the abstract information.}
+
+\item{api_url}{Character string with the endpoint URL for Groq's API. Default is \code{"https://api.groq.com/v1"}.}
 
 \item{...}{Further argument to pass to the request body.}
 

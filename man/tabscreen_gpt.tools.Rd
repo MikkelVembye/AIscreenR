@@ -11,7 +11,7 @@ tabscreen_gpt.tools(data, prompt, studyid, title, abstract,
    max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
    after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
    decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
-   incl_cutoff_lower = NULL, force = FALSE, fine_tuned = FALSE, ...)
+   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE, ...)
 
 tabscreen_gpt(data, prompt, studyid, title, abstract,
    model = "gpt-4o-mini", role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
@@ -19,7 +19,7 @@ tabscreen_gpt(data, prompt, studyid, title, abstract,
    max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
    after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
    decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
-   incl_cutoff_lower = NULL, force = FALSE, fine_tuned = FALSE, ...)
+   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE, ...)
 }
 \arguments{
 \item{data}{Dataset containing the titles and abstracts.}
@@ -32,6 +32,8 @@ automatically.}
 \item{title}{Name of the variable containing the title information.}
 
 \item{abstract}{Name of variable containing the abstract information.}
+
+\item{api_url}{Character string with the endpoint URL for OpenAI's API. Default is \code{"https://api.openai.com/v1/chat/completions"}.}
 
 \item{model}{Character string with the name of the completion model. Can take
 multiple models. Default is the latest \code{"gpt-4o-mini"}.
@@ -132,7 +134,7 @@ title and abstract 4 times, we suggest that the study should be check by a human
 This argument is developed to avoid the conduct of wrong and extreme sized screening.
 Default is \code{FALSE}.}
 
-\item{fine_tuned}{Logical indicating whether a fine-tuned model is used. Default is \code{FALSE}.}
+\item{custom_model}{Logical indicating whether a fine-tuned or custom model is used. Default is \code{FALSE}.}
 
 \item{...}{Further argument to pass to the request body.
 See \url{https://platform.openai.com/docs/api-reference/chat/create}.}

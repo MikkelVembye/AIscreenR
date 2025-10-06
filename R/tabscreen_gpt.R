@@ -29,6 +29,7 @@
 #' \url{https://httr2.r-lib.org}, \url{https://github.com/r-lib/httr2}.
 #'
 #' @template common-arg
+#' @param api_url Character string with the endpoint URL for OpenAI's API. Default is `"https://api.openai.com/v1/chat/completions"`.
 #' @param model Character string with the name of the completion model. Can take
 #'   multiple models. Default is the latest `"gpt-4o-mini"`.
 #'   Find available model at
