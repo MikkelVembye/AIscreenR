@@ -11,6 +11,7 @@ reference:
       - tabscreen_gpt.tools
       - tabscreen_gpt.original
       - tabscreen_groq
+      - tabscreen_ollama
 
   - title: "Screen failed requests"
     desc: "R functions to re-screen failied title and abstract requests"
@@ -53,6 +54,7 @@ reference:
       - filges2015_dat
       - model_prizes
       - disagreements
+      - groq_model_prizes
 
   - title: "Coercion"
     contents:
@@ -63,6 +65,8 @@ reference:
       - is_gpt_agg_tbl
       - is_groq_tbl
       - is_groq_agg_tbl
+      - is_ollama_tbl
+      - is_ollama_agg_tbl
 
   - title: "Print methods"
     contents:
@@ -79,6 +83,12 @@ reference:
     desc: "Sample references to construct test dataset"
     contents:
       - sample_references
+
+  - title: "Reading / Writing RIS"
+    desc: "Functions to read and write RIS files"
+    contents:
+      - read_ris_to_dataframe
+      - save_dataframe_to_ris 
 
 articles:
   - title: Using AIscreenR

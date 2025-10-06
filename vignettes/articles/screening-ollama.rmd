@@ -1,7 +1,7 @@
 ---
-Title: Title/Abstract Screening with Local Ollama Models
-Output: rmarkdown::html_document
-Vignette: >
+title: Title/Abstract Screening with Local Ollama Models
+output: rmarkdown::html_document
+vignette: >
   %\VignetteIndexEntry{Title/Abstract Screening with Local Ollama Models}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
@@ -152,7 +152,8 @@ It is however important to note that local models may require substantial comput
 and may not be as up-to-date as cloud-hosted models. Furthermore small models which are easier and more 
 convenient to run locally may not perform as well as larger models available in the cloud.
 
-References and resources
+## References and resources
+
 - Ollama documentation: https://ollama.com/docs/
 - Ollama models directory: https://ollama.com/models
 - Chain-of-thought background: https://www.ibm.com/think/topics/chain-of-thoughts

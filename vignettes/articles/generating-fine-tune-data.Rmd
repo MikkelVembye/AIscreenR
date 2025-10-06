@@ -39,11 +39,11 @@ prompt <- "Is this study about functional family therapy?"
 
 ## Step 2: Generate fine-tuning data structure
 
-The `generate_ft_data()` function takes your raw data and formats it into a structure suitable for fine-tuning. It combines the `title` and `abstract` with your `prompt` to create a complete question for each study.
+The `create_fine_tune_data()` function takes your raw data and formats it into a structure suitable for fine-tuning. It combines the `title` and `abstract` with your `prompt` to create a complete question for each study.
 
 ```{r generate-data}
 ft_data_generated <-
-  generate_ft_data(
+  create_fine_tune_data(
     data = sample_dat,
     prompt = prompt,
     studyid = studyid,
@@ -79,14 +79,14 @@ role_subject <- paste0(
 
 ## Step 4: Write data to a .jsonl file
 
-Finally, we use `write_ft_data()` to convert our data frame into the `jsonl` format required by OpenAI. Each line in the output file will be a JSON object representing a single training example, containing the system message, the user prompt (our question), and the assistant's expected response (the true answer).
+Finally, we use `save_fine_tune_data()` to convert our data frame into the `jsonl` format required by OpenAI. Each line in the output file will be a JSON object representing a single training example, containing the system message, the user prompt (our question), and the assistant's expected response (the true answer).
 
 The function will write the file to your current working directory. OpenAI requires JSON Lines (.jsonl) files for fine-tuning datasets; see the fine-tuning data preparation guide and API reference for file requirements [OpenAI Docs: Fine-tuning guide](https://platform.openai.com/docs/guides/supervised-fine-tuning?monitoring=ui).
 
 ```{r write-data, eval=FALSE}
 # This code will write a file named "fine_tune_data.jsonl"
 # to your working directory.
-write_ft_data(
+save_fine_tune_data(
   data = ft_data_to_write,
   role_and_subject = role_subject,
   file = "fine_tune_data.jsonl"
@@ -127,20 +127,20 @@ cat(
 
 ## Step 5: Write data to .jsonl files
 
-Finally, we use `write_ft_data()` to convert our training and validation data frames into the `jsonl` format required by OpenAI. We will create two separate files.
+Finally, we use `save_fine_tune_data()` to convert our training and validation data frames into the `jsonl` format required by OpenAI. We will create two separate files.
 
 ```{r write-split-data, eval=FALSE}
 # This code will write two files to your working directory.
 
 # Write the training data
-write_ft_data(
+save_fine_tune_data(
   data = train_dat,
   role_and_subject = role_subject,
   file = "training_data.jsonl"
 )
 
 # Write the validation data
-write_ft_data(
+save_fine_tune_data(
   data = validation_dat,
   role_and_subject = role_subject,
   file = "validation_data.jsonl"
@@ -151,5 +151,5 @@ After running this code, you will have `training_data.jsonl` and `validation_dat
 
 ## References
 
-- OpenAI. Fine-tuning guide. https://platform.openai.com/docs/guides/supervised-fine-tuning?monitoring=uid
-- Medium: Fine-tuning guide. https://thetechplatform.medium.com/optimizing-your-dataset-a-guide-to-fine-tuning-with-openai-c6bff4054195).
+- OpenAI: https://platform.openai.com/docs/guides/supervised-fine-tuning?monitoring=uid
+- Medium: https://thetechplatform.medium.com/optimizing-your-dataset-a-guide-to-fine-tuning-with-openai-c6bff4054195).
