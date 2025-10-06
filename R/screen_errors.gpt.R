@@ -114,7 +114,7 @@ screen_errors.gpt <- function(
     incl_cutoff_upper <- arguments_used$incl_cutoff_upper
     incl_cutoff_lower <- arguments_used$incl_cutoff_lower
     force <- arguments_used$force
-    fine_tuned <- arguments_used$fine_tuned
+    custom_model <- arguments_used$custom_model
 
     arg_list <-
       list(
@@ -135,7 +135,7 @@ screen_errors.gpt <- function(
         incl_cutoff_upper = incl_cutoff_upper,
         incl_cutoff_lower = incl_cutoff_lower,
         force = force,
-        fine_tuned = fine_tuned,
+        custom_model = custom_model,
         ...
       )
 

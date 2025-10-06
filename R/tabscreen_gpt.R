@@ -101,7 +101,7 @@
 #'   10 iterations for gpt-3.5 models and more than 1 iteration for gpt-4 models other than gpt-4o-mini.
 #'   This argument is developed to avoid the conduct of wrong and extreme sized screening.
 #'   Default is `FALSE`.
-#' @param fine_tuned Logical indicating whether a fine-tuned model is used. Default is `FALSE`.
+#' @param custom_model Logical indicating whether a fine-tuned or custom model is used. Default is `FALSE`.
 #' @param ... Further argument to pass to the request body.
 #'   See \url{https://platform.openai.com/docs/api-reference/chat/create}.
 #'
@@ -111,7 +111,7 @@
 #'    max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
 #'    after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
 #'    decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
-#'    incl_cutoff_lower = NULL, force = FALSE, fine_tuned = FALSE, ...)
+#'    incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE, ...)
 #'
 #'tabscreen_gpt(data, prompt, studyid, title, abstract,
 #'    model = "gpt-4o-mini", role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
@@ -119,7 +119,7 @@
 #'    max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
 #'    after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
 #'    decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
-#'    incl_cutoff_lower = NULL, force = FALSE, fine_tuned = FALSE, ...)
+#'    incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE, ...)
 #'
 #' @return An object of class `'gpt'`. The object is a list containing the following
 #' datasets and components:
@@ -272,7 +272,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
   incl_cutoff_upper = NULL,
   incl_cutoff_lower = NULL,
   force = FALSE,
-  fine_tuned = FALSE,
+  custom_model = FALSE,
   ...
 ){
 
@@ -290,7 +290,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
   }
 
   # Stop if wrong models are called
-  if (!fine_tuned){
+  if (!custom_model){
     if(any(!model %in% model_prizes$model)) stop("Unknown gpt model(s) used - check model name(s).")
   }
 
@@ -409,7 +409,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
       incl_cutoff_upper = incl_cutoff_upper,
       incl_cutoff_lower = incl_cutoff_lower,
       force = force,
-      fine_tuned = fine_tuned,
+      custom_model = custom_model,
       ...
     )
 
@@ -533,7 +533,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
 
     # Calculating the approximate price using the helper function price_gpt()
 
-    if(!fine_tuned) {
+    if(!custom_model) {
 
     app_price_dat <- .price_gpt(question_dat)
     app_price <- sum(app_price_dat$total_price_dollar, na.rm = TRUE)
@@ -641,7 +641,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
     #.............................
 
     # Adding price data
-    price_dat <- if (token_info && !fine_tuned) .price_gpt(answer_dat) else NULL
+    price_dat <- if (token_info && !custom_model) .price_gpt(answer_dat) else NULL
     price <- if (!is.null(price_dat)) sum(price_dat$total_price_dollar, na.rm = TRUE) else NULL
 
     #.........................................................................
@@ -691,7 +691,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
     )
 
     # If token info is not wanted or fine tuned model used
-    if (fine_tuned || !token_info) res[["price_data"]] <- res[["price_dollar"]] <- NULL
+    if (custom_model || !token_info) res[["price_data"]] <- res[["price_dollar"]] <- NULL
 
     # If no screening errors
     if (n_error == 0) res[["error_data"]] <- NULL
