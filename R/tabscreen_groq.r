@@ -28,7 +28,7 @@
 #' \url{https://httr2.r-lib.org}, \url{https://github.com/r-lib/httr2}.
 #'
 #' @template common-arg
-#' @param api_url Character string with the endpoint URL for Groq's API. Default is `"https://api.groq.com/v1"`.
+#' @param api_url Character string with the endpoint URL for Groq's API. Default is `"https://api.groq.com/openai/v1/chat/completions"`.
 #' @param model Character string with the name of the completion model. Can take
 #'   multiple Groq models. Default = `"llama3-70b-8192"`.
 #'   Find available models at \url{https://console.groq.com/docs/models}.
@@ -412,7 +412,7 @@ tabscreen_groq <- function(
 
   # Calculating the approximate price using the helper function price_gpt()
   app_price_dat <- .price_gpt(question_dat)
-  app_price <- sum(app_price_dat$total_price_dollar, na.rm = TRUE)
+  app_price <- sum(app_price_dat$total_price_dollar, na.rm = TRUE) * reps
 
   # Ensuring the user does not accidentally run an expensive screening
   if (app_price > 15 && !force) {
@@ -432,8 +432,7 @@ tabscreen_groq <- function(
     if (decision_description){
       message(
         paste0(
-          "* Be aware that getting detailed reponses ",
-          "will substantially increase the prize of the screening relative to the noted approximate prize."
+          "* Be aware that getting descriptive, detailed responses will substantially increase the price of the screening relative to the noted approximate price."
         )
       )
     }
