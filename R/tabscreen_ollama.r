@@ -147,7 +147,7 @@
 #'
 #' plan(multisession)
 #'
-#' tabscreen_groq(
+#' tabscreen_ollama(
 #'   data = filges2015_dat[1:2,],
 #'   prompt = prompt,
 #'   studyid = studyid,
@@ -162,7 +162,7 @@
 #'  # decision_description option.
 #' plan(multisession)
 #'
-#'  tabscreen_groq(
+#'  tabscreen_ollama(
 #'    data = filges2015_dat[1:2,],
 #'    prompt = prompt,
 #'    studyid = studyid,
@@ -439,12 +439,11 @@ tabscreen_ollama <- function(
   # Detailed system that models must follow in order to ensure proper function calling
   forced_fn <- if (decision_description) "inclusion_decision" else "inclusion_decision_simple"
   tool_guard_msg <- paste0(
-    "You are a function-calling agent. For each request",
-    "Rules: You must strictly follow the rules below when answering. ",
-    "1) You must answer via a function call only. ",
-    "2) You must use the tool '", forced_fn, "' and no other tool. ",
-    "3) You must not write any text outside the tool call. ",
-    "IMPORTANT: Do not write natural language in the message content. Return only via the tool call. ")
+    "You are a function-calling agent. You must answer ONLY by calling the function '", forced_fn, "'. ",
+    "Do NOT write any text, explanation, or reasoning outside the function call. ",
+    "If you do not use the function call, your answer will be rejected. ",
+    "Repeat: Only respond with a function call to '", forced_fn, "'."
+  )
 
   params <- question_dat |>
     dplyr::select(question, model_gpt = model, topp, iterations, req_per_min)

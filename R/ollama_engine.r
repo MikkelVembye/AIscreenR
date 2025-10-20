@@ -55,7 +55,6 @@
   resp <- req |> httr2::req_perform() |> httr2::resp_body_json()
   decision_val <- NA_character_
   detailed_desc_val <- detail_desc_default
-  #print(resp)
   tc <- NULL
   if (!is.null(resp$message) && !is.null(resp$message$tool_calls)) tc <- resp$message$tool_calls
 
