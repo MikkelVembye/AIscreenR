@@ -48,9 +48,6 @@
 #'  `max_tries` or the total elapsed time from the first request with
 #'  `max_seconds`. If neither option is supplied (the default), [httr2::req_perform()]
 #'  will not retry'.
-#' @param is_transient 'A predicate function that takes a single argument
-#'  (the response) and returns `TRUE` or `FALSE` specifying whether or not
-#'  the response represents a transient error'.
 #' @param backoff 'A function that takes a single argument (the number of failed
 #'   attempts so far) and returns the number of seconds to wait'.
 #' @param after 'A function that takes a single argument (the response) and
@@ -136,6 +133,7 @@
 #' but with failed request references only.
 #'
 #' @importFrom stats df
+#' @importFrom utils tail
 #'
 #' @export
 #'

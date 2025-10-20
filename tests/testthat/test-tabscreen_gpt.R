@@ -31,7 +31,8 @@ test_that(".gpt_engine return errors correctly", {
     max_s = 10,
     is_trans = gpt_is_transient,
     back = NULL,
-    aft = NULL
+    aft = NULL,
+    endpoint_url = "https://api.openai.com/v1/chat/completions"
   )
 
 
@@ -60,7 +61,8 @@ test_that(".gpt_engine return errors correctly", {
     max_s = 10,
     is_trans = gpt_is_transient,
     back = NULL,
-    aft = NULL
+    aft = NULL,
+    endpoint_url = "https://api.openai.com/v1/chat/completions"
   )
 
   expect_equal(ncol(res), 7)
@@ -88,7 +90,8 @@ test_that(".gpt_engine return errors correctly", {
     max_s = 10,
     is_trans = gpt_is_transient,
     back = NULL,
-    aft = NULL
+    aft = NULL,
+    endpoint_url = "https://api.openai.com/v1/chat/completions"
   )
 
   expect_equal(ncol(res), 7)
@@ -117,7 +120,8 @@ test_that(".gpt_engine return errors correctly", {
     max_s = 10,
     is_trans = gpt_is_transient(),
     back = NULL,
-    aft = NULL
+    aft = NULL,
+    endpoint_url = "https://api.openai.com/v1/chat/completions"
   ) |>
     expect_error()
 
@@ -146,7 +150,8 @@ test_that(".rep_gpt_engine controls errrors correctly", {
     maxs = 10,
     istrans = gpt_is_transient,
     ba = NULL,
-    af = NULL
+    af = NULL,
+    endpoint_url = "https://api.openai.com/v1/chat/completions"
   )
 
   expect_equal(ncol(res), 8)
@@ -172,7 +177,8 @@ test_that(".rep_gpt_engine controls errrors correctly", {
     maxs = 10,
     istrans = gpt_is_transient,
     ba = NULL,
-    af = NULL
+    af = NULL,
+    endpoint_url = "https://api.openai.com/v1/chat/completions"
   )
 
   expect_equal(ncol(res), 8)
@@ -198,7 +204,8 @@ test_that(".rep_gpt_engine controls errrors correctly", {
     maxs = 10,
     istrans = gpt_is_transient,
     ba = NULL,
-    af = NULL
+    af = NULL,
+    endpoint_url = "https://api.openai.com/v1/chat/completions"
   )
 
   expect_equal(ncol(res), 8)

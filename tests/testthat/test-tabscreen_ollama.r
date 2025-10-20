@@ -27,7 +27,8 @@ test_that(".ollama_engine return errors correctly", {
       max_t = 4,
       max_s = 10,
       back = NULL,
-      aft = NULL
+      aft = NULL,
+      endpoint_url = "http://127.0.0.1:11434/api/chat"
     ),
     regexp = "404|Not Found|Error"
   )
@@ -52,7 +53,8 @@ test_that(".ollama_engine return errors correctly", {
       max_t = 4,
       max_s = 10,
       back = NULL,
-      aft = NULL
+      aft = NULL,
+      endpoint_url = "http://127.0.0.1:11434/api/chat"
     ),
     regexp = "HTTP 404 Not Found"
   )
@@ -79,7 +81,8 @@ test_that(".rep_ollama_engine controls errrors correctly", {
     max_t = 4,
     max_s = 10,
     ba = NULL,
-    af = NULL
+    af = NULL,
+    endpoint_url = "http://127.0.0.1:11434/api/chat"
   )
 
   expect_equal(ncol(res), 4)
@@ -102,7 +105,8 @@ test_that(".rep_ollama_engine controls errrors correctly", {
     max_t = 4,
     max_s = 10,
     ba = NULL,
-    af = NULL
+    af = NULL,
+    endpoint_url = "http://127.0.0.1:11434/api/chat"
   )
 
   expect_equal(ncol(res), 4)
@@ -125,7 +129,8 @@ test_that(".rep_ollama_engine controls errrors correctly", {
     max_t = 4,
     max_s = 10,
     ba = NULL,
-    af = NULL
+    af = NULL,
+    endpoint_url = "http://127.0.0.1:11434/api/chat"
   )
 
   expect_equal(ncol(res), 4)

@@ -92,7 +92,7 @@
           }
         }
       } else {
-        decision_val <- paste0("Error: Failed to parse tool call arguments. JSON: ", substr(func_arguments_json, 1, 100))
+        decision_val <- paste0("Error: Failed to parse tool call arguments. JSON: ", substr(args_raw, 1, 100))
       }
     } else {
       decision_val <- "Error: Unexpected tool_call structure or missing arguments."

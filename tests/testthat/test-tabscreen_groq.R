@@ -29,7 +29,8 @@ test_that(".groq_engine return errors correctly", {
     max_s = 10,
     is_trans = .groq_is_transient,
     back = NULL,
-    aft = NULL
+    aft = NULL,
+    endpoint_url = "https://api.groq.com/openai/v1/chat/completions"
   )
 
 
@@ -58,7 +59,8 @@ test_that(".groq_engine return errors correctly", {
     max_s = 10,
     is_trans = .groq_is_transient,
     back = NULL,
-    aft = NULL
+    aft = NULL,
+    endpoint_url = "https://api.groq.com/openai/v1/chat/completions"
   )
 
   expect_equal(ncol(res), 5)
@@ -86,7 +88,8 @@ test_that(".groq_engine return errors correctly", {
     max_s = 10,
     is_trans = .groq_is_transient,
     back = NULL,
-    aft = NULL
+    aft = NULL,
+    endpoint_url = "https://api.groq.com/openai/v1/chat/completions"
   )
 
   expect_equal(ncol(res), 5)
@@ -115,7 +118,8 @@ test_that(".groq_engine return errors correctly", {
     max_s = 10,
     is_trans = .groq_is_transient(),
     back = NULL,
-    aft = NULL
+    aft = NULL,
+    endpoint_url = "https://api.groq.com/openai/v1/chat/completions"
   ) |>
     expect_error()
 
@@ -144,7 +148,8 @@ test_that(".rep_groq_engine controls errrors correctly", {
     max_s = 10,
     is_trans = .groq_is_transient,
     ba = NULL,
-    af = NULL
+    af = NULL,
+    endpoint_url = "https://api.groq.com/openai/v1/chat/completions"
   )
 
   expect_equal(ncol(res), 6)
@@ -170,7 +175,8 @@ test_that(".rep_groq_engine controls errrors correctly", {
     max_s = 10,
     is_trans = .groq_is_transient,
     ba = NULL,
-    af = NULL
+    af = NULL,
+    endpoint_url = "https://api.groq.com/openai/v1/chat/completions"
   )
 
   expect_equal(ncol(res), 6)
@@ -196,7 +202,8 @@ test_that(".rep_groq_engine controls errrors correctly", {
     max_s = 10,
     is_trans = .groq_is_transient,
     ba = NULL,
-    af = NULL
+    af = NULL,
+    endpoint_url = "https://api.groq.com/openai/v1/chat/completions"
   )
 
   expect_equal(ncol(res), 6)
@@ -289,8 +296,6 @@ test_that("tabscreen_groq() works with single parameter values.",{
   expect_null(test_obj$answer_data_aggregated)
   expect_null(test_obj$price_data)
   expect_null(test_obj$price_dollar)
-
-
 
 })
 
@@ -403,10 +408,10 @@ test_that("tabscreen_groq() don't return time and token info.", {
       api_key = 1234,
       time_info = FALSE,
       token_info = FALSE
-    )
+    ) |>
+      suppressMessages()
 
-  ) |>
-    suppressMessages()
+  )
 
   expect_equal(length(test_obj), 3)
 
@@ -1007,4 +1012,3 @@ test_that("Print and class expectation for groq object.", {
 
 
 })
-

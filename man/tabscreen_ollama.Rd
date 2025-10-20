@@ -115,10 +115,6 @@ title and abstract 4 times, we suggest that the study should be check by a human
 \item{force}{Logical argument indicating whether to force the function to use more than
 10 iterations. This argument is developed to avoid the conduct of wrong and extreme sized screening.
 Default is \code{FALSE}.}
-
-\item{is_transient}{'A predicate function that takes a single argument
-(the response) and returns \code{TRUE} or \code{FALSE} specifying whether or not
-the response represents a transient error'.}
 }
 \value{
 An object of class \code{"ollama"}. The object is a list containing the following
@@ -194,7 +190,7 @@ prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
 
 plan(multisession)
 
-tabscreen_groq(
+tabscreen_ollama(
   data = filges2015_dat[1:2,],
   prompt = prompt,
   studyid = studyid,
@@ -209,7 +205,7 @@ plan(sequential)
  # decision_description option.
 plan(multisession)
 
- tabscreen_groq(
+ tabscreen_ollama(
    data = filges2015_dat[1:2,],
    prompt = prompt,
    studyid = studyid,

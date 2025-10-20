@@ -154,7 +154,7 @@
 #'  \bold{price_total_dollar} \tab \code{integer} \tab total price for all tokens for the correspondent model. \cr
 #' }
 #'
-#' Find current token pricing at \url{https://console.groq.com/docs/pricing}.
+#' Find current token pricing at \url{https://groq.com/pricing}.
 #'
 #' @importFrom stats df
 #'

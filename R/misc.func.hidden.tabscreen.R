@@ -31,9 +31,6 @@
     # Starting time
     tictoc::tic()
 
-    # Request url (might possibly be made more flexible in future applications)
-    url <- "https://api.openai.com/v1/chat/completions"
-
     # Creating the request
     req <-
       httr2::request(endpoint_url) |>

@@ -7,7 +7,7 @@ output:
     toc: true
 date: "`r Sys.Date()`"
 bibliography: AIscreenR.bib
-link-citations: yes
+link-citations: true
 csl: apa.csl
 vignette: >
   %\VignetteIndexEntry{Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews}

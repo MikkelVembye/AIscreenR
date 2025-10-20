@@ -49,7 +49,7 @@ automatically.}
 
 \item{abstract}{Name of variable containing the abstract information.}
 
-\item{api_url}{Character string with the endpoint URL for Groq's API. Default is \code{"https://api.groq.com/v1"}.}
+\item{api_url}{Character string with the endpoint URL for Groq's API. Default is \code{"https://api.groq.com/openai/v1/chat/completions"}.}
 
 \item{...}{Further argument to pass to the request body.}
 
@@ -211,7 +211,7 @@ The \code{price_data} data contains the following variables:
 \bold{price_total_dollar} \tab \code{integer} \tab total price for all tokens for the correspondent model. \cr
 }
 
-Find current token pricing at \url{https://console.groq.com/docs/pricing}.
+Find current token pricing at \url{https://groq.com/pricing}.
 }
 \examples{
 \dontrun{
