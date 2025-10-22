@@ -1,5 +1,5 @@
 test_that(".ollama_engine return errors correctly", {
-
+  skip_on_cran()
   tools_choice_name <- list(
     type = "function",
     "function" = list(
@@ -62,8 +62,8 @@ test_that(".ollama_engine return errors correctly", {
 })
 
 
-test_that(".rep_ollama_engine controls errrors correctly", {
-
+test_that(".rep_ollama_engine controls errors correctly", {
+  skip_on_cran()
   iterations <- 3
 
   # Ineligible role
