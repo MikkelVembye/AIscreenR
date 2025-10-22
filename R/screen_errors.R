@@ -1,44 +1,57 @@
 #' @title Generic function to re-screen failed title and abstract requests.
 #'
 #' @description
-#' `r lifecycle::badge("superseded")`<br>
-#' <br>
+#'  This is a generic function to re-screen failed title and abstract requests.
+#'  It reuses the arguments captured during the original screening and only re-submits
+#'  the rows stored in `object$error_data` to the appropriate backend.
 #'
-#'  This is a generic function to re-screen of failed title and abstract requests.
-#'  Currently not working. We will soon update this function. 
-#'
-#' @param object An object of either class `'gpt'` or `'chatgpt'`.
+#' @param object An object of either class `'gpt'` or `'groq'`, as returned by
+#'  [tabscreen_gpt()] or [tabscreen_groq()]. Objects of class `'ollama'` are not supported.
 #' @template api-key-arg
+#'  If omitted here, the selected backend uses its own default (e.g., `get_api_key()` for GPT
+#'  and `get_api_key_groq()` for Groq).
 #' @param max_tries,max_seconds 'Cap the maximum number of attempts with
 #'  `max_tries` or the total elapsed time from the first request with
 #'  `max_seconds`. If neither option is supplied (the default), [httr2::req_perform()]
-#'  will not retry' (Wickham, 2023). Default `max_tries` is 16. If missing, the value of `max_seconds`
-#'  from the original screening conducted with [tabscreen_gpt()] will be used.
+#'  will not retry' (Wickham, 2023). If missing, the values from the original screening
+#'  (stored in `attr(object, "arg_list")`) will be reused.
 #' @param is_transient 'A predicate function that takes a single argument
 #'  (the response) and returns `TRUE` or `FALSE` specifying whether or not
 #'  the response represents a transient error' (Wickham, 2023). If missing, the `is_transient`
-#'  function from the original screening conducted with [tabscreen_gpt()] will be used.
+#'  function from the original screening will be used.
 #' @param backoff 'A function that takes a single argument (the number of failed
 #'   attempts so far) and returns the number of seconds to wait' (Wickham, 2023).
-#'   If missing, the `backoff`value from the original screening conducted with [tabscreen_gpt()] will be used.
+#'   If missing, the `backoff` value from the original screening will be used.
 #' @param after 'A function that takes a single argument (the response) and
 #'   returns either a number of seconds to wait or `NULL`, which indicates
-#'   that a precise wait time is not available that the `backoff` strategy
+#'   that a precise wait time is not available and that the `backoff` strategy
 #'   should be used instead' (Wickham, 2023). If missing, the `after` value
-#'   from the original screening conducted with [tabscreen_gpt()] will be used.
-#' @param ... Further argument to pass to the request body. See \url{https://platform.openai.com/docs/api-reference/chat/create}.
-#'  If used in the original screening in [tabscreen_gpt()], the argument(s)
-#'  must be specified here again.
+#'   from the original screening will be used.
+#' @param ... Further arguments forwarded to the underlying backend function
+#'  ([tabscreen_gpt()] or [tabscreen_groq()]). If arguments were supplied in the
+#'  original screening and should differ for re-screening, pass them again here.
 #'
-#' @return An object of class `'gpt'` or `'chatgpt'` similar to the object returned by [tabscreen_gpt()].
-#' See documentation for [tabscreen_gpt()].
+#' @details
+#' The backend is inferred from `class(object)` and mapped to either
+#'  [tabscreen_gpt()] or [tabscreen_groq()]. Only rows in `object$error_data`
+#'  are re-submitted. To avoid name collisions during unnesting in the backend,
+#'  columns that will be regenerated (currently `decision_binary`, `decision_description`,
+#'  `error_message`, `res`) are dropped from `error_data` before the call.
+#'  The original arguments from the first screening are taken from `attr(object, "arg_list")`
+#'  and are combined with any non-`NULL` overrides provided here.
 #'
-#' @seealso [screen_errors.gpt()], [screen_errors.chatgpt()]
+#' @return An object of class `'gpt'` or `'groq'` similar to the object returned by
+#'  the original screening function, with:
+#'  - `answer_data` updated to include newly successful rows,
+#'  - `error_data` updated to include only remaining failures.
+#'  Other fields (e.g., `price_data`, `price_dollar`, and `arg_list`) are preserved or updated by the backend.
+#'
+#' @seealso [tabscreen_gpt()], [tabscreen_groq()]
 #'
 #' @examples
-#'
 #' \dontrun{
 #'
+#' # Example with openai
 #' set_api_key()
 #' prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
 #'
@@ -57,34 +70,95 @@
 #'   screen_error()
 #'
 #'}
+#' # Example with groq
+#' set_api_key_groq()
+#' prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
+#'
+#' obj_with_error <-
+#'   tabscreen_groq(
+#'     data = filges2015_dat[1:2,],
+#'     prompt = prompt,
+#'     studyid = studyid,
+#'     title = title,
+#'     abstract = abstract
+#'   )
+#'
+#' obj_rescreened <-
+#'   obj_with_error |>
+#'   screen_error()
 #'
 #' @export
 
 screen_errors <- function(
-    object,
-    api_key = get_api_key(),
-    max_tries = 4,
-    max_seconds,
-    is_transient,
-    backoff,
-    after,
-    ...
-) UseMethod("screen_errors")
-
-#' @export
-
-screen_errors.default <- function(
-    object,
-    api_key = get_api_key(),
-    max_tries = 4,
-    max_seconds,
-    is_transient,
-    backoff,
-    after,
-    ...
+  object,
+  api_key = NULL,
+  max_tries = NULL,
+  max_seconds = NULL,
+  is_transient = NULL,
+  backoff = NULL,
+  after = NULL,
+  ...
 ) {
+  # Detect backend class
+  if (inherits(object, "ollama")) {
+    stop("Rescreening not supported for 'ollama' class. Errors obtained from tabscreen_ollama() will most likely be due to local resource constraints or invalid input.")
+  }
+  backend_class <- intersect(class(object), c("gpt", "groq")) 
+  if (length(backend_class) == 0) {
+    stop("Unknown object class for screen_errors.")
+  }
 
-  stop(paste0("screen_errors does not know how to handle object of class ", class(data),
-              ". It can only be used on objects of class 'screen_errors.chatgpt' and 'screen_errors.gpt'."))
+  # Map class to function
+  backend_fun <- switch(
+    backend_class,
+    gpt = tabscreen_gpt,
+    groq = tabscreen_groq,
+    stop("No tabscreen function for this class.")
+  )
 
+  error_data <- object$error_data
+  if (is.null(error_data) || nrow(error_data) == 0) stop("No errors to rescreen.")
+  
+  # Drop columns that will be re-generated by tabscreen_* to avoid name collisions on unnest()
+  drop_cols <- c("decision_binary", "decision_description", "error_message", "res")
+  error_data <- dplyr::select(error_data, -dplyr::any_of(drop_cols))
+
+  arg_list <- attr(object, "arg_list")
+  if (is.null(arg_list)) stop("No argument list found in object.")
+
+  # Prepare overrides (only include non-NULL to avoid clobbering originals)
+  overrides <- list(
+    data = error_data,
+    max_tries = max_tries,
+    max_seconds = max_seconds,
+    is_transient = is_transient,
+    backoff = backoff,
+    after = after,
+    ...
+  )
+  # Forward api key if provided otherwise use backend default
+  if (!is.null(api_key)) {
+    overrides$api_key <- api_key
+  }
+
+  overrides <- overrides[!vapply(overrides, is.null, logical(1))]
+
+  # Merge with original args
+  call_args <- utils::modifyList(arg_list, overrides)
+
+  # Drop any NULLs before calling
+  call_args <- call_args[!vapply(call_args, is.null, logical(1))]
+
+  # Call the identified function
+  rescreened <- rlang::call2(backend_fun, !!!call_args) |>
+    rlang::eval_tidy()
+
+  # Combine results
+  orig_success <- object$answer_data |> dplyr::filter(!is.na(decision_binary))
+  new_success  <- rescreened$answer_data |> dplyr::filter(!is.na(decision_binary))
+  combined <- dplyr::bind_rows(orig_success, new_success)
+
+  object$answer_data <- combined
+  object$error_data  <- rescreened$error_data
+  object
 }

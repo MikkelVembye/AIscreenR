@@ -554,7 +554,7 @@ tabscreen_groq <- function(
   attr(res, "arg_list") <- arg_list
 
   # Define class
-  class(res) <- c("groq", "list")
+  class(res) <- c("groq", class(res))
 
   res
 }

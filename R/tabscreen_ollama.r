@@ -524,7 +524,7 @@ tabscreen_ollama <- function(
   attr(res, "arg_list") <- arg_list
 
   # Define class
-  class(res) <- c("ollama", "list")
+  class(res) <- c("ollama", class(res))
 
   res
 }
