@@ -7,9 +7,7 @@
 #'
 #' @param object An object of either class `'gpt'` or `'groq'`, as returned by
 #'  [tabscreen_gpt()] or [tabscreen_groq()]. Objects of class `'ollama'` are not supported.
-#' @template api-key-arg
-#'  If omitted here, the selected backend uses its own default (e.g., `get_api_key()` for GPT
-#'  and `get_api_key_groq()` for Groq).
+#' @param api_key Optional API key. If omitted, the selected backend uses its own default (e.g., `get_api_key()` for GPT and `get_api_key_groq()` for Groq).
 #' @param max_tries,max_seconds 'Cap the maximum number of attempts with
 #'  `max_tries` or the total elapsed time from the first request with
 #'  `max_seconds`. If neither option is supplied (the default), [httr2::req_perform()]
@@ -32,7 +30,7 @@
 #'  original screening and should differ for re-screening, pass them again here.
 #'
 #' @details
-#' The backend is inferred from `class(object)` and mapped to either
+#' The backend is derived from `class(object)` and mapped to either
 #'  [tabscreen_gpt()] or [tabscreen_groq()]. Only rows in `object$error_data`
 #'  are re-submitted. To avoid name collisions during unnesting in the backend,
 #'  columns that will be regenerated (currently `decision_binary`, `decision_description`,
@@ -67,11 +65,10 @@
 #'
 #' obj_rescreened <-
 #'   obj_with_error |>
-#'   screen_error()
+#'   screen_errors()
 #'
-#'}
+#'
 #' # Example with groq
-#' set_api_key_groq()
 #' prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
 #'
 #' obj_with_error <-
@@ -80,13 +77,14 @@
 #'     prompt = prompt,
 #'     studyid = studyid,
 #'     title = title,
-#'     abstract = abstract
+#'     abstract = abstract,
+#'     model = "llama-3.3-70b-versatile"
 #'   )
 #'
 #' obj_rescreened <-
 #'   obj_with_error |>
-#'   screen_error()
-#'
+#'   screen_errors()
+#'}
 #' @export
 
 screen_errors <- function(
@@ -105,7 +103,7 @@ screen_errors <- function(
   }
   backend_class <- intersect(class(object), c("gpt", "groq")) 
   if (length(backend_class) == 0) {
-    stop("Unknown object class for screen_errors.")
+    stop("Unknown object class for screen_errorss.")
   }
 
   # Map class to function

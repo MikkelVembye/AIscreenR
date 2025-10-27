@@ -6,66 +6,73 @@
 \usage{
 screen_errors(
   object,
-  api_key = get_api_key(),
-  max_tries = 4,
-  max_seconds,
-  is_transient,
-  backoff,
-  after,
+  api_key = NULL,
+  max_tries = NULL,
+  max_seconds = NULL,
+  is_transient = NULL,
+  backoff = NULL,
+  after = NULL,
   ...
 )
 }
 \arguments{
-\item{object}{An object of either class \code{'gpt'} or \code{'chatgpt'}.}
+\item{object}{An object of either class \code{'gpt'} or \code{'groq'}, as returned by
+\code{\link[=tabscreen_gpt]{tabscreen_gpt()}} or \code{\link[=tabscreen_groq]{tabscreen_groq()}}. Objects of class \code{'ollama'} are not supported.}
 
-\item{api_key}{Numerical value with your personal API key. Default setting draws
-on the \code{\link[=get_api_key]{get_api_key()}} to retrieve the API key from the R environment, so that the key is not
-compromised. The API key can be added to the R environment via \code{\link[=set_api_key]{set_api_key()}}
-or by using \code{\link[usethis:edit]{usethis::edit_r_environ()}}. In the \code{.Renviron} file, write \code{CHATGPT_KEY=INSERT_YOUR_KEY_HERE}.
-After entering the API key, close and save the \code{.Renviron} file and restart \code{RStudio} (ctrl + shift + F10).
-Alternatively, one can use \code{\link[httr2:secrets]{httr2::secret_make_key()}}, \code{\link[httr2:secrets]{httr2::secret_encrypt()}}, and
-\code{\link[httr2:secrets]{httr2::secret_decrypt()}} to scramble and decrypt the API key.}
+\item{api_key}{Optional API key. If omitted, the selected backend uses its own default (e.g., \code{get_api_key()} for GPT and \code{get_api_key_groq()} for Groq).}
 
 \item{max_tries, max_seconds}{'Cap the maximum number of attempts with
 \code{max_tries} or the total elapsed time from the first request with
 \code{max_seconds}. If neither option is supplied (the default), \code{\link[httr2:req_perform]{httr2::req_perform()}}
-will not retry' (Wickham, 2023). Default \code{max_tries} is 16. If missing, the value of \code{max_seconds}
-from the original screening conducted with \code{\link[=tabscreen_gpt]{tabscreen_gpt()}} will be used.}
+will not retry' (Wickham, 2023). If missing, the values from the original screening
+(stored in \code{attr(object, "arg_list")}) will be reused.}
 
 \item{is_transient}{'A predicate function that takes a single argument
 (the response) and returns \code{TRUE} or \code{FALSE} specifying whether or not
 the response represents a transient error' (Wickham, 2023). If missing, the \code{is_transient}
-function from the original screening conducted with \code{\link[=tabscreen_gpt]{tabscreen_gpt()}} will be used.}
+function from the original screening will be used.}
 
 \item{backoff}{'A function that takes a single argument (the number of failed
 attempts so far) and returns the number of seconds to wait' (Wickham, 2023).
-If missing, the \code{backoff}value from the original screening conducted with \code{\link[=tabscreen_gpt]{tabscreen_gpt()}} will be used.}
+If missing, the \code{backoff} value from the original screening will be used.}
 
 \item{after}{'A function that takes a single argument (the response) and
 returns either a number of seconds to wait or \code{NULL}, which indicates
-that a precise wait time is not available that the \code{backoff} strategy
+that a precise wait time is not available and that the \code{backoff} strategy
 should be used instead' (Wickham, 2023). If missing, the \code{after} value
-from the original screening conducted with \code{\link[=tabscreen_gpt]{tabscreen_gpt()}} will be used.}
+from the original screening will be used.}
 
-\item{...}{Further argument to pass to the request body. See \url{https://platform.openai.com/docs/api-reference/chat/create}.
-If used in the original screening in \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}, the argument(s)
-must be specified here again.}
+\item{...}{Further arguments forwarded to the underlying backend function
+(\code{\link[=tabscreen_gpt]{tabscreen_gpt()}} or \code{\link[=tabscreen_groq]{tabscreen_groq()}}). If arguments were supplied in the
+original screening and should differ for re-screening, pass them again here.}
 }
 \value{
-An object of class \code{'gpt'} or \code{'chatgpt'} similar to the object returned by \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}.
-See documentation for \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}.
+An object of class \code{'gpt'} or \code{'groq'} similar to the object returned by
+the original screening function, with:
+\itemize{
+\item \code{answer_data} updated to include newly successful rows,
+\item \code{error_data} updated to include only remaining failures.
+Other fields (e.g., \code{price_data}, \code{price_dollar}, and \code{arg_list}) are preserved or updated by the backend.
+}
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}}\if{html}{\out{<br>}}
-\if{html}{\out{<br>}}
-
-This is a generic function to re-screen of failed title and abstract requests.
-Currently not working. We will soon update this function.
+This is a generic function to re-screen failed title and abstract requests.
+It reuses the arguments captured during the original screening and only re-submits
+the rows stored in \code{object$error_data} to the appropriate backend.
+}
+\details{
+The backend is derived from \code{class(object)} and mapped to either
+\code{\link[=tabscreen_gpt]{tabscreen_gpt()}} or \code{\link[=tabscreen_groq]{tabscreen_groq()}}. Only rows in \code{object$error_data}
+are re-submitted. To avoid name collisions during unnesting in the backend,
+columns that will be regenerated (currently \code{decision_binary}, \code{decision_description},
+\code{error_message}, \code{res}) are dropped from \code{error_data} before the call.
+The original arguments from the first screening are taken from \code{attr(object, "arg_list")}
+and are combined with any non-\code{NULL} overrides provided here.
 }
 \examples{
-
 \dontrun{
 
+# Example with openai
 set_api_key()
 prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
 
@@ -81,11 +88,27 @@ obj_with_error <-
 
 obj_rescreened <-
   obj_with_error |>
-  screen_error()
+  screen_errors()
 
+
+# Example with groq
+prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
+
+obj_with_error <-
+  tabscreen_groq(
+    data = filges2015_dat[1:2,],
+    prompt = prompt,
+    studyid = studyid,
+    title = title,
+    abstract = abstract,
+    model = "llama-3.3-70b-versatile"
+  )
+
+obj_rescreened <-
+  obj_with_error |>
+  screen_errors()
 }
-
 }
 \seealso{
-\code{\link[=screen_errors.gpt]{screen_errors.gpt()}}, \code{\link[=screen_errors.chatgpt]{screen_errors.chatgpt()}}
+\code{\link[=tabscreen_gpt]{tabscreen_gpt()}}, \code{\link[=tabscreen_groq]{tabscreen_groq()}}
 }

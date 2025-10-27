@@ -4,7 +4,7 @@
 \alias{screen_errors.gpt}
 \title{Re-screen failed requests.}
 \usage{
-\method{screen_errors}{gpt}(
+screen_errors.gpt(
   object,
   api_key = get_api_key(),
   max_tries = 16,

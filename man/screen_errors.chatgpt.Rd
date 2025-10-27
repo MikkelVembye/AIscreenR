@@ -4,7 +4,7 @@
 \alias{screen_errors.chatgpt}
 \title{Re-screen failed requests.}
 \usage{
-\method{screen_errors}{chatgpt}(
+screen_errors.chatgpt(
   object,
   ...,
   api_key = get_api_key(),
