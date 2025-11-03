@@ -34,7 +34,8 @@ Imports:
     jsonlite,
     quarto,
     htmltools,
-    tidyselect
+    tidyselect,
+    rlang
 Suggests: 
     future,
     knitr,
