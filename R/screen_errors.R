@@ -25,6 +25,9 @@
 #'   that a precise wait time is not available and that the `backoff` strategy
 #'   should be used instead' (Wickham, 2023). If missing, the `after` value
 #'   from the original screening will be used.
+#' @param studyid Optional column (unquoted) for study id. Defaults to 'studyid'.
+#' @param title Optional column (unquoted) for title. If omitted, inferred (e.g., title, ti, t1).
+#' @param abstract Optional column (unquoted) for abstract. If omitted, inferred (e.g., abstract, ab, abs).
 #' @param ... Further arguments forwarded to the underlying backend function
 #'  ([tabscreen_gpt()] or [tabscreen_groq()]). If arguments were supplied in the
 #'  original screening and should differ for re-screening, pass them again here.
@@ -95,6 +98,9 @@ screen_errors <- function(
   is_transient = NULL,
   backoff = NULL,
   after = NULL,
+  studyid = NULL,
+  title = NULL,
+  abstract = NULL,
   ...
 ) {
   # Detect backend class
@@ -102,11 +108,8 @@ screen_errors <- function(
     stop("Rescreening not supported for 'ollama' class. Errors obtained from tabscreen_ollama() will most likely be due to local resource constraints or invalid input.")
   }
   backend_class <- intersect(class(object), c("gpt", "groq"))
-  if (length(backend_class) == 0) {
-    stop("Unknown object class for screen_errors().")
-  }
+  if (length(backend_class) == 0) stop("Unknown object class for screen_errors().")
 
-  # Map class to function
   backend_fun <- switch(
     backend_class,
     gpt = tabscreen_gpt,
@@ -125,16 +128,41 @@ screen_errors <- function(
   arg_list <- attr(object, "arg_list")
   if (is.null(arg_list)) arg_list <- list()
 
-  # Infer column mappings; prefer canonical names present in error_data
-  title_col    <- if (!is.null(arg_list$title_col)) arg_list$title_col else if ("title" %in% names(error_data)) "title" else NULL
-  abstract_col <- if (!is.null(arg_list$abstract_col)) arg_list$abstract_col else if ("abstract" %in% names(error_data)) "abstract" else NULL
-  studyid_col  <- if (!is.null(arg_list$studyid_col)) arg_list$studyid_col else if ("studyid" %in% names(error_data)) "studyid" else NULL
-
-  if (is.null(title_col) || is.null(abstract_col)) {
-    stop("screen_errors() could not infer 'title' and 'abstract' columns. Ensure error_data has columns named 'title' and 'abstract' (or store them in arg_list).")
+  # Helper for case-insensitive alias lookup
+  names_lower <- tolower(names(error_data))
+  find_first <- function(aliases) {
+    aliases <- tolower(aliases)
+    idx <- match(aliases, names_lower)
+    idx <- idx[!is.na(idx)]
+    if (length(idx)) names(error_data)[idx[1]] else NULL
   }
 
-  # Determine the prompt used originally
+  # Resolve column mappings
+  studyid_col <- NULL
+  title_col <- NULL
+  abstract_col <- NULL
+
+  if (!missing(studyid))  studyid_col  <- rlang::as_name(rlang::ensym(studyid))
+  if (!missing(title))    title_col    <- rlang::as_name(rlang::ensym(title))
+  if (!missing(abstract)) abstract_col <- rlang::as_name(rlang::ensym(abstract))
+
+  if (is.null(studyid_col))  studyid_col  <- arg_list$studyid_col
+  if (is.null(title_col))    title_col    <- arg_list$title_col
+  if (is.null(abstract_col)) abstract_col <- arg_list$abstract_col
+
+  # Prefer canonical names, else infer from aliases
+  if (is.null(studyid_col))  studyid_col  <- if ("studyid" %in% names(error_data)) "studyid" else find_first(c("id","record_id","study_id"))
+  if (is.null(title_col))    title_col    <- if ("title"   %in% names(error_data)) "title"   else find_first(c("ti","t1","t","title_text"))
+  if (is.null(abstract_col)) abstract_col <- if ("abstract"%in% names(error_data)) "abstract" else find_first(c("ab","abs","a","abstract_text"))
+
+  if (is.null(studyid_col) || !(studyid_col %in% names(error_data))) {
+    stop("screen_errors() needs a 'studyid' column from the initial screening.")
+  }
+  if (is.null(title_col) || is.null(abstract_col)) {
+    stop("screen_errors() could not infer title/abstract columns. Pass them explicitly, e.g.: screen_errors(results, title = TI, abstract = AB).")
+  }
+
+  # Determine the original prompt (prefer successful answers)
   prompt_val <- NULL
   if (!is.null(object$answer_data) && "prompt" %in% names(object$answer_data)) {
     u <- unique(stats::na.omit(object$answer_data$prompt))
@@ -144,15 +172,11 @@ screen_errors <- function(
     u <- unique(stats::na.omit(error_data$prompt))
     if (length(u) == 1) prompt_val <- u
   }
-  if (is.null(prompt_val) && !is.null(arg_list$prompt)) {
-    prompt_val <- arg_list$prompt
-  }
-  if (is.null(prompt_val)) {
-    stop("screen_errors() could not find the original prompt.")
-  }
+  if (is.null(prompt_val) && !is.null(arg_list$prompt)) prompt_val <- arg_list$prompt
+  if (is.null(prompt_val)) stop("screen_errors() could not find the original prompt.")
 
   # Build minimal input to avoid name collisions
-  keep_cols <- unique(na.omit(c(studyid_col, title_col, abstract_col)))
+  keep_cols <- unique(stats::na.omit(c(studyid_col, title_col, abstract_col)))
   rescreen_data <-
     error_data |>
     dplyr::select(dplyr::all_of(keep_cols)) |>
@@ -163,9 +187,9 @@ screen_errors <- function(
     data      = rescreen_data,
     prompt    = prompt_val,
     # map columns explicitly (NSE)
+    studyid   = rlang::sym(studyid_col),
     title     = rlang::sym(title_col),
     abstract  = rlang::sym(abstract_col),
-    studyid   = if (!is.null(studyid_col)) rlang::sym(studyid_col) else NULL,
     # retry controls (user overrides)
     max_tries   = max_tries,
     max_seconds = max_seconds,
@@ -197,11 +221,9 @@ screen_errors <- function(
     rlang::eval_tidy()
 
   # Combine results
-  orig_success <- object$answer_data |> dplyr::filter(!is.na(decision_binary))
-  new_success  <- rescreened$answer_data |> dplyr::filter(!is.na(decision_binary))
-  combined <- dplyr::bind_rows(orig_success, new_success)
-
-  object$answer_data <- combined
+  orig_success <- if (!is.null(object$answer_data)) dplyr::filter(object$answer_data, !is.na(decision_binary)) else dplyr::tibble()
+  new_success  <- if (!is.null(rescreened$answer_data)) dplyr::filter(rescreened$answer_data, !is.na(decision_binary)) else dplyr::tibble()
+  object$answer_data <- dplyr::bind_rows(orig_success, new_success)
   object$error_data  <- rescreened$error_data
   object
 }
