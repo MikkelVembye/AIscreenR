@@ -182,6 +182,9 @@ screen_errors <- function(
     dplyr::select(dplyr::all_of(keep_cols)) |>
     dplyr::distinct()
 
+  # Ensure plain tibble
+  rescreen_data <- tibble::as_tibble(as.data.frame(rescreen_data), .name_repair = "minimal")
+
   # Prepare overrides (only include non-NULL to avoid clobbering originals)
   overrides <- list(
     data      = rescreen_data,
