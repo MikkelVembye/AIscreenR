@@ -12,6 +12,9 @@ screen_errors(
   is_transient = NULL,
   backoff = NULL,
   after = NULL,
+  studyid = NULL,
+  title = NULL,
+  abstract = NULL,
   ...
 )
 }
@@ -41,6 +44,12 @@ returns either a number of seconds to wait or \code{NULL}, which indicates
 that a precise wait time is not available and that the \code{backoff} strategy
 should be used instead' (Wickham, 2023). If missing, the \code{after} value
 from the original screening will be used.}
+
+\item{studyid}{Optional column (unquoted) for study id. Defaults to 'studyid'.}
+
+\item{title}{Optional column (unquoted) for title. If omitted, inferred (e.g., title, ti, t1).}
+
+\item{abstract}{Optional column (unquoted) for abstract. If omitted, inferred (e.g., abstract, ab, abs).}
 
 \item{...}{Further arguments forwarded to the underlying backend function
 (\code{\link[=tabscreen_gpt]{tabscreen_gpt()}} or \code{\link[=tabscreen_groq]{tabscreen_groq()}}). If arguments were supplied in the
