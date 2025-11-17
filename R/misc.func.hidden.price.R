@@ -23,7 +23,7 @@
       data |>
       dplyr::mutate(
         prompt_tokens = round(stringr::str_count(question, '\\w+') * 1.6),
-        completion_tokens = 7.05 * ifelse(grepl("gpt-5", model), 37, 1) # Average number of completion tokens for the inclusion_decision_simple function. If gpt-5 model, multiply by 37 as it tends to use more tokens.
+        completion_tokens = 7.05 # Average number of completion tokens for the inclusion_decision_simple function. If gpt-5 model, multiply by 37 as it tends to use more tokens.
       ) |>
       dplyr::filter(!is.na(prompt_tokens) | !is.na(completion_tokens)) |>
       dplyr::rowwise() |>
