@@ -103,6 +103,10 @@
 #'   This argument is developed to avoid the conduct of wrong and extreme sized screening.
 #'   Default is `FALSE`.
 #' @param custom_model Logical indicating whether a fine-tuned or custom model is used. Default is `FALSE`.
+#' @param reasoning_effort Character string indicating the level of reasoning effort required for the task. Default is `"low"`.
+#'  Can take the values `"low"`, `"medium"`, and `"high"`. See \url{https://platform.openai.com/docs/guides/reasoning} for more information.
+#' @param verbosity Character string indicating the level of verbosity in the model's responses. Default is `"low"`.
+#' Can take the values `"low"`, `"medium"`, and `"high"`. See \url{https://platform.openai.com/docs/api-reference/chat/create} for more information.
 #' @param ... Further argument to pass to the request body.
 #'   See \url{https://platform.openai.com/docs/api-reference/chat/create}.
 #'
