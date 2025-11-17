@@ -277,6 +277,8 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
   incl_cutoff_lower = NULL,
   force = FALSE,
   custom_model = FALSE,
+  reasoning_effort = "medium",
+  verbosity = "low",
   ...
 ){
 
@@ -624,6 +626,8 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
           ba = backoff,
           af = after,
           endpoint_url = api_url,
+          reasoning_effort = reasoning_effort,
+          verbosity = verbosity,
           ...,
           .options = furrr::furrr_options(seed = furrr_seed),
           .progress = progress

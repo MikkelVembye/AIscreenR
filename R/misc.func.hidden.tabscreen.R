@@ -202,6 +202,8 @@
     ba,
     af,
     endpoint_url,
+    reasoning_effort,
+    verbosity,
     ...
 ){
 
@@ -237,6 +239,11 @@
     top_p = topp,
     ...
   )
+
+  if (grepl("gpt-5", model_gpt)) {
+    if (!is.null(reasoning_effort)) body$reasoning_effort <- reasoning_effort
+    if (!is.null(verbosity)) body$verbosity <- verbosity
+  }
 
   # Setting the iterations
   if(iterations > 1) iterations <- 1:iterations
