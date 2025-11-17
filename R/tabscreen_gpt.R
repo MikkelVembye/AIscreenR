@@ -298,6 +298,11 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
     if(any(!model %in% model_prizes$model)) stop("Unknown gpt model(s) used - check model name(s).")
   }
 
+  # Stop if top_p is set for gpt-5 models
+  if (any(stringr::str_detect(model, "gpt-5")) && any(top_p != 1)){
+    stop("The top_p argument is not supported for gpt-5 models.")
+  }
+
   # Ensuring that users do not conduct wrong screening
   if (max(reps) > 10 && !force){
     max_reps_message <- paste("* Are you sure you want to use", max(reps), "iterations? If so, set 'force = TRUE'")
