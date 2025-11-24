@@ -53,7 +53,11 @@ model_prizes <-
 
       # GPT-5-nano models
       "gpt-5-nano",
-      "gpt-5-nano-2025-08-07"
+      "gpt-5-nano-2025-08-07",
+
+      # GPT-5.1 models
+      "gpt-5.1",
+      "gpt-5.1-2025-11-13",
     ),
 
     price_in_per_token = c(
@@ -105,7 +109,11 @@ model_prizes <-
 
       # GPT-5-nano models
       0.05/mio, # gpt-5-nano
-      0.05/mio  # gpt-5-nano-2025-
+      0.05/mio, # gpt-5-nano-2025-08-07
+
+      # GPT-5.1 models
+      1.25/mio,  # gpt-5.1
+      1.25/mio   # gpt-5.1-2025-11-13
     ),
 
     price_out_per_token = c(
@@ -157,7 +165,11 @@ model_prizes <-
 
       # GPT-5-nano models
       0.4/mio, # gpt-5-nano
-      0.4/mio  # gpt-5-nano-2025-08-07
+      0.4/mio,  # gpt-5-nano-2025-08-07
+
+      # GPT-5.1 models
+      10/mio,  # gpt-5.1
+      10/mio   # gpt-5.1-2025-11-13
     )
   )
 
