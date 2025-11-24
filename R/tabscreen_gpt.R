@@ -629,7 +629,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
     furrr_seed <- if (is.null(seed_par)) TRUE else NULL
 
     params <- question_dat |>
-      dplyr::select(question, model_gpt = model, topp, iterations, req_per_min)
+      dplyr::select(question, model_gpt = model, topp, iterations, req_per_min, reasoning_effort, verbosity)
 
 
     answer_dat <-
@@ -651,8 +651,6 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
           ba = backoff,
           af = after,
           endpoint_url = api_url,
-          reasoning_effort = reasoning_effort,
-          verbosity = verbosity,
           ...,
           .options = furrr::furrr_options(seed = furrr_seed),
           .progress = progress
