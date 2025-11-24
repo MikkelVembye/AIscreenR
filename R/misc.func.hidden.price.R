@@ -19,6 +19,12 @@
 
   if (!is_gpt_tbl(data)){
 
+    # Ensure columns exist (needed when models don't support reasoning / verbosity)
+    if (!"reasoning_effort" %in% names(data))
+      data$reasoning_effort <- NA_character_
+    if (!"verbosity" %in% names(data))
+      data$verbosity <- NA_character_
+
     dat <-
       data |>
       dplyr::mutate(
