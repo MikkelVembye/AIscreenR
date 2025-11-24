@@ -390,11 +390,18 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
 
   }
 
-  # Validate reasoning arguments
-  if (!reasoning_effort %in% c("low","medium","high"))
-    stop("reasoning_effort must be one of 'low','medium','high'.")
-  if (!verbosity %in% c("low","medium","high"))
-    stop("verbosity must be one of 'low','medium','high'.")
+  # Validate / neutralize reasoning args
+  reasoning_supported_patterns <- c("^gpt-5")
+  reasoning_supported <- any(stringr::str_detect(model, paste(reasoning_supported_patterns, collapse = "|")))
+  if (reasoning_supported) {
+    if (!reasoning_effort %in% c("low","medium","high"))
+      stop("reasoning_effort must be one of 'low','medium','high'.")
+    if (!verbosity %in% c("low","medium","high"))
+      stop("verbosity must be one of 'low','medium','high'.")
+  } else {
+    reasoning_effort <- NULL
+    verbosity <- NULL
+  }
 
   #.........................................
   # Start up - Generic warning messages ----
@@ -514,6 +521,10 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
     prompt_length <- length(prompt)
     studyid_length <- dplyr::n_distinct(dat$studyid)
 
+    # Preserve values (NULL -> NA for downstream mutate)
+    reasoning_effort_val <- if (is.null(reasoning_effort)) NA_character_ else reasoning_effort
+    verbosity_val        <- if (is.null(verbosity)) NA_character_ else verbosity
+
     # Creating the question data that will later be passed to the .rep_gpt_engine()
     question_dat <-
       dat |>
@@ -542,7 +553,9 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
         ),
         # removing line shift symbols and creating the main question
         question = stringr::str_replace_all(question_raw, "\n\n", " "),
-        question = stringr::str_remove_all(question, "\n")
+        question = stringr::str_remove_all(question, "\n"),
+        reasoning_effort = reasoning_effort_val,
+        verbosity = verbosity_val
       ) |>
       dplyr::select(-question_raw) |>
       dplyr::slice(rep(1:dplyr::n(), each = length(top_p))) |>
