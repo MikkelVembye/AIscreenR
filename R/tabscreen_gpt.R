@@ -390,6 +390,12 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
 
   }
 
+  # Validate reasoning arguments
+  if (!reasoning_effort %in% c("low","medium","high"))
+    stop("reasoning_effort must be one of 'low','medium','high'.")
+  if (!verbosity %in% c("low","medium","high"))
+    stop("verbosity must be one of 'low','medium','high'.")
+
   #.........................................
   # Start up - Generic warning messages ----
   #.........................................
@@ -426,6 +432,8 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
       force = force,
       custom_model = custom_model,
       api_url = api_url,
+      reasoning_effort = reasoning_effort,
+      verbosity = verbosity,
       ...
     )
 

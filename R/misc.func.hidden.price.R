@@ -23,7 +23,19 @@
       data |>
       dplyr::mutate(
         prompt_tokens = round(stringr::str_count(question, '\\w+') * 1.6),
-        completion_tokens = 7.05 # Average number of completion tokens for the inclusion_decision_simple function. If gpt-5 model, multiply by 37 as it tends to use more tokens.
+        completion_tokens = 7.05 * dplyr::case_when(  # baseline * multiplier
+          !grepl("^gpt-5", model) ~ 1,                               # non-reasoning models
+          reasoning_effort == "low"    & verbosity == "low"    ~ 15,
+          reasoning_effort == "low"    & verbosity == "medium" ~ 22,
+          reasoning_effort == "low"    & verbosity == "high"   ~ 30,
+          reasoning_effort == "medium" & verbosity == "low"    ~ 30,
+          reasoning_effort == "medium" & verbosity == "medium" ~ 37,
+          reasoning_effort == "medium" & verbosity == "high"   ~ 45,
+          reasoning_effort == "high"   & verbosity == "low"    ~ 40,
+          reasoning_effort == "high"   & verbosity == "medium" ~ 45,
+          reasoning_effort == "high"   & verbosity == "high"   ~ 60,
+          TRUE ~ 1  # fallback
+        )
       ) |>
       dplyr::filter(!is.na(prompt_tokens) | !is.na(completion_tokens)) |>
       dplyr::rowwise() |>

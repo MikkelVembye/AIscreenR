@@ -65,7 +65,9 @@ approximate_price_gpt <-
     model = "gpt-4o-mini",
     reps = 1,
     top_p = 1,
-    token_word_ratio = 1.6
+    token_word_ratio = 1.6,
+    reasoning_effort = "medium",
+    verbosity = "low"
   ){
 
     if (length(reps) > 1 && length(model) != length(reps)){
@@ -129,6 +131,8 @@ approximate_price_gpt <-
         model = rep(model, studyid_length*prompt_length),
         iterations = rep(reps, studyid_length*prompt_length*mp_reps),
         #req_per_min = rep(rpm, studyid_length*dplyr::n_distinct(prompt)*mp_rpm),
+        reasoning_effort = reasoning_effort,
+        verbosity = verbosity,
         question_raw = paste0(
           prompt,
           " Now, evaluate the following title and abstract for",
