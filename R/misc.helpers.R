@@ -19,7 +19,7 @@ utils::globalVariables(
     "submodel", "prompt", "data", "tools", "tool_choice", "is.gpt", "criteria", "incl_p_cutoff", "incl_p", "title","supplementary","file_path","file_content","combination_idx","rep_num",
     "current_file_path","safe_basename","current_prompt","current_model",
     "current_rep_num","current_study_id","current_prompt_id",
-    "current_vector_store_name","precomputed_supplementary","total_price_dollar"
+    "current_vector_store_name","precomputed_supplementary","total_price_dollar", "groq_model_prizes"
     )
 )
 
