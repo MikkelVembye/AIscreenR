@@ -1,8 +1,8 @@
 ---
-title: "Comparing AI Models for Screening"
+title: "Comparing GPT-4.1 Models for Screening"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Comparing AI Models for Screening}
+  %\VignetteIndexEntry{Comparing GPT-4.1 Models for Screening}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -27,7 +27,7 @@ We will analyze their performance with a single repetition (`reps = 1`). For the
 
 First, we load the necessary packages for our analysis.
 
-```{r setup, echo=FALSE}
+```{r setup, eval=FALSE}
 library(AIscreenR)
 library(dplyr)
 library(knitr)
@@ -167,10 +167,10 @@ knitr::kable(results_table, align = "lcccc")
 
 ## Interpretation
 
-The results table reveals several important patterns:
+The results show clear differences in model behavior depending on both architecture and the number of repetitions. With a single repetition, gpt-4.1-mini achieves the highest balanced accuracy (0.958) and recall (0.938), while gpt-4.1 offers the highest specificity (0.983) but lower recall (0.844) and balanced accuracy (0.914). gpt-4.1-nano performs less well in recall and balanced accuracy when run once.
 
-1.  **Single Repetition Performance**: With a single repetition, all three models achieve an identical recall of 0.844. `gpt-4.1-mini` shows the highest specificity (0.987) and balanced accuracy (0.915), slightly outperforming the larger `gpt-4.1` model. This suggests that for a quick, single-pass screening, `gpt-4.1-mini` offers a very effective balance of performance and cost.
+Increasing the number of repetitions to ten for the mini and nano models leads to modest changes. For gpt-4.1-mini recall decreases slightly (0.922), and balanced accuracy drops to 0.949. For gpt-4.1-nano recall improves (0.828 vs. 0.719), and balanced accuracy increases to 0.902.
 
-2.  **Effect of Ten Repetitions**: For `gpt-4.1-mini` and `gpt-4.1-nano`, increasing the repetitions to 10 significantly improves performance, boosting the balanced accuracy for both to 0.944. However, they achieve this in different ways:
-    *   `gpt-4.1-nano` sees a dramatic increase in recall to 0.953 (the highest of any test), but its specificity drops to 0.936. This means it is excellent at finding relevant studies but will also incorrectly include more irrelevant ones.
-    *   `gpt-4.1-mini` improves its recall to 0.906 while maintaining very high specificity (0.981). This means it offers a more balanced improvement, increasing recall without including many extra irrelevant studies.
+The main focus should be on maximizing recall to avoid missing relevant studies. gpt-4.1-mini with a single repetition provides the best overall recall and balanced accuracy. gpt-4.1-nano benefits from more repetitions, improving recall and balanced accuracy, but still lags behind mini and full models. The full gpt-4.1 model, while having the highest specificity, shows lower recall and balanced accuracy, making it less suitable for screening tasks where recall is critical.
+
+It should be noted that the decrease in recall for gpt-4.1-mini when increasing repetitions might be due to the small number of relevant studies compared to irrelevant ones, meaning that even a single misclassification can significantly impact recall. Thus, while more repetitions can help, they do not always guarantee better recall. Therefore, it is recommended to prioritize a precise prompt with clear instructions to get the best performance especially for bigger models like gpt-4.1-mini or gpt-4.1.

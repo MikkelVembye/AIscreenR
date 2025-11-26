@@ -13,7 +13,9 @@ approximate_price_gpt(
   model = "gpt-4o-mini",
   reps = 1,
   top_p = 1,
-  token_word_ratio = 1.6
+  token_word_ratio = 1.6,
+  reasoning_effort = "medium",
+  verbosity = "low"
 )
 }
 \arguments{

@@ -11,26 +11,41 @@
 .price_gpt <- function(data){
 
   if (!is_gpt_tbl(data)){
-
+    avg_completion_tokens = 7.05 # Average number of completion tokens for the inclusion_decision_simple function
     temp_dat <-
       data |>
       dplyr::mutate(
         prompt_tokens = round(stringr::str_count(question, '\\w+') * 1.6),
         completion_tokens = dplyr::case_when(
+          # gpt-5-nano models (higher multipliers)
+          stringr::str_detect(model, "gpt-5-nano") &
+            !is.na(reasoning_effort) & !is.na(verbosity) ~ dplyr::case_when(
+              reasoning_effort == "low"    & verbosity == "low"    ~ avg_completion_tokens * 110,
+              reasoning_effort == "low"    & verbosity == "medium" ~ avg_completion_tokens * 120,
+              reasoning_effort == "low"    & verbosity == "high"   ~ avg_completion_tokens * 130,
+              reasoning_effort == "medium" & verbosity == "low"    ~ avg_completion_tokens * 680,
+              reasoning_effort == "medium" & verbosity == "medium" ~ avg_completion_tokens * 720,
+              reasoning_effort == "medium" & verbosity == "high"   ~ avg_completion_tokens * 760,
+              reasoning_effort == "high"   & verbosity == "low"    ~ avg_completion_tokens * 1600,
+              reasoning_effort == "high"   & verbosity == "medium" ~ avg_completion_tokens * 1700,
+              reasoning_effort == "high"   & verbosity == "high"   ~ avg_completion_tokens * 1800,
+              TRUE ~ avg_completion_tokens
+            ),
+          # Other gpt-5 models
           stringr::str_detect(model, "^gpt-5") &
             !is.na(reasoning_effort) & !is.na(verbosity) ~ dplyr::case_when(
-              reasoning_effort == "low"    & verbosity == "low"    ~ 15,
-              reasoning_effort == "low"    & verbosity == "medium" ~ 22,
-              reasoning_effort == "low"    & verbosity == "high"   ~ 30,
-              reasoning_effort == "medium" & verbosity == "low"    ~ 30,
-              reasoning_effort == "medium" & verbosity == "medium" ~ 37,
-              reasoning_effort == "medium" & verbosity == "high"   ~ 45,
-              reasoning_effort == "high"   & verbosity == "low"    ~ 40,
-              reasoning_effort == "high"   & verbosity == "medium" ~ 45,
-              reasoning_effort == "high"   & verbosity == "high"   ~ 60,
-              TRUE ~ 7.05
+              reasoning_effort == "low"    & verbosity == "low"    ~ avg_completion_tokens * 30,
+              reasoning_effort == "low"    & verbosity == "medium" ~ avg_completion_tokens * 35,
+              reasoning_effort == "low"    & verbosity == "high"   ~ avg_completion_tokens * 40,
+              reasoning_effort == "medium" & verbosity == "low"    ~ avg_completion_tokens * 125,
+              reasoning_effort == "medium" & verbosity == "medium" ~ avg_completion_tokens * 140,
+              reasoning_effort == "medium" & verbosity == "high"   ~ avg_completion_tokens * 155,
+              reasoning_effort == "high"   & verbosity == "low"    ~ avg_completion_tokens * 600,
+              reasoning_effort == "high"   & verbosity == "medium" ~ avg_completion_tokens * 680,
+              reasoning_effort == "high"   & verbosity == "high"   ~ avg_completion_tokens * 760,
+              TRUE ~ avg_completion_tokens
             ),
-          TRUE ~ 7.05
+          TRUE ~ avg_completion_tokens
         )
       ) |>
       dplyr::filter(!is.na(prompt_tokens) | !is.na(completion_tokens)) |>

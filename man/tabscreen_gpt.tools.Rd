@@ -138,6 +138,12 @@ Default is \code{FALSE}.}
 
 \item{custom_model}{Logical indicating whether a fine-tuned or custom model is used. Default is \code{FALSE}.}
 
+\item{reasoning_effort}{Character string indicating the level of reasoning effort required for the task. Default is \code{"low"}.
+Can take the values \code{"low"}, \code{"medium"}, and \code{"high"}. See \url{https://platform.openai.com/docs/guides/reasoning} for more information.}
+
+\item{verbosity}{Character string indicating the level of verbosity in the model's responses. Default is \code{"low"}.
+Can take the values \code{"low"}, \code{"medium"}, and \code{"high"}. See \url{https://platform.openai.com/docs/api-reference/chat/create} for more information.}
+
 \item{...}{Further argument to pass to the request body.
 See \url{https://platform.openai.com/docs/api-reference/chat/create}.}
 }
