@@ -103,6 +103,7 @@
 #'   This argument is developed to avoid the conduct of wrong and extreme sized screening.
 #'   Default is `FALSE`.
 #' @param custom_model Logical indicating whether a fine-tuned or custom model is used. Default is `FALSE`.
+#' @param fine_tuned `r lifecycle::badge("deprecated")` Use `custom_model` instead.
 #' @param reasoning_effort Character string indicating the level of reasoning effort required for the task. Default is `"low"`.
 #'  Can take the values `"low"`, `"medium"`, and `"high"`. See \url{https://platform.openai.com/docs/guides/reasoning} for more information.
 #' @param verbosity Character string indicating the level of verbosity in the model's responses. Default is `"low"`.
@@ -118,17 +119,17 @@
 #'   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
 #'   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
 #'   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
-#'   reasoning_effort = "medium", verbosity = "low", ...)
+#'   fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low", ...)
 #'
 #' tabscreen_gpt(data, prompt, studyid, title, abstract,
-#'   api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-4o-mini", 
+#'   api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-4o-mini",
 #'   role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
 #'   time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
 #'   max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
 #'   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
 #'   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
 #'   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
-#'   reasoning_effort = "medium", verbosity = "low", ...)
+#'   fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low", ...)
 #'
 #' @return An object of class `'gpt'`. The object is a list containing the following
 #' datasets and components:
@@ -283,10 +284,18 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
   incl_cutoff_lower = NULL,
   force = FALSE,
   custom_model = FALSE,
+  fine_tuned = deprecated(),
   reasoning_effort = "medium",
   verbosity = "low",
   ...
 ){
+
+  # Handle deprecated fine_tuned argument
+
+  if (lifecycle::is_present(fine_tuned)) {
+    lifecycle::deprecate_warn("0.2.1", "tabscreen_gpt(fine_tuned)", "tabscreen_gpt(custom_model)") # Check version number
+    custom_model <- fine_tuned
+  }
 
   # Handling inherits
   if (is_gpt_tbl(data)) data <- data |> dplyr::select(-c(promptid:n)) |> tibble::as_tibble()

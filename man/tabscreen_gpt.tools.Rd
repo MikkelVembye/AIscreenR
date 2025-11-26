@@ -13,17 +13,17 @@ tabscreen_gpt.tools(data, prompt, studyid, title, abstract,
   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
-  reasoning_effort = "medium", verbosity = "low", ...)
+  fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low", ...)
 
 tabscreen_gpt(data, prompt, studyid, title, abstract,
-  api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-4o-mini", 
+  api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-4o-mini",
   role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
   time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
   max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
-  reasoning_effort = "medium", verbosity = "low", ...)
+  fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low", ...)
 }
 \arguments{
 \item{data}{Dataset containing the titles and abstracts.}
@@ -139,6 +139,8 @@ This argument is developed to avoid the conduct of wrong and extreme sized scree
 Default is \code{FALSE}.}
 
 \item{custom_model}{Logical indicating whether a fine-tuned or custom model is used. Default is \code{FALSE}.}
+
+\item{fine_tuned}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{custom_model} instead.}
 
 \item{reasoning_effort}{Character string indicating the level of reasoning effort required for the task. Default is \code{"low"}.
 Can take the values \code{"low"}, \code{"medium"}, and \code{"high"}. See \url{https://platform.openai.com/docs/guides/reasoning} for more information.}
