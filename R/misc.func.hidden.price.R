@@ -20,29 +20,29 @@
           # gpt-5-nano models (adjusted multipliers based on actual data)
           stringr::str_detect(model, "gpt-5-nano") &
             !is.na(reasoning_effort) & !is.na(verbosity) ~ dplyr::case_when(
-              reasoning_effort == "low"    & verbosity == "low"    ~ avg_completion_tokens * 35,
-              reasoning_effort == "low"    & verbosity == "medium" ~ avg_completion_tokens * 40,
-              reasoning_effort == "low"    & verbosity == "high"   ~ avg_completion_tokens * 45,
-              reasoning_effort == "medium" & verbosity == "low"    ~ avg_completion_tokens * 180,
-              reasoning_effort == "medium" & verbosity == "medium" ~ avg_completion_tokens * 200,
-              reasoning_effort == "medium" & verbosity == "high"   ~ avg_completion_tokens * 220,
-              reasoning_effort == "high"   & verbosity == "low"    ~ avg_completion_tokens * 400,
-              reasoning_effort == "high"   & verbosity == "medium" ~ avg_completion_tokens * 440,
-              reasoning_effort == "high"   & verbosity == "high"   ~ avg_completion_tokens * 480,
+              reasoning_effort == "low"    & verbosity == "low"    ~ avg_completion_tokens * 40,
+              reasoning_effort == "low"    & verbosity == "medium" ~ avg_completion_tokens * 42,
+              reasoning_effort == "low"    & verbosity == "high"   ~ avg_completion_tokens * 44,
+              reasoning_effort == "medium" & verbosity == "low"    ~ avg_completion_tokens * 150,
+              reasoning_effort == "medium" & verbosity == "medium" ~ avg_completion_tokens * 160,
+              reasoning_effort == "medium" & verbosity == "high"   ~ avg_completion_tokens * 170,
+              reasoning_effort == "high"   & verbosity == "low"    ~ avg_completion_tokens * 310,
+              reasoning_effort == "high"   & verbosity == "medium" ~ avg_completion_tokens * 330,
+              reasoning_effort == "high"   & verbosity == "high"   ~ avg_completion_tokens * 350,
               TRUE ~ avg_completion_tokens
             ),
           # Other gpt-5 models (adjusted multipliers)
           stringr::str_detect(model, "^gpt-5") &
             !is.na(reasoning_effort) & !is.na(verbosity) ~ dplyr::case_when(
               reasoning_effort == "low"    & verbosity == "low"    ~ avg_completion_tokens * 15,
-              reasoning_effort == "low"    & verbosity == "medium" ~ avg_completion_tokens * 18,
-              reasoning_effort == "low"    & verbosity == "high"   ~ avg_completion_tokens * 21,
+              reasoning_effort == "low"    & verbosity == "medium" ~ avg_completion_tokens * 16,
+              reasoning_effort == "low"    & verbosity == "high"   ~ avg_completion_tokens * 17,
               reasoning_effort == "medium" & verbosity == "low"    ~ avg_completion_tokens * 55,
-              reasoning_effort == "medium" & verbosity == "medium" ~ avg_completion_tokens * 65,
-              reasoning_effort == "medium" & verbosity == "high"   ~ avg_completion_tokens * 75,
-              reasoning_effort == "high"   & verbosity == "low"    ~ avg_completion_tokens * 240,
-              reasoning_effort == "high"   & verbosity == "medium" ~ avg_completion_tokens * 280,
-              reasoning_effort == "high"   & verbosity == "high"   ~ avg_completion_tokens * 320,
+              reasoning_effort == "medium" & verbosity == "medium" ~ avg_completion_tokens * 58,
+              reasoning_effort == "medium" & verbosity == "high"   ~ avg_completion_tokens * 61,
+              reasoning_effort == "high"   & verbosity == "low"    ~ avg_completion_tokens * 140,
+              reasoning_effort == "high"   & verbosity == "medium" ~ avg_completion_tokens * 150,
+              reasoning_effort == "high"   & verbosity == "high"   ~ avg_completion_tokens * 160,
               TRUE ~ avg_completion_tokens
             ),
           TRUE ~ avg_completion_tokens
