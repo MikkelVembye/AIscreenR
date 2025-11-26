@@ -18,11 +18,11 @@ knitr::opts_chunk$set(
 ```
 
 ## Introduction
-To understand the difference between the different GPT-5 models and the effect of `screening_effort`, we compare the performance of `gpt-5`, `gpt-5-mini`, and `gpt-5-nano` on a real-world dataset. We will analyze their performance with a single repetition (`reps = 1`). For the faster and more economical `gpt-5-mini` and `gpt-5-nano` models, we will also investigate the impact of increasing the screening to ten repetitions (`reps = 10`). We will be using a section of the `friends_dat` consisting of 100 studies, 80 randomly sampled studies marked as 'exclude' and 20 randomly sampled studies marked as 'include'.
+To understand the difference between the different GPT-5 models and the effect of `reasoning_effort`, we compare the performance of `gpt-5`, `gpt-5-mini`, and `gpt-5-nano` on a real-world dataset. We will analyze their performance with a single repetition (`reps = 1`). For the faster and more economical `gpt-5-mini` and `gpt-5-nano` models, we will also investigate the impact of increasing the screening to ten repetitions (`reps = 10`). We will be using a section of the `friends_dat` consisting of 100 studies, 80 randomly sampled studies marked as 'exclude' and 20 randomly sampled studies marked as 'include'.
 
 ## Setup
 First, we load the necessary packages for our analysis.
-```{r setup, eval=FALSE}
+```{r setup, eval=TRUE}
 library(AIscreenR)
 library(dplyr)
 library(knitr)

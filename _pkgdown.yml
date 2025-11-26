@@ -120,3 +120,8 @@ articles:
     navbar: ~
     contents:
       - articles/screening-ollama
+  
+  - title: "Comparing gpt-5 models" 
+    navbar: ~
+    contents:
+      - articles/comparing-gpt5-models

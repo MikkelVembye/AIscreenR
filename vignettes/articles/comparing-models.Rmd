@@ -27,7 +27,7 @@ We will analyze their performance with a single repetition (`reps = 1`). For the
 
 First, we load the necessary packages for our analysis.
 
-```{r setup, eval=FALSE}
+```{r setup, eval=TRUE}
 library(AIscreenR)
 library(dplyr)
 library(knitr)

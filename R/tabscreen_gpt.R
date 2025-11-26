@@ -111,22 +111,24 @@
 #'   See \url{https://platform.openai.com/docs/api-reference/chat/create}.
 #'
 #' @usage tabscreen_gpt.tools(data, prompt, studyid, title, abstract,
-#'    api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-4o-mini",
-#'    role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
-#'    time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
-#'    max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
-#'    after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
-#'    decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
-#'    incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE, ...)
+#'   api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-4o-mini",
+#'   role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
+#'   time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
+#'   max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
+#'   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
+#'   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
+#'   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
+#'   reasoning_effort = "medium", verbosity = "low", ...)
 #'
-#'tabscreen_gpt(data, prompt, studyid, title, abstract,
-#'    api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-4o-mini", 
-#'    role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
-#'    time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
-#'    max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
-#'    after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
-#'    decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
-#'    incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE, ...)
+#' tabscreen_gpt(data, prompt, studyid, title, abstract,
+#'   api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-4o-mini", 
+#'   role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
+#'   time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
+#'   max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
+#'   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
+#'   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
+#'   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
+#'   reasoning_effort = "medium", verbosity = "low", ...)
 #'
 #' @return An object of class `'gpt'`. The object is a list containing the following
 #' datasets and components:

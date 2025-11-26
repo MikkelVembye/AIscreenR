@@ -49,6 +49,12 @@ Find documentation at
 
 \item{token_word_ratio}{The multiplier used to approximate the number of tokens per word.
 Default is \code{1.6} which we empirically have found to be the average number of tokens per word.}
+
+\item{reasoning_effort}{Character string indicating the level of reasoning effort required for the task. Default is \code{"medium"}.
+Can take the values \code{"low"}, \code{"medium"}, and \code{"high"}. Only applicable for gpt-5 models.}
+
+\item{verbosity}{Character string indicating the level of verbosity in the model's responses. Default is \code{"low"}.
+Can take the values \code{"low"}, \code{"medium"}, and \code{"high"}. Only applicable for gpt-5 models.}
 }
 \value{
 An object of class \code{"gpt_price"}. The object is a list containing the following

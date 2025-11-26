@@ -15,7 +15,9 @@ test_that("approximate_price_gpt() takes multiple inputs", {
     abstract = abstract,
     model = c("gpt-4o", "gpt-4"),
     reps = c(2, 1),
-    top_p = c(0.2, 1)
+    top_p = c(0.2, 1),
+    reasoning_effort = "medium",
+    verbosity = "low"
   )
 
   expect_output(print(app_obj), "\\$3\\.3134\\.")
@@ -25,7 +27,7 @@ test_that("approximate_price_gpt() takes multiple inputs", {
   expect_equal(obj_names_length, 2)
 
   data_var_length <- app_obj$price_data |> names() |> length()
-  expect_equal(data_var_length, 6)
+  expect_equal(data_var_length, 7)
 
 
   app_obj <- approximate_price_gpt(
@@ -35,7 +37,9 @@ test_that("approximate_price_gpt() takes multiple inputs", {
     title = title,
     abstract = abstract,
     model = c("gpt-4o", "gpt-4"),
-    reps = 1
+    reps = 1,
+    reasoning_effort = "medium",
+    verbosity = "low"
   )
 
   # Remember to update when prices changes
@@ -57,7 +61,9 @@ test_that("approximate_price_gpt() error structure.", {
       studyid = studyid,
       title = title,
       abstract = abstract,
-      model = c("gpt-3.5turbo-0613", "gpt-4")
+      model = c("gpt-3.5turbo-0613", "gpt-4"),
+      reasoning_effort = "medium",
+      verbosity = "low"
     )
   )
 
@@ -69,7 +75,9 @@ test_that("approximate_price_gpt() error structure.", {
       title = title,
       abstract = abstract,
       model = c("gpt-4o", "gpt-4"),
-      reps = c(10, 1, 2)
+      reps = c(10, 1, 2),
+      reasoning_effort = "medium",
+      verbosity = "low"
     )
   )
 
@@ -81,7 +89,9 @@ test_that("approximate_price_gpt() error structure.", {
       title = title,
       abstract = abstract,
       model = c("gpt-4o", "gpt-4"),
-      reps = c(10, 1)
+      reps = c(10, 1),
+      reasoning_effort = "medium",
+      verbosity = "low"
     )
   )
 
