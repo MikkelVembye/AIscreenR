@@ -55,7 +55,7 @@ WORKFLOW:
 CRITICAL: Your entire response must be the function tool call. No additional text before, during, or after the function call."
 ```
 
-For each model and screening effort combination, we run the screening using the `tabscreen_gpt()` function from the `AIscreenR` package. We set the `model` parameter to the respective GPT-5 model and the `screening_effort` parameter to `low`, `medium`, or `high` then we vary the `reps` parameter to 1 or 10.
+For each model and `reasoning_effort` combination, we run the screening using the `tabscreen_gpt()` function from the `AIscreenR` package. We set the `model` parameter to the respective GPT-5 model and the `screening_effort` parameter to `low`, `medium`, or `high` then we vary the `reps` parameter to 1 or 10.
 
 ```{r run-screen, eval=FALSE}
 # This code was run for each model and repetition setting.
@@ -131,12 +131,12 @@ knitr::kable(results_table, align = "lcccccc")
 ```
 
 ## Interpretation
-The results show notable differences in model behavior depending on both architecture, screening effort, and the number of repetitions. With a single repetition and high effort, gpt-5-mini achieves the highest balanced accuracy (0.844) and recall (0.75), correctly identifying 15 of 20 relevant studies. In contrast, gpt-5 and gpt-5-nano show more modest performance, with their best balanced accuracy reaching 0.800 and recall of 0.65.
+The results show notable differences in model behavior depending on both architecture, `reasoning_effort`, and the number of repetitions. With a single repetition and high effort, gpt-5-mini achieves the highest balanced accuracy (0.844) and recall (0.75), correctly identifying 15 of 20 relevant studies. In contrast, gpt-5 and gpt-5-nano show more modest performance, with their best balanced accuracy reaching 0.800 and recall of 0.65.
 
-Increasing the screening effort has a meaningful impact for gpt-5-mini, where recall improves from 0.65 (low) to 0.75 (high). For gpt-5, moving from low to medium effort improves recall (0.60 to 0.65), but no further gains are seen at high effort. For gpt-5-nano, effort has minimal impact, with recall remaining largely flat at 0.60 across effort levels.
+Increasing the `reasoning_effort` has a meaningful impact for gpt-5-mini, where recall improves from 0.65 (low) to 0.75 (high). For gpt-5, moving from low to medium effort improves recall (0.60 to 0.65), but no further gains are seen at high effort. For gpt-5-nano, `reasoning_effort` has minimal impact, with recall remaining largely flat at 0.60 across effort levels.
 
-Increasing the number of repetitions to ten for the mini and nano models leads to unexpected results. For gpt-5-mini, recall decreases from 0.75 to 0.65 at high effort, and balanced accuracy drops from 0.844 to 0.794. For gpt-5-nano, repetitions provide a slight improvement at medium and high effort (0.60 to 0.65), but the gains are modest.
+Ten repetitions had mixed effects. For gpt-5-mini, adding repetitions left performance unchanged at low effort but reduced recall at medium  and high effort, lowering the balanced accuracy for both. For gpt-5-nano, repetitions had no impact at low effort and yielded small gains at medium and high effort: recall increased from 0.60 to 0.65, raising bAcc from 0.787 to 0.800 (medium) and 0.775 to 0.800 (high), with a specificity trade-off at medium. Overall, increasing repetitions does not consistently improve screening quality and can reduce recall in some settings, particularly for gpt-5-mini. Increasing repetitions seems more beneficial for smaller noisier models like gpt-5-nano.
 
 The main focus for systematic review screening should be on maximizing recall to avoid missing relevant studies. gpt-5-mini with high effort and a single repetition provides the best overall recall and balanced accuracy. gpt-5-nano shows limited responsiveness to both effort and repetitions, making it less suitable when recall is critical. The gpt-5 model does not outperform gpt-5-mini, suggesting that a larger model may not be necessary for this screening task.
 
-With only 20 relevant studies, even a single additional false negative significantly impacts recall (each study represents 5 percentage points). Thus, while more repetitions can theoretically reduce noise, they do not guarantee better recall and may in fact reduce it. Therefore, it is recommended to prioritize higher screening effort with a single repetition, combined with a precise prompt with clear instructions, to achieve the best performance.
+With only 20 relevant studies, even a single additional false negative significantly impacts recall (each study represents 5 percentage points). Thus, while more repetitions can theoretically reduce noise, they do not guarantee better recall and may in fact reduce it. Therefore, it is recommended to prioritize higher `reasoning_effort` with a single repetition, combined with a precise prompt with clear instructions, to achieve the best performance.
