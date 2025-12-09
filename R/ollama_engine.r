@@ -181,7 +181,6 @@
     aft, 
     system_guard_msg = NULL, 
     endpoint_url,
-    show_progress = FALSE,
     ... 
 ) {
   detailed_for_wrapper <- FALSE
@@ -269,8 +268,7 @@
         result <- dplyr::mutate(result, n = i)
         return(result)
       },
-      .options = furrr::furrr_options(seed = furrr_seed_opt),
-      .progress = show_progress
+      .options = furrr::furrr_options(seed = furrr_seed_opt)
     )
   
   final_res
