@@ -465,7 +465,7 @@ tabscreen_ollama <- function(
         endpoint_url = api_url,
         ...,
         .options = furrr::furrr_options(seed = furrr_seed),
-        .progress = progress
+        .progress = FALSE
       )
     ) |>
     tidyr::unnest(res) |>
