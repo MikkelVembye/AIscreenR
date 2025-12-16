@@ -32,7 +32,7 @@
 #'
 #' Data set containing input and output prizes for all OpenAI's GPT API models.
 #'
-#' @format A \code{data.frame} containing 37 rows/models and 3 variables/columns
+#' @format A \code{data.frame} containing 36 rows/models and 3 variables/columns
 #'
 #' \tabular{lll}{
 #'  \bold{model} \tab \code{character} \tab indicating the specific GPT model \cr
