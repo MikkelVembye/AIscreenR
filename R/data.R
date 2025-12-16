@@ -28,11 +28,11 @@
 "filges2015_dat"
 
 
-#' Model prize data (last updated August 14, 2025)
+#' Model prize data (last updated December 16, 2025)
 #'
 #' Data set containing input and output prizes for all OpenAI's GPT API models.
 #'
-#' @format A \code{data.frame} containing 22 rows/models and 3 variables/columns
+#' @format A \code{data.frame} containing 37 rows/models and 3 variables/columns
 #'
 #' \tabular{lll}{
 #'  \bold{model} \tab \code{character} \tab indicating the specific GPT model \cr
@@ -71,7 +71,7 @@
 #' }
 "disagreements"
 
-#' Groq model prices (last updated September 1, 2025)
+#' Groq model prices (last updated December 16, 2025)
 #'
 #' Data set containing input and output prizes for all GROQ's API models.
 #'

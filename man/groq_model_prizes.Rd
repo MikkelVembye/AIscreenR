@@ -3,7 +3,7 @@
 \docType{data}
 \name{groq_model_prizes}
 \alias{groq_model_prizes}
-\title{Groq model prices (last updated September 1, 2025)}
+\title{Groq model prices (last updated December 16, 2025)}
 \format{
 A \code{data.frame} containing 4 rows/models and 3 variables/columns
 
