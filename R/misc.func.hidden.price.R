@@ -12,6 +12,15 @@
 
   if (!is_gpt_tbl(data)){
     avg_completion_tokens = 7.05 # Average number of completion tokens for the inclusion_decision_simple function
+    
+    # Add missing columns if they don't exist
+    if (!"reasoning_effort" %in% names(data)) {
+      data <- data |> dplyr::mutate(reasoning_effort = NA_character_)
+    }
+    if (!"verbosity" %in% names(data)) {
+      data <- data |> dplyr::mutate(verbosity = NA_character_)
+    }
+    
     temp_dat <-
       data |>
       dplyr::mutate(
