@@ -113,7 +113,11 @@ model_prizes <-
 
       # GPT-5.1 models
       1.25/mio,  # gpt-5.1
-      1.25/mio   # gpt-5.1-2025-11-13
+      1.25/mio,   # gpt-5.1-2025-11-13
+
+      # GPT-5.2 models
+      1.75/mio,  # gpt-5.2
+      1.75/mio   # gpt-5.2-2025-12-11
     ),
 
     price_out_per_token = c(
@@ -169,7 +173,11 @@ model_prizes <-
 
       # GPT-5.1 models
       10/mio,  # gpt-5.1
-      10/mio   # gpt-5.1-2025-11-13
+      10/mio,   # gpt-5.1-2025-11-13
+
+      # GPT-5.2 models
+      14/mio,  # gpt-5.2
+      14/mio   # gpt-5.2-2025-12-11
     )
   )
 
