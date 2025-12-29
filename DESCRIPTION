@@ -49,5 +49,5 @@ Config/testthat/start-first: tabscreen_gpt, approximate_price_gpt, rate_limits, 
 URL: https://mikkelvembye.github.io/AIscreenR/, https://github.com/MikkelVembye/AIscreenR
 BugReports: https://github.com/MikkelVembye/AIscreenR/issues
 LazyData: true
-VignetteBuilder: knitr
-Config/Needs/website: rmarkdown
+VignetteBuilder: quarto, knitr
+Config/Needs/website: quarto

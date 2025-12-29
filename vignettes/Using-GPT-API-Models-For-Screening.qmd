@@ -1,19 +1,15 @@
 ---
 title: "Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews"
 author: "Mikkel H. Vembye"
-output: 
-  rmarkdown::html_vignette:
-    number_sections: true
-    toc: true
 date: "`r Sys.Date()`"
 bibliography: AIscreenR.bib
 link-citations: true
 csl: apa.csl
-vignette: >
-  %\VignetteIndexEntry{Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews}
-  %\VignetteEncoding{UTF-8}
-  %\VignetteEngine{knitr::rmarkdown}
-editor_options: 
+format:
+  html:
+    toc: true
+    number-sections: true
+editor: 
   chunk_output_type: console
 ---
 

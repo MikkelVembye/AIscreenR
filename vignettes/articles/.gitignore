@@ -1,2 +1,6 @@
 *.html
 *.R
+*.quarto
+/.quarto/
+**/*.quarto_ipynb
+*.knit.md
