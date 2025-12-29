@@ -19,20 +19,20 @@ test_that("read_ris_to_dataframe parses RIS and preserves field order", {
 
   expect_s3_class(df, "data.frame")
   expect_equal(nrow(df), 2L)
-  expect_equal(colnames(df), c("TY", "AU", "TI", "PY"))
+  expect_equal(colnames(df), c("source_type", "author", "title", "year"))
 
-  expect_equal(df$TY, c("JOUR", "CHAP"))
-  expect_equal(df$AU[1], "Author, One; Author, Two")
-  expect_equal(df$TI, c("An example title", "Another title"))
-  expect_equal(df$PY, c("2020", ""))
+  expect_equal(df$source_type, c("JOUR", "CHAP"))
+  expect_equal(df$author[1], "Author, One; Author, Two")
+  expect_equal(df$title, c("An example title", "Another title"))
+  expect_equal(df$year, c("2020", ""))
 })
 
 test_that("save_dataframe_to_ris writes valid RIS and splits semicolons", {
   df <- data.frame(
-    TY = c("JOUR", "CHAP"),
-    AU = c("Author, One; Author, Two", "Author, Three"),
-    TI = c("An example title", "Another title"),
-    PY = c("2020", ""),
+    source_type = c("JOUR", "CHAP"),
+    author = c("Author, One; Author, Two", "Author, Three"),
+    title = c("An example title", "Another title"),
+    year = c("2020", ""),
     stringsAsFactors = FALSE
   )
 
@@ -58,10 +58,10 @@ test_that("save_dataframe_to_ris writes valid RIS and splits semicolons", {
 
 test_that("read after write round-trips data (normalized)", {
   df <- data.frame(
-    TY = c("JOUR", "CHAP"),
-    AU = c("Author, One; Author, Two", "Author, Three"),
-    TI = c("An example title", "Another title"),
-    PY = c("2020", ""),
+    source_type = c("JOUR", "CHAP"),
+    author = c("Author, One; Author, Two", "Author, Three"),
+    title = c("An example title", "Another title"),
+    year = c("2020", ""),
     stringsAsFactors = FALSE
   )
 
@@ -70,10 +70,10 @@ test_that("read after write round-trips data (normalized)", {
   df2 <- read_ris_to_dataframe(tmp)
 
   # Column order by first appearance in the file
-  expect_equal(colnames(df2), c("TY", "AU", "TI", "PY"))
+  expect_equal(colnames(df2), c("source_type", "author", "title", "year"))
   # Values should match expected normalized representation
-  expect_equal(df2$AU, c("Author, One; Author, Two", "Author, Three"))
-  expect_equal(df2$TY, df$TY)
-  expect_equal(df2$TI, df$TI)
-  expect_equal(df2$PY, df$PY)
+  expect_equal(df2$author, c("Author, One; Author, Two", "Author, Three"))
+  expect_equal(df2$source_type, df$source_type)
+  expect_equal(df2$title, df$title)
+  expect_equal(df2$year, df$year)
 })
