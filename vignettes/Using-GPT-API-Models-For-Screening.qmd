@@ -11,6 +11,10 @@ format:
     number-sections: true
 editor: 
   chunk_output_type: console
+vignette: >
+  %\VignetteIndexEntry{Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}

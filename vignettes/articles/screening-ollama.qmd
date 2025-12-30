@@ -1,6 +1,10 @@
 ---
 title: Title/Abstract Screening with Local Ollama Models
 format: html
+vignette: >
+  %\VignetteIndexEntry{Title/Abstract Screening with Local Ollama Models}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}

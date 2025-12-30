@@ -1,6 +1,10 @@
 ---
 title: "Generating Fine-Tuning Data"
 format: html
+vignette: >
+  %\VignetteIndexEntry{Generating Fine-Tuning Data}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}

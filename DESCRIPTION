@@ -42,12 +42,13 @@ Suggests:
     rmarkdown,
     usethis,
     testthat (>= 3.0.0),
-    withr
+    withr,
+    readtext,
 Config/testthat/edition: 3
 Config/testthat/parallel: true
 Config/testthat/start-first: tabscreen_gpt, approximate_price_gpt, rate_limits, api_key_functions 
 URL: https://mikkelvembye.github.io/AIscreenR/, https://github.com/MikkelVembye/AIscreenR
 BugReports: https://github.com/MikkelVembye/AIscreenR/issues
 LazyData: true
-VignetteBuilder: quarto, knitr
+VignetteBuilder: quarto
 Config/Needs/website: quarto

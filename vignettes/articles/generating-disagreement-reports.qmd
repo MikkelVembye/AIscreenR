@@ -1,6 +1,10 @@
 ---
 title: "Generating Disagreement Reports"
 format: html
+vignette: >
+  %\VignetteIndexEntry{Generating Disagreement Reports}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}

@@ -1,6 +1,10 @@
 ---
 title: "Reading and Writing RIS Files"
 format: html
+vignette: >
+  %\VignetteIndexEntry{Reading and Writing RIS Files}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include=FALSE}

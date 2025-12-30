@@ -1,6 +1,10 @@
 ---
 title: "Comparing GPT-4.1 Models for Screening"
 format: html
+vignette: >
+  %\VignetteIndexEntry{Comparing GPT-4.1 Models for Screening}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
