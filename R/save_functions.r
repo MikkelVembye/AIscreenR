@@ -18,106 +18,119 @@
 #' @export
 read_ris_to_dataframe <- function(file_path) {
   lines <- readLines(file_path, encoding = "UTF-8")
-  norm_space <- function(x) gsub("\\s+", " ", trimws(x)) # Normalize whitespace
+  norm_space <- function(x) gsub("\\s+", " ", trimws(x))
 
-  records <- vector("list", max(1L, length(lines) %/% 5L + 1L))  # Preallocate records list
-  rec_idx <- 0L # Initialize record index
+  preallocate_size <- max(1L, length(lines) %/% 5L + 1L) # Estimate number of records (avg 5 lines per record)
+  records <- vector("list", preallocate_size) # List of records
+  record_order <- vector("list", preallocate_size) # List of tag order per record
+  rec_idx <- 0L 
+  current_record <- list()
+  current_order <- character(0)
+  field_order <- character(0)
+  last_field <- NULL
+  after_end_record <- FALSE # Track if we just processed an ER tag
 
-  current_record <- list() # Initialize current record
-  field_order <- character(0) # Initialize field order
-  last_field <- NULL # Initialize last field
+  # Parse the RIS file line by line
+  # Each record typically starts with "TY  - " but can start with other tags like "DB  - "
+  # Records end with "ER  - "
+  for (raw_line in lines) {
+    line <- sub("[\r\n]+$", "", raw_line)
+    if (trimws(line) == "") next
 
-  for (raw_line in lines) { # Loop through each line
-    line_nl <- sub("[\r\n]+$", "", raw_line) # Remove newline characters
-    if (trimws(line_nl) == "") next # Skip empty lines
-    line_preserve <- line_nl # Preserve line for processing
-
-    if (startsWith(line_preserve, "TY  - ")) { # Check for record type
-      if (length(current_record) > 0) { # If current record exists
-        rec_idx <- rec_idx + 1L # Increment record index
-        records[[rec_idx]] <- current_record # Store current record
+    if (grepl("^ER  -\\s*$", line)) { # End of record
+      if (length(current_record) > 0) {
+        rec_idx <- rec_idx + 1L
+        records[[rec_idx]] <- current_record
+        record_order[[rec_idx]] <- current_order
       }
-      current_record <- list() # Reset current record
-      val <- norm_space(sub("^TY  - ", "", line_preserve)) # Extract and normalize value
-      current_record$TY <- val # Store type value
-      last_field <- "TY" # Update last field
-      if (!"TY" %in% field_order) field_order <- c(field_order, "TY") # Update field order
-    } else if (grepl("^ER  -\\s*$", line_preserve)) { # Check for end of record
-      if (length(current_record) > 0) { # If current record exists
-        rec_idx <- rec_idx + 1L # Increment record index
-        records[[rec_idx]] <- current_record # Store current record
-      }
-      current_record <- list() # Reset current record
-      last_field <- NULL # Reset last field
-    } else if (grepl("^[A-Z0-9]{2}  - ", line_preserve)) { # Check for field line
-      field <- substr(line_preserve, 1, 2) # Extract field code
-      value <- norm_space(sub("^[A-Z0-9]{2}  - ", "", line_preserve)) # Extract and normalize value
-      if (!field %in% field_order) field_order <- c(field_order, field) # Update field order
-      if (field %in% names(current_record)) { # If field already exists in current record
-        if (is.list(current_record[[field]])) { # If field is a list
-          current_record[[field]] <- append(current_record[[field]], value) # Append value
-        } else {
-          current_record[[field]] <- list(current_record[[field]], value) # Convert to list and append
+      current_record <- list()
+      current_order <- character(0)
+      last_field <- NULL
+      after_end_record <- TRUE # Mark that we just saw an end of record
+    } else if (grepl("^[A-Z0-9]{2}  - ", line)) { # If the line starts with a two-letter tag followed by "  - ", it's a field
+      field <- substr(line, 1, 2)
+      value <- norm_space(sub("^[A-Z0-9]{2}  - ", "", line))
+      
+      # Start a new record if: this is the first field ever, OR we just saw ER and this is the first field of next record
+      if ((rec_idx == 0L && length(current_record) == 0) || after_end_record) {
+        if (length(current_record) > 0) { # Save any pending record
+          rec_idx <- rec_idx + 1L
+          records[[rec_idx]] <- current_record
+          record_order[[rec_idx]] <- current_order
         }
+        current_record <- list()
+        current_order <- character(0)
+        after_end_record <- FALSE
+      }
+      
+      if (!field %in% field_order) field_order <- c(field_order, field)
+      current_order <- c(current_order, field) # Track order of fields in this record
+      if (field %in% names(current_record)) { # If field already exists, make it a list to hold multiple values
+        current_record[[field]] <- if (is.list(current_record[[field]])) { 
+          append(current_record[[field]], value)
+        } else {
+          list(current_record[[field]], value)
+        }
+      } else { # Else, just add the field
+        current_record[[field]] <- value
+      }
+      last_field <- field
+      # Handle continuation lines (RIS values that span multiple lines)
+    } else if (!is.null(last_field) && last_field %in% names(current_record)) {
+      cont <- norm_space(if (grepl("^\\s{2}", line)) sub("^\\s{2}", "", line) else line)
+      curval <- current_record[[last_field]]
+      if (is.list(curval)) { # If multiple values, append to the last one
+        n <- length(curval)
+        curval[[n]] <- norm_space(paste(curval[[n]], cont))
+        current_record[[last_field]] <- curval
       } else {
-        current_record[[field]] <- value # Store value in current record
-      }
-      last_field <- field # Update last field
-    } else if (grepl("^\\s{2}", line_nl)) { # Check for continuation line
-      cont <- norm_space(sub("^\\s{2}", "", line_nl)) # Extract continuation value
-      if (!is.null(last_field) && last_field %in% names(current_record)) { # If last field exists
-        curval <- current_record[[last_field]] # Get current value
-        if (is.list(curval)) { # If current value is a list
-          n <- length(curval) # Get length of list
-          curval[[n]] <- norm_space(paste(curval[[n]], cont, sep = " ")) # Append continuation
-          current_record[[last_field]] <- curval # Update current record
-        } else {
-          current_record[[last_field]] <- norm_space(paste(curval, cont, sep = " ")) # Append continuation
-        }
-      }
-    } else { # Handle other lines
-      if (!is.null(last_field) && last_field %in% names(current_record)) { # If last field exists
-        cont <- norm_space(line_nl) # Normalize line
-        curval <- current_record[[last_field]] # Get current value
-        if (is.list(curval)) { # If current value is a list
-          n <- length(curval) # Get length of list
-          curval[[n]] <- norm_space(paste(curval[[n]], cont, sep = " ")) # Append continuation
-          current_record[[last_field]] <- curval # Update current record
-        } else {
-          current_record[[last_field]] <- norm_space(paste(curval, cont, sep = " ")) # Append continuation
-        }
+        current_record[[last_field]] <- norm_space(paste(curval, cont)) 
       }
     }
   }
-
-  if (length(current_record) > 0) { # If current record exists
-    rec_idx <- rec_idx + 1L # Increment record index
-    records[[rec_idx]] <- current_record # Store current record
+  # Add the last record if file doesn't end with ER
+  if (length(current_record) > 0) {
+    rec_idx <- rec_idx + 1L
+    records[[rec_idx]] <- current_record
+    record_order[[rec_idx]] <- current_order
   }
+  # Trim preallocated lists to actual size
+  if (rec_idx == 0L) return(data.frame())
+  records <- records[seq_len(rec_idx)]
+  record_order <- record_order[seq_len(rec_idx)]
 
-  if (rec_idx == 0L) return(data.frame()) # Return empty data frame if no records
-  records <- records[seq_len(rec_idx)] # Trim records list
-
+  # Build data frame
   df_list <- vector("list", length(field_order))
-  names(df_list) <- field_order # Initialize data frame list
-  for (field in field_order) df_list[[field]] <- character(rec_idx) # Preallocate character vectors
+  names(df_list) <- field_order
+  raw_values <- vector("list", length(field_order))
+  names(raw_values) <- field_order
+  
+  # Initialize columns
+  for (field in field_order) {
+    df_list[[field]] <- character(rec_idx)
+    raw_values[[field]] <- vector("list", rec_idx)
+  }
 
-  for (i in seq_len(rec_idx)) { # Loop through records
-    record <- records[[i]] # Get current record
-    for (field in names(record)) { # Loop through fields in record
-      value <- record[[field]] # Get field value
-      if (is.list(value)) { # If value is a list
-        vals <- norm_space(unlist(value)) # Unlist and normalize
-        df_list[[field]][i] <- paste(vals, collapse = "; ") # Collapse values
+  # Fill data frame
+  for (i in seq_len(rec_idx)) {
+    for (field in names(records[[i]])) {
+      value <- records[[i]][[field]]
+      if (is.list(value)) {
+        vals <- norm_space(unlist(value))
+        df_list[[field]][i] <- paste(vals, collapse = "; ")
+        raw_values[[field]][[i]] <- vals
       } else {
-        df_list[[field]][i] <- norm_space(value) # Normalize value
+        df_list[[field]][i] <- norm_space(value)
+        raw_values[[field]][[i]] <- df_list[[field]][i]
       }
     }
   }
 
-  df <- data.frame(df_list, stringsAsFactors = FALSE) # Create data frame
-  df <- .map_ris_tags(df) # Map RIS tags
-  df
+  df <- data.frame(df_list, stringsAsFactors = FALSE)
+  attr(df, "ris_raw_values") <- raw_values # Store raw values
+  attr(df, "ris_field_order") <- field_order # Store field order
+  attr(df, "ris_record_order") <- record_order # Store record order
+  .map_ris_tags(df)
 }
 
 #' Write a data frame to a RIS file
@@ -140,52 +153,141 @@ read_ris_to_dataframe <- function(file_path) {
 #'
 #' @export
 save_dataframe_to_ris <- function(df, file_path) {
-  df <- .reverse_map_ris_tags(df)
-  con <- file(file_path, "w", encoding = "UTF-8")
+  tag_meta <- attr(df, "ris_tag_used", exact = TRUE) # Metadata about which original tag was used for each column
+  raw_meta <- attr(df, "ris_raw_values", exact = TRUE) # Raw values per tag
+  record_order <- attr(df, "ris_record_order", exact = TRUE) # Original record order
+  has_meta <- is.list(tag_meta) && length(tag_meta) > 0 # Check if metadata exists
+  has_raw <- is.list(raw_meta) && length(raw_meta) > 0 # Check if raw values exist
+  has_record_order <- is.list(record_order) && length(record_order) == nrow(df) # Check if record order exists
+  reverse_tag_map <- .get_reverse_ris_tag_map() # Get reverse mapping of descriptive names to RIS tags
+  norm_space <- function(x) gsub("\\s+", " ", trimws(x))
 
-  multi_value_tags <- c(
-    "AU","A1","KW","M1","T1","TI","SN","JF","JO","JA","Y1","PY",
-    "ID","AN","UR","DO","DP","DB","AD","PB","VL","IS","SP","EP",
-    "U1","U2","CN"
-  ) # Tags that can have multiple values
-  free_text_tags <- c("AB","N1","NT","N2","NO") # Tags that may contain semicolons in free text
-
-  for (i in seq_len(nrow(df))) { # Loop through each record
-    row <- df[i, ] # Get current row
-
-    if ("TY" %in% names(row) && !is.na(row$TY) && row$TY != "") { # Write TY first
-      writeLines(paste0("TY  - ", as.character(row$TY)), con)
+  # Function to resolve the correct RIS tag for a given column and row
+  resolve_ris_tag <- function(col_name, row_idx) {
+    if (has_meta && !is.null(tag_meta[[col_name]]) && # Check if metadata exists for this column
+        length(tag_meta[[col_name]]) >= row_idx && 
+        !is.na(tag_meta[[col_name]][[row_idx]]) && 
+        nzchar(tag_meta[[col_name]][[row_idx]])) {
+      return(tag_meta[[col_name]][[row_idx]]) # Use the original tag used for this column and row
     }
-
-    for (col_name in names(row)) { # Loop through each column
-      if (col_name == "TY") next # Skip TY as it's already written
-      value <- row[[col_name]] # Get column value
-
-      if (is.factor(value)) value <- as.character(value) # Convert factor to character
-      if (is.list(value) || length(value) > 1) { # Handle list or multiple values
-        value <- paste(unlist(value), collapse = "; ") # Collapse to single string
-      }
-      value <- as.character(value) # Ensure value is character
-      if (is.na(value) || value == "" || is.null(value)) next # Skip empty values
-      value <- gsub("\\s+", " ", trimws(value)) # Normalize whitespace
-
-      if (grepl(";", value) && col_name %in% multi_value_tags && !(col_name %in% free_text_tags)) { # Split multi-value tags
-        values <- strsplit(value, ";\\s*")[[1]]
-        for (val in values) { # Loop through split values
-          val <- trimws(val) # Trim whitespace
-          if (val != "") { # Write non-empty values
-            writeLines(paste0(col_name, "  - ", val), con)
-          }
-        }
-      } else { # Write single value
-        writeLines(paste0(col_name, "  - ", value), con)
-      }
-    }
-
-    writeLines("ER  - ", con) # End of record
-    writeLines("", con)
+    if (grepl("^[A-Z0-9]{2,4}$", col_name)) return(col_name) # If column name is already a valid RIS tag, return it
+    base_name <- sub("[0-9]+$", "", col_name)
+    if (base_name %in% names(reverse_tag_map)) return(reverse_tag_map[[base_name]]) # If base name maps to a RIS tag, return it
+    col_name
   }
 
+  if (!has_meta) df <- .reverse_map_ris_tags(df) # Reverse map if no metadata
+
+  # Attempt to preserve original formatting if possible
+  if (has_raw && has_record_order) {
+    raw_tags <- names(raw_meta) # Get all RIS tags from raw metadata
+    raw_df_list <- vector("list", length(raw_tags))
+    names(raw_df_list) <- raw_tags
+    for (tag in raw_tags) raw_df_list[[tag]] <- character(nrow(df))
+
+    # Fill raw_df_list with normalized raw values
+    for (i in seq_len(nrow(df))) {
+      for (tag in raw_tags) {
+        vals <- unlist(raw_meta[[tag]][[i]])
+        vals <- vals[!is.na(vals) & vals != ""]
+        if (length(vals) > 0) {
+          raw_df_list[[tag]][i] <- norm_space(paste(norm_space(vals), collapse = "; ")) # Collapse multiple values with "; "
+        }
+      }
+    }
+
+    # Reconstruct data frame from raw values and compare with original
+    mapped_raw_df <- .map_ris_tags(data.frame(raw_df_list, stringsAsFactors = FALSE)) 
+    common_cols <- intersect(names(mapped_raw_df), names(df)) # Find common columns between mapped raw and original df
+    identical_on_common <- all(sapply(common_cols, function(col) { # Check if values are identical for common columns
+      # Compare normalized values for each common column
+      a <- as.character(mapped_raw_df[[col]])
+      b <- as.character(df[[col]])
+      a[is.na(a)] <- ""
+      b[is.na(b)] <- ""
+      identical(norm_space(a), norm_space(b))
+    }))
+
+    if (identical_on_common) { # If identical, write using original raw formatting
+      con <- file(file_path, "w", encoding = "UTF-8")
+      on.exit(close(con), add = TRUE)
+
+      for (i in seq_len(nrow(df))) {
+        tag_pos <- list()
+        for (tag in record_order[[i]]) {
+          if (tag == "ER" || is.null(raw_meta[[tag]])) next
+          vals <- unlist(raw_meta[[tag]][[i]])
+          vals <- vals[!is.na(vals) & vals != ""]
+          if (length(vals) == 0) next
+          pos <- if (is.null(tag_pos[[tag]])) 1L else tag_pos[[tag]]
+          if (pos <= length(vals)) {
+            writeLines(paste0(tag, "  - ", norm_space(vals[[pos]])), con)
+            tag_pos[[tag]] <- pos + 1L
+          }
+        }
+        writeLines("ER  - ", con)
+        writeLines("", con)
+      }
+      cat("RIS file saved to:", file_path, "\n")
+      return(invisible(file_path))
+    }
+  }
+  # Fallback: write using normalized values from df
+  con <- file(file_path, "w", encoding = "UTF-8")
+  multi_value_tags <- c("AU","A1","KW","M1","T1","TI","SN","JF","JO","JA","Y1","PY",
+                        "ID","AN","UR","DO","DP","DB","AD","PB","VL","IS","SP","EP","U1","U2","CN")
+  free_text_tags <- c("AB","N1","NT","N2","NO","U1")
+  ty_col <- if ("TY" %in% names(df)) "TY" else if ("source_type" %in% names(df)) "source_type" else NULL
+
+  for (i in seq_len(nrow(df))) {
+    row <- df[i, , drop = FALSE]
+
+    if (!is.null(ty_col)) {
+      ty_val <- as.character(row[[ty_col]])
+      if (!is.na(ty_val) && ty_val != "") {
+        writeLines(paste0(resolve_ris_tag(ty_col, i), "  - ", norm_space(ty_val)), con)
+      }
+    }
+
+    for (col_name in names(row)) {
+      if (!is.null(ty_col) && col_name == ty_col) next
+      value <- row[[col_name]]
+      if (is.factor(value) || is.list(value) || length(value) > 1) {
+        value <- paste(unlist(value), collapse = "; ")
+      }
+      value <- as.character(value)
+      if (is.na(value) || value == "") next
+      value <- norm_space(value)
+      tag_to_write <- resolve_ris_tag(col_name, i)
+
+      # Attempt to write from raw values if they match
+      wrote_from_raw <- FALSE
+      if (has_raw && !is.null(raw_meta[[tag_to_write]])) {
+        raw_vals <- unlist(raw_meta[[tag_to_write]][[i]])
+        raw_vals <- raw_vals[!is.na(raw_vals) & raw_vals != ""]
+        if (length(raw_vals) > 0 && identical(norm_space(value), norm_space(paste(norm_space(raw_vals), collapse = "; ")))) {
+          for (rv in norm_space(raw_vals)) {
+            if (rv != "") writeLines(paste0(tag_to_write, "  - ", rv), con)
+          }
+          wrote_from_raw <- TRUE
+        }
+      }
+
+      # Fallback: write normalized value
+      if (!wrote_from_raw) {
+        if (grepl(";", value) && tag_to_write %in% multi_value_tags && !(tag_to_write %in% free_text_tags)) {
+          for (val in strsplit(value, ";\\s*")[[1]]) {
+            val <- trimws(val)
+            if (val != "") writeLines(paste0(tag_to_write, "  - ", val), con)
+          }
+        } else {
+          writeLines(paste0(tag_to_write, "  - ", value), con)
+        }
+      }
+    }
+    writeLines("ER  - ", con)
+    writeLines("", con)
+  }
   close(con)
   cat("RIS file saved to:", file_path, "\n")
 }
@@ -193,6 +295,11 @@ save_dataframe_to_ris <- function(df, file_path) {
 
 # Helper function to map RIS tags to descriptive names
 .map_ris_tags <- function(df) {
+  # Preserve read-time metadata.
+  raw_values <- attr(df, "ris_raw_values", exact = TRUE)
+  field_order <- attr(df, "ris_field_order", exact = TRUE)
+  record_order <- attr(df, "ris_record_order", exact = TRUE)
+
   tag_map <- c(
     DB = "database",
     FN = "file_name",
@@ -411,109 +518,88 @@ save_dataframe_to_ris <- function(df, file_path) {
     EF = "end_file"
   )
 
-  # Handle U1 conditionally based on content
   mapped_names <- sapply(seq_along(names(df)), function(i) {
     original_name <- names(df)[i]
-    
-    # Special handling for U1
     if (original_name == "U1") {
-      # Check if all non-empty values are numeric
-      u1_values <- df[[i]]
-      non_empty <- u1_values[!is.na(u1_values) & u1_values != ""]
-      
-      if (length(non_empty) > 0) {
-        # Check if all non-empty values contain only digits
-        all_numeric <- all(grepl("^[0-9]+$", non_empty))
-        
-        if (all_numeric) {
-          return("eppi_id")
-        } else {
-          return("custom_info")
-        }
-      } else {
-        return("custom_info")  # Default if no data
-      }
+      non_empty <- df[[i]][!is.na(df[[i]]) & df[[i]] != ""]
+      # If all values in the U1 column are numeric, map to eppi_id, else custom_info
+      return(if (length(non_empty) > 0 && all(grepl("^[0-9]+$", non_empty))) "eppi_id" else "custom_info")
     }
-    
-    # Regular mapping for other tags
-    if (original_name %in% names(tag_map)) {
-      return(tag_map[[original_name]])
-    } else {
-      return(original_name)
-    }
+    if (original_name %in% names(tag_map)) tag_map[[original_name]] else original_name
   })
   
-  unique_mapped <- unique(mapped_names)
   result_df <- data.frame(matrix(ncol = 0, nrow = nrow(df)))
+  tag_used <- list() # To track which original tag was used for each column
   
-  for (base_name in unique_mapped) {
+  # Process each unique mapped name
+  for (base_name in unique(mapped_names)) {
     matching_indices <- which(mapped_names == base_name)
     
+    # If only one matching column, copy it directly
     if (length(matching_indices) == 1) {
-      # No duplicates, just use the mapped name
       result_df[[base_name]] <- df[[matching_indices]]
+      tag_used[[base_name]] <- rep(names(df)[matching_indices], nrow(df))
+      # If multiple matching columns, handle repeated fields
     } else {
-      # Multiple columns map to this name
-      # For each row, collect all unique non-empty values across matching columns
       result_df[[base_name]] <- character(nrow(df))
-      
-      # Track which column was used for base value per row
       used_col_per_row <- integer(nrow(df))
+      base_tag_per_row <- character(nrow(df))
       
       for (row_idx in seq_len(nrow(df))) {
-        # Find first non-empty value for base column
         for (col_idx in matching_indices) {
           val <- df[row_idx, col_idx]
           if (!is.na(val) && val != "") {
             result_df[row_idx, base_name] <- val
             used_col_per_row[row_idx] <- col_idx
+            base_tag_per_row[row_idx] <- names(df)[col_idx]
             break
           }
         }
       }
+      tag_used[[base_name]] <- base_tag_per_row # Track which column was used for base name
       
-      # Create numbered columns for remaining unique values
-      if (length(matching_indices) > 1) {
-        counter <- 2
-        for (col_idx in matching_indices) {
-          col_name <- paste0(base_name, counter)
-          result_df[[col_name]] <- character(nrow(df))
-          added_any <- FALSE
-          
-          for (row_idx in seq_len(nrow(df))) {
-            # Skip if this column was used for the base value in this row
-            if (used_col_per_row[row_idx] == col_idx) next
-            
-            val <- df[row_idx, col_idx]
-            base_val <- result_df[row_idx, base_name]
-            
-            # Only add if: has content, base is filled, and value differs from base
-            if (!is.na(val) && val != "" && base_val != "" && val != base_val) {
-              result_df[row_idx, col_name] <- val
-              added_any <- TRUE
-            }
+      counter <- 2 # Start counter for repeated fields
+      # Handle additional columns for repeated fields
+      for (col_idx in matching_indices) {
+        col_name <- paste0(base_name, counter)
+        result_df[[col_name]] <- character(nrow(df))
+        col_tag_vec <- character(nrow(df))
+        added_any <- FALSE
+        
+        # Fill in values for this repeated field
+        for (row_idx in seq_len(nrow(df))) {
+          if (used_col_per_row[row_idx] == col_idx) next
+          val <- df[row_idx, col_idx]
+          base_val <- result_df[row_idx, base_name]
+          if (!is.na(val) && val != "" && base_val != "" && val != base_val) {
+            result_df[row_idx, col_name] <- val
+            col_tag_vec[row_idx] <- names(df)[col_idx]
+            added_any <- TRUE
           }
-          
-          # Only increment counter if we added any values
-          if (added_any) {
-            counter <- counter + 1
-          } else {
-            # Remove the column if it's empty
-            result_df[[col_name]] <- NULL
-          }
+        }
+        
+        # If any values were added, keep this column; else remove it
+        if (added_any) {
+          tag_used[[col_name]] <- col_tag_vec
+          counter <- counter + 1
+        } else {
+          result_df[[col_name]] <- NULL
         }
       }
     }
   }
-  
-  return(result_df)
+
+  attr(result_df, "ris_tag_used") <- tag_used
+  if (is.list(raw_values)) attr(result_df, "ris_raw_values") <- raw_values
+  if (!is.null(field_order)) attr(result_df, "ris_field_order") <- field_order
+  if (is.list(record_order)) attr(result_df, "ris_record_order") <- record_order
+  result_df
 }
 
-# Helper function to reverse map descriptive names to RIS tags
-.reverse_map_ris_tags <- function(df) {
-  # Create reverse mapping from descriptive names to RIS tags
+# Helper function: reverse mapping from descriptive names to RIS tags
+.get_reverse_ris_tag_map <- function() {
   # Using the most common/standard tag for each descriptive name
-  reverse_tag_map <- c(
+  c(
     database = "DB",
     file_name = "FN",
     date_generated = "DA",
@@ -676,26 +762,23 @@ save_dataframe_to_ris <- function(df, file_path) {
     eppi_id = "U1",
     custom_info = "U1"
   )
-  
+}
+
+.reverse_map_ris_tags <- function(df) {
+  reverse_tag_map <- .get_reverse_ris_tag_map()
   result_df <- data.frame(matrix(ncol = 0, nrow = nrow(df)))
   
+  # Process each column in the input data frame and map back to RIS tags
   for (col_name in names(df)) {
-    # Check if this is a numbered variant (e.g., author2, editor3)
     base_name <- sub("[0-9]+$", "", col_name)
-    
-    # Handle numbered columns - map back to original RIS tag
-    if (base_name != col_name && base_name %in% names(reverse_tag_map)) {
-      ris_tag <- reverse_tag_map[[base_name]]
-      result_df[[ris_tag]] <- df[[col_name]]
+    ris_tag <- if (base_name %in% names(reverse_tag_map)) {
+      reverse_tag_map[[base_name]]
     } else if (col_name %in% names(reverse_tag_map)) {
-      # Regular mapping
-      ris_tag <- reverse_tag_map[[col_name]]
-      result_df[[ris_tag]] <- df[[col_name]]
+      reverse_tag_map[[col_name]]
     } else {
-      # Column name not in map, keep as is
-      result_df[[col_name]] <- df[[col_name]]
+      col_name
     }
+    result_df[[ris_tag]] <- df[[col_name]]
   }
-  
-  return(result_df)
+  result_df
 }
