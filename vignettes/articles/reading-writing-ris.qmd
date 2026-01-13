@@ -18,7 +18,19 @@ knitr::opts_chunk$set(
 
 ## Overview
 
-This vignette introduces two helpers for working with RIS files. The function `read_ris_to_dataframe(file_path)` parses an RIS file into a data frame, preserves the order of RIS tags as they first appear, and collapses repeated tags within a record into a single string separated by semicolon. The function `save_dataframe_to_ris(df, file_path)` writes a data frame back to RIS, writes `TY` first (if present) followed by all other fields, splits semicolon-separated values into multiple RIS tag lines, and terminates each record with `ER  - `.
+This vignette introduces two helpers for working with RIS files. The function `read_ris_to_dataframe(file_path)` parses an RIS file into a data frame with the following features:
+
+- Automatically maps RIS tags to descriptive column names (e.g., `AU` → `author`, `TI` → `title`, `PY` → `year`)
+- Preserves the order of tags as they first appear in the file
+- Collapses repeated tags within a record into a single semicolon-separated string
+- Stores metadata to preserve original formatting when writing back
+
+The function `save_dataframe_to_ris(df, file_path)` writes a data frame back to RIS format:
+
+- Writes `TY` (source type) first for each record, followed by all other fields
+- Splits semicolon-separated values into multiple RIS tag lines
+- Preserves original formatting when available (from metadata)
+- Terminates each record with `ER  - `
 
 ```{r}
 library(AIscreenR)
@@ -50,13 +62,21 @@ df <- read_ris_to_dataframe(tmp_in)
 df
 ```
 
-Here columns appear in the order tags first occur in the file (for example, `TY`, `AU`, `TI`, `PY`). Repeated tags, such as multiple `AU` lines, are collapsed to a single string with "; ".
+The output data frame has descriptive column names instead of RIS tags. For example:
+
+- `TY` (type) becomes `source_type`
+- `AU` (author) becomes `author`
+- `TI` (title) becomes `title`
+- `PY` (publication year) becomes `year`
+
+Repeated tags, such as multiple `AU` lines, are collapsed to a single string with "; " (e.g., "Author, One; Author, Two").
 
 ## Write a data frame to RIS
 
-Create a data frame and write it to a `.ris` file. Semicolon-separated values are split into multiple lines.
+Create a data frame and write it to a `.ris` file. You can use either descriptive column names (as returned by `read_ris_to_dataframe()`) or raw RIS tags. Semicolon-separated values are automatically split into multiple tag lines.
 
 ```{r}
+# Using raw RIS tags
 df_out <- data.frame(
   TY = c("JOUR", "CHAP"),
   AU = c("Author, One; Author, Two", "Author, Three"),
@@ -71,3 +91,22 @@ readLines(tmp_out, encoding = "UTF-8")
 ```
 
 Each record writes the `TY` tag first, splits any field value containing ";" into multiple RIS tag lines, and ends with `ER  - ` followed by a blank line.
+
+You can also use descriptive column names (they will be automatically mapped back to RIS tags):
+
+```{r}
+# Using descriptive names
+df_descriptive <- data.frame(
+  source_type = c("JOUR", "CHAP"),
+  author = c("Author, One; Author, Two", "Author, Three"),
+  title = c("An example title", "Another title"),
+  year = c("2020", ""),
+  stringsAsFactors = FALSE
+)
+
+tmp_out2 <- tempfile(fileext = ".ris")
+invisible(capture.output(save_dataframe_to_ris(df_descriptive, tmp_out2)))
+readLines(tmp_out2, encoding = "UTF-8")
+```
+
+Both approaches produce identical RIS output.
