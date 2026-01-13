@@ -1,4 +1,5 @@
 
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 <a href="https://mikkelvembye.github.io/AIscreenR/"><img src="man/figures/AIscreenR_hex.png" align="right" width="180" /></a>
@@ -9,11 +10,11 @@
 
 [![R-CMD-check](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml)
 [![CRAN
-Version](https://www.r-pkg.org/badges/version/AIscreenR)](https://cran.r-project.org/package=AIscreenR)
+Version](https://www.r-pkg.org/badges/version/AIscreenR.png)](https://cran.r-project.org/package=AIscreenR)
 [![Monthly
-Downloads](https://cranlogs.r-pkg.org/badges/AIscreenR)](https://cranlogs.r-pkg.org/badges/AIscreenR)
+Downloads](https://cranlogs.r-pkg.org/badges/AIscreenR.png)](https://cranlogs.r-pkg.org/badges/AIscreenR)
 [![Total
-Downloads](https://cranlogs.r-pkg.org/badges/grand-total/AIscreenR)](https://cranlogs.r-pkg.org/badges/grand-total/AIscreenR)
+Downloads](https://cranlogs.r-pkg.org/badges/grand-total/AIscreenR.png)](https://cranlogs.r-pkg.org/badges/grand-total/AIscreenR)
 <!-- badges: end -->
 
 The goal of AIscreenR is to use AI tools to support screening processes

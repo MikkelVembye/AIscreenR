@@ -2,5 +2,8 @@
 *.R
 *.quarto
 /.quarto/
-**/*.quarto_ipynb
 *.knit.md
+^\.quarto$
+^vignettes/\.quarto$
+^vignettes/.*\.quarto$
+**/*.quarto_ipynb

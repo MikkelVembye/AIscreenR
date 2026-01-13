@@ -21,17 +21,16 @@ This article explains how to use the `report()` function to generate a structure
 
 First, we load the necessary packages.
 
-```{r setup, echo=FALSE}
-devtools::load_all() # Fix her!!
+```{r, echo=FALSE}
 library(dplyr)
-#library(AIscreenR)
+library(AIscreenR)
 ```
 
 ## Step 1: Prepare Disagreement Data
 
 The `report()` function requires a data frame containing studies where the human decision and the AI decision do not match. For this example, we'll use a small dataset from the package. The data can be found here: `inst/extdata/dis_sub.rda`.
 
-```{r prepare-data, echo=FALSE}
+```{r, echo=FALSE}
 disagreements_path <- system.file("extdata", "dis_sub.rda", package = "AIscreenR")
 
 data <- load(disagreements_path)
@@ -46,7 +45,7 @@ The report will list each study, its title and abstract, the AI's answer, and a 
 
 In this example, we will generate an HTML report.
 
-```{r generate-report, eval=FALSE}
+```{r, eval=FALSE}
 # This code will generate a report in your current working directory
 # The report will open automatically if 'open = TRUE'
 report(
@@ -72,6 +71,4 @@ Note that we did not provide a `document_subtitle`. The `report()` function auto
 
 Running the code above will produce an HTML file named `disagreement_report.html`. This will look like this:
 
-```{r eval=TRUE, echo=FALSE, fig.cap='*Example disagreement report*'}
-knitr::include_graphics(system.file("figures", "report.png", package = "AIscreenR"))
-```
+![*Example disagreement report*](../../inst/figures/report.png)

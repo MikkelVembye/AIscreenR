@@ -20,7 +20,7 @@ This article demonstrates how to prepare and format your data for fine-tuning Op
 
 First, we load the necessary packages for this workflow. We will use `AIscreenR` for the main functions and `dplyr` for data manipulation.
 
-```{r setup, echo=FALSE}
+```{r, echo=FALSE}
 library(AIscreenR)
 library(dplyr)
 ```
@@ -29,7 +29,7 @@ library(dplyr)
 
 For this example, we will use the `filges2015_dat` dataset included with the `AIscreenR` package. To create a balanced training set, we'll select 5 studies that were included and 5 that were excluded based on their `human_code`.
 
-```{r prepare-data}
+```{r}
 # Extract 5 irrelevant (human_code == 0) and 5 relevant (human_code == 1) records.
 sample_dat <- filges2015_dat[c(1:5, 261:265), ]
 
@@ -41,7 +41,7 @@ prompt <- "Is this study about functional family therapy?"
 
 The `create_fine_tune_data()` function takes your raw data and formats it into a structure suitable for fine-tuning. It combines the `title` and `abstract` with your `prompt` to create a complete question for each study.
 
-```{r generate-data}
+```{r}
 ft_data_generated <-
   create_fine_tune_data(
     data = sample_dat,
@@ -64,7 +64,7 @@ Before writing the data to a file, we need to add the true answers that the mode
 
 We also need to define the `role_and_subject` for the model. This is a system message that tells the fine-tuned model how it should behave.
 
-```{r add-answers}
+```{r}
 ft_data_to_write <-
   ft_data_generated |>
   mutate(true_answer = if_else(human_code == 1, "Include", "Exclude"))
@@ -83,7 +83,7 @@ Finally, we use `save_fine_tune_data()` to convert our data frame into the `json
 
 The function will write the file to your current working directory. OpenAI requires JSON Lines (.jsonl) files for fine-tuning datasets; see the fine-tuning data preparation guide and API reference for file requirements [OpenAI Docs: Fine-tuning guide](https://platform.openai.com/docs/guides/supervised-fine-tuning?monitoring=ui).
 
-```{r write-data, eval=FALSE}
+```{r, eval=FALSE}
 # This code will write a file named "fine_tune_data.jsonl"
 # to your working directory.
 save_fine_tune_data(
@@ -104,7 +104,7 @@ When fine-tuning a model, it's a best practice to provide two datasets: one for 
 
 A common approach is to use an 80/20 or 90/10 split, where the larger portion is used for training.
 
-```{r split-data, eval=FALSE}
+```{r, eval=FALSE}
 # Set a seed for reproducibility of the random split
 set.seed(123)
 
@@ -129,7 +129,7 @@ cat(
 
 Finally, we use `save_fine_tune_data()` to convert our training and validation data frames into the `jsonl` format required by OpenAI. We will create two separate files.
 
-```{r write-split-data, eval=FALSE}
+```{r, eval=FALSE}
 # This code will write two files to your working directory.
 
 # Write the training data

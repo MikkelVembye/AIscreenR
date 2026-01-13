@@ -22,7 +22,6 @@ This vignette introduces two helpers for working with RIS files. The function `r
 
 ```{r}
 library(AIscreenR)
-devtools::load_all()
 ```
 
 ## Read an RIS file

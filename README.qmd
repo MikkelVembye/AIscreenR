@@ -1,5 +1,5 @@
 ---
-output: github_document
+format: gfm
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -38,7 +38,7 @@ install.packages("AIscreenR")
 
 You can install the development version of AIscreenR from [GitHub](https://github.com/) with:
 
-``` {r}
+```{r}
 # install.packages("devtools")
 devtools::install_github("MikkelVembye/AIscreenR")
 ```

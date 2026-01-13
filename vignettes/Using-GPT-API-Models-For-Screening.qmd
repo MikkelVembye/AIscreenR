@@ -193,9 +193,8 @@ Before you can use the `AIscreenR` functions to screen your references, you must
 
 \  
 
-```{r eval=TRUE, echo=FALSE, fig.cap='*Figure 1 - Generate API key from OpenAI*'}
-knitr::include_graphics("helper-stuff/API_key_pic.png")
-```
+![*Figure 1 - Generate API key from OpenAI*](helper_stuff/API_key_pic.png){#fig:api_key}
+
 \ 
 
 Once you have generated your secret API key, remember to store it safely, as you will not be able to view it again. **NOTE:** *If you lose your API key, you can simply generate a new one*. 
@@ -218,9 +217,8 @@ usethis::edit_r_environ()
 In the `.Renviron` file, write `CHATGPT_KEY=your_key` as depicted in Figure 2. 
 \  
 
-```{r eval=TRUE, echo=FALSE, fig.cap='*Figure 2 - R environment file*'}
-knitr::include_graphics("helper-stuff/Renviron.png")
-```
+![*Figure 2 - R environment file*](helper_stuff/Renviron.png){#fig:renviron}
+
 \ 
 
 Thereafter, close and save the `.Renviron` file and restart `RStudio` (ctrl + shift + F10). From now on, the `AIscreenR` functions will automatically use `get_api_key()` to retrieve your API key from your R environment. With this approach, you will not need to worry about your API key again—unless you update RStudio, delete the key deliberately, or get a new computer. In such cases, you will need to repeat this process.
@@ -233,9 +231,8 @@ Consequently, after restarting RStudio, your API key will no longer be present i
 `set_api_key(key = secret_decrypt(encrypt_key, "YOUR_SECRET_KEY_FOR_DECRYTING"))`. For further details on this approach, refer to the [`HTTR2`](https://httr2.r-lib.org/articles/wrapping-apis.html#basics) package.
 \  
 
-```{r eval=TRUE, echo=FALSE, fig.cap='*Figure 3 - Set API key*'}
-knitr::include_graphics("helper-stuff/set_api.png")
-```
+![*Figure 3 - Set API key*](helper_stuff/set_api.png){#fig:set_api}
+
 \ 
 
 
@@ -259,10 +256,7 @@ Or you can simply write it in Word, as shown in Figures 4.
 
 \  
 
-```{r eval=TRUE, echo=FALSE, fig.cap='*Figure 4 - Prompting in Word*'}
-knitr::include_graphics("helper-stuff/friends_prompt.png")
-```
-\ 
+![*Figure 4 - Prompting in Word*](helper_stuff/friends_prompt.png){#fig:friends_prompt}
 
 Then you can load your prompt(s) via `readtext()` from the `readtext` package. 
 ```{r}
@@ -354,7 +348,7 @@ result_object <-
 # Analyze Screening
 We have now completed the test screening and want to assess whether it is viable to use the `gpt-4o-mini` model as our second screener. For the purpose, we can use `screen_analyzer()`. 
 
-```{r screen_stats}
+```{r}
 screen_performance <- 
   result_object |> 
   screen_analyzer(human_decision = human_code) # state the name of the variable containing the human decision. 
@@ -369,9 +363,7 @@ screen_performance
 ## Assess results via a benchmark scheme
 But you might ask, how to assess whether the performances for of the model is acceptable as a second screener? To answer this question, we recommend assessing it through benchmarking. In Vembye et al. [-@vembye_generative_2025], we developed a benchmark scheme based on typical duplicate human screening performance from 22 high-quality reviews. This scheme is presented in Figure 5.
 
-```{r eval=TRUE, echo=FALSE, fig.cap='*Figure 5 - Generic benchmark scheme from Vembye et al. (2025)*'}
-knitr::include_graphics("helper-stuff/benchmark_scheme.png")
-```
+![*Figure 5 - Generic benchmark scheme from Vembye et al. (2025)*](helper_stuff/benchmark_scheme.png){#fig:benchmark_scheme}
 
 By using this benchmark scheme, we see that the `gpt-4o-mini` model performs on least on par with typical human screening performance. Therefore, the benchmark scheme suggests that the model is suitable as a full second screener for the review.
 

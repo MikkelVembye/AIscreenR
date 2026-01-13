@@ -22,7 +22,7 @@ fields. Records are terminated with \verb{ER  - }.
 }
 \examples{
 \dontrun{
-df <- data.frame(TY = "JOUR", TI = "An example", AU = "Doe, J.; Roe, R.")
+df <- read_ris_to_dataframe("data-raw/raw data/apa_psycinfo_test_data.ris")
 save_dataframe_to_ris(df, "path/to/output.ris")
 }
 

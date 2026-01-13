@@ -27,7 +27,7 @@ We will analyze their performance with a single repetition (`reps = 1`). For the
 
 First, we load the necessary packages for our analysis.
 
-```{r setup, eval=TRUE}
+```{r, eval=TRUE}
 library(AIscreenR)
 library(dplyr)
 library(knitr)
@@ -39,7 +39,7 @@ To compare the models, we performed a screening task on the `friends_dat` datase
 
 The following prompt was used for all models. It is designed to be very specific about the required output format to ensure consistent results.
 
-```{r prompt, echo=TRUE, eval=FALSE}
+```{r, echo=TRUE, eval=FALSE}
 # This is the prompt used for the experiment.
 prompt <- "You are a systematic literature review screening agent. You are equipped with a screening function tool that you MUST use.
 
@@ -65,7 +65,7 @@ For each model (`gpt-4.1`, `gpt-4.1-mini`, `gpt-4.1-nano`), we ran the screening
 
 The code to run the screening for a single model looked like this:
 
-```{r run-screen, eval=FALSE}
+```{r, eval=FALSE}
 # This code was run for each model and repetition setting.
 # It is not evaluated here to save time, as we will load the results directly.
 plan(multisession)
@@ -92,7 +92,7 @@ We now load the pre-computed results from the screening runs. The performance me
 *   **Specificity**: The proportion of truly irrelevant studies that the model correctly identified.
 *   **Balanced Accuracy (bAcc)**: The average of recall and specificity, providing a single measure that balances performance on both relevant and irrelevant studies.
 
-```{r analyze-results, echo=FALSE}
+```{r, echo=FALSE}
 data_dir <- system.file("extdata", "comparison-results", package = "AIscreenR")
 models <- c("gpt-4.1-mini", "gpt-4.1-nano", "gpt-4.1")
 model_display_names <- c("gpt-4.1-mini-2025-04-14", "gpt-4.1-nano-2025-04-14", "gpt-4.1-2025-04-14")
