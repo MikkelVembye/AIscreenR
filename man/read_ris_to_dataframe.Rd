@@ -11,7 +11,7 @@ read_ris_to_dataframe(file_path)
 }
 \value{
 A data.frame with one row per record and one column per encountered
-RIS tag (e.g., TY, AU, TI). Columns are ordered by first appearance of the
+RIS tag, using descriptive column names. Columns are ordered by first appearance of the
 tag in the file. Repeated tag values are collapsed with "; ".
 }
 \description{

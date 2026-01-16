@@ -15,10 +15,14 @@ save_dataframe_to_ris(df, file_path)
 A character string indicating the file path where the RIS file was saved.
 }
 \description{
-Writes a data.frame to a RIS file, one record per row. If a field value
-contains semicolons, it is split and written as multiple tag lines. The \code{TY}
-field is written first for each record, followed by all other
-fields. Records are terminated with \verb{ER  - }.
+Writes a data.frame to a RIS file, one record per row. If the data frame was created
+by \code{read_ris_to_dataframe()}, the original RIS tag order and tags are preserved where possible.
+Otherwise, a standard RIS format is used.
+}
+\details{
+If a field value contains semicolons, it is split and written as multiple tag lines. The \code{TY}
+(source type) field is written first for each record, followed by all other fields. Records are
+terminated with \code{ER  - }.
 }
 \examples{
 \dontrun{

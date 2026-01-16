@@ -7,7 +7,7 @@
 #' @param file_path character. Path to the RIS file to read.
 #'
 #' @return A data.frame with one row per record and one column per encountered
-#'   RIS tag (e.g., TY, AU, TI). Columns are ordered by first appearance of the
+#'   RIS tag, using descriptive column names. Columns are ordered by first appearance of the
 #'   tag in the file. Repeated tag values are collapsed with "; ".
 #'
 #' @examples
@@ -135,10 +135,13 @@ read_ris_to_dataframe <- function(file_path) {
 
 #' Write a data frame to a RIS file
 #'
-#' Writes a data.frame to a RIS file, one record per row. If a field value
-#' contains semicolons, it is split and written as multiple tag lines. The `TY`
-#' field is written first for each record, followed by all other
-#' fields. Records are terminated with `ER  - `.
+#' Writes a data.frame to a RIS file, one record per row. If the data frame was created
+#' by \code{read_ris_to_dataframe()}, the original RIS tag order and tags are preserved where possible.
+#' Otherwise, a standard RIS format is used.
+#'
+#' If a field value contains semicolons, it is split and written as multiple tag lines. The \code{TY}
+#' (source type) field is written first for each record, followed by all other fields. Records are
+#' terminated with \code{ER  - }.
 #'
 #' @param df data.frame. The data to write.
 #' @param file_path character. Path to the output RIS file.
