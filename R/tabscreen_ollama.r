@@ -38,7 +38,7 @@
 #'   For detailed responses, the function uses tools that include detailed description capabilities.
 #' @param tool_choice Specification for which tool to use. Default behavior is set based on `decision_description` parameter.
 #'   For simple responses uses "inclusion_decision_simple", for detailed responses uses "inclusion_decision".
-#' @param top_p 'An alternative to sampling with temperature, called nucleus sampling,
+#' @param top_p An alternative to sampling with temperature, called nucleus sampling,
 #'   where the model considers the results of the tokens with top_p probability mass.
 #'   So 0.1 means only the tokens comprising the top 10% probability mass are considered.
 #'   We generally recommend altering this or temperature but not both.' (Groq). Default is 1.
