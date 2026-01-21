@@ -29,10 +29,10 @@
 #' \url{https://httr2.r-lib.org}, \url{https://github.com/r-lib/httr2}.
 #'
 #' @template common-arg
-#' @param api_url Character string with the endpoint URL for Groq's API. Default is `"https://api.groq.com/v1"`.
-#' @param model Character string with the name of the completion model. Can take
-#'   multiple Groq models. Default = `"llama3-70b-8192"`.
-#'   Find available models at \url{https://console.groq.com/docs/models}.
+#' @param api_url Character string with the endpoint URL for OLLAMA's API. Default is `"http://127.0.0.1:11434/api/chat"`.
+#' @param model Character string with the name of the OLLAMA model. Can take
+#'   multiple OLLAMA models. Default = `"llama3.2:latest"`.
+#'   Find available models at \url{https://ollama.com/library}.
 #' @param role Character string indicate the role of the user. Default is `"user"`.
 #' @param tools List of function definitions for tool calling. Default behavior is set based on `decision_description` parameter.
 #'   For detailed responses, the function uses tools that include detailed description capabilities.
@@ -44,20 +44,20 @@
 #'   We generally recommend altering this or temperature but not both. Default is 1.
 #' @param time_info Logical indicating whether the run time of each
 #'   request/question should be included in the data. Default = `TRUE`.
-#' @param max_tries,max_seconds 'Cap the maximum number of attempts with
+#' @param max_tries,max_seconds Cap the maximum number of attempts with
 #'  `max_tries` or the total elapsed time from the first request with
-#'  `max_seconds`. If neither option is supplied (the default), [httr2::req_perform()]
-#'  will not retry'.
-#' @param backoff 'A function that takes a single argument (the number of failed
-#'   attempts so far) and returns the number of seconds to wait'.
-#' @param after 'A function that takes a single argument (the response) and
+#'  `max_seconds`. Default for `max_tries` is 16. If `max_tries` is not supplied,
+#'  [httr2::req_perform()] will not retry.
+#' @param backoff A function that takes a single argument (the number of failed
+#'   attempts so far) and returns the number of seconds to wait.
+#' @param after A function that takes a single argument (the response) and
 #'   returns either a number of seconds to wait or `NULL`, which indicates
 #'   that a precise wait time is not available that the `backoff` strategy
-#'   should be used instead'.
+#'   should be used instead.
 #' @param rpm Numerical value indicating the number of requests per minute (rpm)
-#'   available for the specified api key.
+#'   available for the specified OLLAMA instance.
 #' @param reps Numerical value indicating the number of times the same
-#'   question should be sent to Groq's API models. This can be useful to test consistency
+#'   question should be sent to OLLAMA models. This can be useful to test consistency
 #'   between answers. Default is `1`.
 #' @param seed_par Numerical value for a seed to ensure that proper,
 #'   parallel-safe random numbers are produced.
@@ -69,11 +69,11 @@
 #'   Default is `TRUE`.
 #' @param incl_cutoff_upper Numerical value indicating the probability threshold
 #'   for which a studies should be included. Default is 0.5, which indicates that
-#'   titles and abstracts that Groq's API model has included more than 50 percent of the times
+#'   titles and abstracts that the OLLAMA model has included more than 50 percent of the times
 #'   should be included.
 #' @param incl_cutoff_lower Numerical value indicating the probability threshold
 #'   above which studies should be check by a human. Default is 0.4, which means
-#'   that if you ask Groq's API model the same questions 10 times and it includes the
+#'   that if you ask the OLLAMA model the same questions 10 times and it includes the
 #'   title and abstract 4 times, we suggest that the study should be check by a human.
 #' @param force Logical argument indicating whether to force the function to use more than
 #'   10 iterations. This argument is developed to avoid the conduct of wrong and extreme sized screening.
@@ -96,7 +96,7 @@
 #'  \bold{promptid} \tab \code{integer} \tab indicating the prompt ID. \cr
 #'  \bold{prompt} \tab \code{character} \tab indicating the prompt. \cr
 #'  \bold{model} \tab \code{character}   \tab indicating the specific model used. \cr
-#'  \bold{question} \tab \code{character} \tab indicating the final question sent to Groq's API models. \cr
+#'  \bold{question} \tab \code{character} \tab indicating the final question sent to OLLAMA models. \cr
 #'  \bold{top_p} \tab \code{numeric}  \tab indicating the applied top_p. \cr
 #'  \bold{incl_p} \tab \code{numeric}  \tab indicating the probability of inclusion calculated across multiple repeated responses on the same title and abstract. \cr
 #'  \bold{final_decision_gpt} \tab \code{character} \tab indicating the final decision reached by model - either 'Include', 'Exclude', or 'Check'. \cr
@@ -104,7 +104,7 @@
 #'  \bold{longest_answer}  \tab \code{character} \tab indicating the longest response obtained
 #'  across multiple repeated responses on the same title and abstract. Only included if the detailed function
 #'  is used. See 'Examples' below for how to use this function. \cr
-#'  \bold{reps}  \tab \code{integer}  \tab indicating the number of times the same question has been sent to Groq's API models. \cr
+#'  \bold{reps}  \tab \code{integer}  \tab indicating the number of times the same question has been sent to OLLAMA models. \cr
 #'  \bold{n_mis_answers} \tab \code{integer} \tab indicating the number of missing responses. \cr
 #' }
 #' <br>
@@ -116,11 +116,11 @@
 #'  \bold{promptid} \tab \code{integer} \tab indicating the prompt ID. \cr
 #'  \bold{prompt} \tab \code{character} \tab indicating the prompt. \cr
 #'  \bold{model} \tab \code{character}   \tab indicating the specific model used. \cr
-#'  \bold{iterations} \tab \code{numeric} \tab indicating the number of times the same question has been sent to Groq's API models. \cr
-#'  \bold{question} \tab \code{character} \tab indicating the final question sent to Groq's API models. \cr
+#'  \bold{iterations} \tab \code{numeric} \tab indicating the number of times the same question has been sent to OLLAMA models. \cr
+#'  \bold{question} \tab \code{character} \tab indicating the final question sent to OLLAMA models. \cr
 #'  \bold{top_p}  \tab \code{numeric} \tab indicating the applied top_p. \cr
 #'  \bold{decision_gpt}  \tab \code{character} \tab indicating the raw decision - either \code{"1", "0", "1.1"} for inclusion, exclusion, or uncertainty, respectively. \cr
-#'  \bold{detailed_description}  \tab \code{character} \tab indicating detailed description of the given decision made by Groq's API models.
+#'  \bold{detailed_description}  \tab \code{character} \tab indicating detailed description of the given decision made by OLLAMA models.
 #'  Only included if the detailed function is used. See 'Examples' below for how to use this function. \cr
 #'  \bold{decision_binary}  \tab \code{integer} \tab indicating the binary decision,
 #'  that is 1 for inclusion and 0 for exclusion. 1.1 decision are coded equal to 1 in this case. \cr
@@ -172,7 +172,6 @@
 #'  )
 #' plan(sequential)
 #'}
-
 
 tabscreen_ollama <- function(
   data,
@@ -275,11 +274,6 @@ tabscreen_ollama <- function(
   if (max(reps) > 10 && !force){
     max_reps_mes <- paste("* Are you sure you want to use", max(reps), "iterations? If so, set force = TRUE")
     stop(max_reps_mes)
-  }
-
-  # Ensuring that the rpm argument fits to the corresponding model
-  if (length(rpm) > 1 && length(model) != length(rpm)){
-    stop("model and rpm must be of the same length.")
   }
 
   # Ensuring that the reps argument fits to the corresponding model
@@ -465,7 +459,7 @@ tabscreen_ollama <- function(
         endpoint_url = api_url,
         ...,
         .options = furrr::furrr_options(seed = furrr_seed),
-        .progress = progress
+        .progress = FALSE
       )
     ) |>
     tidyr::unnest(res) |>

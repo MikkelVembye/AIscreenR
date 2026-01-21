@@ -268,7 +268,8 @@
         result <- dplyr::mutate(result, n = i)
         return(result)
       },
-      .options = furrr::furrr_options(seed = furrr_seed_opt)
+      .options = furrr::furrr_options(seed = furrr_seed_opt),
+      .progress = TRUE
     )
   
   final_res
