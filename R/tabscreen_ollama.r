@@ -41,7 +41,7 @@
 #' @param top_p An alternative to sampling with temperature, called nucleus sampling,
 #'   where the model considers the results of the tokens with top_p probability mass.
 #'   So 0.1 means only the tokens comprising the top 10% probability mass are considered.
-#'   We generally recommend altering this or temperature but not both.' (Groq). Default is 1.
+#'   We generally recommend altering this or temperature but not both. Default is 1.
 #' @param time_info Logical indicating whether the run time of each
 #'   request/question should be included in the data. Default = `TRUE`.
 #' @param max_tries,max_seconds 'Cap the maximum number of attempts with
