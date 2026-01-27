@@ -132,7 +132,7 @@ title and abstract 4 times, we suggest that the study should be check by a human
 Default is \code{FALSE}.}
 }
 \value{
-An object of class \code{"groq"}. The object is a list containing the following
+An object of class \code{"gpt"}. The object is a list containing the following
 components:
 \item{answer_data_aggregated}{dataset with the summarized, probabilistic inclusion decision
 for each title and abstract across multiple repeated questions (only when reps > 1).}

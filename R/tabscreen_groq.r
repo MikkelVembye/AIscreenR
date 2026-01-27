@@ -88,7 +88,7 @@
 #'   Default is `FALSE`.
 #' @param ... Further argument to pass to the request body.
 #'
-#' @return An object of class \code{"groq"}. The object is a list containing the following
+#' @return An object of class \code{"gpt"}. The object is a list containing the following
 #' components:
 #' \item{answer_data_aggregated}{dataset with the summarized, probabilistic inclusion decision
 #' for each title and abstract across multiple repeated questions (only when reps > 1).}
@@ -232,8 +232,8 @@ tabscreen_groq <- function(
   #.......................................
   # Handling inherited objects
   #.......................................
-  if (is_groq_tbl(data)) data <- data |> dplyr::select(-c(promptid:n)) |> tibble::as_tibble()
-  if (is_groq_agg_tbl(data)) data <- data |> dplyr::select(-c(promptid:n_mis_answers)) |> tibble::as_tibble()
+  if (is_gpt_tbl(data)) data <- data |> dplyr::select(-c(promptid:n)) |> tibble::as_tibble()
+  if (is_gpt_agg_tbl(data)) data <- data |> dplyr::select(-c(promptid:n_mis_answers)) |> tibble::as_tibble()
 
   #.......................................
   # Setup functions based on decision_description
@@ -462,7 +462,7 @@ tabscreen_groq <- function(
   params <- question_dat |>
     dplyr::select(question, model_gpt = model, topp, iterations, req_per_min)
 
-  answer_dat <-
+  answer_dat_raw <-
     question_dat |>
     dplyr::mutate(
       res = furrr::future_pmap(
@@ -488,8 +488,12 @@ tabscreen_groq <- function(
       )
     ) |>
     tidyr::unnest(res) |>
-    dplyr::mutate(run_date = as.character(Sys.Date())) |>
-    tibble::new_tibble(class = "groq_tbl")
+    dplyr::mutate(run_date = as.character(Sys.Date()))
+
+  answer_dat <-
+    answer_dat_raw |>
+    dplyr::rename(top_p = topp) |>
+    tibble::new_tibble(class = "gpt_tbl")
 
   #.......................................
   # Catching errors
@@ -513,7 +517,7 @@ tabscreen_groq <- function(
   # Making aggregated data (for multiple reps)
   #.......................................
   if (any(reps > 1)) {
-    answer_dat_sum <- .aggregate_res_groq(answer_dat, incl_cutoff_upper, incl_cutoff_lower)
+    answer_dat_sum <- .aggregate_res_groq(answer_dat_raw, incl_cutoff_upper, incl_cutoff_lower)
 
     # Final data sum
     answer_dat_aggregated <-
@@ -521,7 +525,7 @@ tabscreen_groq <- function(
       suppressMessages() |>
       dplyr::select(-c(iterations, req_per_min)) |>
       dplyr::rename(top_p = topp) |>
-      tibble::new_tibble(class = "groq_agg_tbl")
+      tibble::new_tibble(class = "gpt_agg_tbl")
 
     attr(answer_dat_aggregated, "incl_cutoff_upper") <- incl_cutoff_upper
     attr(answer_dat_aggregated, "incl_cutoff_lower") <- incl_cutoff_lower
@@ -554,7 +558,7 @@ tabscreen_groq <- function(
   attr(res, "arg_list") <- arg_list
 
   # Define class
-  class(res) <- c("groq", class(res))
+  class(res) <- c("gpt", class(res))
 
   res
 }

@@ -641,17 +641,16 @@ test_that("Print and class expectation for ollama object.", {
   )
 
   # class check
-  expect_s3_class(random_name, "ollama")
+  expect_s3_class(random_name, "gpt")
   expect_s3_class(random_name, "list")
 
-  expect_output(print(random_name), "random_name")
-
-  expect_output(print.ollama(random_name), "random_name\\$answer_data")
+  expect_output(print(random_name), "result_object\\$answer_data")
+  expect_output(print.gpt(random_name), "result_object\\$answer_data")
   expect_false("answer_data_aggregated" %in% names(random_name))
   expect_false("price_dollar" %in% names(random_name))
 
   print_out1 <- paste0(
-    "Find data with all answers by executing\\n random_name\\$answer_data"
+    "Find the final result dataset via result_object$answer_data"
   )
   expect_output(print(random_name), print_out1)
 
@@ -669,11 +668,10 @@ test_that("Print and class expectation for ollama object.", {
 
   expect_identical(names(random_name$answer_data), names(random_name$error_data))
 
-  expect_output(print(random_name), "random_name\\$answer_data")
-  expect_output(print(random_name), "random_name\\$error_data")
+  expect_output(print(random_name), "result_object\\$answer_data")
 
   print_out2 <- paste0(
-    "Find data with all answers by executing\\n random_name\\$answer_data"
+    "Find the final result dataset via result_object$answer_data"
   )
 
   expect_output(print(random_name), print_out2)
@@ -694,12 +692,11 @@ test_that("Print and class expectation for ollama object.", {
   )
 
   # class check
-  expect_s3_class(random_name, "ollama")
+  expect_s3_class(random_name, "gpt")
   expect_s3_class(random_name, "list")
 
-  expect_output(print(random_name), "random_name")
-
-  expect_output(print.ollama(random_name), "random_name\\$answer_data")
+  expect_output(print(random_name), "result_object\\$answer_data")
+  expect_output(print.gpt(random_name), "result_object\\$answer_data")
 
   expect_false("price_dollar" %in% names(random_name))
 
@@ -716,8 +713,7 @@ test_that("Print and class expectation for ollama object.", {
     suppressMessages()
 
 
-  expect_output(print(random_name), "random_name\\$answer_data")
-  expect_output(print(random_name), "random_name\\$error_data")
+  expect_output(print(random_name), "result_object\\$answer_data")
 
   expect_false("price_dollar" %in% names(random_name))
 
