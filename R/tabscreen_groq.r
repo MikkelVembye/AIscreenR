@@ -492,7 +492,6 @@ tabscreen_groq <- function(
 
   answer_dat <-
     answer_dat_raw |>
-    dplyr::rename(top_p = topp) |>
     tibble::new_tibble(class = "gpt_tbl")
 
   #.......................................
