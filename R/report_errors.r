@@ -89,15 +89,14 @@ report <- function(
   
   # Only set document_subtitle if it wasn't explicitly provided or is empty
   if (document_subtitle == "") {
-    # Set document_subtitle based on human_code and final_decision_gpt_num
-    human_code <- data |> dplyr::pull({{ human_code }})
-    final_decision_gpt_num <- data |> dplyr::pull({{ final_decision_gpt_num }})
-    
-    if (all(human_code == 1) && all(final_decision_gpt_num == 0)) {
+    human_code_vec <- data |> dplyr::pull({{ human_code }})
+    final_decision_vec <- data |> dplyr::pull({{ final_decision_gpt_num }})
+
+    if (all(human_code_vec == 1) && all(final_decision_vec == 0)) {
       document_subtitle <- "Included by humans, excluded by GPT"
-    } else if (all(human_code == 0) && all(final_decision_gpt_num == 1)) {
+    } else if (all(human_code_vec == 0) && all(final_decision_vec == 1)) {
       document_subtitle <- "Excluded by humans, included by GPT"
-    } else if (all(human_code != final_decision_gpt_num)) {
+    } else if (all(human_code_vec != final_decision_vec)) {
       document_subtitle <- "Disagreement between humans and GPT"
     } else {
       document_subtitle <- "Full report"
@@ -108,19 +107,25 @@ report <- function(
   if (document_subtitle == "") warning("No subtitle provided. Using an empty string.")
   
   # Extracting data columns
-  studyid <- data |> dplyr::pull({{ studyid }}) |>
+  studyid_vec <- data |> 
+    dplyr::pull({{ studyid }}) |> 
     htmltools::htmlEscape()
-  title <- data |> dplyr::pull({{ title }}) |>
+
+  title_vec   <- data |> 
+    dplyr::pull({{ title }})   |> 
     htmltools::htmlEscape()
-  abstract <- data |> dplyr::pull({{ abstract }}) |>
+    
+  abstract_vec<- data |> 
+    dplyr::pull({{ abstract }})|> 
     htmltools::htmlEscape()
-  
+
   # Preparing text for the report
-  studyid_txt <- paste0("**STUDY-ID: ", studyid, ":**", "\n\n")
-  title_text <- paste0("-- *Title:* '", gsub("'", " ", gsub("\"", " ", title)), "'", "\n\n")
-  abs_txt <- paste0("-- *Abstract*: '", gsub("'", " ", gsub("\"", " ", abstract)), "'", "\n\n")
+  studyid_txt  <- paste0("**STUDY-ID: ", studyid_vec, ":**", "\n\n")
+  title_text   <- paste0("-- *Title:* '", gsub("'", " ", gsub("\"", " ", title_vec)), "'", "\n\n")
+  abs_txt      <- paste0("-- *Abstract*: '", gsub("'", " ", gsub("\"", " ", abstract_vec)), "'", "\n\n")
   gpt_num_answer <- paste0("-- *Answer (GPT)*: ", data |> dplyr::pull({{ final_decision_gpt_num }}), "\n\n")
-  human_answer <- paste0("-- *Answer (Human)*: ", data |> dplyr::pull({{ human_code }}), "\n\n")
+  human_answer   <- paste0("-- *Answer (Human)*: ", data |> dplyr::pull({{ human_code }}), "\n\n")
+
   
   if (missing(gpt_answer)){
     answer_txt <- NULL
