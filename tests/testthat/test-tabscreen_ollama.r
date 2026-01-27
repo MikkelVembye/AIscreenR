@@ -1,5 +1,11 @@
+skip <- TRUE
+skip_github_action <- FALSE
+
 test_that(".ollama_engine return errors correctly", {
+  if(skip) skip()
+  if(skip_github_action) skip_on_ci()
   skip_on_cran()
+
   tools_choice_name <- list(
     type = "function",
     "function" = list(
@@ -63,7 +69,10 @@ test_that(".ollama_engine return errors correctly", {
 
 
 test_that(".rep_ollama_engine controls errors correctly", {
+  if(skip) skip()
+  if(skip_github_action) skip_on_ci()
   skip_on_cran()
+  
   iterations <- 3
 
   # Ineligible role
@@ -152,9 +161,6 @@ prompt2 <- prompts[2]
 models <- c("llama-3.1-8b-instant", "openai/gpt-oss-20b")
 reps <- c(2, 1)
 rpm <- c(30, 30)
-
-skip <- TRUE
-skip_github_action <- FALSE
 
 future::plan(future::multisession)
 

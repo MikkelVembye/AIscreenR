@@ -46,13 +46,13 @@ automatically.}
 
 \item{abstract}{Name of variable containing the abstract information.}
 
-\item{api_url}{Character string with the endpoint URL for Groq's API. Default is \code{"https://api.groq.com/v1"}.}
+\item{api_url}{Character string with the endpoint URL for OLLAMA's API. Default is \code{"http://127.0.0.1:11434/api/chat"}.}
 
 \item{...}{Further argument to pass to the request body.}
 
-\item{model}{Character string with the name of the completion model. Can take
-multiple Groq models. Default = \code{"llama3-70b-8192"}.
-Find available models at \url{https://console.groq.com/docs/models}.}
+\item{model}{Character string with the name of the OLLAMA model. Can take
+multiple OLLAMA models. Default = \code{"llama3.2:latest"}.
+Find available models at \url{https://ollama.com/library}.}
 
 \item{role}{Character string indicate the role of the user. Default is \code{"user"}.}
 
@@ -62,32 +62,32 @@ For detailed responses, the function uses tools that include detailed descriptio
 \item{tool_choice}{Specification for which tool to use. Default behavior is set based on \code{decision_description} parameter.
 For simple responses uses "inclusion_decision_simple", for detailed responses uses "inclusion_decision".}
 
-\item{top_p}{'An alternative to sampling with temperature, called nucleus sampling,
+\item{top_p}{An alternative to sampling with temperature, called nucleus sampling,
 where the model considers the results of the tokens with top_p probability mass.
 So 0.1 means only the tokens comprising the top 10\% probability mass are considered.
-We generally recommend altering this or temperature but not both.' (Groq). Default is 1.}
+We generally recommend altering this or temperature but not both. Default is 1.}
 
 \item{time_info}{Logical indicating whether the run time of each
 request/question should be included in the data. Default = \code{TRUE}.}
 
-\item{max_tries, max_seconds}{'Cap the maximum number of attempts with
+\item{max_tries, max_seconds}{Cap the maximum number of attempts with
 \code{max_tries} or the total elapsed time from the first request with
-\code{max_seconds}. If neither option is supplied (the default), \code{\link[httr2:req_perform]{httr2::req_perform()}}
-will not retry'.}
+\code{max_seconds}. Default for \code{max_tries} is 16. If \code{max_tries} is not supplied,
+\code{\link[httr2:req_perform]{httr2::req_perform()}} will not retry.}
 
-\item{backoff}{'A function that takes a single argument (the number of failed
-attempts so far) and returns the number of seconds to wait'.}
+\item{backoff}{A function that takes a single argument (the number of failed
+attempts so far) and returns the number of seconds to wait.}
 
-\item{after}{'A function that takes a single argument (the response) and
+\item{after}{A function that takes a single argument (the response) and
 returns either a number of seconds to wait or \code{NULL}, which indicates
 that a precise wait time is not available that the \code{backoff} strategy
-should be used instead'.}
+should be used instead.}
 
 \item{rpm}{Numerical value indicating the number of requests per minute (rpm)
-available for the specified api key.}
+available for the specified OLLAMA instance.}
 
 \item{reps}{Numerical value indicating the number of times the same
-question should be sent to Groq's API models. This can be useful to test consistency
+question should be sent to OLLAMA models. This can be useful to test consistency
 between answers. Default is \code{1}.}
 
 \item{seed_par}{Numerical value for a seed to ensure that proper,
@@ -104,12 +104,12 @@ Default is \code{TRUE}.}
 
 \item{incl_cutoff_upper}{Numerical value indicating the probability threshold
 for which a studies should be included. Default is 0.5, which indicates that
-titles and abstracts that Groq's API model has included more than 50 percent of the times
+titles and abstracts that the OLLAMA model has included more than 50 percent of the times
 should be included.}
 
 \item{incl_cutoff_lower}{Numerical value indicating the probability threshold
 above which studies should be check by a human. Default is 0.4, which means
-that if you ask Groq's API model the same questions 10 times and it includes the
+that if you ask the OLLAMA model the same questions 10 times and it includes the
 title and abstract 4 times, we suggest that the study should be check by a human.}
 
 \item{force}{Logical argument indicating whether to force the function to use more than
@@ -146,7 +146,7 @@ The \code{answer_data_aggregated} data (only present when reps > 1) contains the
 \bold{promptid} \tab \code{integer} \tab indicating the prompt ID. \cr
 \bold{prompt} \tab \code{character} \tab indicating the prompt. \cr
 \bold{model} \tab \code{character}   \tab indicating the specific model used. \cr
-\bold{question} \tab \code{character} \tab indicating the final question sent to Groq's API models. \cr
+\bold{question} \tab \code{character} \tab indicating the final question sent to OLLAMA models. \cr
 \bold{top_p} \tab \code{numeric}  \tab indicating the applied top_p. \cr
 \bold{incl_p} \tab \code{numeric}  \tab indicating the probability of inclusion calculated across multiple repeated responses on the same title and abstract. \cr
 \bold{final_decision_gpt} \tab \code{character} \tab indicating the final decision reached by model - either 'Include', 'Exclude', or 'Check'. \cr
@@ -154,7 +154,7 @@ The \code{answer_data_aggregated} data (only present when reps > 1) contains the
 \bold{longest_answer}  \tab \code{character} \tab indicating the longest response obtained
 across multiple repeated responses on the same title and abstract. Only included if the detailed function
 is used. See 'Examples' below for how to use this function. \cr
-\bold{reps}  \tab \code{integer}  \tab indicating the number of times the same question has been sent to Groq's API models. \cr
+\bold{reps}  \tab \code{integer}  \tab indicating the number of times the same question has been sent to OLLAMA models. \cr
 \bold{n_mis_answers} \tab \code{integer} \tab indicating the number of missing responses. \cr
 }
 \if{html}{\out{<br>}}
@@ -166,11 +166,11 @@ The \code{answer_data} data contains the following mandatory variables:
 \bold{promptid} \tab \code{integer} \tab indicating the prompt ID. \cr
 \bold{prompt} \tab \code{character} \tab indicating the prompt. \cr
 \bold{model} \tab \code{character}   \tab indicating the specific model used. \cr
-\bold{iterations} \tab \code{numeric} \tab indicating the number of times the same question has been sent to Groq's API models. \cr
-\bold{question} \tab \code{character} \tab indicating the final question sent to Groq's API models. \cr
+\bold{iterations} \tab \code{numeric} \tab indicating the number of times the same question has been sent to OLLAMA models. \cr
+\bold{question} \tab \code{character} \tab indicating the final question sent to OLLAMA models. \cr
 \bold{top_p}  \tab \code{numeric} \tab indicating the applied top_p. \cr
 \bold{decision_gpt}  \tab \code{character} \tab indicating the raw decision - either \code{"1", "0", "1.1"} for inclusion, exclusion, or uncertainty, respectively. \cr
-\bold{detailed_description}  \tab \code{character} \tab indicating detailed description of the given decision made by Groq's API models.
+\bold{detailed_description}  \tab \code{character} \tab indicating detailed description of the given decision made by OLLAMA models.
 Only included if the detailed function is used. See 'Examples' below for how to use this function. \cr
 \bold{decision_binary}  \tab \code{integer} \tab indicating the binary decision,
 that is 1 for inclusion and 0 for exclusion. 1.1 decision are coded equal to 1 in this case. \cr
