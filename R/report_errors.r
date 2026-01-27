@@ -73,7 +73,6 @@ report <- function(
   if (missing(studyid)) stop("Argument 'studyid' is missing. Please check the column names in data.")
   if (missing(title)) stop("Argument 'title' is missing. Please check the column names in data.")
   if (missing(abstract)) stop("Argument 'abstract' is missing. Please check the column names in data.")
-  if (missing(gpt_answer)) stop("Argument 'gpt_answer' is missing. Please check the column names in data.")
   if (missing(file)) stop("Argument 'file' is missing. Please provide a file name.")
   if (missing(format)) stop("Argument 'format' is missing. Please provide a valid format.")
   if (missing(document_title)) stop("Argument 'document_title' is missing. Please provide a title for the document.")
