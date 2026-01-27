@@ -40,8 +40,8 @@ test_that("report() function generates a report correctly", {
     # Check some content of the generated .qmd file
     # Read the whole file into a single string to make the test robust
     qmd_lines <- readLines(report_file)
-    expect_true(any(grepl("title: \" Test Report \"", qmd_lines, fixed = TRUE)))
-    expect_true(any(grepl("subtitle: \" Disagreement between humans and GPT \"", qmd_lines, fixed = TRUE)))
+    expect_true(any(grepl('title: "Test Report"', qmd_lines, fixed = TRUE)))
+    expect_true(any(grepl('subtitle: "Disagreement between humans and GPT"', qmd_lines, fixed = TRUE)))
   })
 })
 

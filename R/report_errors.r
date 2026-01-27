@@ -119,17 +119,22 @@ report <- function(
   studyid_txt <- paste0("**STUDY-ID: ", studyid, ":**", "\n\n")
   title_text <- paste0("-- *Title:* '", gsub("'", " ", gsub("\"", " ", title)), "'", "\n\n")
   abs_txt <- paste0("-- *Abstract*: '", gsub("'", " ", gsub("\"", " ", abstract)), "'", "\n\n")
+  gpt_num_answer <- paste0("-- *Answer (GPT)*: ", data |> dplyr::pull({{ final_decision_gpt_num }}), "\n\n")
+  human_answer <- paste0("-- *Answer (Human)*: ", data |> dplyr::pull({{ human_code }}), "\n\n")
   
   if (missing(gpt_answer)){
     answer_txt <- NULL
+    gpt_num_answer <- NULL
   } else {
     gpt_answer <- data |> dplyr::pull({{ gpt_answer }})
     answer_txt <- paste0("-- *Answer (GPT)*: ", gpt_answer, "\n\n")
+    gpt_num_answer <- data |> dplyr::pull({{ final_decision_gpt_num }})
+    gpt_num_answer <- paste0("-- *Answer (GPT - numeric)*: ", gpt_num_answer, "\n\n")
   }
   
   comment_text <- paste0("*Please add a comment on whether and why you agree with the GPT decision or not:*\n\n \n\n")
   
-  print_test <- paste0(studyid_txt, title_text, abs_txt, answer_txt, comment_text)
+  print_test <- paste0(studyid_txt, title_text, abs_txt, answer_txt, gpt_num_answer, human_answer, comment_text)
 
   # Create the header
   header <- paste("---\ntitle: \"", document_title, "\"\nsubtitle: \"", document_subtitle, "\"\nformat:\n  ", format, " \n---")
