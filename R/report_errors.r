@@ -43,7 +43,7 @@
 #'   gpt_answer = longest_answer,
 #'   human_code = human_code,
 #'   final_decision_gpt_num = final_decision_gpt_num,
-#'   file = "Screening_Disagreements_Report.qmd",
+#'   file = "Screening_Disagreements_Report",
 #'   format = "html",
 #'   document_title = "Study Report - Disagreement Explanations",
 #'   open = TRUE
@@ -86,6 +86,11 @@ report <- function(
   # Error handling for file path
   if (!dir.exists(directory)) stop("The specified directory does not exist.")
   
+  # Add .qmd to file name if not present
+  if (!grepl("\\.qmd$", file)) {
+    file <- paste0(file, ".qmd")
+  }
+
   # Only set document_subtitle if it wasn't explicitly provided or is empty
   if (document_subtitle == "") {
     human_code_vec <- data |> dplyr::pull({{ human_code }})
