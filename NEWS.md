@@ -5,6 +5,7 @@
 * Adding functions to read and write RIS files: read_ris_to_dataframe() and save_dataframe_to_ris().
 * Adding function to generate disagreement reports: generate_disagreement_report().
 * Adding articles for fine-tuning OpenAI models, generating disagreement reports, generating fine-tuning data and reading/writing RIS files.
+* Adding articles for comparing gpt-4.1 models and for comparing gpt-5 models.
 
 # AIscreenR 0.1.1.9000 
 
