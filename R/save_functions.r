@@ -18,16 +18,15 @@
 #' @export
 read_ris_to_dataframe <- function(file_path) {
   lines <- readLines(file_path, encoding = "UTF-8")
-  norm_space <- function(x) gsub("\\s+", " ", trimws(x))
 
   preallocate_size <- max(1L, length(lines) %/% 5L + 1L) # Estimate number of records (avg 5 lines per record)
   records <- vector("list", preallocate_size) # List of records
   record_order <- vector("list", preallocate_size) # List of tag order per record
   rec_idx <- 0L 
-  current_record <- list()
-  current_order <- character(0)
-  field_order <- character(0)
-  last_field <- NULL
+  current_record <- list() # A list of tag-value pairs for the current record
+  current_order <- character(0) # Order of tags in the current record
+  field_order <- character(0) # Overall order of fields as they first appear
+  last_field <- NULL # The last field processed, for handling continuation lines
   after_end_record <- FALSE # Track if we just processed an ER tag
 
   # Parse the RIS file line by line
@@ -43,13 +42,13 @@ read_ris_to_dataframe <- function(file_path) {
         records[[rec_idx]] <- current_record
         record_order[[rec_idx]] <- current_order
       }
-      current_record <- list()
+      current_record <- list() 
       current_order <- character(0)
       last_field <- NULL
       after_end_record <- TRUE # Mark that we just saw an end of record
     } else if (grepl("^[A-Z0-9]{2}  - ", line)) { # If the line starts with a two-letter tag followed by "  - ", it's a field
       field <- substr(line, 1, 2)
-      value <- norm_space(sub("^[A-Z0-9]{2}  - ", "", line))
+      value <- .norm_space(sub("^[A-Z0-9]{2}  - ", "", line)) # Extract the value after the tag
       
       # Start a new record if: this is the first field ever, OR we just saw ER and this is the first field of next record
       if ((rec_idx == 0L && length(current_record) == 0) || after_end_record) {
@@ -77,14 +76,14 @@ read_ris_to_dataframe <- function(file_path) {
       last_field <- field
       # Handle continuation lines (RIS values that span multiple lines)
     } else if (!is.null(last_field) && last_field %in% names(current_record)) {
-      cont <- norm_space(if (grepl("^\\s{2}", line)) sub("^\\s{2}", "", line) else line)
+      cont <- .norm_space(if (grepl("^\\s{2}", line)) sub("^\\s{2}", "", line) else line)
       curval <- current_record[[last_field]]
       if (is.list(curval)) { # If multiple values, append to the last one
         n <- length(curval)
-        curval[[n]] <- norm_space(paste(curval[[n]], cont))
+        curval[[n]] <- .norm_space(paste(curval[[n]], cont))
         current_record[[last_field]] <- curval
-      } else {
-        current_record[[last_field]] <- norm_space(paste(curval, cont)) 
+      } else { # Else, just append to the single value
+        current_record[[last_field]] <- .norm_space(paste(curval, cont)) 
       }
     }
   }
@@ -116,11 +115,11 @@ read_ris_to_dataframe <- function(file_path) {
     for (field in names(records[[i]])) {
       value <- records[[i]][[field]]
       if (is.list(value)) {
-        vals <- norm_space(unlist(value))
+        vals <- .norm_space(unlist(value))
         df_list[[field]][i] <- paste(vals, collapse = "; ")
         raw_values[[field]][[i]] <- vals
       } else {
-        df_list[[field]][i] <- norm_space(value)
+        df_list[[field]][i] <- .norm_space(value)
         raw_values[[field]][[i]] <- df_list[[field]][i]
       }
     }
@@ -163,21 +162,6 @@ save_dataframe_to_ris <- function(df, file_path) {
   has_raw <- is.list(raw_meta) && length(raw_meta) > 0 # Check if raw values exist
   has_record_order <- is.list(record_order) && length(record_order) == nrow(df) # Check if record order exists
   reverse_tag_map <- .get_reverse_ris_tag_map() # Get reverse mapping of descriptive names to RIS tags
-  norm_space <- function(x) gsub("\\s+", " ", trimws(x))
-
-  # Function to resolve the correct RIS tag for a given column and row
-  resolve_ris_tag <- function(col_name, row_idx) {
-    if (has_meta && !is.null(tag_meta[[col_name]]) && # Check if metadata exists for this column
-        length(tag_meta[[col_name]]) >= row_idx && 
-        !is.na(tag_meta[[col_name]][[row_idx]]) && 
-        nzchar(tag_meta[[col_name]][[row_idx]])) {
-      return(tag_meta[[col_name]][[row_idx]]) # Use the original tag used for this column and row
-    }
-    if (grepl("^[A-Z0-9]{2,4}$", col_name)) return(col_name) # If column name is already a valid RIS tag, return it
-    base_name <- sub("[0-9]+$", "", col_name)
-    if (base_name %in% names(reverse_tag_map)) return(reverse_tag_map[[base_name]]) # If base name maps to a RIS tag, return it
-    col_name
-  }
 
   if (!has_meta) df <- .reverse_map_ris_tags(df) # Reverse map if no metadata
 
@@ -194,7 +178,7 @@ save_dataframe_to_ris <- function(df, file_path) {
         vals <- unlist(raw_meta[[tag]][[i]])
         vals <- vals[!is.na(vals) & vals != ""]
         if (length(vals) > 0) {
-          raw_df_list[[tag]][i] <- norm_space(paste(norm_space(vals), collapse = "; ")) # Collapse multiple values with "; "
+          raw_df_list[[tag]][i] <- .norm_space(paste(.norm_space(vals), collapse = "; ")) # Collapse multiple values with "; "
         }
       }
     }
@@ -208,7 +192,7 @@ save_dataframe_to_ris <- function(df, file_path) {
       b <- as.character(df[[col]])
       a[is.na(a)] <- ""
       b[is.na(b)] <- ""
-      identical(norm_space(a), norm_space(b))
+      identical(.norm_space(a), .norm_space(b))
     }))
 
     if (identical_on_common) { # If identical, write using original raw formatting
@@ -224,7 +208,7 @@ save_dataframe_to_ris <- function(df, file_path) {
           if (length(vals) == 0) next
           pos <- if (is.null(tag_pos[[tag]])) 1L else tag_pos[[tag]]
           if (pos <= length(vals)) {
-            writeLines(paste0(tag, "  - ", norm_space(vals[[pos]])), con)
+            writeLines(paste0(tag, "  - ", .norm_space(vals[[pos]])), con)
             tag_pos[[tag]] <- pos + 1L
           }
         }
@@ -239,19 +223,22 @@ save_dataframe_to_ris <- function(df, file_path) {
   con <- file(file_path, "w", encoding = "UTF-8")
   multi_value_tags <- c("AU","A1","KW","M1","T1","TI","SN","JF","JO","JA","Y1","PY",
                         "ID","AN","UR","DO","DP","DB","AD","PB","VL","IS","SP","EP","U1","U2","CN")
-  free_text_tags <- c("AB","N1","NT","N2","NO","U1")
-  ty_col <- if ("TY" %in% names(df)) "TY" else if ("source_type" %in% names(df)) "source_type" else NULL
+  free_text_tags <- c("AB","N1","NT","N2","NO","U1") # Tags that may contain semicolons as part of free text
+  ty_col <- if ("TY" %in% names(df)) "TY" else if ("source_type" %in% names(df)) "source_type" else NULL # Determine TY column
 
+  # Write each record
   for (i in seq_len(nrow(df))) {
     row <- df[i, , drop = FALSE]
 
+    # Write TY field first
     if (!is.null(ty_col)) {
       ty_val <- as.character(row[[ty_col]])
       if (!is.na(ty_val) && ty_val != "") {
-        writeLines(paste0(resolve_ris_tag(ty_col, i), "  - ", norm_space(ty_val)), con)
+        writeLines(paste0(.resolve_ris_tag(ty_col, i, tag_meta = tag_meta, reverse_tag_map = reverse_tag_map), "  - ", .norm_space(ty_val)), con)
       }
     }
 
+    # Write other fields
     for (col_name in names(row)) {
       if (!is.null(ty_col) && col_name == ty_col) next
       value <- row[[col_name]]
@@ -260,16 +247,16 @@ save_dataframe_to_ris <- function(df, file_path) {
       }
       value <- as.character(value)
       if (is.na(value) || value == "") next
-      value <- norm_space(value)
-      tag_to_write <- resolve_ris_tag(col_name, i)
+      value <- .norm_space(value)
+      tag_to_write <- .resolve_ris_tag(col_name, i, tag_meta = tag_meta, reverse_tag_map = reverse_tag_map)
 
       # Attempt to write from raw values if they match
       wrote_from_raw <- FALSE
       if (has_raw && !is.null(raw_meta[[tag_to_write]])) {
         raw_vals <- unlist(raw_meta[[tag_to_write]][[i]])
         raw_vals <- raw_vals[!is.na(raw_vals) & raw_vals != ""]
-        if (length(raw_vals) > 0 && identical(norm_space(value), norm_space(paste(norm_space(raw_vals), collapse = "; ")))) {
-          for (rv in norm_space(raw_vals)) {
+        if (length(raw_vals) > 0 && identical(.norm_space(value), .norm_space(paste(.norm_space(raw_vals), collapse = "; ")))) {
+          for (rv in .norm_space(raw_vals)) {
             if (rv != "") writeLines(paste0(tag_to_write, "  - ", rv), con)
           }
           wrote_from_raw <- TRUE
@@ -784,4 +771,21 @@ save_dataframe_to_ris <- function(df, file_path) {
     result_df[[ris_tag]] <- df[[col_name]]
   }
   result_df
+}
+
+# Helper function: normalize whitespace consistently across read/write.
+.norm_space <- function(x) gsub("\\s+", " ", trimws(x))
+
+# Helper function: decide which RIS tag to write for a given column and row.
+.resolve_ris_tag <- function(col_name, row_idx, tag_meta = NULL, reverse_tag_map = NULL) {
+  if (is.list(tag_meta) && !is.null(tag_meta[[col_name]]) && # if metadata exists for this column
+      length(tag_meta[[col_name]]) >= row_idx && # and has entry for this row
+      !is.na(tag_meta[[col_name]][[row_idx]]) && # and is not NA
+      nzchar(tag_meta[[col_name]][[row_idx]])) { # and is not empty
+    return(tag_meta[[col_name]][[row_idx]]) # use the original RIS tag used
+  }
+  if (grepl("^[A-Z0-9]{2,4}$", col_name)) return(col_name) # already a RIS tag
+  base_name <- sub("[0-9]+$", "", col_name) # strip trailing digits for repeated fields
+  if (!is.null(reverse_tag_map) && base_name %in% names(reverse_tag_map)) return(reverse_tag_map[[base_name]]) # if mapped, use that
+  col_name
 }
