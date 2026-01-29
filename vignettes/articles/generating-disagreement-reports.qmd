@@ -21,7 +21,7 @@ This article explains how to use the `report()` function to generate a structure
 
 First, we load the necessary packages.
 
-```{r, echo=FALSE, eval=FALSE}
+```{r, eval=FALSE}
 library(dplyr)
 library(AIscreenR)
 ```
@@ -30,13 +30,6 @@ library(AIscreenR)
 
 The `report()` function requires a data frame containing studies where the human decision and the AI decision do not match. For this example, we'll use a small dataset from the package. The data can be found here: `inst/extdata/dis_sub.rda`.
 
-```{r, echo=FALSE}
-disagreements_path <- system.file("extdata", "dis_sub.rda", package = "AIscreenR")
-
-data <- load(disagreements_path)
-
-disagreements <- get(data)
-```
 ## Step 2: Generate the Report
 
 With the `disagreements` data frame ready, we can now use the `report()` function to generate a document. The function will create a Quarto (`.qmd`) file and render it into the format you specify (e.g., HTML, PDF, or Word).
