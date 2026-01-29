@@ -74,7 +74,7 @@ report(
   gpt_answer = longest_answer,
   human_code = human_code,
   final_decision_gpt_num = final_decision_gpt_num,
-  file = "Screening_Disagreements_Report.qmd",
+  file = "Screening_Disagreements_Report",
   format = "html",
   document_title = "Study Report - Disagreement Explanations",
   open = TRUE
