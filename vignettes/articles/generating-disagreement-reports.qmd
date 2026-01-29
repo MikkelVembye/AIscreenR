@@ -21,7 +21,7 @@ This article explains how to use the `report()` function to generate a structure
 
 First, we load the necessary packages.
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, eval=FALSE}
 library(dplyr)
 library(AIscreenR)
 ```
