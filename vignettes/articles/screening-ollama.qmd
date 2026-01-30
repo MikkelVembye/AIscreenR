@@ -1,22 +1,30 @@
 ---
 title: Title/Abstract Screening with Local Ollama Models
-format: html
-vignette: >
-  %\VignetteIndexEntry{Title/Abstract Screening with Local Ollama Models}
-  %\VignetteEngine{quarto::html}
-  %\VignetteEncoding{UTF-8}
+format:
+  html:
+    code-fold: false
+    code-tools: true
+    code-summary: "Show the code"
+    toc: true
+execute: 
+  echo: fenced
+  warning: false
+  message: false
+knitr:
+  opts_chunk: 
+    fig.pos: "H"
+    fig.retina: 2
+    cache: FALSE
+    R.options:
+      knitr.graphics.auto_pdf: true
+      width: 100
+      knitr.kable.NA: "-"
+      dplyr.summarise.inform: FALSE
+      scipen: 10
+      pillar.sigfig: 4 
+editor_options: 
+  chunk_output_type: console
 ---
-
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  echo = TRUE,
-  message = FALSE,
-  warning = FALSE
-)
-```
-
 
 # Introduction
 Screening titles and abstracts through online APIs can raise privacy concerns and reproducibility challenges. This vignette introduces `tabscreen_ollama()`, a function that uses locally hosted Ollama models screen titles and abstracts while maintaining data privacy and control.
@@ -35,7 +43,10 @@ Be aware that not all models support function-calling. Be sure to use a model th
 Data is requiered to be in the same format as for `tabscreen_gpt()`, i.e. a data.frame or tibble with at least three columns: `studyid`, `title`, and `abstract`.
 For demonstration purposes, we use a small example dataset from the `AIscreenR` package.
 
-```{r, eval=FALSE, echo=FALSE}
+```{r}
+#| echo: true
+#| eval: true
+
 # Load example data
 data("filges2015_dat", package = "AIscreenR")
 filges2015_dat <- filges2015_dat[1:5, ] # Using only first 5 rows for demonstration
@@ -44,7 +55,10 @@ head(filges2015_dat)
 
 ## Load relevant packages
 We load the required packages.
-```{r, eval = FALSE, warning=FALSE, message=FALSE}
+```{r}
+#| echo: true
+#| eval: true
+
 # Loading packages
 library(AIscreenR)  # Used to screen and calculate gpt vs. human performance
 library(synthesisr) # Used to load RIS files
@@ -57,7 +71,9 @@ library(future)     # Used to conduct screenings in parallel
 
 ## Prompting
 The user should define a clear and specific prompt to guide the model's screening decisions. Below is an example prompt for identifying studies related to Functional Family Therapy (FFT).
-```{r, echo=FALSE, eval=FALSE}
+```{r}
+#| echo: true
+#| eval: false
 prompt <- "Evaluate the following study based on the selection criteria
  for a systematic review on the effects of family-based interventions on drug abuse
  reduction for young people in treatment for non-opioid drug use.
@@ -91,7 +107,9 @@ For this example, we use the `llama3.2:latest` model, which supports function-ca
 We also choose not to get explanations for the decisions (decision_description = FALSE).
 A lot of other arguments are available, please see the function documentation for details.
 
-```{r, eval=FALSE}
+```{r}
+#| echo: true
+#| eval: false
 
 # Set parallel processing plan
 future::plan(future::multisession)
@@ -118,7 +136,10 @@ Here we can select and display relevant columns to compare human and model decis
 Other components include `error_data` (failed requests) and, if reps > 1, `answer_data_aggregated` (summary per study across reps).
 From the `results` object, we can also see metadata such as `run_date` and `arg_list`.
 
-```{r, eval=FALSE}
+```{r}
+#| echo: true
+#| eval: false
+
 # Select the relevant output columns
 
 results$answer_data |> dplyr::select(author, human_code, decision_gpt, decision_binary)

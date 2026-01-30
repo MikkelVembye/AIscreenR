@@ -1,30 +1,35 @@
 ---
 title: "Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews"
 author: "Mikkel H. Vembye"
-date: "`r Sys.Date()`"
+date: "`r format(Sys.time(), '%Y.%m.%d')`"
 bibliography: AIscreenR.bib
 link-citations: true
 csl: apa.csl
 format:
   html:
+    code-fold: false
+    code-tools: true
+    code-summary: "Show the code"
     toc: true
-    number-sections: true
-editor: 
+execute: 
+  echo: fenced
+  warning: false
+  message: false
+knitr:
+  opts_chunk: 
+    fig.pos: "H"
+    fig.retina: 2
+    cache: FALSE
+    R.options:
+      knitr.graphics.auto_pdf: true
+      width: 100
+      knitr.kable.NA: "-"
+      dplyr.summarise.inform: FALSE
+      scipen: 10
+      pillar.sigfig: 4 
+editor_options: 
   chunk_output_type: console
-vignette: >
-  %\VignetteIndexEntry{Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews}
-  %\VignetteEngine{quarto::html}
-  %\VignetteEncoding{UTF-8}
 ---
-
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  out.width = "100%",
-  eval = FALSE
-)
-```
 
 <div class="warning" style='margin-left:2em; margin-right:2em; margin-bottom:2em; margin-top:2em; padding:0.1em; background-color: #d7dbdd; border: solid #bdc3c7 3px'>
 <span>
@@ -71,7 +76,10 @@ At this stage, we expect that you have a collection of RIS files containing titl
 
 ## Load relevant R packages
 To get started, we first load all R package needed to construct and run the screening.
-```{r, eval = FALSE, warning=FALSE, message=FALSE}
+```{r}
+#| echo: true
+#| eval: false
+
 # Loading packages 
 library(AIscreenR) # Used to screen and calculate gpt vs. human performance
 library(synthesisr)  # Used to load RIS files
@@ -86,6 +94,9 @@ library(future)    # Used to conduct screenings in parallel
 Now, we are ready to conduct the first step of the screening: loading the RIS file data into R and converting it to a data frame. This can be done by using `read_refs()` from `synthesisr`. This is an updated version of the `read_bibliography()` function from the `revtools` package that works reliable. In the below example, we use RIS file data from a review regarding the effects of the FRIENDS preventive programme on anxiety symptoms in children and adolescents [@Filges2024]. Be aware, that this data is used for illustrative purposes only. In the example, we assume that the human reviewers have already started screening and identified several relevant and irrelevant studies, which they will use to create the test data. Thus, we can load the RIS files, which we downloaded from the EPPI-reviewer, separately for the in- and excluded RIS files. This allows us to track the human decision by adding a `human_code` variable, where `1` and `0` indicate whether a study is included or excluded, respectively.
 
 ```{r}
+#| echo: true
+#| eval: false
+
 # NOTE: Find the RIS files behind this vignette at https://osf.io/kfbvu/
 
 # Loading EXCLUDED studies
@@ -145,7 +156,10 @@ ris_dat_incl
 
 ## Create the test dataset
 Now that we have loaded our reference data, we can construct the test data by randomly sampling 150 irrelevant records [as suggested in @vembye_generative_2025] and 50 relevant records that include both a title and an abstract.  For this purpose we use `sample_references()`. Again, this is for illustration purposes only, as you may not yet have access to 50 relevant records at this stage of screening. We recommend identifying at least 10 relevant references before constructing the test data. As further described in Vembye et al. [-@vembye_generative_2025], we remove all records without abstracts, as these can distort the accuracy of the screening.
-```{r, eval = FALSE}
+```{r}
+#| echo: true
+#| eval: false
+
 set.seed(09042024)
 
 excl_sample <- 
@@ -210,6 +224,9 @@ After retrieving your API key, you could theoretically add it directly to the `A
 The easiest way to manage your API key is to add it permanently to your R environment as an environment variable. You can do this by using `usethis::edit_r_environ()`.
 
 ```{r}
+#| echo: true
+#| eval: false
+
 # Run code to open your .Renviron file
 usethis::edit_r_environ()
 ```
@@ -240,7 +257,10 @@ Consequently, after restarting RStudio, your API key will no longer be present i
 
 The next step involves writing one or more prompts to be used for screening. This can be done in several ways. You can either write your prompt directly in R, as illustrated below:
 
-```{r, eval = FALSE}
+```{r}
+#| echo: true
+#| eval: false
+
 prompt <- "We are screening studies for a systematic literature review. 
 The topic of the systematic review is the effect of the FRIENDS preventive programme
 on reducing anxiety symptoms in children and adolescents. The FRIENDS programme is a 
@@ -260,6 +280,9 @@ Or you can simply write it in Word, as shown in Figures 4.
 
 Then you can load your prompt(s) via `readtext()` from the `readtext` package. 
 ```{r}
+#| echo: true
+#| eval: false
+
 word_path <-  system.file("extdata", "word_prompt_1.docx", package = "AIscreenR")
 
 prompt <- 
@@ -282,7 +305,10 @@ Optional
  6. The number of screenings you want to run with the given model (Default is `1` but with cheap models it can be advantageous to conduct multiple screenings and make inclusion judgments based on how many times a study has been included across the given number of screenings).
  7. Set the request per minutes.
 
-```{r, message=FALSE, eval=FALSE}
+```{r}
+#| echo: true
+#| eval: false
+
 # Gets information about whether you have access to a given model and 
 # how many requests per minutes you are allow to send. 
 models_rpm <- rate_limits_per_minute("gpt-4o-mini")
@@ -310,7 +336,10 @@ plan(sequential)
 
 We have now conducted the test screening and can get the raw results as below. 
 
-```{r, message=FALSE, eval=FALSE}
+```{r}
+#| echo: true
+#| eval: false
+
 # The print output when calling the result object
 result_object
 #> 
@@ -339,7 +368,10 @@ result_object$answer_data_aggregated |>
 
 It may happen that you experience that some of your screening requests failed for some transient reasons, such as server overload or other issues. To recover these failed requests, you can use `screen_errors()`, as shown below. 
 
-```{r, eval=FALSE}
+```{r}
+#| echo: true
+#| eval: false
+
 result_object <- 
   result_object |> 
   screen_errors()
@@ -349,6 +381,9 @@ result_object <-
 We have now completed the test screening and want to assess whether it is viable to use the `gpt-4o-mini` model as our second screener. For the purpose, we can use `screen_analyzer()`. 
 
 ```{r}
+#| echo: true
+#| eval: false
+
 screen_performance <- 
   result_object |> 
   screen_analyzer(human_decision = human_code) # state the name of the variable containing the human decision. 
@@ -370,6 +405,9 @@ By using this benchmark scheme, we see that the `gpt-4o-mini` model performs on 
 ## Make judgments over multiple screenings
 Since we have conducted multiple (i.e., 10) screenings with the `gpt-4o-mini` model, we can adjust our inclusion decision based on the number of times a study record has been included across these 10 screenings. To obtain this information, you can use the following code:
 ```{r}
+#| echo: true
+#| eval: false
+
 incl_dist <- attr(screen_performance, "p_incl_data")
 incl_dist |> select(model, recall, specificity, criteria)
 #> # A tibble: 10 × 4
@@ -398,6 +436,9 @@ Even though, the `gpt-4o-mini` model yielded a highly acceptable screening perfo
 To get detailed descriptions of GPT's reasons for exclusion (alternatively inclusion), you can set `decision_description = TRUE` and run the screening again, as shown below.
 
 ```{r}
+#| echo: true
+#| eval: false
+
 disagree_dat <- 
   result_object$answer_data_aggregated |> 
   filter(human_code == 1, final_decision_gpt_num == 0, incl_p == 0)
@@ -430,6 +471,9 @@ For now, we recommend obtaining detailed descriptions only for records where the
 Here is an example of an abstract that was included by the human reviewers and excluded by GPT.
 
 ```{r}
+#| echo: true
+#| eval: false
+
 # Example of abstract included by the human and excluded by gpt-4o-mini
 result_object_detail$answer_data$abstract[1]
 #> [1] "Introduction: Many universal school-based preventative intervention trials 
@@ -456,6 +500,9 @@ result_object_detail$answer_data$abstract[1]
 
 and this is GPT's detailed response.
 ```{r}
+#| echo: true
+#| eval: false
+
 # Example of explanation for exclusion 
 # Seems reasonable why the records was thrown out by gpt.
 result_object_detail$answer_data$detailed_description[1]
@@ -473,7 +520,10 @@ As can be seen from this answer, it is reasonable why the title and abstract has
 
 When you have decided to use a GPT model as your second screener, you will likely want to know the cost of the full screening. You can obtain this information by using `approximate_price_gpt()`.
 
-```{r, eval = FALSE}
+```{r}
+#| echo: true
+#| eval: false
+
 # All RIS file data
 all_dat <- 
   bind_rows(ris_dat_excl, ris_dat_incl) |> # Use RIS file data here
@@ -510,6 +560,9 @@ When examining the price, it becomes clear why prioritizing the use of `gpt-4o-m
 You are now ready to run the full screening!  In this example, you can do so by substituting `test_dat` with `all_dat` in the code used to screen the test data, as shown below
 
 ```{r}
+#| echo: true
+#| eval: false
+
 # Set parallel plan
 plan(multisession) 
 
@@ -540,6 +593,9 @@ To steer the screening process when dealing with a large collection of RIS files
 Once the full screening has been conducted, you may want to load the relevant studies back into your systematic review software tool. To do this, you can use `write_refs()` from the `synthesisr` package. This function converts the data frame containing the included references into a RIS file, which can then be imported into the systematic review software.
 
 ```{r}
+#| echo: true
+#| eval: false
+
 incl_refs <- result_object$answer_data_aggregated |> 
   filter(incl_p >= 0.1) 
   
@@ -557,4 +613,4 @@ In this vignette, we have demonstrated how to conduct a title and abstract scree
   3. How to use multiple-prompt screening, i.e., making one prompt per inclusion criteria instead of adding all to the same prompt. 
   4. A new report functions to assess and resolve disagreements between human and GPT decisions.
 
-# References
+  # References

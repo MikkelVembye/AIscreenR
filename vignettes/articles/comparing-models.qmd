@@ -1,21 +1,30 @@
 ---
 title: "Comparing GPT-4.1 Models for Screening"
-format: html
-vignette: >
-  %\VignetteIndexEntry{Comparing GPT-4.1 Models for Screening}
-  %\VignetteEngine{quarto::html}
-  %\VignetteEncoding{UTF-8}
+format:
+  html:
+    code-fold: false
+    code-tools: true
+    code-summary: "Show the code"
+    toc: true
+execute: 
+  echo: fenced
+  warning: false
+  message: false
+knitr:
+  opts_chunk: 
+    fig.pos: "H"
+    fig.retina: 2
+    cache: FALSE
+    R.options:
+      knitr.graphics.auto_pdf: true
+      width: 100
+      knitr.kable.NA: "-"
+      dplyr.summarise.inform: FALSE
+      scipen: 10
+      pillar.sigfig: 4 
+editor_options: 
+  chunk_output_type: console
 ---
-
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  echo = TRUE,
-  message = FALSE,
-  warning = FALSE
-)
-```
 
 ## Introduction
 
@@ -27,7 +36,9 @@ We will analyze their performance with a single repetition (`reps = 1`). For the
 
 First, we load the necessary packages for our analysis.
 
-```{r, eval=TRUE}
+```{r}
+#| echo: true
+#| eval: false
 library(AIscreenR)
 library(dplyr)
 library(knitr)
@@ -39,7 +50,10 @@ To compare the models, we performed a screening task on the `friends_dat` datase
 
 The following prompt was used for all models. It is designed to be very specific about the required output format to ensure consistent results.
 
-```{r, echo=TRUE, eval=FALSE}
+```{r}
+#| echo: true
+#| eval: false
+
 # This is the prompt used for the experiment.
 prompt <- "You are a systematic literature review screening agent. You are equipped with a screening function tool that you MUST use.
 
@@ -65,7 +79,10 @@ For each model (`gpt-4.1`, `gpt-4.1-mini`, `gpt-4.1-nano`), we ran the screening
 
 The code to run the screening for a single model looked like this:
 
-```{r, eval=FALSE}
+```{r}
+#| echo: true
+#| eval: false
+
 # This code was run for each model and repetition setting.
 # It is not evaluated here to save time, as we will load the results directly.
 plan(multisession)
@@ -92,7 +109,9 @@ We now load the pre-computed results from the screening runs. The performance me
 *   **Specificity**: The proportion of truly irrelevant studies that the model correctly identified.
 *   **Balanced Accuracy (bAcc)**: The average of recall and specificity, providing a single measure that balances performance on both relevant and irrelevant studies.
 
-```{r, echo=FALSE}
+```{r}
+#| echo: false
+#| eval: true
 table_path <- system.file("extdata", "comparison-results", "comparing_gpt41.csv", package = "AIscreenR")
 
 results_table <- read.csv(table_path, check.names = FALSE)

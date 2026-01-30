@@ -1,19 +1,30 @@
 ---
 title: "Generating Disagreement Reports"
-format: html
-vignette: >
-  %\VignetteIndexEntry{Generating Disagreement Reports}
-  %\VignetteEngine{quarto::html}
-  %\VignetteEncoding{UTF-8}
+format:
+  html:
+    code-fold: false
+    code-tools: true
+    code-summary: "Show the code"
+    toc: true
+execute: 
+  echo: fenced
+  warning: false
+  message: false
+knitr:
+  opts_chunk: 
+    fig.pos: "H"
+    fig.retina: 2
+    cache: FALSE
+    R.options:
+      knitr.graphics.auto_pdf: true
+      width: 100
+      knitr.kable.NA: "-"
+      dplyr.summarise.inform: FALSE
+      scipen: 10
+      pillar.sigfig: 4 
+editor_options: 
+  chunk_output_type: console
 ---
-
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  out.width = "100%"
-)
-```
 
 This article explains how to use the `report()` function to generate a structured document that highlights disagreements between human and AI screening decisions.
 
@@ -21,7 +32,10 @@ This article explains how to use the `report()` function to generate a structure
 
 First, we load the necessary packages.
 
-```{r, eval=FALSE}
+```{r}
+#| echo: true
+#| eval: false
+
 library(dplyr)
 library(AIscreenR)
 ```
@@ -38,7 +52,10 @@ The report will list each study, its title and abstract, the AI's answer, and a 
 
 In this example, we will generate an HTML report.
 
-```{r, eval=FALSE}
+```{r}
+#| echo: true
+#| eval: false
+
 # This code will generate a report in your current working directory
 # The report will open automatically if 'open = TRUE'
 report(
