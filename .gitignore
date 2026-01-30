@@ -2,6 +2,7 @@
 docs
 inst/doc
 ^inst/extdata/comparison-results/.*\.rds$
+inst/extdata/comparison-results/*.rds
 
 /.quarto/
 **/*.quarto_ipynb
