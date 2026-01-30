@@ -14,5 +14,5 @@ README.md
 ^cran-comments\.md$
 ^CRAN-SUBMISSION$
 ^vignettes/articles$
-^inst/extdata/comparison-results$
+^inst/extdata/comparison-results/.*\.rds$
 ^vignettes/\.quarto$

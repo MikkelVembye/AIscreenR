@@ -151,9 +151,3 @@ and improves reproducibility by allowing model versions to be pinned and runs to
 It is however important to note that local models may require substantial compute resources,
 and may not be as up-to-date as cloud-hosted models. Furthermore small models which are easier and more 
 convenient to run locally may not perform as well as larger models available in the cloud.
-
-## References and resources
-
-- Ollama documentation: https://ollama.com/docs/
-- Ollama models directory: https://ollama.com/models
-- Chain-of-thought background: https://www.ibm.com/think/topics/chain-of-thoughts

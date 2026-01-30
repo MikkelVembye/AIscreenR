@@ -93,74 +93,9 @@ We now load the pre-computed results from the screening runs. The performance me
 *   **Balanced Accuracy (bAcc)**: The average of recall and specificity, providing a single measure that balances performance on both relevant and irrelevant studies.
 
 ```{r, echo=FALSE}
-data_dir <- system.file("extdata", "comparison-results", package = "AIscreenR")
-models <- c("gpt-4.1-mini", "gpt-4.1-nano", "gpt-4.1")
-model_display_names <- c("gpt-4.1-mini-2025-04-14", "gpt-4.1-nano-2025-04-14", "gpt-4.1-2025-04-14")
+table_path <- system.file("extdata", "comparison-results", "comparing_gpt41.csv", package = "AIscreenR")
 
-results_table <- data.frame()
-
-for (i in seq_along(models)) {
-      model <- models[i]
-      display_name <- model_display_names[i]
-      
-      # Define file names
-      file_rep1_name <- if (model == "gpt-4.1") {
-        "result_obj_gpt-4.1_rep1_newprompt.rds"
-      } else {
-        paste0("result_obj_", model, "_rep1.rds")
-      }
-      
-      file_rep10_name <- if (model == "gpt-4.1") {
-        "result_obj_gpt-4.1_rep10_newprompt.rds"
-      } else {
-        paste0("result_obj_", model, "_rep10.rds")
-      }
-
-      file_rep1 <- file.path(data_dir, file_rep1_name)
-      file_rep10 <- file.path(data_dir, file_rep10_name)
-
-    # Process 1 repetition
-    if (file.exists(file_rep1)) {
-        result_obj_rep1 <- readRDS(file_rep1) |> screen_analyzer(key_result = FALSE)
-        
-        tp <- result_obj_rep1$human_in_gpt_in
-        fn <- result_obj_rep1$human_in_gpt_ex
-        tn <- result_obj_rep1$human_ex_gpt_ex
-        fp <- result_obj_rep1$human_ex_gpt_in
-        
-        model_row_rep1 <- data.frame(
-            `Review model` = display_name,
-            `Reps` = 1,
-            `Recall` = paste0(round(tp / (tp + fn), 3), " (", tp, "/", tp + fn, ")"),
-            `Specificity` = paste0(round(tn / (tn + fp), 3), " (", tn, "/", tn + fp, ")"),
-            `bAcc` = round(result_obj_rep1$bacc, 3),
-            check.names = FALSE
-        )
-        results_table <- rbind(results_table, model_row_rep1)
-    }
-
-    # Process 10 repetitions
-    if (file.exists(file_rep10)) {
-        result_obj_rep10 <- readRDS(file_rep10) |> screen_analyzer(key_result = FALSE)
-        
-        tp_10 <- result_obj_rep10$human_in_gpt_in
-        fn_10 <- result_obj_rep10$human_in_gpt_ex
-        tn_10 <- result_obj_rep10$human_ex_gpt_ex
-        fp_10 <- result_obj_rep10$human_ex_gpt_in
-        
-        model_row_rep10 <- data.frame(
-            `Review model` = display_name,
-            `Reps` = 10,
-            `Recall` = paste0(round(tp_10 / (tp_10 + fn_10), 3), " (", tp_10, "/", tp_10 + fn_10, ")"),
-            `Specificity` = paste0(round(tn_10 / (tn_10 + fp_10), 3), " (", tn_10, "/", tn_10 + fp_10, ")"),
-            `bAcc` = round(result_obj_rep10$bacc, 3),
-            check.names = FALSE
-        )
-        results_table <- rbind(results_table, model_row_rep10)
-    }
-}
-
-# Display the table
+results_table <- read.csv(table_path, check.names = FALSE)
 knitr::kable(results_table, align = "lcccc")
 ```
 

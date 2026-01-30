@@ -1,6 +1,7 @@
 .Rproj.user
 docs
 inst/doc
+^inst/extdata/comparison-results/.*\.rds$
 
 /.quarto/
 **/*.quarto_ipynb

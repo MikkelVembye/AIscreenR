@@ -1,51 +1,57 @@
----
-output: github_document
-output_file: README.md
----
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 <a href="https://mikkelvembye.github.io/AIscreenR/"><img src="man/figures/AIscreenR_hex.png" align="right" width="180"/></a>
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%",
-  #eval = httr2::secret_has_key("AISCREENR_KEY")
-  eval = FALSE
-)
-```
-
 # AIscreenR: AI screening tools in R for systematic reviewing
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml) [![CRAN Version](https://www.r-pkg.org/badges/version/AIscreenR)](https://cran.r-project.org/package=AIscreenR) [![Monthly Downloads](https://cranlogs.r-pkg.org/badges/AIscreenR)](https://cranlogs.r-pkg.org/badges/AIscreenR) [![Total Downloads](https://cranlogs.r-pkg.org/badges/grand-total/AIscreenR)](https://cranlogs.r-pkg.org/badges/grand-total/AIscreenR)
+[![R-CMD-check](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml)
+[![CRAN
+Version](https://www.r-pkg.org/badges/version/AIscreenR)](https://cran.r-project.org/package=AIscreenR)
+[![Monthly
+Downloads](https://cranlogs.r-pkg.org/badges/AIscreenR)](https://cranlogs.r-pkg.org/badges/AIscreenR)
+[![Total
+Downloads](https://cranlogs.r-pkg.org/badges/grand-total/AIscreenR)](https://cranlogs.r-pkg.org/badges/grand-total/AIscreenR)
 
 <!-- badges: end -->
 
-The goal of AIscreenR is to use AI tools to support screening processes (including title and abstract screening) in systematic reviews and related literature reviews. At the current stage, the main aim of the `AIscreenR` package is to test and use OpenAI's GPT API models as second screeners of titles and abstracts or alternatively to reduce the number of references needed to be screened by humans. The package allows user to utilize OpenAI's GPT API models from the [https://api.openai.com/v1/chat/completions](https://platform.openai.com/docs/models/model-endpoint-compatibility) endpoint. In future developments, we may add further LLMs, such as API models from Claude 2. For now, we invite other researchers to test this software, so that we, as a review community, can get a better understanding of the performance of OpenAI's GPT API models for title and abstract screening in high-quality reviews. For guidance on how to conduct reliable title and abstract screenings with GPT API models, see [Vembye et al. (2025)](https://psycnet.apa.org/record/2026-37236-001).
+The goal of AIscreenR is to use AI tools to support screening processes
+(including title and abstract screening) in systematic reviews and
+related literature reviews. At the current stage, the main aim of the
+`AIscreenR` package is to test and use OpenAI’s GPT API models as second
+screeners of titles and abstracts or alternatively to reduce the number
+of references needed to be screened by humans. The package allows user
+to utilize OpenAI’s GPT API models from the
+[https://api.openai.com/v1/chat/completions](https://platform.openai.com/docs/models/model-endpoint-compatibility)
+endpoint. In future developments, we may add further LLMs, such as API
+models from Claude 2. For now, we invite other researchers to test this
+software, so that we, as a review community, can get a better
+understanding of the performance of OpenAI’s GPT API models for title
+and abstract screening in high-quality reviews. For guidance on how to
+conduct reliable title and abstract screenings with GPT API models, see
+[Vembye et al. (2025)](https://psycnet.apa.org/record/2026-37236-001).
 
 ## Installation
 
 Install the latest release from CRAN:
 
-```{r, eval = FALSE}
+``` r
 install.packages("AIscreenR")
 ```
 
-You can install the development version of AIscreenR from [GitHub](https://github.com/) with:
+You can install the development version of AIscreenR from
+[GitHub](https://github.com/) with:
 
-```{r}
+``` r
 # install.packages("devtools")
 devtools::install_github("MikkelVembye/AIscreenR")
 ```
 
 Setting API key and checking rate limits
 
-```{r, eval=FALSE}
+``` r
 # Find your api key at https://platform.openai.com/account/api-keys 
 # Thereafter, either encrypt it with the secret functions from the httr2 package
 # see https://httr2.r-lib.org/reference/secrets.html or run set_api_key() 
@@ -68,9 +74,11 @@ rate_limits
 #> 1 gpt-4o-mini               30000         150000000
 ```
 
-How to load RIS files. In this example we have downloaded the RIS files from the [EPPI-Reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914).
+How to load RIS files. In this example we have downloaded the RIS files
+from the
+[EPPI-Reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914).
 
-```{r, eval = FALSE}
+``` r
 
 excl_path <- system.file("extdata", "excl_tutorial.ris", package = "AIscreenR")
 
@@ -108,13 +116,10 @@ head(filges2015_dat, 10)
 #> 10 9431505 EEG spectrum as information carrier               "Sponta…          0
 ```
 
-```{r, echo=FALSE, include=FALSE}
-head(filges2015_dat, 10)
-```
+Example of how to enter a prompt in R. Can also be done in Word (see
+vignette).
 
-Example of how to enter a prompt in R. Can also be done in Word (see vignette).
-
-```{r, eval = FALSE}
+``` r
 prompt <- "Evaluate the following study based on the selection criteria
  for a systematic review on the effects of family-based interventions on drug abuse
  reduction for young people in treatment for non-opioid drug use.
@@ -144,7 +149,7 @@ prompt <- "Evaluate the following study based on the selection criteria
 
 Approximate price of screening before running the screening.
 
-```{r, eval = FALSE}
+``` r
 app_obj <- 
   approximate_price_gpt(
     data = filges2015_dat,
@@ -169,9 +174,10 @@ app_obj$price_data
 #> # ℹ 1 more variable: total_price_dollar <dbl>
 ```
 
-Example of how to conduct simple screening, returning `1` if a reference should be included, `0` if excluded, and `1.1` if uncertain.
+Example of how to conduct simple screening, returning `1` if a reference
+should be included, `0` if excluded, and `1.1` if uncertain.
 
-```{r, warning=FALSE, eval = FALSE}
+``` r
 # Subsetting the number of references to speed up the tutorial screening
 plan(multisession)
 test_obj <- 
@@ -220,4 +226,8 @@ all_dat |> select(human_code, decision_binary)
 
 # References
 
-Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2025). Generative pretrained transformer models can function as highly reliable second screeners of titles and abstracts in systematic reviews: A proof of concept and common guidelines. *Psychological Methods*, Online first. <https://doi.org/10.1037/met0000769>
+Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W.
+(2025). Generative pretrained transformer models can function as highly
+reliable second screeners of titles and abstracts in systematic reviews:
+A proof of concept and common guidelines. *Psychological Methods*,
+Online first. <https://doi.org/10.1037/met0000769>

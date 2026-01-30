@@ -68,7 +68,7 @@ results <-
     prompt = prompt, 
     model = "gpt-5", # This was changed for each model
     reps = 1, # This was changed to 10 for the second run
-    screening_effort = "low", # This was changed to "medium" and "high" for other runs
+    reasoning_effort = "low", # This was changed to "medium" and "high" for other runs
   )
 
 plan(sequential)
@@ -84,47 +84,15 @@ We now load the pre-computed results from the screening runs. The performance me
 *   **Recall**: The proportion of truly relevant studies that the model correctly identified. High recall is crucial to avoid missing relevant studies.
 *   **Specificity**: The proportion of truly irrelevant studies that the model correctly identified.
 *   **Balanced Accuracy (bAcc)**: The average of recall and specificity, providing a single measure that balances performance on both relevant and irrelevant studies.
-
 ```{r, echo=FALSE}
-data_dir <- system.file("extdata", "comparison-results", package = "AIscreenR")
-models <- c("gpt-5", "gpt-5-mini", "gpt-5-nano")
-model_display_names <- c("gpt-5-2025-08-07", "gpt-5-mini-2025-08-07", "gpt-5-nano-2025-08-07")
-efforts <- c("low", "medium", "high")
-reps_list <- c(1, 10)
+table_path <- system.file("extdata", "comparison-results", "comparing_gpt5.csv", package = "AIscreenR")
 
-results_table <- data.frame()
-
-for (i in seq_along(models)) {
-  model <- models[i]
-  display_name <- model_display_names[i]
-  
-  for (effort in efforts) {
-    for (reps in reps_list) {
-      file_name <- paste0("result_obj_", model, "_rep", reps, "_", effort, ".rds")
-      file_path <- file.path(data_dir, file_name)
-
-      if (file.exists(file_path)) {
-        result_obj <- readRDS(file_path) |> screen_analyzer(key_result = FALSE)
-        tp <- result_obj$human_in_gpt_in
-        fn <- result_obj$human_in_gpt_ex
-        tn <- result_obj$human_ex_gpt_ex
-        fp <- result_obj$human_ex_gpt_in
-        
-        model_row <- data.frame(
-          `Review model` = display_name,
-          `Effort` = effort,
-          `Reps` = reps,
-          `Recall` = paste0(round(tp / (tp + fn), 3), " (", tp, "/", tp + fn, ")"),
-          `Specificity` = paste0(round(tn / (tn + fp), 3), " (", tn, "/", tn + fp, ")"),
-          `bAcc` = round(result_obj$bacc, 3),
-          check.names = FALSE
-        )
-        results_table <- rbind(results_table, model_row)
-      }
-    }
-  }
+if (!nzchar(table_path) || !file.exists(table_path)) {
+  stop("Could not find comparing_gpt5.csv in the installed package extdata.")
 }
-knitr::kable(results_table, align = "lcccccc")
+
+results_table <- read.csv(table_path, check.names = FALSE)
+knitr::kable(results_table, align = "lcccc")
 ```
 
 ## Interpretation
