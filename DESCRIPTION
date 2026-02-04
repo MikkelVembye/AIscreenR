@@ -32,10 +32,9 @@ Imports:
     purrr,
     lifecycle,
     jsonlite,
-    quarto,
     htmltools,
     tidyselect,
-    rlang,
+    rlang
 Suggests: 
     future,
     knitr,
@@ -44,6 +43,7 @@ Suggests:
     testthat (>= 3.0.0),
     withr,
     readtext,
+    quarto
 Config/testthat/edition: 3
 Config/testthat/parallel: true
 Config/testthat/start-first: tabscreen_gpt, approximate_price_gpt, rate_limits, api_key_functions 

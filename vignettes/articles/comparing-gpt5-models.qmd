@@ -6,6 +6,10 @@ format:
     code-tools: true
     code-summary: "Show the code"
     toc: true
+vignette: |
+  %\VignetteIndexEntry{Comparing GPT-5 Models for Screening}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
 execute: 
   echo: fenced
   warning: false
