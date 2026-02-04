@@ -334,25 +334,17 @@ tabscreen_ollama <- function(
   #.......................................
 
   # Handle study ID creation
-  if (missing(studyid)){
-    dat <-
-      data |>
-      dplyr::mutate(
-        studyid = 1:nrow(data)
-      ) |>
-      dplyr::relocate(studyid, .before = {{ title }}) |>
-      dplyr::relocate({{ abstract }}, .after = {{ title }}) |>
-      dplyr::relocate(c(studyid, {{ title }}, {{ abstract }}), .after = last_col())
-  } else {
-    dat <-
-      data |>
-      dplyr::mutate(
-        studyid = {{ studyid }}
-      ) |>
-      dplyr::relocate(studyid, .before = {{ title }}) |>
-      dplyr::relocate({{ abstract }}, .after = {{ title }}) |>
-      dplyr::relocate(c(studyid, {{ title }}, {{ abstract }}), .after = last_col())
-  }
+  study_id <- if (missing(studyid)) 1:nrow(data) else data |> dplyr::pull({{ studyid }})
+
+  dat <-
+    data |>
+    dplyr::mutate(
+      studyid = study_id,
+      studyid = factor(studyid, levels = unique(studyid))
+    ) |>
+    dplyr::relocate(studyid, .before = {{ title }}) |>
+    dplyr::relocate({{ abstract }}, .after = {{ title }}) |>
+    dplyr::relocate(c(studyid, {{ title }}, {{ abstract }}), .after = last_col())
 
   # Factors used for slicing data and ensuring correct length of data
   mp_reps <- if (length(reps) > 1) 1 else length(model)
