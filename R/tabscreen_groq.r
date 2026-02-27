@@ -6,14 +6,13 @@
 #'
 #' @description
 #' This function supports the conduct of title and abstract screening with Groq API models in R.
-#' Specifically, it allows the user to draw on Groq-hosted models (e.g., Llama 3 / 3.1 variants, Mixtral/Mistral, Gemma, DeepSeek, Qwen, and fine-tuned models).
+#' Specifically, it allows the user to draw on Groq-hosted models.
 #' The function allows to run title and abstract screening across multiple prompts and with
 #' repeated questions to check for consistency across answers. All of which can be done in parallel.
-#' The function draws on the newly developed function calling which is called via the
-#' tools argument in the request body. This is the main different between [tabscreen_gpt.tools()]
-#' and [tabscreen_gpt.original()]. Function calls ensure more reliable and consistent responses to ones
+#' The function draws on function calling which is called via the
+#' tools argument in the request body. Function calls ensure more reliable and consistent responses to ones
 #' requests. See [Vembye, Christensen, Mølgaard, and Schytt. (2025)](https://osf.io/preprints/osf/yrhzm)
-#' for guidance on how adequately to conduct title and abstract screening with Groq models.
+#' for guidance on how adequately to conduct title and abstract screening with GPT models.
 #'
 #' @references Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2024)
 #'   \emph{GPT API Models Can Function as Highly Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
@@ -52,18 +51,19 @@
 #' @param max_tries,max_seconds 'Cap the maximum number of attempts with
 #'  `max_tries` or the total elapsed time from the first request with
 #'  `max_seconds`. If neither option is supplied (the default), [httr2::req_perform()]
-#'  will not retry'.
+#'  will not retry'.  (Wickham, 2023). The default of `max_tries` is 16.
 #' @param is_transient 'A predicate function that takes a single argument
 #'  (the response) and returns `TRUE` or `FALSE` specifying whether or not
-#'  the response represents a transient error'.
+#'  the response represents a transient error'  (Wickham, 2023). This function runs 
+#' automatically in the AIscreenR but can be customized by the user if necessary.
 #' @param backoff 'A function that takes a single argument (the number of failed
-#'   attempts so far) and returns the number of seconds to wait'.
+#'   attempts so far) and returns the number of seconds to wait' (Wickham, 2023).
 #' @param after 'A function that takes a single argument (the response) and
 #'   returns either a number of seconds to wait or `NULL`, which indicates
 #'   that a precise wait time is not available that the `backoff` strategy
-#'   should be used instead'.
+#'   should be used instead' (Wickham, 2023).
 #' @param rpm Numerical value indicating the number of requests per minute (rpm)
-#'   available for the specified api key.
+#'   available for the specified model.
 #' @param reps Numerical value indicating the number of times the same
 #'   question should be sent to Groq's API models. This can be useful to test consistency
 #'   between answers. Default is `1`.
@@ -72,15 +72,19 @@
 #' @param progress Logical indicating whether a progress line should be shown when running
 #'   the title and abstract screening in parallel. Default is `TRUE`.
 #' @param decision_description Logical indicating whether to include detailed descriptions
-#'   of decisions. Default is `FALSE`.
+#'   of decisions. Default is `FALSE`. When conducting large-scale screening, we generally 
+#' recommend not using this feature as it will substantially increase the cost of the screening. 
+#' We generally recommend using it when encountering disagreements between GPT and human decisions.
 #' @param messages Logical indicating whether to print messages embedded in the function.
 #'   Default is `TRUE`.
 #' @param incl_cutoff_upper Numerical value indicating the probability threshold
-#'   for which a studies should be included. Default is 0.5, which indicates that
+#'   for which a studie should be included. ONLY relevant when the same questions is 
+#' requested multiple times (i.e., when any reps > 1). Default is 0.5, which indicates that
 #'   titles and abstracts that Groq's API model has included more than 50 percent of the times
 #'   should be included.
 #' @param incl_cutoff_lower Numerical value indicating the probability threshold
-#'   above which studies should be check by a human. Default is 0.4, which means
+#'   above which studies should be check by a human.  ONLY relevant when the same questions 
+#' is requested multiple times (i.e., when any reps > 1). Default is 0.4, which means
 #'   that if you ask Groq's API model the same questions 10 times and it includes the
 #'   title and abstract 4 times, we suggest that the study should be check by a human.
 #' @param force Logical argument indicating whether to force the function to use more than

@@ -4,7 +4,6 @@
 
 .ollama_engine <- function(
     body,
-    RPM,
     time_inf,
     max_t,
     max_s, 
@@ -49,7 +48,6 @@
       backoff = back,
       after = aft
     ) |>
-    httr2::req_throttle(RPM/60) |>
     httr2::req_user_agent("AIscreenR (http://mikkelvembye.github.io/AIscreenR/)")
 
   resp <- req |> httr2::req_perform() |> httr2::resp_body_json()
@@ -169,7 +167,6 @@
     model_gpt, 
     topp, 
     iterations,
-    req_per_min, 
     role_gpt, 
     tool, 
     t_choice, 
@@ -257,7 +254,6 @@
       iter_seq, \(i) {
         result <- safe_ollama_engine(
           body = api_body, 
-          RPM = req_per_min, 
           time_inf = time_inf,
           max_t = max_t,
           max_s = max_s,

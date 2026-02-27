@@ -6,26 +6,23 @@
 \usage{
 rate_limits_per_minute(
   model = "gpt-4o-mini",
-  AI_tool = "gpt",
-  api_key = get_api_key()
+  AI_tool = "OpenAI",
+  api_key = NULL
 )
 }
 \arguments{
 \item{model}{Character string with the name of the completion model.
 Default is \code{"gpt-4o-mini"}. Can take multiple values.
-Find available model at
-\url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.}
+For OpenAI models, find available models at
+\url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.
+For Groq models, find available models at
+\url{https://console.groq.com/docs/models}.}
 
 \item{AI_tool}{Character string specifying the AI tool from which the API is
-issued. Default is \code{"gpt"}.}
+issued. Currently supports \code{"OpenAI"} (default) and \code{"Groq"}.}
 
-\item{api_key}{Numerical value with your personal API key. Default setting draws
-on the \code{\link[=get_api_key]{get_api_key()}} to retrieve the API key from the R environment, so that the key is not
-compromised. The API key can be added to the R environment via \code{\link[=set_api_key]{set_api_key()}}
-or by using \code{\link[usethis:edit]{usethis::edit_r_environ()}}. In the \code{.Renviron} file, write \code{CHATGPT_KEY=INSERT_YOUR_KEY_HERE}.
-After entering the API key, close and save the \code{.Renviron} file and restart \code{RStudio} (ctrl + shift + F10).
-Alternatively, one can use \code{\link[httr2:secrets]{httr2::secret_make_key()}}, \code{\link[httr2:secrets]{httr2::secret_encrypt()}}, and
-\code{\link[httr2:secrets]{httr2::secret_decrypt()}} to scramble and decrypt the API key.}
+\item{api_key}{Character string with the API key. For OpenAI, use \code{\link[=get_api_key]{get_api_key()}}.
+For Groq, use \code{\link[=get_api_key_groq]{get_api_key_groq()}}.}
 }
 \value{
 A \code{tibble} including variables with information about the model used,
@@ -44,5 +41,12 @@ Find general information at
 set_api_key()
 
 rate_limits_per_minute()
+
+# Groq example
+rate_limits_per_minute(
+  model = "llama3-70b-8192",
+  AI_tool = "Groq",
+  api_key = get_api_key_groq()
+)
 }
 }

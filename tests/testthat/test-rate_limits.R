@@ -31,8 +31,10 @@ test_that("rate_limits_per_minute() casts errors correctly.", {
   #if(skip) skip()
   #skip_on_cran()
 
-  rlpm <- rate_limits_per_minute(model = "gpt-3")
-  expect_identical(unique(rlpm$model), "Error 404: The model `gpt-3` does not exist or you do not have access to it.")
+  expect_error(
+    rate_limits_per_minute(model = "gpt-3"),
+    "Unknown model"
+  )
 
   rlpm <- rate_limits_per_minute(api_key = 1234)$model
   expect_true(stringr:::str_detect(rlpm, "401"))

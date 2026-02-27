@@ -54,8 +54,6 @@
 #'   returns either a number of seconds to wait or `NULL`, which indicates
 #'   that a precise wait time is not available that the `backoff` strategy
 #'   should be used instead.
-#' @param rpm Numerical value indicating the number of requests per minute (rpm)
-#'   available for the specified OLLAMA instance.
 #' @param reps Numerical value indicating the number of times the same
 #'   question should be sent to OLLAMA models. This can be useful to test consistency
 #'   between answers. Default is `1`.
@@ -64,7 +62,8 @@
 #' @param progress Logical indicating whether a progress line should be shown when running
 #'   the title and abstract screening in parallel. Default is `TRUE`.
 #' @param decision_description Logical indicating whether to include detailed descriptions
-#'   of decisions. Default is `FALSE`.
+#'   of decisions. Default is `FALSE`. When conducting large-scale screening, we generally 
+#' recommend not using this feature as it will substantially increase the time of the screening.
 #' @param messages Logical indicating whether to print messages embedded in the function.
 #'   Default is `TRUE`.
 #' @param incl_cutoff_upper Numerical value indicating the probability threshold
@@ -191,7 +190,6 @@ tabscreen_ollama <- function(
   max_seconds = NULL,
   backoff = NULL,
   after = NULL,
-  rpm = 10000,
   reps = 1,
   seed_par = NULL,
   progress = TRUE,
@@ -266,10 +264,6 @@ tabscreen_ollama <- function(
     stop(max_reps_mes)
   }
 
-  # Ensuring that the rpm argument fits to the corresponding model
-  if (length(rpm) > 1 && length(model) != length(rpm)){
-    stop("model and rpm must be of the same length.")
-    }
   # Ensuring that users do not conduct wrong screening
   if (max(reps) > 10 && !force){
     max_reps_mes <- paste("* Are you sure you want to use", max(reps), "iterations? If so, set force = TRUE")
@@ -312,7 +306,6 @@ tabscreen_ollama <- function(
       role = role,
       tools = tools,
       tool_choice = tool_choice,
-      rpm = rpm,
       reps = reps,
       time_info = time_info,
       max_tries = max_tries,
@@ -348,7 +341,6 @@ tabscreen_ollama <- function(
 
   # Factors used for slicing data and ensuring correct length of data
   mp_reps <- if (length(reps) > 1) 1 else length(model)
-  mp_rpm <- if (length(rpm) > 1) 1 else length(model)
 
   model_length <- length(model)
   prompt_length <- length(prompt)
@@ -372,7 +364,6 @@ tabscreen_ollama <- function(
     dplyr::mutate(
       model = rep(model, studyid_length*prompt_length),
       iterations = rep(reps, studyid_length*prompt_length*mp_reps),
-      req_per_min = rep(rpm, studyid_length*prompt_length*mp_rpm),
       question_raw = paste0(
         prompt,
         " Now, evaluate the following title and abstract for",
@@ -430,7 +421,7 @@ tabscreen_ollama <- function(
   )
 
   params <- question_dat |>
-    dplyr::select(question, model_gpt = model, topp, iterations, req_per_min)
+    dplyr::select(question, model_gpt = model, topp, iterations)
 
   answer_dat_raw <-
     question_dat |>
@@ -483,7 +474,7 @@ tabscreen_ollama <- function(
     answer_dat_aggregated <-
       dplyr::left_join(question_dat, answer_dat_sum) |>
       suppressMessages() |>
-      dplyr::select(-c(iterations, req_per_min)) |>
+      dplyr::select(-c(iterations)) |>
       dplyr::rename(top_p = topp) |>
       tibble::new_tibble(class = c("gpt_agg_tbl"))
 
