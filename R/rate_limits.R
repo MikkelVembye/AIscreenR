@@ -28,7 +28,11 @@
 #' \dontrun{
 #' set_api_key()
 #'
-#' rate_limits_per_minute()
+#' rate_limits_per_minute(
+#'   model = "gpt-4o-mini",
+#'   AI_tool = "OpenAI",
+#'   api_key = get_api_key()
+#' )
 #'
 #' # Groq example
 #' rate_limits_per_minute(
