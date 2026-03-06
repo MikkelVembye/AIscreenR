@@ -209,7 +209,7 @@
 #'  \bold{total_price_dollar} \tab \code{integer} \tab total price for all tokens for the correspondent gpt-model. \cr
 #' }
 #'
-#' Find current token pricing at \url{https://openai.com/pricing} or [model_prizes].
+#' Find current token pricing at \url{https://developers.openai.com/api/docs/pricing} or [model_prizes].
 #'
 #' @importFrom stats df
 #' @import dplyr
