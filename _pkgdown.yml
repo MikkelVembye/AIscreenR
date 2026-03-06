@@ -121,7 +121,7 @@ articles:
     contents:
       - articles/screening-ollama
   
-  - title: "Comparing gpt-5 models" 
+  - title: "Comparing GPT-4o-mini, GPT-5-mini, and GPT-5.1 for Title/Abstract Screening" 
     navbar: ~
     contents:
-      - articles/comparing-gpt5-models
+      - articles/comparing-reasoning-models

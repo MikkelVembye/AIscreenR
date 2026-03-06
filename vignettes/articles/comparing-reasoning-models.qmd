@@ -1,0 +1,160 @@
+---
+title: "Comparing reasoning models for screening: GPT-4o-mini, GPT-5-mini, and GPT-5.1"
+format:
+  html:
+    code-fold: false
+    code-tools: true
+    code-summary: "Show the code"
+    toc: true
+vignette: |
+  %\VignetteIndexEntry{Comparing reasoning models for screening: GPT-4o-mini, GPT-5-mini, and GPT-5.1}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+execute: 
+  echo: fenced
+  warning: false
+  message: false
+knitr:
+  opts_chunk: 
+    fig.pos: "H"
+    fig.retina: 2
+    cache: FALSE
+    R.options:
+      knitr.graphics.auto_pdf: true
+      width: 100
+      knitr.kable.NA: "-"
+      dplyr.summarise.inform: FALSE
+      scipen: 10
+      pillar.sigfig: 4 
+editor_options: 
+  chunk_output_type: console
+---
+
+## Introduction
+In this article, we compare the performance of three OpenAI models for screening tasks: `gpt-4o-mini`, `gpt-5-mini`, and `gpt-5.1`.
+We evaluate their effectiveness in systematic literature review screening tasks using a real-world dataset.
+The comparison is based on a single repetition (`reps = 1`) for all models. For the reasoning models (`gpt-5-mini` and `gpt-5.1`), we use the default reasoning effort of `medium` and verbosity `low`.
+The aim of this comparison is to assess the trade-offs between the models in terms of accuracy and efficiency for screening tasks.
+Furthermore, to investigate the impact of reasoning in models.
+
+## Setup
+
+First, we load the necessary packages for our analysis.
+
+```{r}
+#| echo: true
+#| eval: false
+library(AIscreenR)
+library(dplyr)
+library(knitr)
+library(future)
+```
+
+## Methodology: Running the Comparison
+
+To compare the models, we performed a screening task on the `friends_dat` dataset. The goal was to identify studies about the FRIENDS preventive programme.
+
+### The Prompt
+The following prompt was used for all models. It is designed to be very specific about the required output format to ensure consistent results.
+
+```{r}
+#| echo: true
+#| eval: false
+prompt <- "We are screening titles and abstracts of studies for a systematic review about FRIENDS-family interventions for children/adolescents.
+
+Your task: decide INCLUDE (1) vs EXCLUDE (0) based ONLY on title + abstract.
+
+INCLUDE (decision = 1) if ALL are true:
+A) Intervention is FRIENDS-family OR clearly derived from it:
+   - Explicitly named FRIENDS / FRIENDS for Life / Fun FRIENDS, OR
+   - Explicitly described as an adaptation/translation/derivative of FRIENDS-family, OR
+   - Described as a school-/group-based CBT anxiety prevention/resilience program that is 'based on' or 'informed by' FRIENDS/Fun FRIENDS (treat this as FRIENDS-family unless the abstract clearly indicates it is unrelated).
+B) The study measures, evaluates, or reports on anxiety, internalizing symptoms, OR social-emotional/coping outcomes:
+   - The abstract explicitly mentions anxiety/depression outcomes or anxiety reduction (e.g., 'decreased anxiety', 'anxiety symptoms improved', 'anxiety outcomes'), OR
+   - The abstract indicates anxiety/depression/internalizing/emotional coping skills are measured, OR
+   - The FRIENDS intervention is delivered with assessment of emotional/social/coping competencies, OR
+   - The intervention is explicitly described as targeting anxiety/depression reduction (measurement specifics unclear from abstract).
+
+EXCLUDE if ANY are true:
+1) Not FRIENDS-family and not clearly derived from FRIENDS-family (mere generic CBT with no FRIENDS link).
+2) Discussion/review/conceptual paper with no empirical study described.
+3) Study explicitly focuses ONLY on non-symptom outcomes (e.g., social validity, acceptability, satisfaction, implementation fidelity, teacher/student attendance) WITHOUT mentioning measurement of anxiety or internalizing symptoms.
+4) Outcomes are only non-symptom constructs (e.g., social skills/SEL, cooperation) with NO indication that anxiety/internalizing symptoms are being measured.
+
+When uncertain: Lean towards INCLUDE
+
+Remember: Include studies if the abstract suggests that the full text might reveal that the study meets the criteria, even if the abstract is not perfectly clear. Exclude only if the abstract clearly indicates that the study does not meet the criteria.
+"
+```
+
+Note that the prompt is changed from the original prompt used in the previous comparison of GPT-4.1-mini, GPT-4.1, and GPT-4.1-nano to better suit the reasoning capabilities of the GPT-5 models. The prompt is more detailed and provides clearer instructions to guide the reasoning process of the models. 
+
+### Running the Screening
+For each model (`gpt-4o-mini`, `gpt-5-mini`, `gpt-5.1`), we ran the screening using `tabscreen_gpt()`. We ran the process with a single repetition (`reps = 1`) for all models. We used gpt-4o-mini as a baseline as this is the default model used in `AIscreenR` for screening tasks, and we wanted to compare the performance of the newer GPT-5 models against this baseline. The code to run the screening for a single model looked like this:
+```{r}
+#| echo: true
+#| eval: false
+# Example code to run the screening for one model (e.g., gpt-5-mini with 1 repetition)
+plan(multisession)
+result_obj <- 
+  tabscreen_gpt(
+    data = friends_dat, # The dataset containing the studies to be screened
+    prompt = prompt, # The prompt defined above
+    studyid = studyid, # The column in the dataset that contains the study IDs
+    title = title, # The column in the dataset that contains the study titles
+    abstract = abstract, # The column in the dataset that contains the study abstracts
+    model = "gpt-5-mini", # Change this to "gpt-4o-mini" or "gpt-5.1" for the other models
+    reps = 1, # Number of repetitions (set to 1 for this comparison)
+    decision_description = FALSE, # Whether to include the model's reasoning in the output (set to FALSE for this comparison)
+    reasoning_effort = "medium", # The reasoning effort level for the GPT-5 models (set to "medium" for this comparison)
+    verbosity = "low" # The verbosity level for the GPT-5 models (set to "low" for this comparison)
+)
+plan(sequential)
+```
+
+## Results
+
+We now load the pre-computed results from the screening runs. The performance metrics in the table below were calculated using the `screen_analyzer()` function. The key metrics are:
+
+*   **Recall**: The proportion of truly relevant studies that the model correctly identified. High recall is crucial to avoid missing relevant studies.
+*   **Specificity**: The proportion of truly irrelevant studies that the model correctly identified.
+*   **Balanced Accuracy (bAcc)**: The average of recall and specificity, providing a single measure that balances performance on both relevant and irrelevant studies.
+
+```{r}
+#| echo: false
+#| eval: true
+table_path <- system.file("extdata", "comparison-results", "results_4omini_5mini_51_comparison.csv", package = "AIscreenR")
+
+results_table <- read.csv(table_path, check.names = FALSE)
+knitr::kable(results_table, align = "lcccc")
+```
+
+## Interpretation
+The results show that GPT-4o-mini had a recall of 1.00, specificity of 0.86, and balanced accuracy of 0.93. GPT-5-mini had a recall of 0.99, specificity of 0.90, and balanced accuracy of 0.95. GPT-5.1 had a recall of 0.99, specificity of 0.92, and balanced accuracy of 0.96. 
+When examining the results, we see that GPT-4o-mini had 0 false negatives and 66 false positives, 
+while GPT-5-mini had 1 false negative and 49 false positives, and GPT-5.1 had 1 false negative and 
+41 false positives.
+The one "false negative" (Study 2540) is actually a case where the GPT-5 models 
+correctly identified the paper as a discussion/review with no empirical results, and therefore correctly excluded it.
+It was also not clear for the human coders wether this study should be included or not. One coder included it, 
+while the other coder excluded it. This suggests that the abstract of this study is quite ambiguous and that the 
+false negative for both GPT-5-mini and GPT-5.1 may be a borderline case.
+
+Therefore, the main difference between the models is in the number of false positives, with GPT-4o-mini having more 
+false positives than GPT-5-mini and GPT-5.1. This suggests that GPT-4o-mini may be more inclusive in its screening decisions, 
+while GPT-5-mini and GPT-5.1 may be more conservative. This implies that the reasoning models (gpt-5-mini and gpt-5.1)
+follow the prompt more closely, than the gpt-4o-mini model.
+
+The price for GPT-4o-mini was 0.3982 $, for GPT-5-mini it was 2.2387 $, and for GPT-5.1 it was 5.2719 $. 
+Meaning that even though the reasoning models (gpt-5-mini and gpt-5.1) had fewer false positives, 
+they were also much more expensive than the gpt-4o-mini model.
+
+## Conclusion
+In conclusion, the choice of model may depend on the specific needs of the systematic review. 
+If the goal is to minimize false negatives and be more inclusive, GPT-4o-mini may be the better choice. 
+This is also the most cost-effective option. However, if the goal is to minimize false positives and be more conservative, 
+GPT-5-mini or GPT-5.1 may be the better choice, although they are more expensive.
+Furthermore, we see when using the GPT-5-mini or GPT-5.1 the prompt is highly important, 
+as the models follow the prompt more closely.
+Therefore, if using reasoning models, it is crucial to have a well-crafted prompt that clearly outlines the inclusion and exclusion criteria,
+but if this is achieved, the reasoning models can lead to more accurate screening decisions and reduce human screening burden.

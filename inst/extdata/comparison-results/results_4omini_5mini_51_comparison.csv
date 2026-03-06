@@ -1,0 +1,4 @@
+"model","p_agreement","recall","specificity","false_negatives","false_positives","price"
+"GPT-4o-mini",0.975,1,0.974,0,66,0.3982
+"GPT-5-mini",0.981,0.984,0.981,1,49,2.2387
+"GPT-5.1",0.984,0.984,0.984,1,41,5.2719
