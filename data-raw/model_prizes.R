@@ -92,16 +92,16 @@ model_prizes <-
       0.15/mio, # gpt-4o-mini-2024-07-18
 
       # GPT-4.1 models
-      3/mio,   # gpt-4.1
-      3/mio,   # gpt-4.1-2025-04-14
+      2/mio,   # gpt-4.1
+      2/mio,   # gpt-4.1-2025-04-14
 
       # GPT-4.1-mini models
-      0.8/mio, # gpt-4.1-mini
-      0.8/mio, # gpt-4.1-mini-2025-04-14
+      0.4/mio, # gpt-4.1-mini
+      0.4/mio, # gpt-4.1-mini-2025-04-14
 
       # GPT-4.1-nano models
-      0.2/mio, # gpt-4.1-nano
-      0.2/mio, # gpt-4.1-nano-2025-04-14
+      0.1/mio, # gpt-4.1-nano
+      0.1/mio, # gpt-4.1-nano-2025-04-14
 
       # GPT-4.5-preview models
       75/mio,  # gpt-4.5-preview
