@@ -90,7 +90,9 @@ Remember: Include studies if the abstract suggests that the full text might reve
 Note that the prompt is changed from the original prompt used in the previous comparison of GPT-4.1-mini, GPT-4.1, and GPT-4.1-nano to better suit the reasoning capabilities of the GPT-5 models. The prompt is more detailed and provides clearer instructions to guide the reasoning process of the models. 
 
 ### Running the Screening
-For each model (`gpt-4o-mini`, `gpt-5-mini`, `gpt-5.1`), we ran the screening using `tabscreen_gpt()`. We ran the process with a single repetition (`reps = 1`) for all models. We used gpt-4o-mini as a baseline as this is the default model used in `AIscreenR` for screening tasks, and we wanted to compare the performance of the newer GPT-5 models against this baseline. The code to run the screening for a single model looked like this:
+For each model (`gpt-4o-mini`, `gpt-5-mini`, `gpt-5.1`), we ran the screening using `tabscreen_gpt()`. We ran the process with a single repetition (`reps = 1`) for all models. We used gpt-4o-mini as a baseline as this is the default model used in `AIscreenR` for screening tasks, and we wanted to compare the performance of the newer GPT-5 models against this baseline.
+
+For the `gpt-4o-mini`model we used the following code:
 ```{r}
 #| echo: true
 #| eval: false
@@ -103,7 +105,49 @@ result_obj <-
     studyid = studyid, # The column in the dataset that contains the study IDs
     title = title, # The column in the dataset that contains the study titles
     abstract = abstract, # The column in the dataset that contains the study abstracts
-    model = "gpt-5-mini", # Change this to "gpt-4o-mini" or "gpt-5.1" for the other models
+    model = "gpt-4o-mini", # The model to use for screening
+    reps = 1, # Number of repetitions (set to 1 for this comparison)
+    decision_description = FALSE, # Whether to include the model's reasoning in the output (set to FALSE for this comparison)
+)
+plan(sequential)
+```
+
+For the `gpt-5-mini` we used the following code:
+```{r}
+#| echo: true
+#| eval: false
+# Example code to run the screening for one model (e.g., gpt-5-mini with 1 repetition)
+plan(multisession)
+result_obj <- 
+  tabscreen_gpt(
+    data = friends_dat, # The dataset containing the studies to be screened
+    prompt = prompt, # The prompt defined above
+    studyid = studyid, # The column in the dataset that contains the study IDs
+    title = title, # The column in the dataset that contains the study titles
+    abstract = abstract, # The column in the dataset that contains the study abstracts
+    model = "gpt-5-mini", # The model to use for screening
+    reps = 1, # Number of repetitions (set to 1 for this comparison)
+    decision_description = FALSE, # Whether to include the model's reasoning in the output (set to FALSE for this comparison)
+    reasoning_effort = "medium", # The reasoning effort level for the GPT-5 models (set to "medium" for this comparison)
+    verbosity = "low" # The verbosity level for the GPT-5 models (set to "low" for this comparison)
+)
+plan(sequential)
+```
+
+For the `gpt-5.1` we used the following code:
+```{r}
+#| echo: true
+#| eval: false
+# Example code to run the screening for one model (e.g., gpt-5-mini with 1 repetition)
+plan(multisession)
+result_obj <- 
+  tabscreen_gpt(
+    data = friends_dat, # The dataset containing the studies to be screened
+    prompt = prompt, # The prompt defined above
+    studyid = studyid, # The column in the dataset that contains the study IDs
+    title = title, # The column in the dataset that contains the study titles
+    abstract = abstract, # The column in the dataset that contains the study abstracts
+    model = "gpt-5.1", # The model to use for screening
     reps = 1, # Number of repetitions (set to 1 for this comparison)
     decision_description = FALSE, # Whether to include the model's reasoning in the output (set to FALSE for this comparison)
     reasoning_effort = "medium", # The reasoning effort level for the GPT-5 models (set to "medium" for this comparison)
@@ -130,31 +174,15 @@ knitr::kable(results_table, align = "lcccc")
 ```
 
 ## Interpretation
-The results show that GPT-4o-mini had a recall of 1.00, specificity of 0.86, and balanced accuracy of 0.93. GPT-5-mini had a recall of 0.99, specificity of 0.90, and balanced accuracy of 0.95. GPT-5.1 had a recall of 0.99, specificity of 0.92, and balanced accuracy of 0.96. 
-When examining the results, we see that GPT-4o-mini had 0 false negatives and 66 false positives, 
-while GPT-5-mini had 1 false negative and 49 false positives, and GPT-5.1 had 1 false negative and 
-41 false positives.
-The one "false negative" (Study 2540) is actually a case where the GPT-5 models 
-correctly identified the paper as a discussion/review with no empirical results, and therefore correctly excluded it.
-It was also not clear for the human coders whether this study should be included or not. One coder included it, 
-while the other coder excluded it. This suggests that the abstract of this study is quite ambiguous and that the 
-false negative for both GPT-5-mini and GPT-5.1 may be a borderline case.
+The results demonstrate strong performance across all three models, with notable differences in specificity and consistency. GPT-4o-mini achieved a perfect recall of 1.000 but a specificity of 0.974 and agreement of 0.975. GPT-5-mini and GPT-5.1 both achieved slightly lower recall (0.984) but notably higher specificity (0.981 and 0.984, respectively) and agreement (0.981 and 0.984, respectively).
 
-Therefore, the main difference between the models is in the number of false positives, with GPT-4o-mini having more 
-false positives than GPT-5-mini and GPT-5.1. This suggests that GPT-4o-mini may be more inclusive in its screening decisions, 
-while GPT-5-mini and GPT-5.1 may be more conservative. This implies that the reasoning models (gpt-5-mini and gpt-5.1)
-follow the prompt more closely, than the gpt-4o-mini model.
+Examining the errors in detail, GPT-4o-mini had 0 false negatives and 66 false positives, while both GPT-5-mini and GPT-5.1 had 1 false negative and 49 and 41 false positives, respectively. The single false negative case (Study 2540) is actually a case where the GPT-5 models correctly identified the paper as a discussion/review with no empirical results, and therefore correctly excluded it. This was also ambiguous for the human coders, with one including and one excluding the study, suggesting that the abstract is quite ambiguous and that the false negative for both GPT-5-mini and GPT-5.1 may be a borderline case rather than a genuine error.
 
-The price for GPT-4o-mini was 0.3982 $, for GPT-5-mini it was 2.2387 $, and for GPT-5.1 it was 5.2719 $. 
-Meaning that even though the reasoning models (gpt-5-mini and gpt-5.1) had fewer false positives, 
-they were also much more expensive than the gpt-4o-mini model.
+The key trade-off is between recall and specificity. GPT-4o-mini prioritizes sensitivity (catching all relevant studies) at the cost of more false positives, suggesting a more inclusive screening approach. In contrast, GPT-5-mini and GPT-5.1 trade slightly lower recall for substantially better specificity, resulting in fewer false positives. This indicates that the reasoning models follow the prompt more closely and make more conservative inclusion decisions.
+
+From a cost perspective, GPT-4o-mini was the most economical at $0.3982, while GPT-5-mini cost $2.2387 and GPT-5.1 cost $5.2719. Despite having fewer false positives, the reasoning models are roughly 5.6 to 13.2 times more expensive than GPT-4o-mini.
 
 ## Conclusion
-In conclusion, the choice of model may depend on the specific needs of the systematic review. 
-If the goal is to minimize false negatives and be more inclusive, GPT-4o-mini may be the better choice. 
-This is also the most cost-effective option. However, if the goal is to minimize false positives and be more conservative, 
-GPT-5-mini or GPT-5.1 may be the better choice, although they are more expensive.
-Furthermore, we see when using the GPT-5-mini or GPT-5.1 the prompt is highly important, 
-as the models follow the prompt more closely.
-Therefore, if using reasoning models, it is crucial to have a well-crafted prompt that clearly outlines the inclusion and exclusion criteria,
-but if this is achieved, the reasoning models can lead to more accurate screening decisions and reduce human screening burden.
+The choice of model depends on the specific priorities of the systematic review and available budget. GPT-4o-mini remains the most cost-effective option, achieving perfect recall and high specificity (0.974), making it ideal for minimizing false negatives when budget is a primary concern. However, if reducing false positives and improving overall agreement with human judgments is a priority, GPT-5-mini and GPT-5.1 provide superior performance with agreement rates of 0.981 and 0.984, respectively, despite the higher cost.
+
+The reasoning models (GPT-5-mini and GPT-5.1) demonstrate that stronger reasoning capabilities lead to more conservative and consistent screening decisions that closely align with the provided prompt. When using reasoning models, a well-crafted, detailed prompt that clearly outlines inclusion and exclusion criteria is essential to leverage their advantages. For reviews where accuracy and precision are paramount and budget allows, GPT-5.1 offers the best performance with the lowest false positive rate (41 studies), though at the highest cost.
