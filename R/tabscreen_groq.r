@@ -2,7 +2,7 @@
 #' @title Title and abstract screening with GROQ API models using function calls via the tools argument
 #'
 #' @name tabscreen_groq
-#' @aliases tabscreen_gro
+#' @aliases tabscreen_groq
 #'
 #' @description
 #' This function supports the conduct of title and abstract screening with Groq API models in R.
