@@ -96,11 +96,6 @@ articles:
     contents:
       - Using-GPT-API-Models-For-Screening
 
-  - title: Comparing models
-    navbar: ~
-    contents:
-      - articles/comparing-models
-
   - title: Generating disagreement reports
     navbar: ~
     contents:
