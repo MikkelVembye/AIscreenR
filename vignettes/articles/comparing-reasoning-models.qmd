@@ -136,7 +136,7 @@ while GPT-5-mini had 1 false negative and 49 false positives, and GPT-5.1 had 1 
 41 false positives.
 The one "false negative" (Study 2540) is actually a case where the GPT-5 models 
 correctly identified the paper as a discussion/review with no empirical results, and therefore correctly excluded it.
-It was also not clear for the human coders wether this study should be included or not. One coder included it, 
+It was also not clear for the human coders whether this study should be included or not. One coder included it, 
 while the other coder excluded it. This suggests that the abstract of this study is quite ambiguous and that the 
 false negative for both GPT-5-mini and GPT-5.1 may be a borderline case.
 
