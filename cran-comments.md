@@ -1,10 +1,17 @@
 ## Submission
 
-This is a patch version update of AIscreenR. The package provides functions for conducting title and abstract screening in systematic reviews with AI models, such as OpenAI's GPT (Generative Pre-trained Transformer) API (Application Programming Interface) models. In this submission, we have corrected a typo in the vignette, and updated the vignette including a more modern approach to handling RIS files. Finally the tabscreen_gpt() now factors the study ID variable to keep the original order of the user's data set.
+This is a minor version update of AIscreenR. The package provides functions for conducting title and abstract screening in systematic reviews with AI models, such as OpenAI's GPT (Generative Pre-trained Transformer) API (Application Programming Interface) models. In this submission, we have 
+
+1) made minor changes to in the vignette to make it more clear
+2) updated the prize data so it includes all up-to-date models, including the newly released gpt-5 models
+3) added two new functions that support the data generation for fine tuning OpenAI's models
+4) added Thomas Olsen as co-author of the package
+5) updated all references in the package
+6) changed an invalid URL appearing in the vignette
 
 ## Test environments
 
-* local Windows 10 Enterprise, R 4.4.0 and R 4.4.2
+* local Windows 10 Enterprise, R 4.5.1
 * ubuntu 20.04.3 LTS (on Github), R devel, release, oldrelease
 * macOS-latest (on Github), R release
 * windows-latest (on Github), R release
@@ -14,16 +21,12 @@ This is a patch version update of AIscreenR. The package provides functions for 
 
 ## R CMD check results
 
-There were no ERRORs and WARNINGs.
+As for previous versions, there were no ERRORs and WARNINGs.
 
 There was 1 NOTE:
 
  * On win-builder release, devel, and oldrelease:
   Found the following (possibly) invalid URLs:
-  URL: https://auth0.openai.com/u/login/identifier?state=hKFo2SBqQjNHSlc1ejIyREpUb01hdDF2OHEzQy12NnJwWlFUN6Fur3VuaXZlcnNhbC1sb2dpbqN0aWTZIEJSOWJaamdKLWswNGlfWDQ2NER1OXJmVUNpVmVzVjZfo2NpZNkgRFJpdnNubTJNdTQyVDNLT3BxZHR3QjNOWXZpSFl6d0Q
-    From: inst/doc/Using-GPT-API-Models-For-Screening.html
-    Status: 403
-    Message: Forbidden
   URL: https://openai.com/api/pricing/
     From: man/model_prizes.Rd
     Status: 403
@@ -35,6 +38,11 @@ There was 1 NOTE:
   URL: https://openai.com/pricing
     From: man/tabscreen_gpt.original.Rd
           man/tabscreen_gpt.tools.Rd
+    Status: 403
+    Message: Forbidden
+  URL: https://platform.openai.com/
+    From: DESCRIPTION
+          man/AIscreenR-package.Rd
     Status: 403
     Message: Forbidden
   URL: https://platform.openai.com/account/api-keys
@@ -80,6 +88,10 @@ There was 1 NOTE:
           man/rate_limits_per_minute.Rd
           man/tabscreen_gpt.original.Rd
           man/tabscreen_gpt.tools.Rd
+    Status: 403
+    Message: Forbidden
+  URL: https://platform.openai.com/finetune/
+    From: man/save_fine_tune_data.Rd
     Status: 403
     Message: Forbidden
 

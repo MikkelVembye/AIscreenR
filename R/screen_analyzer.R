@@ -1,17 +1,17 @@
 #' @title Analyze performance between the human and AI screening.
 #'
 #' @description
-#' `r lifecycle::badge("experimental")`<br>
+#' `r lifecycle::badge("stable")`<br>
 #' <br>
 #' When both the human and AI title and abstract screening has been done, this function
 #' allows you to calculate performance measures of the screening, including the overall
-#' accuracy, specificity and sensitivity of the screening, as well as
-#' inter-rater reliability kappa statistics.
+#' accuracy, specificity/recall, and sensitivity of the screening, as well as
+#' inter-rater reliability kappa statistics (Gartlehner et al., 2019; McHugh, 2012; Syriani et al., 2024).
 #'
 #' @references
 #' Gartlehner, G., Wagner, G., Lux, L., Affengruber, L., Dobrescu, A., Kaminski-Hartenthaler, A., & Viswanathan, M. (2019).
 #' Assessing the accuracy of machine-assisted abstract screening with DistillerAI: a user study.
-#' *Systematic Reviews*, 8(1), 277. \doi{10.1186/s13643-019-1221-3}
+#' *Systematic Reviews*, 8:277, 1-10. \doi{10.1186/s13643-019-1221-3}
 #'
 #' McHugh, M. L. (2012).
 #' Interrater reliability: The kappa statistic.

@@ -18,9 +18,9 @@
 #' The function allows to run title and abstract screening across multiple prompts and with
 #' repeated questions to check for consistency across answers. This function draws
 #' on the newly developed function calling to better steer the output of the responses.
-#' This function was used in [Vembye et al. (2024)](https://osf.io/preprints/osf/yrhzm).
+#' This function was used in [Vembye, Christensen, Mølgaard, and Schytt. (2025)](https://osf.io/preprints/osf/yrhzm).
 #'
-#' @references Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2024)
+#' @references Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2025)
 #'   \emph{GPT API Models Can Function as Highly Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
 #'   A Proof of Concept and Common Guidelines} \url{https://osf.io/preprints/osf/yrhzm}
 #'

@@ -1,7 +1,13 @@
-# AIscreenR 0.1.1.9000 
+# AIscreenR 0.2.0.9000
+
+* Updated Vembye et al. reference in vignette 
+
+# AIscreenR 0.2.0
 
 * Minor change in the setup of the vignette
-* Adding generate_ft_data() and write_fine_tune_data() to generate data for fine tuning
+* Updated prize data, including all up-to-date models
+* Adding create_fine_tune_data() and write_fine_tune_data() to generate data for fine tuning OpenAI's models
+* Adding Thomas Olsen as co-author
 
 # AIscreenR 0.1.1 
 

@@ -1,4 +1,4 @@
-# Models Prizes October 28 2024
+# Models Prizes March 18 2026
 
 mio <- 1000000
 

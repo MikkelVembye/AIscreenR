@@ -164,7 +164,7 @@ repeated questions to check for consistency across answers. All of which can be 
 The function draws on the newly developed function calling which is called via the
 tools argument in the request body. This is the main different between \code{\link[=tabscreen_gpt.tools]{tabscreen_gpt.tools()}}
 and \code{\link[=tabscreen_gpt.original]{tabscreen_gpt.original()}}. Function calls ensure more reliable and consistent responses to ones
-requests. See \href{https://osf.io/preprints/osf/yrhzm}{Vembye et al. (2024)}
+requests. See \href{https://osf.io/preprints/osf/yrhzm}{Vembye, Christensen, Mølgaard, and Schytt. (2025)}
 for guidance on how adequately to conduct title and abstract screening with GPT models.
 }
 \note{
@@ -272,7 +272,7 @@ plan(sequential)
 }
 }
 \references{
-Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2024)
+Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2025)
 \emph{GPT API Models Can Function as Highly Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
 A Proof of Concept and Common Guidelines} \url{https://osf.io/preprints/osf/yrhzm}
 

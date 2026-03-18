@@ -6,7 +6,7 @@
 \alias{AIscreenR-package}
 \title{AIscreenR: AI Screening Tools in R for Systematic Reviewing}
 \description{
-Provides functions to conduct title and abstract screening in systematic reviews using large language models, such as the Generative Pre-trained Transformer (GPT) models from 'OpenAI' \url{https://platform.openai.com/}. These functions can enhance the quality of title and abstract screenings while reducing the total screening time significantly. In addition, the package includes tools for quality assessment of title and abstract screenings, as described in Vembye, Christensen, Mølgaard, and Schytt (2024) \doi{10.31219/osf.io/yrhzm}.
+Provides functions to conduct title and abstract screening in systematic reviews using large language models, such as the Generative Pre-trained Transformer (GPT) models from 'OpenAI' \url{https://platform.openai.com/}. These functions can enhance the quality of title and abstract screenings while reducing the total screening time significantly. In addition, the package includes tools for quality assessment of title and abstract screenings, as described in Vembye, Christensen, Mølgaard, and Schytt (2025) \doi{10.1037/met0000769}.
 }
 \seealso{
 Useful links:
@@ -20,9 +20,9 @@ Useful links:
 \author{
 \strong{Maintainer}: Mikkel H. Vembye \email{mikkel.vembye@gmail.com} (\href{https://orcid.org/0000-0001-9071-0724}{ORCID}) [copyright holder]
 
-Other contributors:
+Authors:
 \itemize{
-  \item Thomas Olsen \email{thomasolsen123@hotmail.com} [contributor]
+  \item Thomas Olsen \email{thomasolsen123@hotmail.com}
 }
 
 }
