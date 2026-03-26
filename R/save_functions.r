@@ -46,9 +46,9 @@ read_ris_to_dataframe <- function(file_path) {
       current_order <- character(0)
       last_field <- NULL
       after_end_record <- TRUE # Mark that we just saw an end of record
-    } else if (grepl("^[A-Z0-9]{2}  - ", line)) { # If the line starts with a two-letter tag followed by "  - ", it's a field
-      field <- substr(line, 1, 2)
-      value <- .norm_space(sub("^[A-Z0-9]{2}  - ", "", line)) # Extract the value after the tag
+    } else if (grepl("^[^\\s]+\\s+-\\s", line)) { # If the line starts with a tag followed by " - ", it's a field
+      field <- sub("^([^\\s]+)\\s+-\\s.*$", "\\1", line)
+      value <- .norm_space(sub("^[^\\s]+\\s+-\\s", "", line)) # Extract the value after the tag
       
       # Start a new record if: this is the first field ever, OR we just saw ER and this is the first field of next record
       if ((rec_idx == 0L && length(current_record) == 0) || after_end_record) {
