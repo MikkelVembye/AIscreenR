@@ -258,6 +258,40 @@ tabscreen_ollama <- function(
     message("* Could not retrieve models from Ollama.")
   }
 
+  # Validate that each model supports tools via /api/show
+  show_url <- sub("/chat/?$", "/show", api_url)
+  if (identical(show_url, api_url)) show_url <- paste0(gsub("/$", "", api_url), "/show")
+  model_unique <- unique(model)
+  model_has_tools <- vapply(model_unique, function(model_name) {
+    caps <- tryCatch({
+      httr2::request(show_url) |>
+        httr2::req_method("POST") |>
+        httr2::req_user_agent("AIscreenR (local-ollama)") |>
+        httr2::req_body_json(list(model = model_name)) |>
+        httr2::req_perform() |>
+        httr2::resp_body_json(simplifyVector = TRUE) |>
+        (\(x) x$capabilities)()
+    }, error = function(e) NULL)
+    if (is.null(caps)) return(NA)
+    if (is.list(caps)) {
+      caps <- unlist(caps, use.names = FALSE)
+    }
+    any(tolower(as.character(caps)) == "tools")
+  }, logical(1))
+
+  unsupported_models <- names(model_has_tools)[!is.na(model_has_tools) & !model_has_tools]
+  unknown_models <- names(model_has_tools)[is.na(model_has_tools)]
+
+  if (length(unsupported_models) > 0) {
+    stop(
+      paste0(
+        "These model(s) do not support tools in Ollama (/api/show -> capabilities): ",
+        paste(unsupported_models, collapse = ", "),
+        ". Please choose model(s) with 'tools' capability."
+      )
+    )
+  }
+
   # Ensuring that users do not conduct wrong screening
   if (max(reps) > 10 && !force){
     max_reps_mes <- paste("* Are you sure you want to use", max(reps), "iterations? If so, set force = TRUE")
