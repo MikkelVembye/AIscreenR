@@ -285,7 +285,7 @@ tabscreen_ollama <- function(
   if (length(unsupported_models) > 0) {
     stop(
       paste0(
-        "These model(s) do not support tools in Ollama (/api/show -> capabilities): ",
+        "These model(s) do not support tools in Ollama: ",
         paste(unsupported_models, collapse = ", "),
         ". Please choose model(s) with 'tools' capability."
       )
