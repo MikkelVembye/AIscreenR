@@ -143,7 +143,7 @@ report <- function(
   
   comment_text <- paste0("*Please add a comment on whether and why you agree with the GPT decision or not:*\n\n \n\n")
   
-  print_test <- paste0(studyid_txt, title_text, abs_txt, answer_txt, gpt_num_answer, human_answer, comment_text)
+  print_test <- paste0(studyid_txt, title_text, abs_txt, answer_txt, gpt_num_answer, human_answer, comment_text, collapse = "")
 
   # Create the header
   header <- paste("---\ntitle: \"", document_title, "\"\nsubtitle: \"", document_subtitle, "\"\nformat:\n  ", format, " \n---")
@@ -152,17 +152,26 @@ report <- function(
   rsetup <- "```{r setup, include=FALSE}\nknitr::opts_chunk$set(echo = TRUE)\n```"
   
   # Create the methods chunk
-  methods <- paste0("```{r, echo=FALSE, results='asis', include=TRUE}\nprint_test <- \"", print_test, "\"\nbase::cat(print_test)\n```")
+  print_test_literal <- encodeString(print_test, quote = "\"")
+  methods <- paste0(
+    "```{r, echo=FALSE, results='asis', include=TRUE}\n",
+    "print_test <- ", print_test_literal, "\n",
+    "base::cat(print_test)\n",
+    "```"
+  )
+
+  # Full path to the Quarto source file
+  qmd_path <- file.path(directory, file)
   
   # Writing to the Quarto file
-  con <- file(file, "w")
+  con <- file(qmd_path, "w")
   writeLines(header, con)
   writeLines(rsetup, con)
   writeLines(methods, con)
   close(con)
   
   # Define path to the rendered file
-  file_out <- file.path(directory, sub("\\.qmd$", paste0(".", format), file))
+  file_out <- file.path(directory, sub("\\.qmd$", paste0(".", format), basename(file)))
 
   # Check if the file is already open
   if (file.exists(file_out) && open) {
@@ -175,11 +184,11 @@ report <- function(
   }
 
   # Rendering the Quarto file
-  message(paste0("Saving to ", directory, "/", file))
-  file_out <- suppressWarnings(quarto::quarto_render(file, output_format = format, quiet = TRUE))
+  message(paste0("Saving to ", qmd_path))
+  file_out <- suppressWarnings(quarto::quarto_render(qmd_path, output_format = format, quiet = TRUE))
   
   # Define path to the rendered file
-  file_out <- file.path(directory, sub("\\.qmd$", paste0(".", format), file))
+  file_out <- file.path(directory, sub("\\.qmd$", paste0(".", format), basename(file)))
   
   # Opening the report if open = TRUE
   if (open) {

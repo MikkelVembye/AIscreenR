@@ -119,13 +119,17 @@ is_testing <- function() {
 #' }
 
 get_api_key_groq <- function(env_var = "GROQ_API_KEY") {
-  if ("GROQ_API_KEY" %in% env_var) key <- Sys.getenv("GROQ_API_KEY")
+  if (!env_var %in% "GROQ_API_KEY") {
+    stop("env_var must be 'GROQ_API_KEY'")
+  }
+
+  key <- Sys.getenv("GROQ_API_KEY")
 
   if (identical(key, "")){
 
     if (is_testing()) {
 
-      if ("GROQ_API_KEY" %in% env_var) key <- testing_key_groq()
+      key <- testing_key_groq()
 
     } else {
 

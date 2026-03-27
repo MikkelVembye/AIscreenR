@@ -418,7 +418,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
   # Start up - Generic warning messages ----
   #.........................................
 
-  if (missing(title) || missing(abstract) && !is.gpt(data)){
+  if (missing(title) || missing(abstract) && !is_gpt(data)){
     warning("The function only works properly when given both titles and abstracts.")
   }
 
@@ -458,7 +458,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
 
   # Assert that max tokens is not below nine when used with the simple function call
   if ("max_completion_tokens" %in% names(arg_list) || "max_tokens" %in% names(arg_list)){
-    if (arg_list$max_completion_tokens < 9) {
+    if (arg_list$max_completion_tokens < 9 || arg_list$max_tokens < 9){
       stop("Cannot retrieve results from server with tokens below 9.")
     }
   }

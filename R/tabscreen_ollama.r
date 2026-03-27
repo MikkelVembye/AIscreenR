@@ -280,7 +280,6 @@ tabscreen_ollama <- function(
   }, logical(1))
 
   unsupported_models <- names(model_has_tools)[!is.na(model_has_tools) & !model_has_tools]
-  unknown_models <- names(model_has_tools)[is.na(model_has_tools)]
 
   if (length(unsupported_models) > 0) {
     stop(
@@ -290,12 +289,6 @@ tabscreen_ollama <- function(
         ". Please choose model(s) with 'tools' capability."
       )
     )
-  }
-
-  # Ensuring that users do not conduct wrong screening
-  if (max(reps) > 10 && !force){
-    max_reps_mes <- paste("* Are you sure you want to use", max(reps), "iterations? If so, set force = TRUE")
-    stop(max_reps_mes)
   }
 
   # Ensuring that users do not conduct wrong screening
