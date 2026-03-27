@@ -18,7 +18,7 @@
 #' @param title Column name for the title.
 #' @param abstract Column name for the abstract.
 #' @param gpt_answer Column name for the AI's answer.
-#' @param file Name of the output file.
+#' @param file Name of the output file. You can also provide a full path.
 #' @param format Format of the output file. Valid formats are 'html', 'pdf', 'docx'.
 #' @param open Logical indicating whether to open the report after generation. Default is TRUE.
 #' @param document_title Title of the document.
@@ -83,7 +83,25 @@ report <- function(
   valid_formats <- c("html", "pdf", "docx")
   if (!(format %in% valid_formats)) stop("Invalid format. Choose from 'html', 'pdf', 'docx'.")
   
-  # Error handling for file path
+  # allow full path in `file`
+  file_has_path <- basename(file) != file
+  if (file_has_path) {
+    file_directory <- dirname(file)
+    if (!dir.exists(file_directory)) {
+      stop("The directory parsed from argument 'file' does not exist.")
+    }
+
+    normalized_directory <- normalizePath(directory, winslash = "/", mustWork = FALSE)
+    normalized_file_directory <- normalizePath(file_directory, winslash = "/", mustWork = FALSE)
+    if (!missing(directory) && tolower(normalized_directory) != tolower(normalized_file_directory)) {
+      warning("Argument 'file' includes a directory. Using that directory and ignoring 'directory'.")
+    }
+
+    directory <- file_directory
+    file <- basename(file)
+  }
+
+  # Error handling for output directory
   if (!dir.exists(directory)) stop("The specified directory does not exist.")
   
   # Add .qmd to file name if not present
@@ -127,18 +145,16 @@ report <- function(
   studyid_txt  <- paste0("**STUDY-ID: ", studyid_vec, ":**", "\n\n")
   title_text   <- paste0("-- *Title:* '", gsub("'", " ", gsub("\"", " ", title_vec)), "'", "\n\n")
   abs_txt      <- paste0("-- *Abstract*: '", gsub("'", " ", gsub("\"", " ", abstract_vec)), "'", "\n\n")
-  gpt_num_answer <- paste0("-- *Answer (GPT)*: ", data |> dplyr::pull({{ final_decision_gpt_num }}), "\n\n")
+  gpt_num_answer <- paste0("-- *Answer (GPT - numeric)*: ", data |> dplyr::pull({{ final_decision_gpt_num }}), "\n\n")
   human_answer   <- paste0("-- *Answer (Human)*: ", data |> dplyr::pull({{ human_code }}), "\n\n")
 
   
   if (missing(gpt_answer)){
     answer_txt <- NULL
-    gpt_num_answer <- NULL
+    warning("Argument 'gpt_answer' is missing. The report will include only numeric GPT answers from 'final_decision_gpt_num'.")
   } else {
     gpt_answer <- data |> dplyr::pull({{ gpt_answer }})
     answer_txt <- paste0("-- *Answer (GPT)*: ", gpt_answer, "\n\n")
-    gpt_num_answer <- data |> dplyr::pull({{ final_decision_gpt_num }})
-    gpt_num_answer <- paste0("-- *Answer (GPT - numeric)*: ", gpt_num_answer, "\n\n")
   }
   
   comment_text <- paste0("*Please add a comment on whether and why you agree with the GPT decision or not:*\n\n \n\n")
