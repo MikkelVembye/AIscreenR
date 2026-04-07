@@ -28,9 +28,9 @@
 "filges2015_dat"
 
 
-#' Model prize data (last updated December 16, 2025)
+#' Model prize data (last updated March 18, 2026)
 #'
-#' Data set containing input and output prizes for all OpenAI's GPT API models.
+#' Dataset mainly containing input and output prizes for all OpenAI's GPT API models.
 #'
 #' @format A \code{data.frame} containing 36 rows/models and 3 variables/columns
 #'
@@ -40,7 +40,7 @@
 #'  \bold{price_out_per_token} \tab \code{character} \tab indicating the output prize per token \cr
 #' }
 #'
-#' @references OpenAI. \emph{Pricing}. \url{https://openai.com/api/pricing/}
+#' @references OpenAI. \emph{Pricing}. \url{https://developers.openai.com/api/docs/pricing}
 
 "model_prizes"
 
@@ -69,9 +69,10 @@
 #'  \bold{n_mis_answers} \tab integer \tab Count of missing answers across reps \cr
 #'  \bold{submodel} \tab character \tab Specific model variant (if applicable) \cr
 #' }
+
 "disagreements"
 
-#' Groq model prices (last updated December 16, 2025)
+#' Groq model prices (last updated March 18, 2026)
 #'
 #' Data set containing input and output prizes for all GROQ's API models.
 #'
@@ -84,4 +85,5 @@
 #' }
 #'
 #' @references GROQ. \emph{Pricing}. \url{https://groq.com/pricing}
+
 "groq_model_prizes"

@@ -63,10 +63,6 @@ reference:
       - is_gpt
       - is_gpt_tbl
       - is_gpt_agg_tbl
-      - is_groq_tbl
-      - is_groq_agg_tbl
-      - is_ollama_tbl
-      - is_ollama_agg_tbl
 
   - title: "Print methods"
     contents:

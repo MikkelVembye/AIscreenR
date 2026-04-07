@@ -35,7 +35,7 @@ report(
 
 \item{final_decision_gpt_num}{Column name for the final numeric GPT decision (0/1).}
 
-\item{file}{Name of the output file.}
+\item{file}{Name of the output file. You can also provide a full path.}
 
 \item{format}{Format of the output file. Valid formats are 'html', 'pdf', 'docx'.}
 
