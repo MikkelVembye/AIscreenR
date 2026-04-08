@@ -4,6 +4,10 @@
 #
 #----------------------------------------------------------------
 
+#----------------------------------------------------------------
+# Overinclusive GPT function calls
+#----------------------------------------------------------------
+
 # Body functions to tools and tool_choice
 
 inclusion_decision_description <- paste0(
@@ -74,6 +78,87 @@ tools_detailed <- list(
             items = list(
               type = "string",
               description = detailed_description_description
+            ),
+            description = "List the detailed description of your inclusion decision"
+          )
+        ),
+        required = list("decision_gpt", "detailed_description"),
+        additionalProperties = FALSE
+      )
+    )
+  )
+)
+
+#----------------------------------------------------------------
+# Binary GPT function calls
+#----------------------------------------------------------------
+
+# Body functions to tools and tool_choice
+
+inclusion_decision_description_binary <- paste0(
+  "If the study should be included for further review, write '1'.",
+  "If the study should be excluded, write '0'.",
+  "When providing the response only provide the numerical decision."
+)
+
+
+tools_simple_binary <- list(
+  # Function 1
+  list(
+    type = "function",
+    "function" = list(
+      name = "inclusion_decision_simple_binary",
+      description = inclusion_decision_description_binary,
+      parameters = list(
+        type = "object",
+        properties = list(
+          decision_gpt = list(
+            type = "string",
+            items = list(
+              type = "integer",
+              description = "An integer of either 1 or 0"
+            ),
+            description = "List the inclusion decision"
+          )
+        ),
+        required = list("decision_gpt"),
+        additionalProperties = FALSE
+      )
+    )
+  )
+)
+
+
+detailed_description_description_binary <- paste0(
+  "If the study should be included for further reviewing, give a detailed description of your inclusion decision. ",
+  "If the study should be excluded from the review, give a detailed description of your exclusion decision. "
+)
+
+# Combines both simple and detailed descriptions
+
+tools_detailed_binary <- list(
+  # Function 1
+  list(
+    type = "function",
+    "function" = list(
+      name = "inclusion_decision_binary",
+      description = inclusion_decision_description_binary,
+      parameters = list(
+        type = "object",
+        properties = list(
+          decision_gpt = list(
+            type = "string",
+            items = list(
+              type = "integer",
+              description = "An integer of either 1 or 0"
+            ),
+            description = "List the inclusion decision"
+          ),
+          detailed_description = list(
+            type = "string",
+            items = list(
+              type = "string",
+              description = detailed_description_description_binary
             ),
             description = "List the detailed description of your inclusion decision"
           )
