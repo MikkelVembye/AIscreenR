@@ -287,12 +287,12 @@ tabscreen_groq <- function(
 
       if (!decision_description) {
 
-        tools <- tools_simple_binary
+        tools <- tools_simple_binary_groq
         tool_choice <- "inclusion_decision_simple_binary"
 
       } else {
 
-        tools <- tools_detailed_binary
+        tools <- tools_detailed_binary_groq
         tool_choice <- "inclusion_decision_binary"
 
       }
