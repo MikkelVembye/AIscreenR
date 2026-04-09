@@ -34,7 +34,7 @@ tools_simple <- list(
             type = "string",
             items = list(
               type = "integer",
-              description = "An integer of either 1, 0, or 1.1",
+              description = "1=Include, 0=Exclude, 1.1=Uncertain",
               enum = list("1", "0", "1.1")
             ),
             description = "List the inclusion decision"
@@ -72,7 +72,7 @@ tools_detailed <- list(
             type = "string",
             items = list(
               type = "integer",
-              description = "An integer of either 1, 0, or 1.1",
+              description = "1=Include, 0=Exclude, 1.1=Uncertain",
               enum = list("1", "0", "1.1")
             ),
             description = "List the inclusion decision"
@@ -121,7 +121,7 @@ tools_simple_binary <- list(
             type = "string",
             items = list(
               type = "integer",
-              description = "An integer of either 1 or 0",
+              description = "1=Include, 0=Exclude",
               enum = list("1", "0")
             ),
             description = "List the inclusion decision"
@@ -157,7 +157,7 @@ tools_detailed_binary <- list(
             type = "string",
             items = list(
               type = "integer",
-              description = "An integer of either 1 or 0",
+              description = "1=Include, 0=Exclude",
               enum = list("1", "0")
             ),
             description = "List the inclusion decision"
