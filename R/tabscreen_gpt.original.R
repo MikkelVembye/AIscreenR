@@ -241,7 +241,7 @@ tabscreen_gpt.original <- function(
   if (as.Date(Sys.time()) > as.Date("2024-09-13") && model == "gpt-3.5-turbo-0613"){
     stop("The gpt-3.5-turbo-0613 model has deprecated and can no longer be used.")
   } else{
-    message("Note that the gpt-3.5-turbo-0613 deprecates Septemper 13 2024 and can no long be used there after.")
+    message("Note that the gpt-3.5-turbo-0613 deprecates Septemper 13 2024 and can no longer be used there after.")
   }
 
 

@@ -95,7 +95,7 @@ approximate_price_gpt <-
       dat <-
         data |>
         dplyr::mutate(
-          studyid = 1:nrow(data)
+          studyid = seq_len(nrow(data))
         ) |>
         dplyr::relocate(studyid, .before = {{ title }})
 
@@ -125,12 +125,12 @@ approximate_price_gpt <-
           is.na(.x) | .x == "" | .x == " ", "No information", .x, missing = "No information")
         )
       ) |>
-      dplyr::slice(rep(1:nrow(dat), prompt_length)) |>
+      dplyr::slice(rep(seq_len(nrow(dat)), prompt_length)) |>
       dplyr::mutate(
         promptid = rep(paste("Prompt", 1:prompt_length), each = studyid_length),
         prompt = rep(prompt, each = studyid_length)
       ) |>
-      dplyr::slice(rep(1:dplyr::n(), each = model_length)) |>
+      dplyr::slice(rep(seq_len(dplyr::n()), each = model_length)) |>
       dplyr::mutate(
         model = rep(model, studyid_length*prompt_length),
         iterations = rep(reps, studyid_length*prompt_length*mp_reps),
@@ -148,7 +148,7 @@ approximate_price_gpt <-
         question = stringr::str_remove_all(question, "\n")
       ) |>
       dplyr::select(-question_raw) |>
-      dplyr::slice(rep(1:dplyr::n(), each = length(top_p))) |>
+      dplyr::slice(rep(seq_len(dplyr::n()), each = length(top_p))) |>
       mutate(
         topp = rep(top_p, studyid_length*prompt_length*model_length)
       )

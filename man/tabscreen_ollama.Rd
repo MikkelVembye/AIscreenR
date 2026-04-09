@@ -5,34 +5,13 @@
 \alias{tabscreen_ollama}
 \title{Title and abstract screening with OLLAMA API models using function calls via the tools argument}
 \usage{
-tabscreen_ollama(
-  data,
-  prompt,
-  studyid,
-  title,
-  abstract,
-  api_url = "http://127.0.0.1:11434/api/chat",
-  ...,
-  model,
-  role = "user",
-  tools = NULL,
-  tool_choice = NULL,
-  top_p = 1,
-  time_info = TRUE,
-  max_tries = 16,
-  max_seconds = NULL,
-  backoff = NULL,
-  after = NULL,
-  reps = 1,
-  seed_par = NULL,
-  progress = TRUE,
-  decision_description = FALSE,
-  over_inclusive = FALSE,
-  messages = TRUE,
-  incl_cutoff_upper = NULL,
-  incl_cutoff_lower = NULL,
-  force = FALSE
-)
+tabscreen_ollama(data, prompt, studyid, title, abstract, 
+api_url = "http://127.0.0.1:11434/api/chat", ..., model, role = "user", 
+tools = NULL, tool_choice = NULL, top_p = 1, time_info = TRUE, 
+max_tries = 16, max_seconds = NULL, backoff = NULL, after = NULL, 
+reps = 1, seed_par = NULL, progress = TRUE, decision_description = FALSE, 
+over_inclusive = TRUE, messages = TRUE, incl_cutoff_upper = NULL, 
+incl_cutoff_lower = NULL, force = FALSE)
 }
 \arguments{
 \item{data}{Dataset containing the titles and abstracts.}
@@ -98,8 +77,11 @@ of decisions. Default is \code{FALSE}. When conducting large-scale screening, we
 recommend not using this feature as it will substantially increase the time of the screening.}
 
 \item{over_inclusive}{Logical indicating whether uncertain decisions (\code{"1.1"}) should be
-allowed in the default function calling setup. Default is \code{FALSE}, which uses binary
-inclusion/exclusion tools only.}
+allowed in the default function calling setup. Default is \code{TRUE}, which means that the
+default function calling setup will allow for uncertain decisions.
+If \code{FALSE}, the default function calling setup will not allow for uncertain decisions and
+will only return binary decisions (i.e., "1" or "0"). This argument only affects the default
+function calling setup.}
 
 \item{messages}{Logical indicating whether to print messages embedded in the function.
 Default is \code{TRUE}.}

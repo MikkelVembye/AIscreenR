@@ -57,7 +57,7 @@ See documentation value for \code{\link[=tabscreen_gpt.original]{tabscreen_gpt.o
 
 This function supports re-screening of all failed title and abstract requests
 screened with \code{\link[=tabscreen_gpt.original]{tabscreen_gpt.original()}}. This function has been deprecated because
-OpenAI has deprecated the function_call and and functions argument that was used
+OpenAI has deprecated the function_call and functions argument that was used
 in \code{\link[=tabscreen_gpt.original]{tabscreen_gpt.original()}}.
 }
 \examples{

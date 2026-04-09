@@ -59,7 +59,7 @@
 #'
 #' obj_rescreened <-
 #'   obj_with_error |>
-#'   screen_error()
+#'   screen_errors()
 #'
 #'}
 #'
@@ -99,8 +99,19 @@ screen_errors.gpt <- function(
     }
 
     role <- arguments_used$role
-    functions <- arguments_used$functions
-    function_call_name <- arguments_used$function_call_name
+    tools <- arguments_used$tools
+    tool_choice <- arguments_used$tool_choice
+    # Backward compatibility with legacy arg names from older objects.
+    if (is.null(tools)) tools <- arguments_used$functions
+    if (is.null(tool_choice)) {
+      function_call_name <- arguments_used$function_call_name
+      if (is.list(function_call_name) && !is.null(function_call_name$name)) {
+        tool_choice <- function_call_name$name
+      } else {
+        tool_choice <- function_call_name
+      }
+    }
+    if (is.null(tool_choice)) tool_choice <- "auto"
     time_info <- arguments_used$time_info
     token_info <- arguments_used$token_info
     #max_tries <- if (missing(max_tries)) arguments_used$max_tries else max_tries
@@ -115,12 +126,16 @@ screen_errors.gpt <- function(
     incl_cutoff_lower <- arguments_used$incl_cutoff_lower
     force <- arguments_used$force
     custom_model <- arguments_used$custom_model
+    endpoint_url <- arguments_used$api_url
+    if (is.null(endpoint_url)) endpoint_url <- "https://api.openai.com/v1/chat/completions"
+    reasoning_effort <- arguments_used$reasoning_effort
+    verbosity <- arguments_used$verbosity
 
     arg_list <-
       list(
         role = role,
-        functions = functions,
-        function_call_name = function_call_name,
+        tools = tools,
+        tool_choice = tool_choice,
         time_info = time_info,
         token_info = token_info,
         max_tries = max_tries,
@@ -136,6 +151,9 @@ screen_errors.gpt <- function(
         incl_cutoff_lower = incl_cutoff_lower,
         force = force,
         custom_model = custom_model,
+        api_url = endpoint_url,
+        reasoning_effort = reasoning_effort,
+        verbosity = verbosity,
         ...
       )
 
@@ -207,6 +225,9 @@ screen_errors.gpt <- function(
           istrans = is_transient,
           ba = backoff,
           af = after,
+          endpoint_url = endpoint_url,
+          reasoning_effort = reasoning_effort,
+          verbosity = verbosity,
           ...,
           .options = furrr::furrr_options(seed = furrr_seed),
           .progress = progress

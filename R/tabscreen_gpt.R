@@ -11,7 +11,7 @@
 #' The function allows to run title and abstract screening across multiple prompts and with
 #' repeated questions to check for consistency across answers. All of which can be done in parallel.
 #' The function draws on the newly developed function calling which is called via the
-#' tools argument in the request body. This is the main different between [tabscreen_gpt.tools()]
+#' tools argument in the request body. This is the main difference between [tabscreen_gpt.tools()]
 #' and [tabscreen_gpt.original()]. Function calls ensure more reliable and consistent responses to ones
 #' requests. See [Vembye, Christensen, Mølgaard, and Schytt. (2025)](https://osf.io/preprints/osf/yrhzm)
 #' for guidance on how adequately to conduct title and abstract screening with GPT models.
@@ -88,8 +88,11 @@
 #'   screening. We generally recommend using it when encountering disagreements between GPT and
 #'   human decisions.
 #' @param over_inclusive Logical indicating whether uncertain decisions (`"1.1"`) should be
-#'   allowed in the default function calling setup. Default is `FALSE`, which uses binary
-#'   inclusion/exclusion tools only.
+#'   allowed in the default function calling setup. Default is `TRUE`, which means that the 
+#' default function calling setup will allow for uncertain decisions. 
+#' If `FALSE`, the default function calling setup will not allow for uncertain decisions and 
+#' will only return binary decisions (i.e., "1" or "0"). This argument only affects the default 
+#' function calling setup.
 #' @param messages Logical indicating whether to print messages embedded in the function.
 #'   Default is `TRUE`.
 #' @param incl_cutoff_upper Numerical value indicating the probability threshold
@@ -123,7 +126,7 @@
 #'   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
 #'   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
 #'   fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low",
-#'   over_inclusive = FALSE, ...)
+#'   over_inclusive = TRUE, ...)
 #'
 #' tabscreen_gpt(data, prompt, studyid, title, abstract,
 #'   api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-4o-mini",
@@ -134,7 +137,7 @@
 #'   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
 #'   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
 #'   fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low",
-#'   over_inclusive = FALSE, ...)
+#'   over_inclusive = TRUE, ...)
 #'
 #' @return An object of class `'gpt'`. The object is a list containing the following
 #' datasets and components:
@@ -292,7 +295,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
   fine_tuned = deprecated(),
   reasoning_effort = "medium",
   verbosity = "low",
-  over_inclusive = FALSE,
+  over_inclusive = TRUE,
   ...
 ){
 
@@ -463,9 +466,15 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
     )
 
 
-  # Assert that max tokens is not below nine when used with the simple function call
-  if ("max_completion_tokens" %in% names(arg_list) || "max_tokens" %in% names(arg_list)){
-    if (arg_list$max_completion_tokens < 9 || arg_list$max_tokens < 9){
+  # Assert that max tokens is not below nine when used with the simple function call.
+  if ("max_completion_tokens" %in% names(arg_list) && !is.null(arg_list$max_completion_tokens)) {
+    if (arg_list$max_completion_tokens < 9) {
+      stop("Cannot retrieve results from server with tokens below 9.")
+    }
+  }
+
+  if ("max_tokens" %in% names(arg_list) && !is.null(arg_list$max_tokens)) {
+    if (arg_list$max_tokens < 9) {
       stop("Cannot retrieve results from server with tokens below 9.")
     }
   }
@@ -536,7 +545,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
   #.......................
 
   # Ensure that the data contains valid study IDs to distinguish between study records
-    study_id <- if (missing(studyid)) 1:nrow(data) else data |> pull({{ studyid }})
+    study_id <- if (missing(studyid)) seq_len(nrow(data)) else data |> pull({{ studyid }})
 
     dat <-
       data |>
@@ -570,12 +579,12 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
           is.na(.x) | .x == "" | .x == " " | .x == "NA", "No information", .x, missing = "No information")
         )
       ) |>
-      dplyr::slice(rep(1:nrow(dat), prompt_length)) |>
+      dplyr::slice(rep(seq_len(nrow(dat)), prompt_length)) |>
       dplyr::mutate(
         promptid = rep(1:prompt_length, each = studyid_length),
         prompt = rep(prompt, each = studyid_length)
       ) |>
-      dplyr::slice(rep(1:dplyr::n(), each = model_length)) |>
+      dplyr::slice(rep(seq_len(dplyr::n()), each = model_length)) |>
       dplyr::mutate(
         model = rep(model, studyid_length*prompt_length),
         iterations = rep(reps, studyid_length*prompt_length*mp_reps),
@@ -594,7 +603,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
         verbosity = verbosity_val
       ) |>
       dplyr::select(-question_raw) |>
-      dplyr::slice(rep(1:dplyr::n(), each = length(top_p))) |>
+      dplyr::slice(rep(seq_len(dplyr::n()), each = length(top_p))) |>
       dplyr::mutate(
         topp = rep(top_p, studyid_length*prompt_length*model_length)
       ) |>
@@ -612,7 +621,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
     app_price <- sum(app_price_dat$total_price_dollar, na.rm = TRUE)
 
     # Ensuring the user does not waste money on wrong coding
-    if (app_price > 15 & !force){
+    if (app_price > 15 && !force){
       stop(paste0(
         "Are you sure you want to run this screening? It will cost approximately $", app_price, ".",
         " If so, set 'force = TRUE')"))

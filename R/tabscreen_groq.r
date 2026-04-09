@@ -76,8 +76,11 @@
 #' recommend not using this feature as it will substantially increase the cost of the screening. 
 #' We generally recommend using it when encountering disagreements between GPT and human decisions.
 #' @param over_inclusive Logical indicating whether uncertain decisions (`"1.1"`) should be
-#'   allowed in the default function calling setup. Default is `FALSE`, which uses binary
-#'   inclusion/exclusion tools only.
+#'   allowed in the default function calling setup. Default is `TRUE`, which means that the 
+#' default function calling setup will allow for uncertain decisions. 
+#' If `FALSE`, the default function calling setup will not allow for uncertain decisions and 
+#' will only return binary decisions (i.e., "1" or "0"). This argument only affects the default 
+#' function calling setup.
 #' @param messages Logical indicating whether to print messages embedded in the function.
 #'   Default is `TRUE`.
 #' @param incl_cutoff_upper Numerical value indicating the probability threshold
@@ -94,6 +97,17 @@
 #'   10 iterations. This argument is developed to avoid the conduct of wrong and extreme sized screening.
 #'   Default is `FALSE`.
 #' @param ... Further argument to pass to the request body.
+#'
+#' @usage tabscreen_groq(data, prompt, studyid, title, abstract, 
+#' api_url = "https://api.groq.com/openai/v1/chat/completions",
+#'  ..., model = "llama-3.1-8b-instant", role = "user", 
+#' tools = NULL, tool_choice = NULL, top_p = 1, 
+#' time_info = TRUE, token_info = TRUE, api_key = get_api_key_groq(), 
+#' max_tries = 16, max_seconds = NULL, is_transient = .groq_is_transient, 
+#' backoff = NULL, after = NULL, rpm = 10000, reps = 1, seed_par = NULL,
+#' progress = TRUE, decision_description = FALSE, over_inclusive = TRUE, 
+#' messages = TRUE, incl_cutoff_upper = NULL, incl_cutoff_lower = NULL, 
+#' force = FALSE)
 #'
 #' @return An object of class \code{"gpt"}. The object is a list containing the following
 #' components:
@@ -230,7 +244,7 @@ tabscreen_groq <- function(
   seed_par = NULL,
   progress = TRUE,
   decision_description = FALSE,
-  over_inclusive = FALSE,
+  over_inclusive = TRUE,
   messages = TRUE,
   incl_cutoff_upper = NULL,
   incl_cutoff_lower = NULL,
@@ -376,7 +390,7 @@ tabscreen_groq <- function(
     dat <-
       data |>
       dplyr::mutate(
-        studyid = 1:nrow(data)
+        studyid = seq_len(nrow(data))
       ) |>
       dplyr::relocate(studyid, .before = {{ title }}) |>
       dplyr::relocate({{ abstract }}, .after = {{ title }}) |>
@@ -409,12 +423,12 @@ tabscreen_groq <- function(
         is.na(.x) | .x == "" | .x == " " | .x == "NA", "No information", .x, missing = "No information")
       )
     ) |>
-    dplyr::slice(rep(1:nrow(dat), prompt_length)) |>
+    dplyr::slice(rep(seq_len(nrow(dat)), prompt_length)) |>
     dplyr::mutate(
       promptid = rep(1:prompt_length, each = studyid_length),
       prompt = rep(prompt, each = studyid_length)
     ) |>
-    dplyr::slice(rep(1:dplyr::n(), each = model_length)) |>
+    dplyr::slice(rep(seq_len(dplyr::n()), each = model_length)) |>
     dplyr::mutate(
       model = rep(model, studyid_length*prompt_length),
       iterations = rep(reps, studyid_length*prompt_length*mp_reps),
@@ -431,7 +445,7 @@ tabscreen_groq <- function(
       question = trimws(question) # Trim leading/trailing whitespace
     ) |>
     dplyr::select(-question_raw) |>
-    dplyr::slice(rep(1:dplyr::n(), each = length(top_p))) |>
+    dplyr::slice(rep(seq_len(dplyr::n()), each = length(top_p))) |>
     mutate(
       topp = rep(top_p, studyid_length*prompt_length*model_length)
     ) |>

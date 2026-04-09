@@ -79,7 +79,7 @@ obj_with_error <-
 
 obj_rescreened <-
   obj_with_error |>
-  screen_error()
+  screen_errors()
 
 }
 

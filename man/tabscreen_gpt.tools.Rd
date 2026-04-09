@@ -14,7 +14,7 @@ tabscreen_gpt.tools(data, prompt, studyid, title, abstract,
   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
   fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low",
-  over_inclusive = FALSE, ...)
+  over_inclusive = TRUE, ...)
 
 tabscreen_gpt(data, prompt, studyid, title, abstract,
   api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-4o-mini",
@@ -25,7 +25,7 @@ tabscreen_gpt(data, prompt, studyid, title, abstract,
   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
   fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low",
-  over_inclusive = FALSE, ...)
+  over_inclusive = TRUE, ...)
 }
 \arguments{
 \item{data}{Dataset containing the titles and abstracts.}
@@ -151,8 +151,11 @@ Can take the values \code{"low"}, \code{"medium"}, and \code{"high"}. See \url{h
 Can take the values \code{"low"}, \code{"medium"}, and \code{"high"}. See \url{https://platform.openai.com/docs/api-reference/chat/create} for more information.}
 
 \item{over_inclusive}{Logical indicating whether uncertain decisions (\code{"1.1"}) should be
-allowed in the default function calling setup. Default is \code{FALSE}, which uses binary
-inclusion/exclusion tools only.}
+allowed in the default function calling setup. Default is \code{TRUE}, which means that the
+default function calling setup will allow for uncertain decisions.
+If \code{FALSE}, the default function calling setup will not allow for uncertain decisions and
+will only return binary decisions (i.e., "1" or "0"). This argument only affects the default
+function calling setup.}
 
 \item{...}{Further argument to pass to the request body.
 See \url{https://platform.openai.com/docs/api-reference/chat/create}.}
@@ -182,7 +185,7 @@ Specifically, it allows the user to draw on GPT-3.5, GPT-4, GPT-4o, GPT-4o-mini,
 The function allows to run title and abstract screening across multiple prompts and with
 repeated questions to check for consistency across answers. All of which can be done in parallel.
 The function draws on the newly developed function calling which is called via the
-tools argument in the request body. This is the main different between \code{\link[=tabscreen_gpt.tools]{tabscreen_gpt.tools()}}
+tools argument in the request body. This is the main difference between \code{\link[=tabscreen_gpt.tools]{tabscreen_gpt.tools()}}
 and \code{\link[=tabscreen_gpt.original]{tabscreen_gpt.original()}}. Function calls ensure more reliable and consistent responses to ones
 requests. See \href{https://osf.io/preprints/osf/yrhzm}{Vembye, Christensen, Mølgaard, and Schytt. (2025)}
 for guidance on how adequately to conduct title and abstract screening with GPT models.
