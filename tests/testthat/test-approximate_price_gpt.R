@@ -27,7 +27,7 @@ test_that("approximate_price_gpt() takes multiple inputs", {
   expect_equal(obj_names_length, 2)
 
   data_var_length <- app_obj$price_data |> names() |> length()
-  expect_equal(data_var_length, 7)
+  expect_equal(data_var_length, 8)
 
 
   app_obj <- approximate_price_gpt(
