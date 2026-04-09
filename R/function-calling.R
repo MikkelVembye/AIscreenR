@@ -26,6 +26,7 @@ tools_simple <- list(
     "function" = list(
       name = "inclusion_decision_simple",
       description = inclusion_decision_description,
+      strict = TRUE,
       parameters = list(
         type = "object",
         properties = list(
@@ -33,7 +34,8 @@ tools_simple <- list(
             type = "string",
             items = list(
               type = "integer",
-              description = "An integer of either 1, 0, or 1.1"
+              description = "An integer of either 1, 0, or 1.1",
+              enum = list("1", "0", "1.1")
             ),
             description = "List the inclusion decision"
           )
@@ -62,6 +64,7 @@ tools_detailed <- list(
     "function" = list(
       name = "inclusion_decision",
       description = inclusion_decision_description,
+      strict = TRUE,
       parameters = list(
         type = "object",
         properties = list(
@@ -69,7 +72,8 @@ tools_detailed <- list(
             type = "string",
             items = list(
               type = "integer",
-              description = "An integer of either 1, 0, or 1.1"
+              description = "An integer of either 1, 0, or 1.1",
+              enum = list("1", "0", "1.1")
             ),
             description = "List the inclusion decision"
           ),
@@ -109,6 +113,7 @@ tools_simple_binary <- list(
     "function" = list(
       name = "inclusion_decision_simple_binary",
       description = inclusion_decision_description_binary,
+      strict = TRUE,
       parameters = list(
         type = "object",
         properties = list(
@@ -116,7 +121,8 @@ tools_simple_binary <- list(
             type = "string",
             items = list(
               type = "integer",
-              description = "An integer of either 1 or 0"
+              description = "An integer of either 1 or 0",
+              enum = list("1", "0")
             ),
             description = "List the inclusion decision"
           )
@@ -143,6 +149,7 @@ tools_detailed_binary <- list(
     "function" = list(
       name = "inclusion_decision_binary",
       description = inclusion_decision_description_binary,
+      strict = TRUE,
       parameters = list(
         type = "object",
         properties = list(
@@ -150,7 +157,8 @@ tools_detailed_binary <- list(
             type = "string",
             items = list(
               type = "integer",
-              description = "An integer of either 1 or 0"
+              description = "An integer of either 1 or 0",
+              enum = list("1", "0")
             ),
             description = "List the inclusion decision"
           ),
