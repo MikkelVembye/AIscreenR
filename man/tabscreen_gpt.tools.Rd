@@ -13,7 +13,8 @@ tabscreen_gpt.tools(data, prompt, studyid, title, abstract,
   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
-  fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low", ...)
+  fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low",
+  over_inclusive = FALSE, ...)
 
 tabscreen_gpt(data, prompt, studyid, title, abstract,
   api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-4o-mini",
@@ -23,7 +24,8 @@ tabscreen_gpt(data, prompt, studyid, title, abstract,
   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
-  fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low", ...)
+  fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low",
+  over_inclusive = FALSE, ...)
 }
 \arguments{
 \item{data}{Dataset containing the titles and abstracts.}
@@ -147,6 +149,10 @@ Can take the values \code{"low"}, \code{"medium"}, and \code{"high"}. See \url{h
 
 \item{verbosity}{Character string indicating the level of verbosity in the model's responses. Default is \code{"low"}.
 Can take the values \code{"low"}, \code{"medium"}, and \code{"high"}. See \url{https://platform.openai.com/docs/api-reference/chat/create} for more information.}
+
+\item{over_inclusive}{Logical indicating whether uncertain decisions (\code{"1.1"}) should be
+allowed in the default function calling setup. Default is \code{FALSE}, which uses binary
+inclusion/exclusion tools only.}
 
 \item{...}{Further argument to pass to the request body.
 See \url{https://platform.openai.com/docs/api-reference/chat/create}.}

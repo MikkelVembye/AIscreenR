@@ -75,6 +75,9 @@
 #'   of decisions. Default is `FALSE`. When conducting large-scale screening, we generally 
 #' recommend not using this feature as it will substantially increase the cost of the screening. 
 #' We generally recommend using it when encountering disagreements between GPT and human decisions.
+#' @param over_inclusive Logical indicating whether uncertain decisions (`"1.1"`) should be
+#'   allowed in the default function calling setup. Default is `FALSE`, which uses binary
+#'   inclusion/exclusion tools only.
 #' @param messages Logical indicating whether to print messages embedded in the function.
 #'   Default is `TRUE`.
 #' @param incl_cutoff_upper Numerical value indicating the probability threshold
@@ -209,7 +212,7 @@ tabscreen_groq <- function(
   abstract,
   api_url = "https://api.groq.com/openai/v1/chat/completions",
   ...,
-  model = "llama3-70b-8192",
+  model = "llama-3.1-8b-instant",
   role = "user",
   tools = NULL,
   tool_choice = NULL,
@@ -227,6 +230,7 @@ tabscreen_groq <- function(
   seed_par = NULL,
   progress = TRUE,
   decision_description = FALSE,
+  over_inclusive = FALSE,
   messages = TRUE,
   incl_cutoff_upper = NULL,
   incl_cutoff_lower = NULL,
@@ -240,25 +244,47 @@ tabscreen_groq <- function(
   if (is_gpt_agg_tbl(data)) data <- data |> dplyr::select(-c(promptid:n_mis_answers)) |> tibble::as_tibble()
 
   #.......................................
-  # Setup functions based on decision_description
+  # Function call setup
   #.......................................
-  if(is.null(tools)) {
-    tools <- if(decision_description) tools_detailed_groq else tools_simple_groq
-  }
+  if (!is.null(tools) && !is.list(tools)) stop("The tools function must be of a list.")
+  if (is.null(tools) && !is.null(tool_choice)) stop("You must provide a tool or set 'tool_choice = NULL'.")
 
-  # Force the exact function name
-  if (is.null(tool_choice)) {
-    forced_fn <- if (decision_description) "inclusion_decision" else "inclusion_decision_simple"
-    tool_choice <- list(
-      type = "function",
-      "function" = list(name = forced_fn)
-    )
-  } else if (is.character(tool_choice) && identical(tool_choice, "required")) {
-    forced_fn <- if (decision_description) "inclusion_decision" else "inclusion_decision_simple"
-    tool_choice <- list(
-      type = "function",
-      "function" = list(name = forced_fn)
-    )
+  # Setting auto if tool_choice is not provided
+  if (!is.null(tools) && is.null(tool_choice)) tool_choice <- "auto"
+
+  # Default setting
+  if (is.null(tools) && is.null(tool_choice)) {
+
+    if (over_inclusive) {
+
+      if (!decision_description) {
+
+        tools <- tools_simple_groq
+        tool_choice <- "inclusion_decision_simple"
+
+      } else {
+
+        tools <- tools_detailed_groq
+        tool_choice <- "inclusion_decision"
+
+      }
+
+    } else {
+
+      if (!decision_description) {
+
+        tools <- tools_simple_binary
+        tool_choice <- "inclusion_decision_simple_binary"
+
+      } else {
+
+        tools <- tools_detailed_binary
+        tool_choice <- "inclusion_decision_binary"
+
+      }
+
+    }
+
   }
 
   #.......................................
@@ -330,6 +356,7 @@ tabscreen_groq <- function(
       progress = progress,
       messages = messages,
       decision_description = decision_description,
+      over_inclusive = over_inclusive,
       incl_cutoff_upper = incl_cutoff_upper,
       incl_cutoff_lower = incl_cutoff_lower,
       api_url = api_url,
@@ -457,7 +484,26 @@ tabscreen_groq <- function(
   furrr_seed <- if (is.null(seed_par)) TRUE else NULL
 
   # Detailed system that models must follow in order to ensure proper function calling
-  forced_fn <- if (decision_description) "inclusion_decision" else "inclusion_decision_simple"
+  forced_fn <- NULL
+
+  if (is.character(tool_choice) && length(tool_choice) == 1 && !identical(tool_choice, "auto")) {
+    forced_fn <- tool_choice
+  }
+
+  if (is.list(tool_choice) && !is.null(tool_choice$type) && identical(tool_choice$type, "function") &&
+      !is.null(tool_choice$`function`) && !is.null(tool_choice$`function`$name)) {
+    forced_fn <- tool_choice$`function`$name
+  }
+
+  if (is.null(forced_fn) && is.list(tools) && length(tools) > 0 &&
+      !is.null(tools[[1]][["function"]]) && !is.null(tools[[1]][["function"]][["name"]])) {
+    forced_fn <- tools[[1]][["function"]][["name"]]
+  }
+
+  if (is.null(forced_fn)) {
+    forced_fn <- if (decision_description) "inclusion_decision" else "inclusion_decision_simple"
+  }
+
   tool_guard_msg <- paste0(
     "You are a function-calling agent. For each request",
     "you must call the tool '", forced_fn, "' exactly once and only this tool. ",

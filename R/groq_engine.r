@@ -21,7 +21,7 @@
       is.list(body$tool_choice) &&
       identical(body$tool_choice$type, "function") &&
       !is.null(body$tool_choice$`function`) &&
-      identical(body$tool_choice$`function`$name, "inclusion_decision")) {
+      body$tool_choice$`function`$name %in% c("inclusion_decision", "inclusion_decision_binary")) {
     detailed <- TRUE
   }
 
@@ -208,14 +208,14 @@
   if (is.list(tool)) {
     detailed_for_wrapper <- any(vapply(tool, function(t) {
       fn <- t[["function"]]
-      !is.null(fn) && identical(fn$name, "inclusion_decision")
+      !is.null(fn) && fn$name %in% c("inclusion_decision", "inclusion_decision_binary")
     }, logical(1)))
   }
   if (!detailed_for_wrapper && is.list(t_choice)) {
     # Also allow explicit selection to trigger detailed mode
-    if (!is.null(t_choice$name) && identical(t_choice$name, "inclusion_decision")) detailed_for_wrapper <- TRUE
+    if (!is.null(t_choice$name) && t_choice$name %in% c("inclusion_decision", "inclusion_decision_binary")) detailed_for_wrapper <- TRUE
     if (!is.null(t_choice$type) && identical(t_choice$type, "function") &&
-        !is.null(t_choice$`function`) && identical(t_choice$`function`$name, "inclusion_decision")) detailed_for_wrapper <- TRUE
+        !is.null(t_choice$`function`) && t_choice$`function`$name %in% c("inclusion_decision", "inclusion_decision_binary")) detailed_for_wrapper <- TRUE
   }
 
   # Allocate columns
@@ -277,6 +277,8 @@
     if (!is.null(fn_name)) {
       api_body$tool_choice <- list(type = "function", "function" = list(name = fn_name))
     }
+  } else if (is.character(t_choice) && !identical(t_choice, "auto")) {
+    api_body$tool_choice <- list(type = "function", "function" = list(name = t_choice))
   } else {
     api_body$tool_choice <- t_choice
   }

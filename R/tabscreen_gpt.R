@@ -87,6 +87,9 @@
 #'   we generally recommend not using this feature as it will substantially increase the cost of the
 #'   screening. We generally recommend using it when encountering disagreements between GPT and
 #'   human decisions.
+#' @param over_inclusive Logical indicating whether uncertain decisions (`"1.1"`) should be
+#'   allowed in the default function calling setup. Default is `FALSE`, which uses binary
+#'   inclusion/exclusion tools only.
 #' @param messages Logical indicating whether to print messages embedded in the function.
 #'   Default is `TRUE`.
 #' @param incl_cutoff_upper Numerical value indicating the probability threshold
@@ -119,7 +122,8 @@
 #'   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
 #'   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
 #'   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
-#'   fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low", ...)
+#'   fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low",
+#'   over_inclusive = FALSE, ...)
 #'
 #' tabscreen_gpt(data, prompt, studyid, title, abstract,
 #'   api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-4o-mini",
@@ -129,7 +133,8 @@
 #'   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
 #'   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
 #'   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
-#'   fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low", ...)
+#'   fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low",
+#'   over_inclusive = FALSE, ...)
 #'
 #' @return An object of class `'gpt'`. The object is a list containing the following
 #' datasets and components:
@@ -287,6 +292,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
   fine_tuned = deprecated(),
   reasoning_effort = "medium",
   verbosity = "low",
+  over_inclusive = FALSE,
   ...
 ){
 
@@ -445,6 +451,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
       progress = progress,
       messages = messages,
       decision_description = decision_description,
+      over_inclusive = over_inclusive,
       incl_cutoff_upper = incl_cutoff_upper,
       incl_cutoff_lower = incl_cutoff_lower,
       force = force,
@@ -492,15 +499,33 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
   # Default setting
   if (is.null(tools) && is.null(tool_choice)){
 
-    if (!decision_description){
+    if (over_inclusive) {
 
-      tools <- tools_simple
-      tool_choice <- "inclusion_decision_simple"
+      if (!decision_description){
+
+        tools <- tools_simple
+        tool_choice <- "inclusion_decision_simple"
+
+      } else {
+
+        tools <- tools_detailed
+        tool_choice <- "inclusion_decision"
+
+      }
 
     } else {
 
-      tools <- tools_detailed
-      tool_choice <- "inclusion_decision"
+      if (!decision_description){
+
+        tools <- tools_simple_binary
+        tool_choice <- "inclusion_decision_simple_binary"
+
+      } else {
+
+        tools <- tools_detailed_binary
+        tool_choice <- "inclusion_decision_binary"
+
+      }
 
     }
 

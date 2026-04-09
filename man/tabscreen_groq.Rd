@@ -13,7 +13,7 @@ tabscreen_groq(
   abstract,
   api_url = "https://api.groq.com/openai/v1/chat/completions",
   ...,
-  model = "llama3-70b-8192",
+  model = "llama-3.1-8b-instant",
   role = "user",
   tools = NULL,
   tool_choice = NULL,
@@ -31,6 +31,7 @@ tabscreen_groq(
   seed_par = NULL,
   progress = TRUE,
   decision_description = FALSE,
+  over_inclusive = FALSE,
   messages = TRUE,
   incl_cutoff_upper = NULL,
   incl_cutoff_lower = NULL,
@@ -116,6 +117,10 @@ the title and abstract screening in parallel. Default is \code{TRUE}.}
 of decisions. Default is \code{FALSE}. When conducting large-scale screening, we generally
 recommend not using this feature as it will substantially increase the cost of the screening.
 We generally recommend using it when encountering disagreements between GPT and human decisions.}
+
+\item{over_inclusive}{Logical indicating whether uncertain decisions (\code{"1.1"}) should be
+allowed in the default function calling setup. Default is \code{FALSE}, which uses binary
+inclusion/exclusion tools only.}
 
 \item{messages}{Logical indicating whether to print messages embedded in the function.
 Default is \code{TRUE}.}

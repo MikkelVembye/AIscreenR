@@ -16,7 +16,7 @@
       is.list(body$tool_choice) &&
       identical(body$tool_choice$type, "function") &&
       !is.null(body$tool_choice$`function`) &&
-      identical(body$tool_choice$`function`$name, "inclusion_decision")) {
+      body$tool_choice$`function`$name %in% c("inclusion_decision", "inclusion_decision_binary")) {
     detailed <- TRUE
   }
 
@@ -25,8 +25,6 @@
   if (max_t == 0) max_t <- NULL
   
   tictoc::tic()
-
-  url <- endpoint_url
   
   headers <- list(
     content_type = "application/json",
@@ -184,20 +182,24 @@
   if (is.list(tool)) {
     detailed_for_wrapper <- any(vapply(tool, function(t) {
       fn <- t[["function"]]
-      !is.null(fn) && identical(fn$name, "inclusion_decision")
+      !is.null(fn) && fn$name %in% c("inclusion_decision", "inclusion_decision_binary")
     }, logical(1)))
   }
   if (!detailed_for_wrapper && is.list(t_choice)) {
-    if (!is.null(t_choice$name) && identical(t_choice$name, "inclusion_decision")) detailed_for_wrapper <- TRUE
+    if (!is.null(t_choice$name) && t_choice$name %in% c("inclusion_decision", "inclusion_decision_binary")) detailed_for_wrapper <- TRUE
     if (!is.null(t_choice$type) && identical(t_choice$type, "function") &&
-        !is.null(t_choice$`function`) && identical(t_choice$`function`$name, "inclusion_decision")) detailed_for_wrapper <- TRUE
+        !is.null(t_choice$`function`) && t_choice$`function`$name %in% c("inclusion_decision", "inclusion_decision_binary")) detailed_for_wrapper <- TRUE
   }
 
   t_info_wrapper <- if (time_inf) NA_real_ else NULL
 
   create_error_df <- function(is_detailed) {
     error_list <- list(
-      decision_gpt = "Error [possibly a JSON error from wrapper]",
+      decision_gpt = paste0(
+        "Error: Request failed at endpoint '", endpoint_url,
+        "'. Check that Ollama is running and api_url points to '/api/chat' ",
+        "(e.g., 'http://127.0.0.1:11434/api/chat')."
+      ),
       decision_binary = NA_real_
     )
     if (is_detailed) error_list$detailed_description <- NA_character_
@@ -238,6 +240,8 @@
     if (!is.null(fn_name)) {
       api_body$tool_choice <- list(type = "function", "function" = list(name = fn_name))
     }
+  } else if (is.character(t_choice) && !identical(t_choice, "auto")) {
+    api_body$tool_choice <- list(type = "function", "function" = list(name = t_choice))
   } else {
     api_body$tool_choice <- t_choice
   }

@@ -13,7 +13,7 @@ tabscreen_ollama(
   abstract,
   api_url = "http://127.0.0.1:11434/api/chat",
   ...,
-  model = "llama3.2:latest",
+  model,
   role = "user",
   tools = NULL,
   tool_choice = NULL,
@@ -27,6 +27,7 @@ tabscreen_ollama(
   seed_par = NULL,
   progress = TRUE,
   decision_description = FALSE,
+  over_inclusive = FALSE,
   messages = TRUE,
   incl_cutoff_upper = NULL,
   incl_cutoff_lower = NULL,
@@ -95,6 +96,10 @@ the title and abstract screening in parallel. Default is \code{TRUE}.}
 \item{decision_description}{Logical indicating whether to include detailed descriptions
 of decisions. Default is \code{FALSE}. When conducting large-scale screening, we generally
 recommend not using this feature as it will substantially increase the time of the screening.}
+
+\item{over_inclusive}{Logical indicating whether uncertain decisions (\code{"1.1"}) should be
+allowed in the default function calling setup. Default is \code{FALSE}, which uses binary
+inclusion/exclusion tools only.}
 
 \item{messages}{Logical indicating whether to print messages embedded in the function.
 Default is \code{TRUE}.}
