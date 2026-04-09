@@ -1,11 +1,11 @@
 #Helper function
 
 .input_price <- function(x){
-  model_prizes |> dplyr::filter(model == x) |> dplyr::pull(price_in_per_token)
+  model_prizes$price_in_per_token[match(x, model_prizes$model)]
 }
 
 .output_price <- function(x){
-  model_prizes |> dplyr::filter(model == x) |> dplyr::pull(price_out_per_token)
+  model_prizes$price_out_per_token[match(x, model_prizes$model)]
 }
 
 .price_gpt <- function(data){
@@ -70,13 +70,13 @@
     dat <-
       temp_dat |>
       dplyr::summarise(
-        prompt = unique(promptid),
-        iterations = unique(iterations),
+        prompt = dplyr::first(promptid),
+        iterations = dplyr::first(iterations),
         completion_tokens = total_est_completion_tokens,
         input_price_dollar = sum(input_price, na.rm = TRUE),
         output_price_dollar = sum(output_price, na.rm = TRUE),
         total_price_dollar = round(input_price_dollar + output_price_dollar, 4),
-        .by = c(prompt, model, iterations)
+        .by = c(promptid, model, iterations)
       )
 
   } else {
@@ -96,13 +96,13 @@
     dat <-
       temp_dat |>
       dplyr::summarise(
-        prompt = unique(promptid),
-        iterations = unique(iterations),
+        prompt = dplyr::first(promptid),
+        iterations = dplyr::first(iterations),
         completion_tokens = total_est_completion_tokens,
         input_price_dollar = sum(input_price, na.rm = TRUE),
         output_price_dollar = sum(output_price, na.rm = TRUE),
         total_price_dollar = round(input_price_dollar + output_price_dollar, 4),
-        .by = c(prompt, model, iterations)
+        .by = c(promptid, model, iterations)
       )
 
   }
