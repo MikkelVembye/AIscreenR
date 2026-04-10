@@ -135,20 +135,22 @@ library(future)    # Used to conduct screenings in parallel
 
 Now, we are ready to conduct the first step of the screening: loading
 the RIS file data into R and converting it to a data frame. This can be
-done by using `read_refs()` from `synthesisr`. This is an updated
-version of the `read_bibliography()` function from the `revtools`
-package that works reliable. In the below example, we use RIS file data
-from a review regarding the effects of the FRIENDS preventive programme
-on anxiety symptoms in children and adolescents ([Filges, Smedslund,
-Eriksen, Birkefoss, & Kildemoes, 2024](#ref-Filges2024)). Be aware, that
-this data is used for illustrative purposes only. In the example, we
-assume that the human reviewers have already started screening and
-identified several relevant and irrelevant studies, which they will use
-to create the test data. Thus, we can load the RIS files, which we
-downloaded from the EPPI-reviewer, separately for the in- and excluded
-RIS files. This allows us to track the human decision by adding a
-`human_code` variable, where `1` and `0` indicate whether a study is
-included or excluded, respectively.
+done with the
+[`read_ris_to_dataframe()`](https://mikkelvembye.github.io/AIscreenR/reference/read_ris_to_dataframe.md)
+function from the `AIscreenR` package, which is built to handle
+different RIS file formats from various databases, including PsychINFO.
+In the below example, we use RIS file data from a review regarding the
+effects of the FRIENDS preventive programme on anxiety symptoms in
+children and adolescents ([Filges, Smedslund, Eriksen, Birkefoss, &
+Kildemoes, 2024](#ref-Filges2024)). Be aware, that this data is used for
+illustrative purposes only. In the example, we assume that the human
+reviewers have already started screening and identified several relevant
+and irrelevant studies, which they will use to create the test data.
+Thus, we can load the RIS files, which we downloaded from the
+EPPI-reviewer, separately for the in- and excluded RIS files. This
+allows us to track the human decision by adding a `human_code` variable,
+where `1` and `0` indicate whether a study is included or excluded,
+respectively.
 
 ``` r
 # NOTE: Find the RIS files behind this vignette at https://osf.io/kfbvu/

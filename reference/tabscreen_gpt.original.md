@@ -175,7 +175,7 @@ tabscreen_gpt.original(
 
   Numerical value indicating the number of requests per minute (rpm)
   available for the specified api key. Find more information at
-  <https://platform.openai.com/docs/guides/rate-limits/what-are-the-rate-limits-for-our-api>.
+  <https://platform.openai.com/docs/models/model-endpoint-compatibility>.
   Alternatively, use
   [`rate_limits_per_minute()`](https://mikkelvembye.github.io/AIscreenR/reference/rate_limits_per_minute.md).
 

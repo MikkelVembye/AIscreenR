@@ -5,7 +5,7 @@
 `rate_limits_per_minute` reports the rate limits for a given API model.
 The function returns the available requests per minute (RPM) as well as
 tokens per minute (TPM). Find general information at
-<https://platform.openai.com/docs/guides/rate-limits/overview>.
+<https://platform.openai.com/docs/models/model-endpoint-compatibility>.
 
 ## Usage
 

@@ -3,7 +3,7 @@
 `sample_references`samples n rows from the dataset with titles and
 abstracts either with or without replacement. This function is supposed
 to support the construct of a test dataset, as suggested by [Vembye et
-al. (2024)](https://osf.io/preprints/osf/yrhzm).
+al. (2025)](https://dx.doi.org/10.1037/met0000769).
 
 ## Usage
 
@@ -43,9 +43,10 @@ A dataset with n rows.
 ## References
 
 Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W.
-(2024) *GPT API Models Can Function as Highly Reliable Second Screeners
-of Titles and Abstracts in Systematic Reviews: A Proof of Concept and
-Common Guidelines* <https://osf.io/preprints/osf/yrhzm>
+(2025). Generative Pretrained Transformer Models Can Function as Highly
+Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
+A Proof of Concept and Common Guidelines. *Psychological Methods*.
+<https://dx.doi.org/10.1037/met0000769>
 
 ## Examples
 

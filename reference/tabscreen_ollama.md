@@ -4,7 +4,7 @@ This function supports the conduct of title and abstract screening with
 OLLAMA API models in R. Specifically, it allows the user to draw on
 locally hosted ollama models (e.g., Llama 3 / 3.1 variants,
 Mixtral/Mistral, Gemma, DeepSeek and Qwen). For more information on how
-to install and use OLLAMA, see <https://ollama.com/docs/>. Be aware that
+to install and use OLLAMA, see <https://docs.ollama.com/>. Be aware that
 this function requires that you have OLLAMA installed and running on
 your local machine. The function allows to run title and abstract
 screening across multiple prompts and with repeated questions to check
@@ -13,7 +13,7 @@ The function draws on the newly developed function calling which is
 called via the tools argument in the request body. Function calls ensure
 more reliable and consistent responses to ones requests. See [Vembye,
 Christensen, Mølgaard, and Schytt.
-(2025)](https://osf.io/preprints/osf/yrhzm) for guidance on how
+(2025)](https://dx.doi.org/10.1037/met0000769) for guidance on how
 adequately to conduct title and abstract screening with OLLAMA models.
 
 ## Usage
@@ -248,9 +248,10 @@ with failed request references only.
 ## References
 
 Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W.
-(2024) *GPT API Models Can Function as Highly Reliable Second Screeners
-of Titles and Abstracts in Systematic Reviews: A Proof of Concept and
-Common Guidelines* <https://osf.io/preprints/osf/yrhzm>
+(2025). Generative Pretrained Transformer Models Can Function as Highly
+Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
+A Proof of Concept and Common Guidelines. *Psychological Methods*.
+<https://dx.doi.org/10.1037/met0000769>
 
 Thomas, J. et al. (2024). Responsible AI in Evidence SynthEsis (RAISE):
 guidance and recommendations. <https://osf.io/cn7x4>

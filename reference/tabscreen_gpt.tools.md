@@ -13,7 +13,7 @@ body. This is the main difference between `tabscreen_gpt.tools()` and
 [`tabscreen_gpt.original()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.original.md).
 Function calls ensure more reliable and consistent responses to ones
 requests. See [Vembye, Christensen, Mølgaard, and Schytt.
-(2025)](https://osf.io/preprints/osf/yrhzm) for guidance on how
+(2025)](https://dx.doi.org/10.1037/met0000769) for guidance on how
 adequately to conduct title and abstract screening with GPT models.
 
 ## Usage
@@ -168,7 +168,7 @@ tabscreen_gpt(data, prompt, studyid, title, abstract,
 
   Numerical value indicating the number of requests per minute (rpm)
   available for the specified model. Find more information at
-  <https://platform.openai.com/docs/guides/rate-limits/what-are-the-rate-limits-for-our-api>.
+  <https://platform.openai.com/docs/models/model-endpoint-compatibility>.
   Alternatively, use
   [`rate_limits_per_minute()`](https://mikkelvembye.github.io/AIscreenR/reference/rate_limits_per_minute.md).
 
@@ -383,9 +383,10 @@ Find current token pricing at
 ## References
 
 Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W.
-(2025) *GPT API Models Can Function as Highly Reliable Second Screeners
-of Titles and Abstracts in Systematic Reviews: A Proof of Concept and
-Common Guidelines* <https://osf.io/preprints/osf/yrhzm>
+(2025). Generative Pretrained Transformer Models Can Function as Highly
+Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
+A Proof of Concept and Common Guidelines. *Psychological Methods*.
+<https://dx.doi.org/10.1037/met0000769>
 
 Thomas, J. et al. (2024). Responsible AI in Evidence SynthEsis (RAISE):
 guidance and recommendations. <https://osf.io/cn7x4>
