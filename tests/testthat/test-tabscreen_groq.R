@@ -229,13 +229,13 @@ rpm <- c(30, 30)
 skip <- TRUE
 skip_github_action <- FALSE
 
-test_that("tabscreen_groq() over_inclusive chooses default tools", {
+test_that("tabscreen_groq() overinclusive chooses default tools", {
 
   if(skip) skip()
   if(skip_github_action) skip_on_ci()
   skip_on_cran()
 
-  # Binary default tools when over_inclusive = FALSE
+  # Binary default tools when overinclusive = FALSE
   res_bin <- tabscreen_groq(
     data = filges2015_dat[1,],
     prompt = prompt,
@@ -243,7 +243,7 @@ test_that("tabscreen_groq() over_inclusive chooses default tools", {
     title = title,
     abstract = abstract,
     model = "llama-3.1-8b-instant",
-    over_inclusive = FALSE,
+    overinclusive = FALSE,
     decision_description = FALSE,
     messages = FALSE,
     progress = FALSE
@@ -260,7 +260,7 @@ test_that("tabscreen_groq() over_inclusive chooses default tools", {
     title = title,
     abstract = abstract,
     model = "llama-3.1-8b-instant",
-    over_inclusive = FALSE,
+    overinclusive = FALSE,
     decision_description = TRUE,
     messages = FALSE,
     progress = FALSE
@@ -270,7 +270,7 @@ test_that("tabscreen_groq() over_inclusive chooses default tools", {
   expect_identical(args_bin_det$tool_choice, "inclusion_decision_binary")
   expect_identical(args_bin_det$tools[[1]]$`function`$name, "inclusion_decision_binary")
 
-  # Over-inclusive tools (supports 1.1) when over_inclusive = TRUE
+  # Over-inclusive tools (supports 1.1) when overinclusive = TRUE
   res_over <- tabscreen_groq(
     data = filges2015_dat[1,],
     prompt = prompt,
@@ -278,7 +278,7 @@ test_that("tabscreen_groq() over_inclusive chooses default tools", {
     title = title,
     abstract = abstract,
     model = "llama-3.1-8b-instant",
-    over_inclusive = TRUE,
+    overinclusive = TRUE,
     decision_description = FALSE,
     messages = FALSE,
     progress = FALSE
@@ -295,7 +295,7 @@ test_that("tabscreen_groq() over_inclusive chooses default tools", {
     title = title,
     abstract = abstract,
     model = "llama-3.1-8b-instant",
-    over_inclusive = TRUE,
+    overinclusive = TRUE,
     decision_description = TRUE,
     messages = FALSE,
     progress = FALSE

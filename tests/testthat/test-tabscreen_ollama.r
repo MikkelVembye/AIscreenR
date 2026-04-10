@@ -162,7 +162,7 @@ models <- c("llama-3.1-8b-instant", "openai/gpt-oss-20b")
 reps <- c(2, 1)
 rpm <- c(30, 30)
 
-test_that("tabscreen_ollama() over_inclusive chooses default tools", {
+test_that("tabscreen_ollama() overinclusive chooses default tools", {
 
   if(skip) skip()
   if(skip_github_action) skip_on_ci()
@@ -171,7 +171,7 @@ test_that("tabscreen_ollama() over_inclusive chooses default tools", {
   # Use closed local port to avoid dependency on a running Ollama server.
   test_api <- "http://127.0.0.1:1/api/chat"
 
-  # Binary default tools when over_inclusive = FALSE
+  # Binary default tools when overinclusive = FALSE
   res_bin <- tabscreen_ollama(
     data = filges2015_dat[1,],
     prompt = prompt,
@@ -180,7 +180,7 @@ test_that("tabscreen_ollama() over_inclusive chooses default tools", {
     abstract = abstract,
     api_url = test_api,
     model = "llama3-8b-8192",
-    over_inclusive = FALSE,
+    overinclusive = FALSE,
     decision_description = FALSE,
     messages = FALSE,
     progress = FALSE
@@ -198,7 +198,7 @@ test_that("tabscreen_ollama() over_inclusive chooses default tools", {
     abstract = abstract,
     api_url = test_api,
     model = "llama3-8b-8192",
-    over_inclusive = FALSE,
+    overinclusive = FALSE,
     decision_description = TRUE,
     messages = FALSE,
     progress = FALSE
@@ -208,7 +208,7 @@ test_that("tabscreen_ollama() over_inclusive chooses default tools", {
   expect_identical(args_bin_det$tool_choice, "inclusion_decision_binary")
   expect_identical(args_bin_det$tools[[1]]$`function`$name, "inclusion_decision_binary")
 
-  # Over-inclusive tools (supports 1.1) when over_inclusive = TRUE
+  # Over-inclusive tools (supports 1.1) when overinclusive = TRUE
   res_over <- tabscreen_ollama(
     data = filges2015_dat[1,],
     prompt = prompt,
@@ -217,7 +217,7 @@ test_that("tabscreen_ollama() over_inclusive chooses default tools", {
     abstract = abstract,
     api_url = test_api,
     model = "llama3-8b-8192",
-    over_inclusive = TRUE,
+    overinclusive = TRUE,
     decision_description = FALSE,
     messages = FALSE,
     progress = FALSE
@@ -235,7 +235,7 @@ test_that("tabscreen_ollama() over_inclusive chooses default tools", {
     abstract = abstract,
     api_url = test_api,
     model = "llama3-8b-8192",
-    over_inclusive = TRUE,
+    overinclusive = TRUE,
     decision_description = TRUE,
     messages = FALSE,
     progress = FALSE
@@ -617,8 +617,8 @@ test_that("Message behavior.", {
     ),
 
     paste0(
-      "* Be aware that getting descriptive, detailed responses will substantially increase",
-      " the prize of the screening relative to the noted approximate prize."
+          "* Be aware that getting detailed reponses ",
+          "will substantially increase the time of the screening."
     )
 
   ) |>
@@ -631,7 +631,8 @@ test_that("Message behavior.", {
       prompt = prompt,
       studyid = studyid,
       title = title,
-      abstract = abstract
+      abstract = abstract,
+      model = "llama3.2:latest",
     ),
 
     paste0(

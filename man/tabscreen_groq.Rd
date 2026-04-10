@@ -12,7 +12,7 @@ tools = NULL, tool_choice = NULL, top_p = 1,
 time_info = TRUE, token_info = TRUE, api_key = get_api_key_groq(), 
 max_tries = 16, max_seconds = NULL, is_transient = .groq_is_transient, 
 backoff = NULL, after = NULL, rpm = 10000, reps = 1, seed_par = NULL,
-progress = TRUE, decision_description = FALSE, over_inclusive = TRUE, 
+progress = TRUE, decision_description = FALSE, overinclusive = TRUE, 
 messages = TRUE, incl_cutoff_upper = NULL, incl_cutoff_lower = NULL, 
 force = FALSE)
 }
@@ -96,7 +96,7 @@ of decisions. Default is \code{FALSE}. When conducting large-scale screening, we
 recommend not using this feature as it will substantially increase the cost of the screening.
 We generally recommend using it when encountering disagreements between GPT and human decisions.}
 
-\item{over_inclusive}{Logical indicating whether uncertain decisions (\code{"1.1"}) should be
+\item{overinclusive}{Logical indicating whether uncertain decisions (\code{"1.1"}) should be
 allowed in the default function calling setup. Default is \code{TRUE}, which means that the
 default function calling setup will allow for uncertain decisions.
 If \code{FALSE}, the default function calling setup will not allow for uncertain decisions and

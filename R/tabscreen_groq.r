@@ -75,7 +75,7 @@
 #'   of decisions. Default is `FALSE`. When conducting large-scale screening, we generally 
 #' recommend not using this feature as it will substantially increase the cost of the screening. 
 #' We generally recommend using it when encountering disagreements between GPT and human decisions.
-#' @param over_inclusive Logical indicating whether uncertain decisions (`"1.1"`) should be
+#' @param overinclusive Logical indicating whether uncertain decisions (`"1.1"`) should be
 #'   allowed in the default function calling setup. Default is `TRUE`, which means that the 
 #' default function calling setup will allow for uncertain decisions. 
 #' If `FALSE`, the default function calling setup will not allow for uncertain decisions and 
@@ -105,7 +105,7 @@
 #' time_info = TRUE, token_info = TRUE, api_key = get_api_key_groq(), 
 #' max_tries = 16, max_seconds = NULL, is_transient = .groq_is_transient, 
 #' backoff = NULL, after = NULL, rpm = 10000, reps = 1, seed_par = NULL,
-#' progress = TRUE, decision_description = FALSE, over_inclusive = TRUE, 
+#' progress = TRUE, decision_description = FALSE, overinclusive = TRUE, 
 #' messages = TRUE, incl_cutoff_upper = NULL, incl_cutoff_lower = NULL, 
 #' force = FALSE)
 #'
@@ -244,7 +244,7 @@ tabscreen_groq <- function(
   seed_par = NULL,
   progress = TRUE,
   decision_description = FALSE,
-  over_inclusive = TRUE,
+  overinclusive = TRUE,
   messages = TRUE,
   incl_cutoff_upper = NULL,
   incl_cutoff_lower = NULL,
@@ -269,7 +269,7 @@ tabscreen_groq <- function(
   # Default setting
   if (is.null(tools) && is.null(tool_choice)) {
 
-    if (over_inclusive) {
+    if (overinclusive) {
 
       if (!decision_description) {
 
@@ -370,7 +370,7 @@ tabscreen_groq <- function(
       progress = progress,
       messages = messages,
       decision_description = decision_description,
-      over_inclusive = over_inclusive,
+      overinclusive = overinclusive,
       incl_cutoff_upper = incl_cutoff_upper,
       incl_cutoff_lower = incl_cutoff_lower,
       api_url = api_url,

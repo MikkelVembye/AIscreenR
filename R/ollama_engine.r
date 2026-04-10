@@ -12,11 +12,21 @@
     endpoint_url 
 ) {
   detailed <- FALSE
+  if (is.list(body$tools) && length(body$tools) > 0) {
+    detailed <- any(vapply(body$tools, function(t) {
+      fn <- t[["function"]]
+      if (is.null(fn) && !is.null(t$name)) fn <- t
+      props <- fn[["parameters"]][["properties"]]
+      !is.null(props[["detailed_description"]])
+    }, logical(1)))
+  }
+
   if (!is.null(body$tool_choice) &&
       is.list(body$tool_choice) &&
       identical(body$tool_choice$type, "function") &&
       !is.null(body$tool_choice$`function`) &&
-      body$tool_choice$`function`$name %in% c("inclusion_decision", "inclusion_decision_binary")) {
+      body$tool_choice$`function`$name %in% c("inclusion_decision", "inclusion_decision_binary") &&
+      !detailed) {
     detailed <- TRUE
   }
 
@@ -44,7 +54,13 @@
   # Determine allowed decision values from tool definition if available, otherwise use default
   allowed_decisions <- c("1", "0", "1.1")
   if (is.list(body$tools) && length(body$tools) > 0) {
-    tool_enum <- body$tools[[1]][["function"]][["parameters"]][["properties"]][["decision_gpt"]][["enum"]]
+    decision_props <- body$tools[[1]][["function"]][["parameters"]][["properties"]]
+    tool_enum <- NULL
+    if (!is.null(decision_props[["decision_gpt"]][["enum"]])) {
+      tool_enum <- decision_props[["decision_gpt"]][["enum"]]
+    } else if (!is.null(decision_props[["decision"]][["enum"]])) {
+      tool_enum <- decision_props[["decision"]][["enum"]]
+    }
 
     # If enum is defined for the decision_gpt parameter, use those values as allowed decisions
     if (!is.null(tool_enum) && length(tool_enum) > 0) {
@@ -216,7 +232,9 @@
   if (is.list(tool)) {
     detailed_for_wrapper <- any(vapply(tool, function(t) {
       fn <- t[["function"]]
-      !is.null(fn) && fn$name %in% c("inclusion_decision", "inclusion_decision_binary")
+      if (is.null(fn) && !is.null(t$name)) fn <- t
+      props <- fn[["parameters"]][["properties"]]
+      !is.null(props[["detailed_description"]])
     }, logical(1)))
   }
   if (!detailed_for_wrapper && is.list(t_choice)) {

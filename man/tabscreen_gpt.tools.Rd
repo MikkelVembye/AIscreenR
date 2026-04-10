@@ -14,7 +14,7 @@ tabscreen_gpt.tools(data, prompt, studyid, title, abstract,
   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
   fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low",
-  over_inclusive = TRUE, ...)
+  overinclusive = TRUE, ...)
 
 tabscreen_gpt(data, prompt, studyid, title, abstract,
   api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-4o-mini",
@@ -25,7 +25,7 @@ tabscreen_gpt(data, prompt, studyid, title, abstract,
   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
   fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low",
-  over_inclusive = TRUE, ...)
+  overinclusive = TRUE, ...)
 }
 \arguments{
 \item{data}{Dataset containing the titles and abstracts.}
@@ -150,7 +150,7 @@ Can take the values \code{"low"}, \code{"medium"}, and \code{"high"}. See \url{h
 \item{verbosity}{Character string indicating the level of verbosity in the model's responses. Default is \code{"low"}.
 Can take the values \code{"low"}, \code{"medium"}, and \code{"high"}. See \url{https://platform.openai.com/docs/api-reference/chat/create} for more information.}
 
-\item{over_inclusive}{Logical indicating whether uncertain decisions (\code{"1.1"}) should be
+\item{overinclusive}{Logical indicating whether uncertain decisions (\code{"1.1"}) should be
 allowed in the default function calling setup. Default is \code{TRUE}, which means that the
 default function calling setup will allow for uncertain decisions.
 If \code{FALSE}, the default function calling setup will not allow for uncertain decisions and

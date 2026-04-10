@@ -198,9 +198,9 @@ test_obj <-
     reps = 10, # Number of times the same question is asked 
     incl_cutoff_upper = 0.1, # If GPT includes a reference in 10% or more of the iterations, it will be included
     # If the GPT model as no or little information to base its decision on, it will be more likely to include the reference. 
-    # Setting over_inclusive = TRUE means that if the model is uncertain about a reference, 
+    # Setting overinclusive = TRUE means that if the model is uncertain about a reference, 
     # it will be included (i.e., coded as 1.1 instead of 0).
-    over_inclusive = TRUE 
+    overinclusive = TRUE 
   )
 #> * The approximate price of the current (simple) screening will be around $0.0181.
 #> Progress: ───────────────────────────────────────────────────────────────────────────────────── 100%

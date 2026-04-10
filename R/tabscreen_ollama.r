@@ -64,7 +64,7 @@
 #' @param decision_description Logical indicating whether to include detailed descriptions
 #'   of decisions. Default is `FALSE`. When conducting large-scale screening, we generally 
 #' recommend not using this feature as it will substantially increase the time of the screening.
-#' @param over_inclusive Logical indicating whether uncertain decisions (`"1.1"`) should be
+#' @param overinclusive Logical indicating whether uncertain decisions (`"1.1"`) should be
 #'   allowed in the default function calling setup. Default is `TRUE`, which means that the 
 #' default function calling setup will allow for uncertain decisions. 
 #' If `FALSE`, the default function calling setup will not allow for uncertain decisions and 
@@ -90,7 +90,7 @@
 #' tools = NULL, tool_choice = NULL, top_p = 1, time_info = TRUE, 
 #' max_tries = 16, max_seconds = NULL, backoff = NULL, after = NULL, 
 #' reps = 1, seed_par = NULL, progress = TRUE, decision_description = FALSE, 
-#' over_inclusive = TRUE, messages = TRUE, incl_cutoff_upper = NULL, 
+#' overinclusive = TRUE, messages = TRUE, incl_cutoff_upper = NULL, 
 #' incl_cutoff_lower = NULL, force = FALSE)
 #' 
 #' @return An object of class \code{"gpt"}. The object is a list containing the following
@@ -208,7 +208,7 @@ tabscreen_ollama <- function(
   seed_par = NULL,
   progress = TRUE,
   decision_description = FALSE,
-  over_inclusive = TRUE,
+  overinclusive = TRUE,
   messages = TRUE,
   incl_cutoff_upper = NULL,
   incl_cutoff_lower = NULL,
@@ -264,15 +264,43 @@ tabscreen_ollama <- function(
   # Function call setup
   #.......................................
   if (!is.null(tools) && !is.list(tools)) stop("The tools function must be of a list.")
+
   if (is.null(tools) && !is.null(tool_choice)) stop("You must provide a tool or set 'tool_choice = NULL'.")
 
-  # Enforce function-calling when custom tools are provided without tool_choice
-  if (!is.null(tools) && is.null(tool_choice)) tool_choice <- "required"
+  # Support shorthand custom tools.
+  if (!is.null(tools)) {
+
+    # If a single tool is passed as a named list, wrap into a list of tools.
+    if (!is.null(tools$name) || !is.null(tools$`function`)) {
+      tools <- list(tools)
+    }
+
+    tools <- lapply(tools, function(tool_def) {
+      if (!is.null(tool_def[["function"]])) return(tool_def)
+      if (is.null(tool_def$name)) stop("Each custom tool must include a function name.")
+      list(type = "function", "function" = tool_def)
+    })
+
+    first_tool_name <- tools[[1]][["function"]][["name"]]
+    if (is.null(first_tool_name) || !is.character(first_tool_name) || length(first_tool_name) != 1 ||
+        is.na(first_tool_name) || trimws(first_tool_name) == "") {
+      stop("Custom tools must include a non-empty function name.")
+    }
+
+    # Parser expects tool calls to include one decision field.
+    first_props <- tools[[1]][["function"]][["parameters"]][["properties"]]
+    has_decision <- is.list(first_props) && ("decision_gpt" %in% names(first_props) || "decision" %in% names(first_props))
+    if (!has_decision) {
+      stop("Custom tools must define either 'decision_gpt' or 'decision' in parameters$properties.")
+    }
+
+    if (is.null(tool_choice)) tool_choice <- first_tool_name
+  }
 
   # Default setting
   if (is.null(tools) && is.null(tool_choice)) {
 
-    if (over_inclusive) {
+    if (overinclusive) {
 
       if (!decision_description) {
 
@@ -440,7 +468,7 @@ tabscreen_ollama <- function(
       progress = progress,
       messages = messages,
       decision_description = decision_description,
-      over_inclusive = over_inclusive,
+      overinclusive = overinclusive,
       incl_cutoff_upper = incl_cutoff_upper,
       incl_cutoff_lower = incl_cutoff_lower,
       api_url = api_url,
@@ -539,7 +567,7 @@ tabscreen_ollama <- function(
   # Detailed system that models must follow in order to ensure proper function calling
   forced_fn <- NULL
 
-  if (is.character(tool_choice) && length(tool_choice) == 1 && !identical(tool_choice, "auto")) {
+  if (is.character(tool_choice) && length(tool_choice) == 1 && !tool_choice %in% c("auto", "required")) {
     forced_fn <- tool_choice
   }
 

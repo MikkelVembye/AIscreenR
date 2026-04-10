@@ -87,7 +87,7 @@
 #'   we generally recommend not using this feature as it will substantially increase the cost of the
 #'   screening. We generally recommend using it when encountering disagreements between GPT and
 #'   human decisions.
-#' @param over_inclusive Logical indicating whether uncertain decisions (`"1.1"`) should be
+#' @param overinclusive Logical indicating whether uncertain decisions (`"1.1"`) should be
 #'   allowed in the default function calling setup. Default is `TRUE`, which means that the 
 #' default function calling setup will allow for uncertain decisions. 
 #' If `FALSE`, the default function calling setup will not allow for uncertain decisions and 
@@ -126,7 +126,7 @@
 #'   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
 #'   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
 #'   fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low",
-#'   over_inclusive = TRUE, ...)
+#'   overinclusive = TRUE, ...)
 #'
 #' tabscreen_gpt(data, prompt, studyid, title, abstract,
 #'   api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-4o-mini",
@@ -137,7 +137,7 @@
 #'   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
 #'   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
 #'   fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low",
-#'   over_inclusive = TRUE, ...)
+#'   overinclusive = TRUE, ...)
 #'
 #' @return An object of class `'gpt'`. The object is a list containing the following
 #' datasets and components:
@@ -295,7 +295,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
   fine_tuned = deprecated(),
   reasoning_effort = "medium",
   verbosity = "low",
-  over_inclusive = TRUE,
+  overinclusive = TRUE,
   ...
 ){
 
@@ -454,7 +454,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
       progress = progress,
       messages = messages,
       decision_description = decision_description,
-      over_inclusive = over_inclusive,
+      overinclusive = overinclusive,
       incl_cutoff_upper = incl_cutoff_upper,
       incl_cutoff_lower = incl_cutoff_lower,
       force = force,
@@ -508,7 +508,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
   # Default setting
   if (is.null(tools) && is.null(tool_choice)){
 
-    if (over_inclusive) {
+    if (overinclusive) {
 
       if (!decision_description){
 
