@@ -61,11 +61,10 @@ head(filges2015_dat)
 We load the required packages.
 ```{r}
 #| echo: true
-#| eval: true
+#| eval: false
 
 # Loading packages
 library(AIscreenR)  # Used to screen and calculate gpt vs. human performance
-library(synthesisr) # Used to load RIS files
 library(tibble)     # Used to work with tibbles
 library(dplyr)      # Used to manipulate data
 library(purrr)      # For loops 
