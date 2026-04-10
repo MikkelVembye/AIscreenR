@@ -52,7 +52,7 @@ Object of class \code{'chatgpt'} similar to the object returned by \code{\link[=
 See documentation value for \code{\link[=tabscreen_gpt.original]{tabscreen_gpt.original()}}.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}\if{html}{\out{<br>}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}}\if{html}{\out{<br>}}
 \if{html}{\out{<br>}}
 
 This function supports re-screening of all failed title and abstract requests
