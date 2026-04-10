@@ -30,7 +30,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-This article explains how to use the `report()` function to generate a structured document that highlights disagreements between human and AI screening decisions.
+We highly recommend that reviewers attach a disagreement report showing the differences between human and AI screening decisions. This helps assess whether humans are generally too overinclusive or whether the AI is simply incorrect. In this article, we explain how to use the `report()` function to generate a structured document that highlights disagreements between human and AI screening decisions.
 
 ## Setup
 

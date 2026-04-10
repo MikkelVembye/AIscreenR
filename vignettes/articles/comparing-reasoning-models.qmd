@@ -31,11 +31,9 @@ editor_options:
 ---
 
 ## Introduction
-In this article, we compare the performance of three OpenAI models for screening tasks: `gpt-4o-mini`, `gpt-5-mini`, and `gpt-5.1`.
-We evaluate their effectiveness in systematic literature review screening tasks using a real-world dataset.
-The comparison is based on a single repetition (`reps = 1`) for all models. For the reasoning models (`gpt-5-mini` and `gpt-5.1`), we use the default reasoning effort of `medium` and verbosity `low`.
-The aim of this comparison is to assess the trade-offs between the models in terms of accuracy and efficiency for screening tasks.
-Furthermore, to investigate the impact of reasoning in models.
+As Vembye et al. (2025) focus exclusively on the screening performance of `GPT-4` models, it remains unclear how their proposed setup generalizes to newer `GPT-5` models. In this article, we compare the performance of three OpenAI models for screening tasks: `gpt-4o-mini`, `gpt-5-mini`, and `gpt-5.1`. We evaluate their effectiveness in systematic literature review screening tasks using a real-world dataset. The comparison is based on a single repetition (`reps = 1`) for all models. For the reasoning models (`gpt-5-mini` and `gpt-5.1`), we use the default reasoning effort of `medium` and verbosity `low`. The aim of this comparison is to assess the trade-offs between the models in terms of accuracy and efficiency for screening tasks. Furthermore, to investigate the impact of reasoning in models. 
+
+As can be seen below, we find that prompting `GPT-5` models is different from prompting `GPT-4` models. They appear to require more detailed information within a single prompt. In other words, they seem to be better at multitasking (i.e., handling multiple pieces of different information simultaneously) compared to`GPT-4` models, contrasting some of the findings from Vembye et al. (2025). 
 
 ## Setup
 
@@ -186,3 +184,6 @@ From a cost perspective, GPT-4o-mini was the most economical at $0.3982, while G
 The choice of model depends on the specific priorities of the systematic review and available budget. GPT-4o-mini remains the most cost-effective option, achieving perfect recall and high specificity (0.974), making it ideal for minimizing false negatives when budget is a primary concern. However, if reducing false positives and improving overall agreement with human judgments is a priority, GPT-5-mini and GPT-5.1 provide superior performance with agreement rates of 0.981 and 0.984, respectively, despite the higher cost.
 
 The reasoning models (GPT-5-mini and GPT-5.1) demonstrate that stronger reasoning capabilities lead to more conservative and consistent screening decisions that closely align with the provided prompt. When using reasoning models, a well-crafted, detailed prompt that clearly outlines inclusion and exclusion criteria is essential to leverage their advantages. For reviews where accuracy and precision are most important and budget allows, GPT-5.1 offers the best performance with the lowest false positive rate (41 studies), though at the highest cost.
+
+# References 
+Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2025). Generative pretrained transformer models can function as highly reliable second screeners of titles and abstracts in systematic reviews: A proof of concept and common guidelines. *Psychological Methods*, Online first. <https://doi.org/10.1037/met0000769>

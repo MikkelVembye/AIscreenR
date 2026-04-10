@@ -30,6 +30,10 @@ editor_options:
   chunk_output_type: console
 ---
 
+::: {.callout-important}
+These functions were developed because existing R tools for loading RIS files often fail to preserve the original formatting from PsycINFO. The new functions are designed to handle this RIS file structure with other database formats. For an full-scale use of these functions, see the [Using OpenAI’s GPT API models for Title and Abstract Screening in Systematic Reviews](Using-GPT-API-Models-For-Screening.html) vignette. If you experience any issues with these functions, please report them on [GitHub](https://github.com/MikkelVembye/AIscreenR/issues). Otherwise, you can try using [`synthesisr::read_refs()`](https://martinwestgate.com/synthesisr/reference/read_refs.html).
+:::
+
 ## Overview
 
 This vignette introduces two helpers for working with RIS files. The function `read_ris_to_dataframe(file_path)` parses an RIS file into a data frame with the following features:
@@ -45,6 +49,9 @@ The function `save_dataframe_to_ris(df, file_path)` writes a data frame back to 
 - Splits semicolon-separated values into multiple RIS tag lines
 - Preserves original formatting when available (from metadata)
 - Terminates each record with `ER  - `
+
+
+## Load the package
 
 ```{r}
 #| echo: true

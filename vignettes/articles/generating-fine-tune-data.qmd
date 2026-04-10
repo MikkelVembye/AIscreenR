@@ -30,7 +30,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-This article demonstrates how to prepare and format your data for fine-tuning OpenAI models using the `AIscreenR` package. The process involves two main functions: `generate_ft_data()` to structure the prompts and `write_ft_data()` to save the data in the required `jsonl` format. See OpenAI’s fine-tuning guide for an overview of dataset preparation and format requirements [OpenAI Docs: Fine-tuning guide](https://platform.openai.com/docs/guides/supervised-fine-tuning?monitoring=ui).
+If you experience that the GPT model screening underperform, a solution is to fine-tune the model on your specific screening task. This article demonstrates how to prepare and format your data for fine-tuning OpenAI models using the `AIscreenR` package. The process involves two main functions: `create_fine_tune_data()` to structure the prompts and `save_fine_tune_data()` to save the data in the required `jsonl` format. See OpenAI’s fine-tuning guide for an overview of dataset preparation and format requirements [OpenAI Docs: Fine-tuning guide](https://platform.openai.com/docs/guides/supervised-fine-tuning?monitoring=ui).
 
 ## Setup
 

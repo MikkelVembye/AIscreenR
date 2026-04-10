@@ -5,7 +5,9 @@
 * Adding functions to read and write RIS files: read_ris_to_dataframe() and save_dataframe_to_ris().
 * Adding function to generate disagreement reports: generate_disagreement_report().
 * Adding articles for fine-tuning OpenAI models, generating disagreement reports, generating fine-tuning data and reading/writing RIS files.
-* Adding article for comparing performance of reasoning models with gpt-4o-mini.
+* Adding article for comparing performance of reasoning models (including gpt-5 models) with gpt-4o-mini.
+* Making new refinements to the tabscreen_* functions. Making it possible to steer the model's (over)inclusion behavior via the overinclusive argument in tabscreen_* functions. 
+* Updated prize data, including all up-to-date models
 
 # AIscreenR 0.1.1.9000
 
