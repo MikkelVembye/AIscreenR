@@ -770,7 +770,7 @@ AIscreenR website:
 4.  [For how to use the `AIscreenR` functions with local models from
     Ollama](https://mikkelvembye.github.io/AIscreenR/articles/screening-ollama.html).
 
-\# References
+## References
 
 Filges, T., Smedslund, G., Eriksen, T., Birkefoss, K., & Kildemoes, M.
 W. (2024). The FRIENDS preventive programme for reducing anxiety
