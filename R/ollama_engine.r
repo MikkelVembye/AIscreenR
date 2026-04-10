@@ -22,6 +22,57 @@
 
   detail_desc_default <- if (detailed) NA_character_ else NULL
 
+  # Determine expected function name for validation
+  expected_fn <- NULL
+
+  # If tool_choice specifies a function, use that for expected function name
+  if (!is.null(body$tool_choice) &&
+      is.list(body$tool_choice) &&
+      identical(body$tool_choice$type, "function") &&
+      !is.null(body$tool_choice$`function`) &&
+      !is.null(body$tool_choice$`function`$name)) {
+    expected_fn <- as.character(body$tool_choice$`function`$name)
+  }
+
+  # If no expected function name from tool_choice, but tools are provided, use the first tool's function name for expected function name
+  if (is.null(expected_fn) && is.list(body$tools) && length(body$tools) > 0 &&
+      !is.null(body$tools[[1]][["function"]]) &&
+      !is.null(body$tools[[1]][["function"]][["name"]])) {
+    expected_fn <- as.character(body$tools[[1]][["function"]][["name"]])
+  }
+
+  # Determine allowed decision values from tool definition if available, otherwise use default
+  allowed_decisions <- c("1", "0", "1.1")
+  if (is.list(body$tools) && length(body$tools) > 0) {
+    tool_enum <- body$tools[[1]][["function"]][["parameters"]][["properties"]][["decision_gpt"]][["enum"]]
+
+    # If enum is defined for the decision_gpt parameter, use those values as allowed decisions
+    if (!is.null(tool_enum) && length(tool_enum) > 0) {
+      allowed_decisions <- as.character(unlist(tool_enum, use.names = FALSE))
+    }
+  }
+
+  # Function to validate the decision value returned from the model
+  validate_decision <- function(x) {
+    if (is.null(x) || length(x) == 0) {
+      return("Error: Tool call was missing decision value.")
+    }
+    decision <- trimws(as.character(x[[1]]))
+    if (!nzchar(decision)) {
+      return("Error: Tool call returned an empty decision value.")
+    }
+    if (decision %in% allowed_decisions) {
+      return(decision)
+    }
+    paste0(
+      "Error: Tool call returned invalid decision '",
+      substr(decision, 1, 80),
+      "'. Allowed values are: ",
+      paste(allowed_decisions, collapse = ", "),
+      "."
+    )
+  }
+
   if (max_t == 0) max_t <- NULL
   
   tictoc::tic()
@@ -52,28 +103,49 @@
   decision_val <- NA_character_
   detailed_desc_val <- detail_desc_default
   tc <- NULL
+
+  # Extract tool calls from the response for validation and parsing
   if (!is.null(resp$message) && !is.null(resp$message$tool_calls)) tc <- resp$message$tool_calls
 
+  # Validate that a tool call is present in the response
   if (!is.null(tc)) {
     call <- if (is.list(tc) && !is.null(tc[[1]])) tc[[1]] else tc
     fn_obj <- call[["function"]]
     if (!is.null(fn_obj)) {
+      # Validate that the function called by the model matches the expected function name if available
+      actual_fn <- fn_obj[["name"]]
+      if (!is.null(expected_fn) && !is.null(actual_fn) && !identical(actual_fn, expected_fn)) {
+        decision_val <- paste0(
+          "Error: Received wrong function call '", actual_fn,
+          "'. Expected '", expected_fn, "'."
+        )
+      } else {
+        # If function name is as expected or no expected function name is defined, proceed to parse arguments
       args_raw <- fn_obj[["arguments"]]
       func_args <- NULL
+      # Attempt to parse arguments as list or JSON, and extract the decision value
       if (is.list(args_raw)) {
         func_args <- args_raw
+      
+      # If arguments are provided as a character string, attempt to parse as JSON
       } else if (is.character(args_raw)) {
         parsed <- try(jsonlite::fromJSON(args_raw), silent = TRUE)
+        # If parsing is successful and results in a list, use that as function arguments
         if (!inherits(parsed, "try-error")) func_args <- parsed
       }
+
+      # Extract the decision value from the function arguments using multiple possible keys, and validate the decision value
       if (!is.null(func_args)) {
-        if (!is.null(func_args$decision_gpt)) {
-          decision_val <- as.character(func_args$decision_gpt)
+        decision_candidate <- if (!is.null(func_args$decision_gpt)) {
+          func_args$decision_gpt
         } else if (!is.null(func_args$decision)) {
-          decision_val <- as.character(func_args$decision)
+          func_args$decision
         } else {
-          decision_val <- NA_character_
+          NULL
         }
+        decision_val <- validate_decision(decision_candidate)
+
+        # If detailed description is expected, attempt to extract it from multiple possible keys
         if (detailed) {
           if (!is.null(func_args$detailed_description)) {
             detailed_desc_val <- as.character(func_args$detailed_description)
@@ -88,62 +160,24 @@
           }
         }
       } else {
-        decision_val <- paste0("Error: Failed to parse tool call arguments. JSON: ", substr(args_raw, 1, 100))
+        decision_val <- paste0("Error: Failed to parse tool call arguments. JSON: ", substr(as.character(args_raw), 1, 100))
+      }
       }
     } else {
-      decision_val <- "Error: Unexpected tool_call structure or missing arguments."
+      decision_val <- "Error: Missing function object in tool_call response."
     }
   } else {
-    content_text <- tryCatch(resp$message$content, error = function(e) "")
-    if (nzchar(content_text)) {
-      parsed_content <- try(jsonlite::fromJSON(content_text), silent = TRUE)
-      if (!inherits(parsed_content, "try-error")) {
-        if (!is.null(parsed_content$decision_gpt)) {
-          decision_val <- as.character(parsed_content$decision_gpt)
-        } else if (!is.null(parsed_content$decision)) {
-          decision_val <- as.character(parsed_content$decision)
-        } else {
-          decision_val <- NA_character_
-        }
-        if (detailed) {
-          dd <- NA_character_
-          if (!is.null(parsed_content$detailed_description)) dd <- parsed_content$detailed_description
-          else if (!is.null(parsed_content$description)) dd <- parsed_content$description
-          else if (!is.null(parsed_content$reasoning)) dd <- parsed_content$reasoning
-          else if (!is.null(parsed_content$explanation)) dd <- parsed_content$explanation
-          detailed_desc_val <- as.character(dd)
-        }
-      } else {
-        content_no_tags <- stringr::str_replace_all(content_text, c("<think>" = "", "</think>" = ""))
-        matches <- stringr::str_extract_all(content_no_tags, "(?<!\\d)(1\\.1|1|0)(?!\\d)")[[1]]
-        matches <- matches[!is.na(matches)]
-        if (length(matches) > 0) {
-          decision_candidate <- tail(matches, 1)
-          decision_val <- as.character(decision_candidate)
-          if (detailed) {
-            thought_match <- stringr::str_match(content_text, "(?s)<think>(.*?)</think>")
-            if (!is.na(thought_match[, 2])) {
-              detailed_desc_val <- stringr::str_squish(thought_match[, 2])
-            } else {
-              desc_candidate <- stringr::str_squish(
-                stringr::str_remove(
-                  content_no_tags,
-                  paste0("(?<!\\d)", decision_candidate, "(?!\\d)\\.?\\s*$")
-                )
-              )
-              detailed_desc_val <- if (nzchar(desc_candidate)) desc_candidate else detail_desc_default
-            }
-          }
-        } else {
-          decision_val <- paste0("Error: Failed to parse content as JSON. Content: ", substr(content_text, 1, 100))
-        }
-      }
-    } else {
-      decision_val <- "Error: No tool_calls and no content in response."
-    }
+    decision_val <- "Error: Model did not return a function call (tool_calls missing)."
   }
-  
-  decision_bin_val <- as.numeric(dplyr::if_else(stringr::str_detect(decision_val, "1"), 1, 0, missing = NA_real_))
+
+  # Map decision values to binary numeric valueS
+  decision_bin_val <- dplyr::case_when(
+    decision_val %in% c("1", "1.1") ~ 1,
+    decision_val == "0" ~ 0,
+    TRUE ~ NA_real_
+  )
+
+  # Compile results into a tibble, including the decision value, binary mapping, and detailed description if applicable
   res_list <- list(decision_gpt = decision_val, decision_binary = decision_bin_val)
   if (detailed) res_list$detailed_description <- detailed_desc_val
   res <- tibble::as_tibble(res_list) |>

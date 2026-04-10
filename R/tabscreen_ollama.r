@@ -266,8 +266,8 @@ tabscreen_ollama <- function(
   if (!is.null(tools) && !is.list(tools)) stop("The tools function must be of a list.")
   if (is.null(tools) && !is.null(tool_choice)) stop("You must provide a tool or set 'tool_choice = NULL'.")
 
-  # Setting auto if tool_choice is not provided
-  if (!is.null(tools) && is.null(tool_choice)) tool_choice <- "auto"
+  # Enforce function-calling when custom tools are provided without tool_choice
+  if (!is.null(tools) && is.null(tool_choice)) tool_choice <- "required"
 
   # Default setting
   if (is.null(tools) && is.null(tool_choice)) {
