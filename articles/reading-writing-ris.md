@@ -6,8 +6,11 @@
 > RIS files often fail to preserve the original formatting from
 > PsycINFO. The new functions are designed to handle this RIS file
 > structure with other database formats. For an full-scale use of these
-> functions, see the INSERT LATER XX vignette. If you experience any
-> issues with these functions, please report them on
+> functions, see the [Using OpenAI’s GPT API models for Title and
+> Abstract Screening in Systematic
+> Reviews](https://mikkelvembye.github.io/AIscreenR/articles/Using-GPT-API-Models-For-Screening.md)
+> vignette. If you experience any issues with these functions, please
+> report them on
 > [GitHub](https://github.com/MikkelVembye/AIscreenR/issues). Otherwise,
 > you can try using
 > [`synthesisr::read_refs()`](https://martinwestgate.com/synthesisr/reference/read_refs.html).
