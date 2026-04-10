@@ -615,4 +615,4 @@ In this vignette, we have demonstrated how to conduct a title and abstract scree
   3. [For report functions to assess and resolve disagreements between human and GPT decisions](https://mikkelvembye.github.io/AIscreenR/articles/generating-disagreement-reports.html)
   4. [For how to use the `AIscreenR` functions with local models from Ollama](https://mikkelvembye.github.io/AIscreenR/articles/screening-ollama.html).
 
-  # References
+# References
