@@ -15,8 +15,9 @@ titles and abstracts with performances in many cases on par with the
 cheaper than `gpt-4`). Therefore, to reduce costs, we recommendation
 always testing the performance of `gpt-4o-mini` before considering other
 models. Prompting `gpt-5` models can be different from `gpt-4` models.
-Therefore, see the comparistion of model article on the AIscreenR
-webpage for guidance.*
+Therefore, see the [comparistion of
+model](https://mikkelvembye.github.io/AIscreenR/articles/comparing-reasoning-models.html)
+article on the AIscreenR webpage for guidance.*
 
 ## Introduction
 
@@ -757,12 +758,15 @@ In this vignette, we have demonstrated how to conduct a title and
 abstract screening with a GPT API model. See other articles at the
 AIscreenR website:
 
-1.  Comparison of different GPT models for screening.
-2.  For how to fine-tune a model.
-3.  For report functions to assess and resolve disagreements between
-    human and GPT decisions.
-4.  For how to use the `AIscreenR` functions with local models from
-    Ollama.
+1.  [Comparison of different GPT models for
+    screening](https://mikkelvembye.github.io/AIscreenR/articles/comparing-reasoning-models.html).
+2.  [For how to fine-tune a
+    model](https://mikkelvembye.github.io/AIscreenR/articles/generating-fine-tune-data.html)
+3.  [For report functions to assess and resolve disagreements between
+    human and GPT
+    decisions](https://mikkelvembye.github.io/AIscreenR/articles/generating-disagreement-reports.html)
+4.  [For how to use the `AIscreenR` functions with local models from
+    Ollama](https://mikkelvembye.github.io/AIscreenR/articles/screening-ollama.html).
 
 \# References
 
