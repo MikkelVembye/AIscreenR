@@ -9,7 +9,7 @@ allows to run title and abstract screening across multiple prompts and
 with repeated questions to check for consistency across answers. All of
 which can be done in parallel. The function draws on the newly developed
 function calling which is called via the tools argument in the request
-body. This is the main different between `tabscreen_gpt.tools()` and
+body. This is the main difference between `tabscreen_gpt.tools()` and
 [`tabscreen_gpt.original()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.original.md).
 Function calls ensure more reliable and consistent responses to ones
 requests. See [Vembye, Christensen, Mølgaard, and Schytt.
@@ -20,20 +20,26 @@ adequately to conduct title and abstract screening with GPT models.
 
 ``` r
 tabscreen_gpt.tools(data, prompt, studyid, title, abstract,
-   model = "gpt-4o-mini", role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
-   time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
-   max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
-   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
-   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
-   incl_cutoff_lower = NULL, force = FALSE, fine_tuned = FALSE, ...)
+  api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-4o-mini",
+  role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
+  time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
+  max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
+  after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
+  decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
+  incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
+  fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low",
+  overinclusive = TRUE, ...)
 
 tabscreen_gpt(data, prompt, studyid, title, abstract,
-   model = "gpt-4o-mini", role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
-   time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
-   max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
-   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
-   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
-   incl_cutoff_lower = NULL, force = FALSE, fine_tuned = FALSE, ...)
+  api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-4o-mini",
+  role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
+  time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
+  max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
+  after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
+  decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
+  incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
+  fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low",
+  overinclusive = TRUE, ...)
 ```
 
 ## Arguments
@@ -57,6 +63,11 @@ tabscreen_gpt(data, prompt, studyid, title, abstract,
 - abstract:
 
   Name of variable containing the abstract information.
+
+- api_url:
+
+  Character string with the endpoint URL for OpenAI's API. Default is
+  `"https://api.openai.com/v1/chat/completions"`.
 
 - model:
 
@@ -221,10 +232,39 @@ tabscreen_gpt(data, prompt, studyid, title, abstract,
   avoid the conduct of wrong and extreme sized screening. Default is
   `FALSE`.
 
+- custom_model:
+
+  Logical indicating whether a fine-tuned or custom model is used.
+  Default is `FALSE`.
+
 - fine_tuned:
 
-  Logical indicating whether a fine-tuned model is used. Default is
-  `FALSE`.
+  **\[deprecated\]** Use `custom_model` instead.
+
+- reasoning_effort:
+
+  Character string indicating the level of reasoning effort required for
+  the task. Default is `"low"`. Can take the values `"low"`, `"medium"`,
+  and `"high"`. See <https://platform.openai.com/docs/guides/reasoning>
+  for more information.
+
+- verbosity:
+
+  Character string indicating the level of verbosity in the model's
+  responses. Default is `"low"`. Can take the values `"low"`,
+  `"medium"`, and `"high"`. See
+  <https://platform.openai.com/docs/api-reference/chat/create> for more
+  information.
+
+- overinclusive:
+
+  Logical indicating whether uncertain decisions (`"1.1"`) should be
+  allowed in the default function calling setup. Default is `TRUE`,
+  which means that the default function calling setup will allow for
+  uncertain decisions. If `FALSE`, the default function calling setup
+  will not allow for uncertain decisions and will only return binary
+  decisions (i.e., "1" or "0"). This argument only affects the default
+  function calling setup.
 
 - ...:
 
@@ -336,7 +376,8 @@ The `price_data` data contains the following variables:
 | **output_price_dollar** | `integer`   | price for all completion/output tokens for the correspondent gpt-model.   |
 | **total_price_dollar**  | `integer`   | total price for all tokens for the correspondent gpt-model.               |
 
-Find current token pricing at <https://openai.com/pricing> or
+Find current token pricing at
+<https://developers.openai.com/api/docs/pricing> or
 [model_prizes](https://mikkelvembye.github.io/AIscreenR/reference/model_prizes.md).
 
 ## References

@@ -19,6 +19,11 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/Using-GPT-API-Models-For-Screening.html">Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews</a></li>
+    <li><a class="dropdown-item" href="../articles/generating-disagreement-reports.html">Generating Disagreement Reports</a></li>
+    <li><a class="dropdown-item" href="../articles/generating-fine-tune-data.html">Generating Fine-Tuning Data</a></li>
+    <li><a class="dropdown-item" href="../articles/reading-writing-ris.html">Reading and Writing RIS Files</a></li>
+    <li><a class="dropdown-item" href="../articles/screening-ollama.html">Title/Abstract Screening with Local Ollama Models</a></li>
+    <li><a class="dropdown-item" href="../articles/comparing-reasoning-models.html">Comparing reasoning models for screening: GPT-4o-mini, GPT-5-mini, and GPT-5.1</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -43,7 +48,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_api_key</span><span class="op">(</span>env_var <span class="op">=</span> <span class="st">"CHATGPT_KEY"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_api_key</span><span class="op">(</span>env_var <span class="op">=</span> <span class="st">"OPENAI_API_KEY"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -52,7 +57,7 @@
 
 <dl><dt id="arg-env-var">env_var<a class="anchor" aria-label="anchor" href="#arg-env-var"></a></dt>
 <dd><p>Character string indicating the name of the temporary R environment variable with
-the API key and the used AI model. Currently, the argument only takes <code>env_var = "CHATGPT_KEY"</code>.
+the API key and the used AI model. Currently, the argument only takes <code>env_var = "OPENAI_API_KEY"</code>.
 See <code><a href="set_api_key.html">set_api_key()</a></code> to set/create this variable.</p></dd>
 
 </dl></div>
@@ -64,7 +69,8 @@ See <code><a href="set_api_key.html">set_api_key()</a></code> to set/create this
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p><code>get_api_key()</code> can be used after executing <code><a href="set_api_key.html">set_api_key()</a></code> or by adding the
 api key permanently to your R environment by using <code><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">usethis::edit_r_environ()</a></code>.
-Then write <code>CHATGPT_KEY=[insert your api key here]</code> and close the <code>.Renviron</code> window and restart R.</p>
+Then write <code>OPENAI_API_KEY=[insert your api key here]</code> and close the <code>.Renviron</code> window and restart R.
+For backward compatibility, it will also check <code>CHATGPT_KEY</code> if <code>OPENAI_API_KEY</code> is not set.</p>
     </div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>

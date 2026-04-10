@@ -2,15 +2,23 @@
 <url><loc>https://mikkelvembye.github.io/AIscreenR/404.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/LICENSE.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/articles/Using-GPT-API-Models-For-Screening.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/articles/comparing-reasoning-models.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/articles/generating-disagreement-reports.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/articles/generating-fine-tune-data.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/articles/index.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/articles/reading-writing-ris.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/articles/screening-ollama.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/authors.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/index.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/news/index.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/AIscreenR-package.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/approximate_price_gpt.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/create_fine_tune_data.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/reference/disagreements.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/filges2015_dat.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/get_api_key.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/reference/get_api_key_groq.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/reference/groq_model_prizes.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/index.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/is_chatgpt.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/is_chatgpt_tbl.html</loc></url>
@@ -21,8 +29,12 @@
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/print.chatgpt.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/print.gpt.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/print.gpt_price.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/reference/print.groq.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/rate_limits_per_minute.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/reference/read_ris_to_dataframe.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/reference/report.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/sample_references.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/reference/save_dataframe_to_ris.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/save_fine_tune_data.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/screen_analyzer.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/screen_errors.chatgpt.html</loc></url>
@@ -31,5 +43,7 @@
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/set_api_key.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.original.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_groq.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_ollama.html</loc></url>
 </urlset>
 

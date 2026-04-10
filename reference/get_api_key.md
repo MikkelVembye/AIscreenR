@@ -5,7 +5,7 @@ Get API key from R environment variable.
 ## Usage
 
 ``` r
-get_api_key(env_var = "CHATGPT_KEY")
+get_api_key(env_var = "OPENAI_API_KEY")
 ```
 
 ## Arguments
@@ -14,7 +14,7 @@ get_api_key(env_var = "CHATGPT_KEY")
 
   Character string indicating the name of the temporary R environment
   variable with the API key and the used AI model. Currently, the
-  argument only takes `env_var = "CHATGPT_KEY"`. See
+  argument only takes `env_var = "OPENAI_API_KEY"`. See
   [`set_api_key()`](https://mikkelvembye.github.io/AIscreenR/reference/set_api_key.md)
   to set/create this variable.
 
@@ -28,8 +28,9 @@ The specified API key (NOTE: Avoid exposing this in the console).
 [`set_api_key()`](https://mikkelvembye.github.io/AIscreenR/reference/set_api_key.md)
 or by adding the api key permanently to your R environment by using
 [`usethis::edit_r_environ()`](https://usethis.r-lib.org/reference/edit.html).
-Then write `CHATGPT_KEY=[insert your api key here]` and close the
-`.Renviron` window and restart R.
+Then write `OPENAI_API_KEY=[insert your api key here]` and close the
+`.Renviron` window and restart R. For backward compatibility, it will
+also check `CHATGPT_KEY` if `OPENAI_API_KEY` is not set.
 
 ## Note
 

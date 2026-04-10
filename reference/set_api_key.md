@@ -10,15 +10,15 @@ information about this issue at
 ## Usage
 
 ``` r
-set_api_key(key, env_var = "CHATGPT_KEY")
+set_api_key(key, env_var = "OPENAI_API_KEY")
 ```
 
 ## Arguments
 
 - key:
 
-  Character string with an (ideally encrypt) API key. See how to encrypt
-  key here:
+  Character string with an (ideally encrypted) API key. See how to
+  encrypt key here:
   <https://httr2.r-lib.org/articles/wrapping-apis.html#basics>. If not
   provided, it returns a password box in which the true API key can be
   secretly entered.
@@ -26,8 +26,8 @@ set_api_key(key, env_var = "CHATGPT_KEY")
 - env_var:
 
   Character string indicating the name of the temporary R environment
-  variable with the API key and the used AI model. Currently, the
-  argument only takes `env_var = "CHATGPT_KEY"`.
+  variable with the API key and the used AI model. Default is
+  `env_var = "OPENAI_API_KEY"`.
 
 ## Value
 
@@ -43,7 +43,7 @@ automatically retrieves the API key from the R environment and the users
 do not need to specify the API when running functions from the package
 that call the API. The API key can be permanently set by using
 [`usethis::edit_r_environ()`](https://usethis.r-lib.org/reference/edit.html).
-Then write `CHATGPT_KEY=[insert your api key here]` and close the
+Then write `OPENAI_API_KEY=[insert your api key here]` and close the
 `.Renviron` window and restart R.
 
 ## Note

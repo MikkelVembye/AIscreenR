@@ -1,4 +1,4 @@
-# Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews
+# Using OpenAI’s GPT API models for Title and Abstract Screening in Systematic Reviews
 
 **Important note**
 
@@ -10,19 +10,15 @@ GPT API models can be used for title and abstract (TAB) screening (find
 the preprint of Vembye et al. 2025
 [here](https://osf.io/preprints/osf/yrhzm)). Our most recent results
 suggest that the `gpt-4o-mini` is an effective model for screening
-titles and abstracts with performances in many cases on par with
-`gpt-4`. This is a very cheap model (200 times cheaper than `gpt-4`).
-Therefore, to reduce costs, we recommendation always testing the
-performance of `gpt-4o-mini` before considering other models. For an
-overview of additional research on the use of GPT API models for title
-and abstract screening, see Syriani et al. ([2023](#ref-Syriani2023),
-[2024](#ref-Syriani2024)), Guo et al., ([2024](#ref-Guo2024)), and
-Gargari et al. ([2024](#ref-Gargari2024)). On a related line of
-research, Alshami et al. ([2023](#ref-Alshami2023)), Khraisha et al.
-([2024](#ref-Khraisha2024)), and Issaiy et al. ([2024](#ref-Issaiy2024))
-explored the use of the ChatGPT web browser interface for TAB screening.
-Based on our experience, we believe these two lines of research should
-not be conflated, as they rely on different GPT models and setups.*
+titles and abstracts with performances in many cases on par with the
+`gpt-4` and `gpt-5` models. This is a very cheap model (200 times
+cheaper than `gpt-4`). Therefore, to reduce costs, we recommendation
+always testing the performance of `gpt-4o-mini` before considering other
+models. Prompting `gpt-5` models can be different from `gpt-4` models.
+Therefore, see the comparistion of model article on the AIscreenR
+webpage for guidance.*
+
+## Introduction
 
 Conducting a systematic review is most often resource-demanding. A
 critical first step to ensure the quality of systematic reviews and
@@ -47,8 +43,8 @@ simply using ChatGPT for screening? The answer is that using R offer
 certain advantages:
 
 1.  Reviewers can easily work with a large number of references,
-    avoiding the need for manual copy-paste procedures (cf. [Khraisha et
-    al., 2024](#ref-Khraisha2024)).  
+    avoiding the need for manual copy-paste procedures (cf. [Khraisha,
+    Put, Kappenberg, Warraitch, & Hadfield, 2024](#ref-Khraisha2024)).  
 2.  The screening time can be substantially reduced compared to using
     the ChatGPT interface, as screening can be performed in parallel. In
     theory, you can screen 30,000 titles and abstracts per minute.
@@ -127,7 +123,6 @@ the screening.
 ``` r
 # Loading packages 
 library(AIscreenR) # Used to screen and calculate gpt vs. human performance
-library(synthesisr)  # Used to load RIS files
 library(tibble)    # Used to work with tibbles
 library(dplyr)     # Used to manipulate data
 library(purrr)     # For loops 
@@ -158,7 +153,7 @@ included or excluded, respectively.
 # NOTE: Find the RIS files behind this vignette at https://osf.io/kfbvu/
 
 # Loading EXCLUDED studies
-ris_dat_excl <- read_refs("friends_excl.ris") |> # Add the path to your RIS file here
+ris_dat_excl <- read_ris_to_dataframe("friends_excl.ris") |> # Add the path to your RIS file here
   as_tibble() |>
   select(author, eppi_id, title, abstract) |> # Using only relevant variables
   mutate(
@@ -184,7 +179,7 @@ ris_dat_excl
 #># ℹ Use `print(n = ...)` to see more rows
 
 # Loading INCLUDED studies
-ris_dat_incl <- read_refs("friends_incl.ris") |> 
+ris_dat_incl <- read_ris_to_dataframe("friends_incl.ris") |> 
   suppressWarnings() |> 
   as_tibble() |>
   select(author, eppi_id, title, abstract) |>
@@ -282,8 +277,7 @@ name your key.
 
  
 
-![\*Figure 1 - Generate API key from
-OpenAI\*](helper-stuff/API_key_pic.png)
+![](helper_stuff/API_key_pic.png)
 
 *Figure 1 - Generate API key from OpenAI*
 
@@ -325,7 +319,7 @@ usethis::edit_r_environ()
 In the `.Renviron` file, write `CHATGPT_KEY=your_key` as depicted in
 Figure 2.  
 
-![\*Figure 2 - R environment file\*](helper-stuff/Renviron.png)
+![](helper_stuff/Renviron.png)
 
 *Figure 2 - R environment file*
 
@@ -358,7 +352,7 @@ For further details on this approach, refer to the
 [`HTTR2`](https://httr2.r-lib.org/articles/wrapping-apis.html#basics)
 package.  
 
-![\*Figure 3 - Set API key\*](helper-stuff/set_api.png)
+![](helper_stuff/set_api.png)
 
 *Figure 3 - Set API key*
 
@@ -386,11 +380,9 @@ Or you can simply write it in Word, as shown in Figures 4.
 
  
 
-![\*Figure 4 - Prompting in Word\*](helper-stuff/friends_prompt.png)
+![](helper_stuff/friends_prompt.png)
 
 *Figure 4 - Prompting in Word*
-
- 
 
 Then you can load your prompt(s) via `readtext()` from the `readtext`
 package.
@@ -523,8 +515,7 @@ recommend assessing it through benchmarking. In Vembye et al.
 based on typical duplicate human screening performance from 22
 high-quality reviews. This scheme is presented in Figure 5.
 
-![\*Figure 5 - Generic benchmark scheme from Vembye et al.
-(2025)\*](helper-stuff/benchmark_scheme.png)
+![](helper_stuff/benchmark_scheme.png)
 
 *Figure 5 - Generic benchmark scheme from Vembye et al. (2025)*
 
@@ -746,9 +737,10 @@ for this purpose.
 
 Once the full screening has been conducted, you may want to load the
 relevant studies back into your systematic review software tool. To do
-this, you can use `write_refs()` from the `synthesisr` package. This
-function converts the data frame containing the included references into
-a RIS file, which can then be imported into the systematic review
+this, you can use
+[`save_dataframe_to_ris()`](https://mikkelvembye.github.io/AIscreenR/reference/save_dataframe_to_ris.md).
+This function converts the data frame containing the included references
+into a RIS file, which can then be imported into the systematic review
 software.
 
 ``` r
@@ -756,53 +748,29 @@ incl_refs <- result_object$answer_data_aggregated |>
   filter(incl_p >= 0.1) 
   
 
-write_refs(as.data.frame(incl_refs), file = "file_name.ris", format = "ris")
+save_dataframe_to_ris(as.data.frame(incl_refs), file = "file_name.ris")
 ```
 
-If you like to convert the data to a bib file, then use
-`format = "bib"`.
-
-## Future Package Updates
+## Other Sources of Information
 
 In this vignette, we have demonstrated how to conduct a title and
-abstract screening with a GPT API model. In future versions of the
-package, we plan to add additional articles that will cover:
+abstract screening with a GPT API model. See other articles at the
+AIscreenR website:
 
-1.  How to run the full screening of all titles and abstracts most
-    efficiently.
-2.  How to fine-tune a model.
-3.  How to use multiple-prompt screening, i.e., making one prompt per
-    inclusion criteria instead of adding all to the same prompt.
-4.  A new report functions to assess and resolve disagreements between
+1.  Comparison of different GPT models for screening.
+2.  For how to fine-tune a model.
+3.  For report functions to assess and resolve disagreements between
     human and GPT decisions.
+4.  For how to use the `AIscreenR` functions with local models from
+    Ollama.
 
-## References
-
-Alshami, A., Elsayed, M., Ali, E., Eltoukhy, A. E. E., & Zayed, T.
-(2023). Harnessing the power of ChatGPT for automating systematic review
-process: Methodology, case study, limitations, and future directions.
-*Systems*, *11*(7), 351. <https://doi.org/10.3390/systems11070351>
+\# References
 
 Filges, T., Smedslund, G., Eriksen, T., Birkefoss, K., & Kildemoes, M.
 W. (2024). The FRIENDS preventive programme for reducing anxiety
 symptoms in children and adolescents: A systematic review and
 meta-analysis. *Campbell Systematic Reviews*, *20*(4), e1443.
 <https://doi.org/10.1002/cl2.1443>
-
-Gargari, O. K., Mahmoudi, M. H., Hajisafarali, M., & Samiee, R. (2024).
-Enhancing title and abstract screening for systematic reviews with
-GPT-3.5 turbo. *BMJ Evidence-Based Medicine*, *29*(1), 69 LP–70.
-<https://doi.org/10.1136/bmjebm-2023-112678>
-
-Guo, E., Gupta, M., Deng, J., Park, Y.-J., Paget, M., & Naugler, C.
-(2024). Automated paper screening for clinical reviews using large
-language models: Data analysis study. *J Med Internet Res*, *26*,
-e48996. <https://doi.org/10.2196/48996>
-
-Issaiy, M., Ghanaati, H., Kolahi, S., Shakiba, M., Jalali, A. H., Zarei,
-D., … Firouznia, K. (2024). Methodological insights into ChatGPT’s
-screening performance in systematic reviews. *BMC Medical Research
-Methodology*, *24*(1), 78. <https://doi.org/10.1186/s12874-024-02203-8>
 
 Khraisha, Q., Put, S., Kappenberg, J., Warraitch, A., & Hadfield, K.
 (2024). Can large language models replace humans in systematic reviews?
@@ -814,14 +782,6 @@ Polanin, J. R., Pigott, T. D., Espelage, D. L., & Grotpeter, J. K.
 (2019). Best practice guidelines for abstract screening large-evidence
 systematic reviews and meta-analyses. *Research Synthesis Methods*,
 *10*(3), 330–342. <https://doi.org/10.1002/jrsm.1354>
-
-Syriani, E., David, I., & Kumar, G. (2023). Assessing the ability of
-ChatGPT to screen articles for systematic reviews. *arXiv Preprint
-arXiv:2307.06464*.
-
-Syriani, E., David, I., & Kumar, G. (2024). Screening articles for
-systematic reviews with ChatGPT. *Journal of Computer Languages*, *80*,
-101287. <https://doi.org/10.1016/j.cola.2024.101287>
 
 Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W.
 (2025). Generative pretrained transformer models can function as highly

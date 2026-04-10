@@ -19,6 +19,11 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/Using-GPT-API-Models-For-Screening.html">Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews</a></li>
+    <li><a class="dropdown-item" href="../articles/generating-disagreement-reports.html">Generating Disagreement Reports</a></li>
+    <li><a class="dropdown-item" href="../articles/generating-fine-tune-data.html">Generating Fine-Tuning Data</a></li>
+    <li><a class="dropdown-item" href="../articles/reading-writing-ris.html">Reading and Writing RIS Files</a></li>
+    <li><a class="dropdown-item" href="../articles/screening-ollama.html">Title/Abstract Screening with Local Ollama Models</a></li>
+    <li><a class="dropdown-item" href="../articles/comparing-reasoning-models.html">Comparing reasoning models for screening: GPT-4o-mini, GPT-5-mini, and GPT-5.1</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -58,6 +63,20 @@
           <span class="badge lifecycle lifecycle-deprecated">deprecated</span>
         </dt>
         <dd>Title and abstract screening with GPT API models using function calls via the original function call arguments</dd>
+
+        <dt>
+
+          <code><a href="tabscreen_groq.html">tabscreen_groq()</a></code>
+
+        </dt>
+        <dd>Title and abstract screening with GROQ API models using function calls via the tools argument</dd>
+
+        <dt>
+
+          <code><a href="tabscreen_ollama.html">tabscreen_ollama()</a></code>
+
+        </dt>
+        <dd>Title and abstract screening with OLLAMA API models using function calls via the tools argument</dd>
       </dl></div><div class="section level2">
       <h2 id="screen-failed-requests">Screen failed requests<a class="anchor" aria-label="anchor" href="#screen-failed-requests"></a></h2>
 
@@ -71,21 +90,21 @@
       <dl><dt>
 
           <code><a href="screen_errors.html">screen_errors()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+
         </dt>
         <dd>Generic function to re-screen failed title and abstract requests.</dd>
 
         <dt>
 
-          <code><a href="screen_errors.gpt.html">screen_errors(<i>&lt;gpt&gt;</i>)</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+          <code><a href="screen_errors.gpt.html">screen_errors.gpt()</a></code>
+          <span class="badge lifecycle lifecycle-superseded">superseded</span>
         </dt>
         <dd>Re-screen failed requests.</dd>
 
         <dt>
 
-          <code><a href="screen_errors.chatgpt.html">screen_errors(<i>&lt;chatgpt&gt;</i>)</a></code>
-          <span class="badge lifecycle lifecycle-deprecated">deprecated</span>
+          <code><a href="screen_errors.chatgpt.html">screen_errors.chatgpt()</a></code>
+          <span class="badge lifecycle lifecycle-superseded">superseded</span>
         </dt>
         <dd>Re-screen failed requests.</dd>
       </dl></div><div class="section level2">
@@ -150,6 +169,13 @@
 
         </dt>
         <dd>Get API key from R environment variable.</dd>
+
+        <dt>
+
+          <code><a href="get_api_key_groq.html">get_api_key_groq()</a></code>
+
+        </dt>
+        <dd>Get GROQ API key from R environment variable.</dd>
       </dl></div><div class="section level2">
       <h2 id="rate-limits">Rate limits<a class="anchor" aria-label="anchor" href="#rate-limits"></a></h2>
 
@@ -166,6 +192,22 @@
           <span class="badge lifecycle lifecycle-stable">stable</span>
         </dt>
         <dd>Find updated rate limits for API models</dd>
+      </dl></div><div class="section level2">
+      <h2 id="reports">Reports<a class="anchor" aria-label="anchor" href="#reports"></a></h2>
+
+      <div class="section-desc"><p>Generate disagreement / screening reports for screening disagreements between human and AI decisions</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="report.html">report()</a></code>
+          <span class="badge lifecycle lifecycle-stable">stable</span>
+        </dt>
+        <dd>Generate a report for screening disagreements between human and AI decisions</dd>
       </dl></div><div class="section level2">
       <h2 id="datasets">Datasets<a class="anchor" aria-label="anchor" href="#datasets"></a></h2>
 
@@ -188,7 +230,21 @@
           <code><a href="model_prizes.html">model_prizes</a></code>
 
         </dt>
-        <dd>Model prize data (last updated August 14, 2025)</dd>
+        <dd>Model prize data (last updated March 18, 2026)</dd>
+
+        <dt>
+
+          <code><a href="disagreements.html">disagreements</a></code>
+
+        </dt>
+        <dd>Disagreement sample data</dd>
+
+        <dt>
+
+          <code><a href="groq_model_prizes.html">groq_model_prizes</a></code>
+
+        </dt>
+        <dd>Groq model prices (last updated March 18, 2026)</dd>
       </dl></div><div class="section level2">
       <h2 id="coercion">Coercion<a class="anchor" aria-label="anchor" href="#coercion"></a></h2>
 
@@ -263,6 +319,13 @@
 
         </dt>
         <dd>Print methods for <code>'gpt_price'</code> objects</dd>
+
+        <dt>
+
+          <code><a href="print.groq.html">print(<i>&lt;groq&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Print method for 'groq' objects</dd>
       </dl></div><div class="section level2">
       <h2 id="pricing">Pricing<a class="anchor" aria-label="anchor" href="#pricing"></a></h2>
 
@@ -295,6 +358,29 @@
 
         </dt>
         <dd>Random sample references</dd>
+      </dl></div><div class="section level2">
+      <h2 id="reading-writing-ris">Reading / Writing RIS<a class="anchor" aria-label="anchor" href="#reading-writing-ris"></a></h2>
+
+      <div class="section-desc"><p>Functions to read and write RIS files</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="read_ris_to_dataframe.html">read_ris_to_dataframe()</a></code>
+
+        </dt>
+        <dd>Read an RIS file into a data frame</dd>
+
+        <dt>
+
+          <code><a href="save_dataframe_to_ris.html">save_dataframe_to_ris()</a></code>
+
+        </dt>
+        <dd>Write a data frame to a RIS file</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

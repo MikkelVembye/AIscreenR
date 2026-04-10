@@ -1,6 +1,6 @@
 # Re-screen failed requests.
 
-**\[experimental\]**  
+**\[superseded\]**  
   
 
 This function supports re-screening of all failed title and abstract
@@ -10,8 +10,7 @@ requests screened with
 ## Usage
 
 ``` r
-# S3 method for class 'gpt'
-screen_errors(
+screen_errors.gpt(
   object,
   api_key = get_api_key(),
   max_tries = 16,
@@ -131,7 +130,7 @@ obj_with_error <-
 
 obj_rescreened <-
   obj_with_error |>
-  screen_error()
+  screen_errors()
 
 } # }
 ```

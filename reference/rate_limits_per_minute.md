@@ -12,8 +12,8 @@ tokens per minute (TPM). Find general information at
 ``` r
 rate_limits_per_minute(
   model = "gpt-4o-mini",
-  AI_tool = "gpt",
-  api_key = get_api_key()
+  AI_tool = "OpenAI",
+  api_key = NULL
 )
 ```
 
@@ -22,32 +22,23 @@ rate_limits_per_minute(
 - model:
 
   Character string with the name of the completion model. Default is
-  `"gpt-4o-mini"`. Can take multiple values. Find available model at
+  `"gpt-4o-mini"`. Can take multiple values. For OpenAI models, find
+  available models at
   <https://platform.openai.com/docs/models/model-endpoint-compatibility>.
+  For Groq models, find available models at
+  <https://console.groq.com/docs/models>.
 
 - AI_tool:
 
   Character string specifying the AI tool from which the API is issued.
-  Default is `"gpt"`.
+  Currently supports `"OpenAI"` (default) and `"Groq"`.
 
 - api_key:
 
-  Numerical value with your personal API key. Default setting draws on
-  the
-  [`get_api_key()`](https://mikkelvembye.github.io/AIscreenR/reference/get_api_key.md)
-  to retrieve the API key from the R environment, so that the key is not
-  compromised. The API key can be added to the R environment via
-  [`set_api_key()`](https://mikkelvembye.github.io/AIscreenR/reference/set_api_key.md)
-  or by using
-  [`usethis::edit_r_environ()`](https://usethis.r-lib.org/reference/edit.html).
-  In the `.Renviron` file, write `CHATGPT_KEY=INSERT_YOUR_KEY_HERE`.
-  After entering the API key, close and save the `.Renviron` file and
-  restart `RStudio` (ctrl + shift + F10). Alternatively, one can use
-  [`httr2::secret_make_key()`](https://httr2.r-lib.org/reference/secrets.html),
-  [`httr2::secret_encrypt()`](https://httr2.r-lib.org/reference/secrets.html),
-  and
-  [`httr2::secret_decrypt()`](https://httr2.r-lib.org/reference/secrets.html)
-  to scramble and decrypt the API key.
+  Character string with the API key. For OpenAI, use
+  [`get_api_key()`](https://mikkelvembye.github.io/AIscreenR/reference/get_api_key.md).
+  For Groq, use
+  [`get_api_key_groq()`](https://mikkelvembye.github.io/AIscreenR/reference/get_api_key_groq.md).
 
 ## Value
 
@@ -60,6 +51,17 @@ the number of requests and tokens per minute.
 if (FALSE) { # \dontrun{
 set_api_key()
 
-rate_limits_per_minute()
+rate_limits_per_minute(
+  model = "gpt-4o-mini",
+  AI_tool = "OpenAI",
+  api_key = get_api_key()
+)
+
+# Groq example
+rate_limits_per_minute(
+  model = "llama3-70b-8192",
+  AI_tool = "Groq",
+  api_key = get_api_key_groq()
+)
 } # }
 ```

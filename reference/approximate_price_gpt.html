@@ -29,6 +29,11 @@ this will increase the completion tokens with an unknown amount."></head><body>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/Using-GPT-API-Models-For-Screening.html">Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews</a></li>
+    <li><a class="dropdown-item" href="../articles/generating-disagreement-reports.html">Generating Disagreement Reports</a></li>
+    <li><a class="dropdown-item" href="../articles/generating-fine-tune-data.html">Generating Fine-Tuning Data</a></li>
+    <li><a class="dropdown-item" href="../articles/reading-writing-ris.html">Reading and Writing RIS Files</a></li>
+    <li><a class="dropdown-item" href="../articles/screening-ollama.html">Title/Abstract Screening with Local Ollama Models</a></li>
+    <li><a class="dropdown-item" href="../articles/comparing-reasoning-models.html">Comparing reasoning models for screening: GPT-4o-mini, GPT-5-mini, and GPT-5.1</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -66,7 +71,9 @@ this will increase the completion tokens with an unknown amount.</p>
 <span>  model <span class="op">=</span> <span class="st">"gpt-4o-mini"</span>,</span>
 <span>  reps <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  top_p <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  token_word_ratio <span class="op">=</span> <span class="fl">1.6</span></span>
+<span>  token_word_ratio <span class="op">=</span> <span class="fl">1.6</span>,</span>
+<span>  reasoning_effort <span class="op">=</span> <span class="st">"medium"</span>,</span>
+<span>  verbosity <span class="op">=</span> <span class="st">"low"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -122,6 +129,16 @@ Find documentation at
 <dd><p>The multiplier used to approximate the number of tokens per word.
 Default is <code>1.6</code> which we empirically have found to be the average number of tokens per word.</p></dd>
 
+
+<dt id="arg-reasoning-effort">reasoning_effort<a class="anchor" aria-label="anchor" href="#arg-reasoning-effort"></a></dt>
+<dd><p>Character string indicating the level of reasoning effort required for the task. Default is <code>"medium"</code>.
+Can take the values <code>"low"</code>, <code>"medium"</code>, and <code>"high"</code>. Only applicable for gpt-5 models.</p></dd>
+
+
+<dt id="arg-verbosity">verbosity<a class="anchor" aria-label="anchor" href="#arg-verbosity"></a></dt>
+<dd><p>Character string indicating the level of verbosity in the model's responses. Default is <code>"low"</code>.
+Can take the values <code>"low"</code>, <code>"medium"</code>, and <code>"high"</code>. Only applicable for gpt-5 models.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -154,12 +171,12 @@ components:</p>
 <span class="r-in"><span><span class="va">app_price</span><span class="op">$</span><span class="va">price_dollar</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0469</span>
 <span class="r-in"><span><span class="va">app_price</span><span class="op">$</span><span class="va">price_data</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 6</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   prompt   model       iterations input_price_dollar output_price_dollar</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Prompt 1 gpt-4o-mini         10             0.002<span style="text-decoration: underline;">2</span>           0.000<span style="text-decoration: underline;">084</span>6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> Prompt 1 gpt-4                1             0.043<span style="text-decoration: underline;">8</span>           0.000<span style="text-decoration: underline;">846</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: total_price_dollar &lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   promptid model       iterations prompt   completion_tokens input_price_dollar</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Prompt 1 gpt-4o-mini         10 Prompt 1              155.             0.002<span style="text-decoration: underline;">2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> Prompt 1 gpt-4                1 Prompt 1              155.             0.043<span style="text-decoration: underline;">8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2 more variables: output_price_dollar &lt;dbl&gt;, total_price_dollar &lt;dbl&gt;</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -1,20 +1,19 @@
 # Re-screen failed requests.
 
-**\[deprecated\]**  
+**\[superseded\]**  
   
 
 This function supports re-screening of all failed title and abstract
 requests screened with
 [`tabscreen_gpt.original()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.original.md).
 This function has been deprecated because OpenAI has deprecated the
-function_call and and functions argument that was used in
+function_call and functions argument that was used in
 [`tabscreen_gpt.original()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.original.md).
 
 ## Usage
 
 ``` r
-# S3 method for class 'chatgpt'
-screen_errors(
+screen_errors.chatgpt(
   object,
   ...,
   api_key = get_api_key(),

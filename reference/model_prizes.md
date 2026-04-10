@@ -1,7 +1,7 @@
-# Model prize data (last updated August 14, 2025)
+# Model prize data (last updated March 18, 2026)
 
-Data set containing input and output prizes for all OpenAI's GPT API
-models.
+Dataset mainly containing input and output prizes for all OpenAI's GPT
+API models.
 
 ## Usage
 
@@ -11,7 +11,7 @@ model_prizes
 
 ## Format
 
-A `data.frame` containing 22 rows/models and 3 variables/columns
+A `data.frame` containing 36 rows/models and 3 variables/columns
 
 |                         |             |                                       |
 |-------------------------|-------------|---------------------------------------|
@@ -21,4 +21,4 @@ A `data.frame` containing 22 rows/models and 3 variables/columns
 
 ## References
 
-OpenAI. *Pricing*. <https://openai.com/api/pricing/>
+OpenAI. *Pricing*. <https://developers.openai.com/api/docs/pricing>

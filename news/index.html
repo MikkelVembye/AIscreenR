@@ -19,6 +19,11 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/Using-GPT-API-Models-For-Screening.html">Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews</a></li>
+    <li><a class="dropdown-item" href="../articles/generating-disagreement-reports.html">Generating Disagreement Reports</a></li>
+    <li><a class="dropdown-item" href="../articles/generating-fine-tune-data.html">Generating Fine-Tuning Data</a></li>
+    <li><a class="dropdown-item" href="../articles/reading-writing-ris.html">Reading and Writing RIS Files</a></li>
+    <li><a class="dropdown-item" href="../articles/screening-ollama.html">Title/Abstract Screening with Local Ollama Models</a></li>
+    <li><a class="dropdown-item" href="../articles/comparing-reasoning-models.html">Comparing reasoning models for screening: GPT-4o-mini, GPT-5-mini, and GPT-5.1</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -38,10 +43,17 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0.9000" id="aiscreenr-0209000">AIscreenR 0.2.0.9000<a class="anchor" aria-label="anchor" href="#aiscreenr-0209000"></a></h2>
-<ul><li>Updated Vembye et al. reference in vignette</li>
+<ul><li>Adding tabscreen_groq() function to screen titles and abstracts using Groq AI.</li>
+<li>Adding tabscreen_ollama() function to screen titles and abstracts using local ollama models.</li>
+<li>Adding functions to read and write RIS files: read_ris_to_dataframe() and save_dataframe_to_ris().</li>
+<li>Adding function to generate disagreement reports: generate_disagreement_report().</li>
+<li>Adding articles for fine-tuning OpenAI models, generating disagreement reports, generating fine-tuning data and reading/writing RIS files.</li>
+<li>Adding article for comparing performance of reasoning models (including gpt-5 models) with gpt-4o-mini.</li>
+<li>Making new refinements to the tabscreen_* functions. Making it possible to steer the model’s (over)inclusion behavior via the overinclusive argument in tabscreen_* functions.</li>
+<li>Updated prize data, including all up-to-date models</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.2.0" id="aiscreenr-020">AIscreenR 0.2.0<a class="anchor" aria-label="anchor" href="#aiscreenr-020"></a></h2><p class="text-muted">CRAN release: 2025-08-18</p>
+<h2 class="pkg-version" data-toc-text="0.1.1.9000" id="aiscreenr-0119000">AIscreenR 0.1.1.9000<a class="anchor" aria-label="anchor" href="#aiscreenr-0119000"></a></h2>
 <ul><li>Minor change in the setup of the vignette</li>
 <li>Updated prize data, including all up-to-date models</li>
 <li>Adding create_fine_tune_data() and write_fine_tune_data() to generate data for fine tuning OpenAI’s models</li>

@@ -20,7 +20,9 @@ approximate_price_gpt(
   model = "gpt-4o-mini",
   reps = 1,
   top_p = 1,
-  token_word_ratio = 1.6
+  token_word_ratio = 1.6,
+  reasoning_effort = "medium",
+  verbosity = "low"
 )
 ```
 
@@ -77,6 +79,18 @@ approximate_price_gpt(
   Default is `1.6` which we empirically have found to be the average
   number of tokens per word.
 
+- reasoning_effort:
+
+  Character string indicating the level of reasoning effort required for
+  the task. Default is `"medium"`. Can take the values `"low"`,
+  `"medium"`, and `"high"`. Only applicable for gpt-5 models.
+
+- verbosity:
+
+  Character string indicating the level of verbosity in the model's
+  responses. Default is `"low"`. Can take the values `"low"`,
+  `"medium"`, and `"high"`. Only applicable for gpt-5 models.
+
 ## Value
 
 An object of class `"gpt_price"`. The object is a list containing the
@@ -112,10 +126,10 @@ app_price
 app_price$price_dollar
 #> [1] 0.0469
 app_price$price_data
-#> # A tibble: 2 × 6
-#>   prompt   model       iterations input_price_dollar output_price_dollar
-#>   <chr>    <chr>            <dbl>              <dbl>               <dbl>
-#> 1 Prompt 1 gpt-4o-mini         10             0.0022           0.0000846
-#> 2 Prompt 1 gpt-4                1             0.0438           0.000846 
-#> # ℹ 1 more variable: total_price_dollar <dbl>
+#> # A tibble: 2 × 8
+#>   promptid model       iterations prompt   completion_tokens input_price_dollar
+#>   <chr>    <chr>            <dbl> <chr>                <dbl>              <dbl>
+#> 1 Prompt 1 gpt-4o-mini         10 Prompt 1              155.             0.0022
+#> 2 Prompt 1 gpt-4                1 Prompt 1              155.             0.0438
+#> # ℹ 2 more variables: output_price_dollar <dbl>, total_price_dollar <dbl>
 ```
