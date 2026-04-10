@@ -20,18 +20,12 @@ Downloads](https://cranlogs.r-pkg.org/badges/grand-total/AIscreenR)](https://cra
 The goal of AIscreenR is to use AI tools to support screening processes
 (including title and abstract screening) in systematic reviews and
 related literature reviews. At the current stage, the main aim of the
-`AIscreenR` package is to test and use OpenAI’s GPT API models as second
-screeners of titles and abstracts or alternatively to reduce the number
-of references needed to be screened by humans. The package allows user
-to utilize OpenAI’s GPT API models from the
-[https://api.openai.com/v1/chat/completions](https://platform.openai.com/docs/models/model-endpoint-compatibility)
-endpoint. In future developments, we may add further LLMs, such as API
-models from Claude 2. For now, we invite other researchers to test this
-software, so that we, as a review community, can get a better
-understanding of the performance of OpenAI’s GPT API models for title
-and abstract screening in high-quality reviews. For guidance on how to
-conduct reliable title and abstract screenings with GPT API models, see
-[Vembye et al. (2025)](https://psycnet.apa.org/record/2026-37236-001).
+`AIscreenR` package is to use generative pre-trained transformer (GPT)
+models as second screeners of titles and abstracts or alternatively to
+reduce the number of references needed to be screened by humans. For
+validation measures and guidance on how to conduct reliable title and
+abstract screenings with GPT API models, see [Vembye et
+al. (2025)](https://psycnet.apa.org/record/2026-37236-001).
 
 ## Installation
 
@@ -49,7 +43,7 @@ You can install the development version of AIscreenR from
 devtools::install_github("MikkelVembye/AIscreenR")
 ```
 
-Setting API key and checking rate limits
+# Setting API key and checking rate limits
 
 ``` r
 # Find your api key at https://platform.openai.com/account/api-keys 
@@ -74,16 +68,20 @@ rate_limits
 #> 1 gpt-4o-mini               30000         150000000
 ```
 
-How to load RIS files. In this example we have downloaded the RIS files
-from the
-[EPPI-Reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914).
+# How to load RIS files.
+
+In this example we have downloaded the RIS files from the
+[EPPI-Reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914), and
+the fis-files comes from the review by Filges et al. (2015) on
+family-based interventions for drug abuse reduction in young people. The
+files are included in the package for tutorial purposes only.
 
 ``` r
 
 excl_path <- system.file("extdata", "excl_tutorial.ris", package = "AIscreenR")
 
-# Loading RIS file data with synthesisr 
-ris_dat_excl <- read_refs("excl_path") |> 
+# Loading RIS file via the read_ris_to_dataframe() function
+ris_dat_excl <- read_ris_to_dataframe(excl_path) |> 
   select(studyid = eppi_id, title, abstract) |> 
   as_tibble() |> 
   mutate(
@@ -92,14 +90,18 @@ ris_dat_excl <- read_refs("excl_path") |>
 
 incl_path <- system.file("extdata", "incl_tutorial.ris", package = "AIscreenR")
 
-ris_dat_incl <- read_refs(incl_path) |> 
+ris_dat_incl <- read_ris_to_dataframe(incl_path) |> 
   select(studyid = eppi_id, title, abstract) |> 
   as_tibble() |> 
   mutate(
     human_code = 1 # Indicating inclusion
   )
 
-filges2015_dat<- bind_rows(ris_dat_excl, ris_dat_incl)
+filges2015_dat <- 
+  bind_rows(ris_dat_excl, ris_dat_incl) |> 
+  # Removing references without abstracts since these can distort the accuracy of the screening
+  filter_out(abstract == "NA") 
+
 head(filges2015_dat, 10)
 #> # A tibble: 10 × 4
 #>    studyid title                                             abstract human_code
@@ -162,69 +164,83 @@ app_obj <-
   )
 
 app_obj
-#> The approximate price of the (simple) screening will be around $0.0476.
+#> The approximate price of the (simple) screening will be around $0.0453.
 
 app_obj$price_dollar
-#> [1] 0.0476
+#> [1] 0.0453
 app_obj$price_data
-#> # A tibble: 1 × 6
-#>   prompt   model       iterations input_price_dollar output_price_dollar
-#>   <chr>    <chr>            <dbl>              <dbl>               <dbl>
-#> 1 Prompt 1 gpt-4o-mini          1             0.0458             0.00178
-#> # ℹ 1 more variable: total_price_dollar <dbl>
+#> A tibble: 1 × 8
+#>   promptid model       iterations prompt   completion_tokens input_price_dollar output_price_dollar
+#>   <chr>    <chr>            <dbl> <chr>                <dbl>              <dbl>               <dbl>
+#> 1 Prompt 1 gpt-4o-mini          1 Prompt 1             1706.             0.0443             0.00102
+#> ℹ 1 more variable: total_price_dollar <dbl>
 ```
 
 Example of how to conduct simple screening, returning `1` if a reference
-should be included, `0` if excluded, and `1.1` if uncertain.
+should be included, `0` if excluded, and `1.1` if uncertain. The example
+is used for tutorial purposes only, and the results should not be used
+to draw conclusions about the accuracy of GPT models for screening. For
+a more thorough evaluation of the accuracy of GPT models for screening,
+see [Vembye et
+al. (2025)](https://psycnet.apa.org/record/2026-37236-001).
 
 ``` r
 # Subsetting the number of references to speed up the tutorial screening
 plan(multisession)
 test_obj <- 
   tabscreen_gpt(
-    data = filges2015_dat[c(1:5, 266:270),],
+    data = filges2015_dat[c(1:5, 238:242),],
     prompt = prompt, 
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
     abstract = abstract, # indicate the variable with the abstracts in the data
     model = "gpt-4o-mini",
-    reps = 1 # Number of times the same question is asked to ChatGPT
-  ) 
-#> * The approximate price of the current (simple) screening will be around $0.0017.
-#> * Consider removing references without abstracts since these can distort the accuracy of the screening.
+    reps = 10, # Number of times the same question is asked 
+    incl_cutoff_upper = 0.1, # If GPT includes a reference in 10% or more of the iterations, it will be included
+    # If the GPT model as no or little information to base its decision on, it will be more likely to include the reference. 
+    # Setting over_inclusive = TRUE means that if the model is uncertain about a reference, 
+    # it will be included (i.e., coded as 1.1 instead of 0).
+    over_inclusive = TRUE 
+  )
+#> * The approximate price of the current (simple) screening will be around $0.0181.
 #> Progress: ───────────────────────────────────────────────────────────────────────────────────── 100%
 plan(sequential)
 test_obj
 #> 
-#> Find the final result dataset via result_object$answer_data
+#> Find the final result dataset via result_object$answer_data_aggregated
 
 # Data sets in object
 price_dat <- test_obj$price_data
 price_dat
-#> # A tibble: 1 × 6
-#>   prompt model       iterations input_price_dollar output_price_dollar
-#>    <int> <chr>            <dbl>              <dbl>               <dbl>
-#> 1      1 gpt-4o-mini          1             0.0016           0.0000432
-#> # ℹ 1 more variable: total_price_dollar <dbl>
+#> A tibble: 1 × 8
+#>   promptid model       iterations prompt completion_tokens input_price_dollar output_price_dollar
+#>      <int> <chr>            <dbl>  <int>             <dbl>              <dbl>               <dbl>
+#> 1        1 gpt-4o-mini         10      1              7000              0.017             0.00042
+#> ℹ 1 more variable: total_price_dollar <dbl>
 
-all_dat <- test_obj$answer_data
-all_dat |> select(human_code, decision_binary)
-#> # A tibble: 10 × 2
-#>    human_code decision_binary
-#>         <dbl>           <dbl>
-#>  1          0               0
-#>  2          0               0
-#>  3          0               0
-#>  4          0               0
-#>  5          0               0
-#>  6          1               0
-#>  7          1               1
-#>  8          1               0
-#>  9          1               1
-#> 10          1               1
+agg_dat <- test_obj$answer_data_aggregated
+agg_dat |> select(human_code, final_decision_gpt, final_decision_gpt_num)
+#>  A tibble: 10 × 3
+#>    human_code final_decision_gpt final_decision_gpt_num
+#>         <dbl> <chr>                               <dbl>
+#>  1          0 Exclude                                 0
+#>  2          0 Exclude                                 0
+#>  3          0 Exclude                                 0
+#>  4          0 Exclude                                 0
+#>  5          0 Exclude                                 0
+#>  6          1 Exclude                                 0
+#>  7          1 Exclude                                 0
+#>  8          1 Exclude                                 0
+#>  9          1 Include                                 1
+#> 10          1 Include                                 1
 ```
 
 # References
+
+Filges, T., Andersen, D, & Jørgensen, A-M. K (2015). Functional Family
+Therapy (FFT) for Young People in Treatment for Non-opioid Drug Use: A
+Systematic Review. *Campbell Systematic Reviews*.
+<https://doi.org/10.4073/csr.2015.14>
 
 Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W.
 (2025). Generative pretrained transformer models can function as highly
