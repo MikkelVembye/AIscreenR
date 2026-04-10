@@ -112,13 +112,13 @@ for each title and abstract across multiple repeated questions (only when reps >
 \description{
 This function supports the conduct of title and abstract screening with OLLAMA API models in R.
 Specifically, it allows the user to draw on locally hosted ollama models (e.g., Llama 3 / 3.1 variants, Mixtral/Mistral, Gemma, DeepSeek and Qwen).
-For more information on how to install and use OLLAMA, see \url{https://ollama.com/docs/}.
+For more information on how to install and use OLLAMA, see \url{https://docs.ollama.com/}.
 Be aware that this function requires that you have OLLAMA installed and running on your local machine.
 The function allows to run title and abstract screening across multiple prompts and with
 repeated questions to check for consistency across answers. All of which can be done in parallel.
 The function draws on the newly developed function calling which is called via the
 tools argument in the request body. Function calls ensure more reliable and consistent responses to ones
-requests. See \href{https://osf.io/preprints/osf/yrhzm}{Vembye, Christensen, Mølgaard, and Schytt. (2025)}
+requests. See \href{https://dx.doi.org/10.1037/met0000769}{Vembye, Christensen, Mølgaard, and Schytt. (2025)}
 for guidance on how adequately to conduct title and abstract screening with OLLAMA models.
 }
 \note{
@@ -203,9 +203,10 @@ plan(sequential)
 }
 }
 \references{
-Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2024)
-\emph{GPT API Models Can Function as Highly Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
-A Proof of Concept and Common Guidelines} \url{https://osf.io/preprints/osf/yrhzm}
+Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2025).
+Generative Pretrained Transformer Models Can Function as Highly Reliable Second Screeners of Titles
+and Abstracts in Systematic Reviews: A Proof of Concept and Common Guidelines. \emph{Psychological Methods}.
+\url{https://dx.doi.org/10.1037/met0000769}
 
 Thomas, J. et al. (2024).
 Responsible AI in Evidence SynthEsis (RAISE): guidance and recommendations.

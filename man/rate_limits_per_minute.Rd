@@ -34,7 +34,7 @@ the number of requests and tokens per minute.
 \code{rate_limits_per_minute} reports the rate limits for a given API model.
 The function returns the available requests per minute (RPM) as well as tokens per minute (TPM).
 Find general information at
-\url{https://platform.openai.com/docs/guides/rate-limits/overview}.
+\url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.
 }
 \examples{
 \dontrun{

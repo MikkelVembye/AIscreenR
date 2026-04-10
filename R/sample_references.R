@@ -3,11 +3,12 @@
 #' @description
 #' `sample_references`samples n rows from the dataset with titles and abstracts either with or without replacement.
 #'  This function is supposed to support the construct of a test dataset,
-#'  as suggested by [Vembye et al. (2024)](https://osf.io/preprints/osf/yrhzm).
+#'  as suggested by [Vembye et al. (2025)](https://dx.doi.org/10.1037/met0000769).
 #'
-#' @references Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2024)
-#'   \emph{GPT API Models Can Function as Highly Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
-#'   A Proof of Concept and Common Guidelines} \url{https://osf.io/preprints/osf/yrhzm}
+#' @references Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2025).
+#'    Generative Pretrained Transformer Models Can Function as Highly Reliable Second Screeners of Titles
+#'    and Abstracts in Systematic Reviews: A Proof of Concept and Common Guidelines. \emph{Psychological Methods}. 
+#'    \url{https://dx.doi.org/10.1037/met0000769}
 #'
 #' @param data Dataset containing the titles and abstracts wanted to be screened.
 #' @param n A non-negative integer giving the number of rows to choose.

@@ -77,7 +77,7 @@
 #'   should be used instead' (Wickham, 2023).
 #' @param rpm Numerical value indicating the number of requests per minute (rpm)
 #'   available for the specified api key. Find more information at
-#'   \url{https://platform.openai.com/docs/guides/rate-limits/what-are-the-rate-limits-for-our-api}.
+#'   \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.
 #'   Alternatively, use [rate_limits_per_minute()].
 #' @param reps Numerical value indicating the number of times the same
 #'   question should be sent to OpenAI's GPT API models. This can be useful to test consistency

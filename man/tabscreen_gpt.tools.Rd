@@ -99,7 +99,7 @@ should be used instead' (Wickham, 2023).}
 
 \item{rpm}{Numerical value indicating the number of requests per minute (rpm)
 available for the specified model. Find more information at
-\url{https://platform.openai.com/docs/guides/rate-limits/what-are-the-rate-limits-for-our-api}.
+\url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.
 Alternatively, use \code{\link[=rate_limits_per_minute]{rate_limits_per_minute()}}.}
 
 \item{reps}{Numerical value indicating the number of times the same
@@ -187,7 +187,7 @@ repeated questions to check for consistency across answers. All of which can be 
 The function draws on the newly developed function calling which is called via the
 tools argument in the request body. This is the main difference between \code{\link[=tabscreen_gpt.tools]{tabscreen_gpt.tools()}}
 and \code{\link[=tabscreen_gpt.original]{tabscreen_gpt.original()}}. Function calls ensure more reliable and consistent responses to ones
-requests. See \href{https://osf.io/preprints/osf/yrhzm}{Vembye, Christensen, Mølgaard, and Schytt. (2025)}
+requests. See \href{https://dx.doi.org/10.1037/met0000769}{Vembye, Christensen, Mølgaard, and Schytt. (2025)}
 for guidance on how adequately to conduct title and abstract screening with GPT models.
 }
 \note{
@@ -295,9 +295,10 @@ plan(sequential)
 }
 }
 \references{
-Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2025)
-\emph{GPT API Models Can Function as Highly Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
-A Proof of Concept and Common Guidelines} \url{https://osf.io/preprints/osf/yrhzm}
+Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2025).
+Generative Pretrained Transformer Models Can Function as Highly Reliable Second Screeners of Titles
+and Abstracts in Systematic Reviews: A Proof of Concept and Common Guidelines. \emph{Psychological Methods}.
+\url{https://dx.doi.org/10.1037/met0000769}
 
 Thomas, J. et al. (2024).
 Responsible AI in Evidence SynthEsis (RAISE): guidance and recommendations.

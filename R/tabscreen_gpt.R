@@ -13,12 +13,13 @@
 #' The function draws on the newly developed function calling which is called via the
 #' tools argument in the request body. This is the main difference between [tabscreen_gpt.tools()]
 #' and [tabscreen_gpt.original()]. Function calls ensure more reliable and consistent responses to ones
-#' requests. See [Vembye, Christensen, Mølgaard, and Schytt. (2025)](https://osf.io/preprints/osf/yrhzm)
+#' requests. See [Vembye, Christensen, Mølgaard, and Schytt. (2025)](https://dx.doi.org/10.1037/met0000769)
 #' for guidance on how adequately to conduct title and abstract screening with GPT models.
 #'
-#' @references Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2025)
-#'   \emph{GPT API Models Can Function as Highly Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
-#'   A Proof of Concept and Common Guidelines} \url{https://osf.io/preprints/osf/yrhzm}
+#' @references Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2025).
+#'    Generative Pretrained Transformer Models Can Function as Highly Reliable Second Screeners of Titles
+#'    and Abstracts in Systematic Reviews: A Proof of Concept and Common Guidelines. \emph{Psychological Methods}. 
+#'    \url{https://dx.doi.org/10.1037/met0000769}
 #'
 #'   Thomas, J. et al. (2024).
 #'   Responsible AI in Evidence SynthEsis (RAISE): guidance and recommendations.
@@ -70,7 +71,7 @@
 #'   should be used instead' (Wickham, 2023).
 #' @param rpm Numerical value indicating the number of requests per minute (rpm)
 #'   available for the specified model. Find more information at
-#'   \url{https://platform.openai.com/docs/guides/rate-limits/what-are-the-rate-limits-for-our-api}.
+#'   \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.
 #'   Alternatively, use [rate_limits_per_minute()].
 #' @param reps Numerical value indicating the number of times the same
 #'   question should be send to the server. This can be useful to test consistency

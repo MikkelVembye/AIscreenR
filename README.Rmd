@@ -51,7 +51,6 @@ devtools::install_github("MikkelVembye/AIscreenR")
 # see https://httr2.r-lib.org/reference/secrets.html or run set_api_key() 
 # and then enter you key.
 library(AIscreenR)
-library(synthesisr)
 library(tibble)
 library(dplyr)
 library(future)

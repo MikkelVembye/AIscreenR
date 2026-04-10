@@ -7,7 +7,7 @@
 #' `rate_limits_per_minute` reports the rate limits for a given API model.
 #' The function returns the available requests per minute (RPM) as well as tokens per minute (TPM).
 #' Find general information at
-#' \url{https://platform.openai.com/docs/guides/rate-limits/overview}.
+#' \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.
 #'
 #' @param AI_tool Character string specifying the AI tool from which the API is
 #' issued. Currently supports `"OpenAI"` (default) and `"Groq"`.
