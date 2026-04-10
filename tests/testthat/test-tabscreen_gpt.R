@@ -31,7 +31,8 @@ test_that(".gpt_engine return errors correctly", {
     max_s = 10,
     is_trans = gpt_is_transient,
     back = NULL,
-    aft = NULL
+    aft = NULL,
+    endpoint_url = "https://api.openai.com/v1/chat/completions"
   )
 
 
@@ -60,7 +61,8 @@ test_that(".gpt_engine return errors correctly", {
     max_s = 10,
     is_trans = gpt_is_transient,
     back = NULL,
-    aft = NULL
+    aft = NULL,
+    endpoint_url = "https://api.openai.com/v1/chat/completions"
   )
 
   expect_equal(ncol(res), 7)
@@ -88,7 +90,8 @@ test_that(".gpt_engine return errors correctly", {
     max_s = 10,
     is_trans = gpt_is_transient,
     back = NULL,
-    aft = NULL
+    aft = NULL,
+    endpoint_url = "https://api.openai.com/v1/chat/completions"
   )
 
   expect_equal(ncol(res), 7)
@@ -117,7 +120,8 @@ test_that(".gpt_engine return errors correctly", {
     max_s = 10,
     is_trans = gpt_is_transient(),
     back = NULL,
-    aft = NULL
+    aft = NULL,
+    endpoint_url = "https://api.openai.com/v1/chat/completions"
   ) |>
     expect_error()
 
@@ -146,7 +150,8 @@ test_that(".rep_gpt_engine controls errrors correctly", {
     maxs = 10,
     istrans = gpt_is_transient,
     ba = NULL,
-    af = NULL
+    af = NULL,
+    endpoint_url = "https://api.openai.com/v1/chat/completions"
   )
 
   expect_equal(ncol(res), 8)
@@ -172,7 +177,8 @@ test_that(".rep_gpt_engine controls errrors correctly", {
     maxs = 10,
     istrans = gpt_is_transient,
     ba = NULL,
-    af = NULL
+    af = NULL,
+    endpoint_url = "https://api.openai.com/v1/chat/completions"
   )
 
   expect_equal(ncol(res), 8)
@@ -198,7 +204,8 @@ test_that(".rep_gpt_engine controls errrors correctly", {
     maxs = 10,
     istrans = gpt_is_transient,
     ba = NULL,
-    af = NULL
+    af = NULL,
+    endpoint_url = "https://api.openai.com/v1/chat/completions"
   )
 
   expect_equal(ncol(res), 8)
@@ -235,6 +242,84 @@ rpm <- c(3500, 200)
 
 skip <- TRUE
 skip_github_action <- FALSE
+
+test_that("tabscreen_gpt() overinclusive chooses default tools", {
+
+  if(skip) skip()
+  if(skip_github_action) skip_on_ci()
+  skip_on_cran()
+
+  # Binary default tools when overinclusive = FALSE
+  res_bin <- tabscreen_gpt(
+    data = filges2015_dat[1,],
+    prompt = prompt,
+    studyid = studyid,
+    title = title,
+    abstract = abstract,
+    model = "gpt-3.5-turbo-0613",
+    overinclusive = FALSE,
+    decision_description = FALSE,
+    messages = FALSE,
+    progress = FALSE
+  )
+
+  args_bin <- attr(res_bin, "arg_list")
+  expect_identical(args_bin$tool_choice, "inclusion_decision_simple_binary")
+  expect_identical(args_bin$tools[[1]]$`function`$name, "inclusion_decision_simple_binary")
+
+  res_bin_det <- tabscreen_gpt(
+    data = filges2015_dat[1,],
+    prompt = prompt,
+    studyid = studyid,
+    title = title,
+    abstract = abstract,
+    model = "gpt-3.5-turbo-0613",
+    overinclusive = FALSE,
+    decision_description = TRUE,
+    messages = FALSE,
+    progress = FALSE
+  )
+
+  args_bin_det <- attr(res_bin_det, "arg_list")
+  expect_identical(args_bin_det$tool_choice, "inclusion_decision_binary")
+  expect_identical(args_bin_det$tools[[1]]$`function`$name, "inclusion_decision_binary")
+
+  # Over-inclusive tools (supports 1.1) when overinclusive = TRUE
+  res_over <- tabscreen_gpt(
+    data = filges2015_dat[1,],
+    prompt = prompt,
+    studyid = studyid,
+    title = title,
+    abstract = abstract,
+    model = "gpt-3.5-turbo-0613",
+    overinclusive = TRUE,
+    decision_description = FALSE,
+    messages = FALSE,
+    progress = FALSE
+  )
+
+  args_over <- attr(res_over, "arg_list")
+  expect_identical(args_over$tool_choice, "inclusion_decision_simple")
+  expect_identical(args_over$tools[[1]]$`function`$name, "inclusion_decision_simple")
+
+  res_over_det <- tabscreen_gpt(
+    data = filges2015_dat[1,],
+    prompt = prompt,
+    studyid = studyid,
+    title = title,
+    abstract = abstract,
+    model = "gpt-3.5-turbo-0613",
+    overinclusive = TRUE,
+    decision_description = TRUE,
+    messages = FALSE,
+    progress = FALSE
+  )
+
+  args_over_det <- attr(res_over_det, "arg_list")
+  expect_identical(args_over_det$tool_choice, "inclusion_decision")
+  expect_identical(args_over_det$tools[[1]]$`function`$name, "inclusion_decision")
+
+})
 
 future::plan(future::multisession)
 

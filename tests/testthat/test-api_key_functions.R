@@ -8,7 +8,7 @@ test_that("Testthat works in get_api_key()", {
   expect_identical(is.character(get_api_key()), TRUE)
 
   set_api_key(key = key)
-  expect_identical(Sys.getenv("CHATGPT_KEY"), key)
+  expect_identical(Sys.getenv("OPENAI_API_KEY"), key)
 
 })
 
@@ -20,4 +20,10 @@ test_that("get_api_key() error.",{
 
 })
 
+test_that("get_api_key_groq() error. ", {
 
+  expect_error(
+    get_api_key_groq(env_var = "something_else")
+  )
+
+})

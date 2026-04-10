@@ -11,7 +11,7 @@
 #' The function allows to run title and abstract screening across multiple prompts and with
 #' repeated questions to check for consistency across answers. All of which can be done in parallel.
 #' The function draws on the newly developed function calling which is called via the
-#' tools argument in the request body. This is the main different between [tabscreen_gpt.tools()]
+#' tools argument in the request body. This is the main difference between [tabscreen_gpt.tools()]
 #' and [tabscreen_gpt.original()]. Function calls ensure more reliable and consistent responses to ones
 #' requests. See [Vembye, Christensen, Mølgaard, and Schytt. (2025)](https://osf.io/preprints/osf/yrhzm)
 #' for guidance on how adequately to conduct title and abstract screening with GPT models.
@@ -29,6 +29,7 @@
 #' \url{https://httr2.r-lib.org}, \url{https://github.com/r-lib/httr2}.
 #'
 #' @template common-arg
+#' @param api_url Character string with the endpoint URL for OpenAI's API. Default is `"https://api.openai.com/v1/chat/completions"`.
 #' @param model Character string with the name of the completion model. Can take
 #'   multiple models. Default is the latest `"gpt-4o-mini"`.
 #'   Find available model at
@@ -86,6 +87,12 @@
 #'   we generally recommend not using this feature as it will substantially increase the cost of the
 #'   screening. We generally recommend using it when encountering disagreements between GPT and
 #'   human decisions.
+#' @param overinclusive Logical indicating whether uncertain decisions (`"1.1"`) should be
+#'   allowed in the default function calling setup. Default is `TRUE`, which means that the 
+#' default function calling setup will allow for uncertain decisions. 
+#' If `FALSE`, the default function calling setup will not allow for uncertain decisions and 
+#' will only return binary decisions (i.e., "1" or "0"). This argument only affects the default 
+#' function calling setup.
 #' @param messages Logical indicating whether to print messages embedded in the function.
 #'   Default is `TRUE`.
 #' @param incl_cutoff_upper Numerical value indicating the probability threshold
@@ -101,25 +108,36 @@
 #'   10 iterations for gpt-3.5 models and more than 1 iteration for gpt-4 models other than gpt-4o-mini.
 #'   This argument is developed to avoid the conduct of wrong and extreme sized screening.
 #'   Default is `FALSE`.
-#' @param fine_tuned Logical indicating whether a fine-tuned model is used. Default is `FALSE`.
+#' @param custom_model Logical indicating whether a fine-tuned or custom model is used. Default is `FALSE`.
+#' @param fine_tuned `r lifecycle::badge("deprecated")` Use `custom_model` instead.
+#' @param reasoning_effort Character string indicating the level of reasoning effort required for the task. Default is `"low"`.
+#'  Can take the values `"low"`, `"medium"`, and `"high"`. See \url{https://platform.openai.com/docs/guides/reasoning} for more information.
+#' @param verbosity Character string indicating the level of verbosity in the model's responses. Default is `"low"`.
+#' Can take the values `"low"`, `"medium"`, and `"high"`. See \url{https://platform.openai.com/docs/api-reference/chat/create} for more information.
 #' @param ... Further argument to pass to the request body.
 #'   See \url{https://platform.openai.com/docs/api-reference/chat/create}.
 #'
 #' @usage tabscreen_gpt.tools(data, prompt, studyid, title, abstract,
-#'    model = "gpt-4o-mini", role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
-#'    time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
-#'    max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
-#'    after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
-#'    decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
-#'    incl_cutoff_lower = NULL, force = FALSE, fine_tuned = FALSE, ...)
+#'   api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-4o-mini",
+#'   role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
+#'   time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
+#'   max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
+#'   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
+#'   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
+#'   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
+#'   fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low",
+#'   overinclusive = TRUE, ...)
 #'
-#'tabscreen_gpt(data, prompt, studyid, title, abstract,
-#'    model = "gpt-4o-mini", role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
-#'    time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
-#'    max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
-#'    after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
-#'    decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
-#'    incl_cutoff_lower = NULL, force = FALSE, fine_tuned = FALSE, ...)
+#' tabscreen_gpt(data, prompt, studyid, title, abstract,
+#'   api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-4o-mini",
+#'   role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
+#'   time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
+#'   max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
+#'   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
+#'   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
+#'   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
+#'   fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low",
+#'   overinclusive = TRUE, ...)
 #'
 #' @return An object of class `'gpt'`. The object is a list containing the following
 #' datasets and components:
@@ -199,7 +217,7 @@
 #'  \bold{total_price_dollar} \tab \code{integer} \tab total price for all tokens for the correspondent gpt-model. \cr
 #' }
 #'
-#' Find current token pricing at \url{https://openai.com/pricing} or [model_prizes].
+#' Find current token pricing at \url{https://developers.openai.com/api/docs/pricing} or [model_prizes].
 #'
 #' @importFrom stats df
 #' @import dplyr
@@ -250,6 +268,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
   studyid,
   title,
   abstract,
+  api_url = "https://api.openai.com/v1/chat/completions",
   model = "gpt-4o-mini",
   role = "user",
   tools = NULL,
@@ -272,9 +291,20 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
   incl_cutoff_upper = NULL,
   incl_cutoff_lower = NULL,
   force = FALSE,
-  fine_tuned = FALSE,
+  custom_model = FALSE,
+  fine_tuned = deprecated(),
+  reasoning_effort = "medium",
+  verbosity = "low",
+  overinclusive = TRUE,
   ...
 ){
+
+  # Handle deprecated fine_tuned argument
+
+  if (lifecycle::is_present(fine_tuned)) {
+    lifecycle::deprecate_warn("0.2.1", "tabscreen_gpt(fine_tuned)", "tabscreen_gpt(custom_model)") # Check version number
+    custom_model <- fine_tuned
+  }
 
   # Handling inherits
   if (is_gpt_tbl(data)) data <- data |> dplyr::select(-c(promptid:n)) |> tibble::as_tibble()
@@ -290,8 +320,13 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
   }
 
   # Stop if wrong models are called
-  if (!fine_tuned){
+  if (!custom_model){
     if(any(!model %in% model_prizes$model)) stop("Unknown gpt model(s) used - check model name(s).")
+  }
+
+  # Stop if top_p is set for gpt-5 models
+  if (any(stringr::str_detect(model, "gpt-5")) && any(top_p != 1)){
+    stop("The top_p argument is not supported for gpt-5 models.")
   }
 
   # Ensuring that users do not conduct wrong screening
@@ -375,11 +410,24 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
 
   }
 
+  # Validate / neutralize reasoning args
+  reasoning_supported_patterns <- c("^gpt-5")
+  reasoning_supported <- any(stringr::str_detect(model, paste(reasoning_supported_patterns, collapse = "|")))
+  if (reasoning_supported) {
+    if (!reasoning_effort %in% c("low","medium","high"))
+      stop("reasoning_effort must be one of 'low','medium','high'.")
+    if (!verbosity %in% c("low","medium","high"))
+      stop("verbosity must be one of 'low','medium','high'.")
+  } else {
+    reasoning_effort <- NULL
+    verbosity <- NULL
+  }
+
   #.........................................
   # Start up - Generic warning messages ----
   #.........................................
 
-  if (missing(title) || missing(abstract) && !is.gpt(data)){
+  if (missing(title) || missing(abstract) && !is_gpt(data)){
     warning("The function only works properly when given both titles and abstracts.")
   }
 
@@ -406,17 +454,27 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
       progress = progress,
       messages = messages,
       decision_description = decision_description,
+      overinclusive = overinclusive,
       incl_cutoff_upper = incl_cutoff_upper,
       incl_cutoff_lower = incl_cutoff_lower,
       force = force,
-      fine_tuned = fine_tuned,
+      custom_model = custom_model,
+      api_url = api_url,
+      reasoning_effort = reasoning_effort,
+      verbosity = verbosity,
       ...
     )
 
 
-  # Assert that max tokens is not below nine when used with the simple function call
-  if ("max_completion_tokens" %in% names(arg_list) || "max_tokens" %in% names(arg_list)){
+  # Assert that max tokens is not below nine when used with the simple function call.
+  if ("max_completion_tokens" %in% names(arg_list) && !is.null(arg_list$max_completion_tokens)) {
     if (arg_list$max_completion_tokens < 9) {
+      stop("Cannot retrieve results from server with tokens below 9.")
+    }
+  }
+
+  if ("max_tokens" %in% names(arg_list) && !is.null(arg_list$max_tokens)) {
+    if (arg_list$max_tokens < 9) {
       stop("Cannot retrieve results from server with tokens below 9.")
     }
   }
@@ -450,15 +508,33 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
   # Default setting
   if (is.null(tools) && is.null(tool_choice)){
 
-    if (!decision_description){
+    if (overinclusive) {
 
-      tools <- tools_simple
-      tool_choice <- "inclusion_decision_simple"
+      if (!decision_description){
+
+        tools <- tools_simple
+        tool_choice <- "inclusion_decision_simple"
+
+      } else {
+
+        tools <- tools_detailed
+        tool_choice <- "inclusion_decision"
+
+      }
 
     } else {
 
-      tools <- tools_detailed
-      tool_choice <- "inclusion_decision"
+      if (!decision_description){
+
+        tools <- tools_simple_binary
+        tool_choice <- "inclusion_decision_simple_binary"
+
+      } else {
+
+        tools <- tools_detailed_binary
+        tool_choice <- "inclusion_decision_binary"
+
+      }
 
     }
 
@@ -469,7 +545,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
   #.......................
 
   # Ensure that the data contains valid study IDs to distinguish between study records
-    study_id <- if (missing(studyid)) 1:nrow(data) else data |> pull({{ studyid }})
+    study_id <- if (missing(studyid)) seq_len(nrow(data)) else data |> pull({{ studyid }})
 
     dat <-
       data |>
@@ -490,6 +566,10 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
     prompt_length <- length(prompt)
     studyid_length <- dplyr::n_distinct(dat$studyid)
 
+    # Preserve values (NULL -> NA for downstream mutate)
+    reasoning_effort_val <- if (is.null(reasoning_effort)) NA_character_ else reasoning_effort
+    verbosity_val        <- if (is.null(verbosity)) NA_character_ else verbosity
+
     # Creating the question data that will later be passed to the .rep_gpt_engine()
     question_dat <-
       dat |>
@@ -499,12 +579,12 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
           is.na(.x) | .x == "" | .x == " " | .x == "NA", "No information", .x, missing = "No information")
         )
       ) |>
-      dplyr::slice(rep(1:nrow(dat), prompt_length)) |>
+      dplyr::slice(rep(seq_len(nrow(dat)), prompt_length)) |>
       dplyr::mutate(
         promptid = rep(1:prompt_length, each = studyid_length),
         prompt = rep(prompt, each = studyid_length)
       ) |>
-      dplyr::slice(rep(1:dplyr::n(), each = model_length)) |>
+      dplyr::slice(rep(seq_len(dplyr::n()), each = model_length)) |>
       dplyr::mutate(
         model = rep(model, studyid_length*prompt_length),
         iterations = rep(reps, studyid_length*prompt_length*mp_reps),
@@ -518,10 +598,12 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
         ),
         # removing line shift symbols and creating the main question
         question = stringr::str_replace_all(question_raw, "\n\n", " "),
-        question = stringr::str_remove_all(question, "\n")
+        question = stringr::str_remove_all(question, "\n"),
+        reasoning_effort = reasoning_effort_val,
+        verbosity = verbosity_val
       ) |>
       dplyr::select(-question_raw) |>
-      dplyr::slice(rep(1:dplyr::n(), each = length(top_p))) |>
+      dplyr::slice(rep(seq_len(dplyr::n()), each = length(top_p))) |>
       dplyr::mutate(
         topp = rep(top_p, studyid_length*prompt_length*model_length)
       ) |>
@@ -533,13 +615,13 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
 
     # Calculating the approximate price using the helper function price_gpt()
 
-    if(!fine_tuned) {
+    if(!custom_model) {
 
     app_price_dat <- .price_gpt(question_dat)
     app_price <- sum(app_price_dat$total_price_dollar, na.rm = TRUE)
 
     # Ensuring the user does not waste money on wrong coding
-    if (app_price > 15 & !force){
+    if (app_price > 15 && !force){
       stop(paste0(
         "Are you sure you want to run this screening? It will cost approximately $", app_price, ".",
         " If so, set 'force = TRUE')"))
@@ -592,7 +674,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
     furrr_seed <- if (is.null(seed_par)) TRUE else NULL
 
     params <- question_dat |>
-      dplyr::select(question, model_gpt = model, topp, iterations, req_per_min)
+      dplyr::select(question, model_gpt = model, topp, iterations, req_per_min, reasoning_effort, verbosity)
 
 
     answer_dat <-
@@ -613,6 +695,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
           istrans = is_transient,
           ba = backoff,
           af = after,
+          endpoint_url = api_url,
           ...,
           .options = furrr::furrr_options(seed = furrr_seed),
           .progress = progress
@@ -641,7 +724,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
     #.............................
 
     # Adding price data
-    price_dat <- if (token_info && !fine_tuned) .price_gpt(answer_dat) else NULL
+    price_dat <- if (token_info && !custom_model) .price_gpt(answer_dat) else NULL
     price <- if (!is.null(price_dat)) sum(price_dat$total_price_dollar, na.rm = TRUE) else NULL
 
     #.........................................................................
@@ -691,7 +774,7 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
     )
 
     # If token info is not wanted or fine tuned model used
-    if (fine_tuned || !token_info) res[["price_data"]] <- res[["price_dollar"]] <- NULL
+    if (custom_model || !token_info) res[["price_data"]] <- res[["price_dollar"]] <- NULL
 
     # If no screening errors
     if (n_error == 0) res[["error_data"]] <- NULL

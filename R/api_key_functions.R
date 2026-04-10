@@ -1,4 +1,3 @@
-
 #' @title Creating a temporary R environment API key variable
 #'
 #' @description This function automatically sets/creates an interim R environment variable with
@@ -9,14 +8,14 @@
 #' @details When set_api_key() has successfully been executed, \code{get_api_key()} automatically
 #' retrieves the API key from the R environment and the users do not need to specify the API when running
 #' functions from the package that call the API. The API key can be permanently set by
-#' using [usethis::edit_r_environ()]. Then write `CHATGPT_KEY=[insert your api key here]` and close
+#' using [usethis::edit_r_environ()]. Then write `OPENAI_API_KEY=[insert your api key here]` and close
 #' the `.Renviron` window and restart R.
 #'
-#' @param key Character string with an (ideally encrypt) API key. See how to encrypt key here:
+#' @param key Character string with an (ideally encrypted) API key. See how to encrypt key here:
 #' \url{https://httr2.r-lib.org/articles/wrapping-apis.html#basics}. If not provided, it
 #' returns a password box in which the true API key can be secretly entered.
 #' @param env_var Character string indicating the name of the temporary R environment variable with
-#' the API key and the used AI model. Currently, the argument only takes \code{env_var = "CHATGPT_KEY"}.
+#' the API key and the used AI model. Default is \code{env_var = "OPENAI_API_KEY"}.
 #'
 #' @return A temporary environment variable with the name from \code{env_var}.
 #' If \code{key} is missing, it returns a password box in which the true API key can be entered.
@@ -30,28 +29,26 @@
 #' set_api_key()
 #' }
 
-# Inspired by codes from https://httr2.r-lib.org/articles/wrapping-apis.html
-
-set_api_key <- function(key, env_var = "CHATGPT_KEY") {
-
+set_api_key <- function(key, env_var = "OPENAI_API_KEY") {
   if (missing(key)) {
     key <- askpass::askpass("Please enter your API key")
   }
 
-  if ("CHATGPT_KEY" %in% env_var) Sys.setenv("CHATGPT_KEY" = key, "OPENAI_API_KEY" = key)
-
+  if ("OPENAI_API_KEY" %in% env_var) Sys.setenv("OPENAI_API_KEY" = key)
+  # Optionally set CHATGPT_KEY for backward compatibility
+  if ("CHATGPT_KEY" %in% env_var) Sys.setenv("CHATGPT_KEY" = key)
 }
-
 
 #' @title Get API key from R environment variable.
 #'
 #' @param env_var Character string indicating the name of the temporary R environment variable with
-#' the API key and the used AI model. Currently, the argument only takes \code{env_var = "CHATGPT_KEY"}.
+#' the API key and the used AI model. Currently, the argument only takes \code{env_var = "OPENAI_API_KEY"}.
 #' See [set_api_key()] to set/create this variable.
 #'
 #' @details `get_api_key()` can be used after executing [set_api_key()] or by adding the
 #' api key permanently to your R environment by using [usethis::edit_r_environ()].
-#' Then write `CHATGPT_KEY=[insert your api key here]` and close the `.Renviron` window and restart R.
+#' Then write `OPENAI_API_KEY=[insert your api key here]` and close the `.Renviron` window and restart R.
+#' For backward compatibility, it will also check \code{CHATGPT_KEY} if \code{OPENAI_API_KEY} is not set.
 #'
 #' @return The specified API key (NOTE: Avoid exposing this in the console).
 #' @export
@@ -67,26 +64,25 @@ set_api_key <- function(key, env_var = "CHATGPT_KEY") {
 
 
 
-get_api_key <- function(env_var = "CHATGPT_KEY") {
+get_api_key <- function(env_var = "OPENAI_API_KEY") {
+  if (!env_var %in% c("OPENAI_API_KEY", "CHATGPT_KEY")) {
+    stop("env_var must be 'OPENAI_API_KEY' or 'CHATGPT_KEY'")
+  }
 
-  if ("CHATGPT_KEY" %in% env_var) key <- Sys.getenv("CHATGPT_KEY")
+  key <- Sys.getenv("OPENAI_API_KEY")
+  if (identical(key, "")) {
+    key <- Sys.getenv("CHATGPT_KEY")
+  }
 
-  if (identical(key, "")){
-
+  if (identical(key, "")) {
     if (is_testing()) {
-
-      if ("CHATGPT_KEY" %in% env_var) key <- testing_key_chatgpt()
-
+      if ("OPENAI_API_KEY" %in% env_var) key <- testing_key_chatgpt()
     } else {
-
       stop("No API key found. Use set_api_key()")
-
     }
-
   }
 
   key
-
 }
 
 
@@ -96,3 +92,52 @@ is_testing <- function() {
   identical(Sys.getenv("TESTTHAT"), "true")
 }
 
+#-------------------------------------------------------------------
+# GROQ functions
+#-------------------------------------------------------------------
+
+#' @title Get GROQ API key from R environment variable.
+#'
+#' @param env_var Character string indicating the name of the temporary R environment variable with
+#' the API key and the used AI model. Currently, the argument only takes \code{env_var = "GROQ_API_KEY"}.
+#' See [set_api_key()] to set/create this variable.
+#'
+#' @details `get_api_key_groq()` can be used after executing [set_api_key()] or by adding the
+#' api key permanently to your R environment by using [usethis::edit_r_environ()].
+#' Then write `GROQ_API_KEY=[insert your api key here]` and close the `.Renviron` window and restart R.
+#'
+#' @return The specified API key (NOTE: Avoid exposing this in the console).
+#' @export
+#'
+#' @note Find your personal API key at \url{https://console.groq.com/keys}.
+#' @seealso \code{\link{set_api_key}}.
+#'
+#'
+#' @examples
+#' \dontrun{
+#' get_api_key_groq()
+#' }
+
+get_api_key_groq <- function(env_var = "GROQ_API_KEY") {
+  if (!env_var %in% "GROQ_API_KEY") {
+    stop("env_var must be 'GROQ_API_KEY'")
+  }
+
+  key <- Sys.getenv("GROQ_API_KEY")
+
+  if (identical(key, "")){
+
+    if (is_testing()) {
+
+      key <- testing_key_groq()
+
+    } else {
+
+      stop("No API key found. Use set_api_key()")
+    }
+
+  }
+
+  key
+
+}

@@ -4,11 +4,11 @@
 \alias{get_api_key}
 \title{Get API key from R environment variable.}
 \usage{
-get_api_key(env_var = "CHATGPT_KEY")
+get_api_key(env_var = "OPENAI_API_KEY")
 }
 \arguments{
 \item{env_var}{Character string indicating the name of the temporary R environment variable with
-the API key and the used AI model. Currently, the argument only takes \code{env_var = "CHATGPT_KEY"}.
+the API key and the used AI model. Currently, the argument only takes \code{env_var = "OPENAI_API_KEY"}.
 See \code{\link[=set_api_key]{set_api_key()}} to set/create this variable.}
 }
 \value{
@@ -20,7 +20,8 @@ Get API key from R environment variable.
 \details{
 \code{get_api_key()} can be used after executing \code{\link[=set_api_key]{set_api_key()}} or by adding the
 api key permanently to your R environment by using \code{\link[usethis:edit]{usethis::edit_r_environ()}}.
-Then write \verb{CHATGPT_KEY=[insert your api key here]} and close the \code{.Renviron} window and restart R.
+Then write \verb{OPENAI_API_KEY=[insert your api key here]} and close the \code{.Renviron} window and restart R.
+For backward compatibility, it will also check \code{CHATGPT_KEY} if \code{OPENAI_API_KEY} is not set.
 }
 \note{
 Find your personal API key at \url{https://platform.openai.com/account/api-keys}.

@@ -27,6 +27,10 @@
 #'
 #' @param token_word_ratio The multiplier used to approximate the number of tokens per word.
 #'   Default is `1.6` which we empirically have found to be the average number of tokens per word.
+#' @param reasoning_effort Character string indicating the level of reasoning effort required for the task. Default is `"medium"`.
+#'  Can take the values `"low"`, `"medium"`, and `"high"`. Only applicable for gpt-5 models.
+#' @param verbosity Character string indicating the level of verbosity in the model's responses. Default is `"low"`.
+#'  Can take the values `"low"`, `"medium"`, and `"high"`. Only applicable for gpt-5 models.
 #'
 #' @return An object of class \code{"gpt_price"}. The object is a list containing the following
 #' components:
@@ -65,7 +69,9 @@ approximate_price_gpt <-
     model = "gpt-4o-mini",
     reps = 1,
     top_p = 1,
-    token_word_ratio = 1.6
+    token_word_ratio = 1.6,
+    reasoning_effort = "medium",
+    verbosity = "low"
   ){
 
     if (length(reps) > 1 && length(model) != length(reps)){
@@ -89,7 +95,7 @@ approximate_price_gpt <-
       dat <-
         data |>
         dplyr::mutate(
-          studyid = 1:nrow(data)
+          studyid = seq_len(nrow(data))
         ) |>
         dplyr::relocate(studyid, .before = {{ title }})
 
@@ -119,16 +125,18 @@ approximate_price_gpt <-
           is.na(.x) | .x == "" | .x == " ", "No information", .x, missing = "No information")
         )
       ) |>
-      dplyr::slice(rep(1:nrow(dat), prompt_length)) |>
+      dplyr::slice(rep(seq_len(nrow(dat)), prompt_length)) |>
       dplyr::mutate(
         promptid = rep(paste("Prompt", 1:prompt_length), each = studyid_length),
         prompt = rep(prompt, each = studyid_length)
       ) |>
-      dplyr::slice(rep(1:dplyr::n(), each = model_length)) |>
+      dplyr::slice(rep(seq_len(dplyr::n()), each = model_length)) |>
       dplyr::mutate(
         model = rep(model, studyid_length*prompt_length),
         iterations = rep(reps, studyid_length*prompt_length*mp_reps),
         #req_per_min = rep(rpm, studyid_length*dplyr::n_distinct(prompt)*mp_rpm),
+        reasoning_effort = reasoning_effort,
+        verbosity = verbosity,
         question_raw = paste0(
           prompt,
           " Now, evaluate the following title and abstract for",
@@ -140,7 +148,7 @@ approximate_price_gpt <-
         question = stringr::str_remove_all(question, "\n")
       ) |>
       dplyr::select(-question_raw) |>
-      dplyr::slice(rep(1:dplyr::n(), each = length(top_p))) |>
+      dplyr::slice(rep(seq_len(dplyr::n()), each = length(top_p))) |>
       mutate(
         topp = rep(top_p, studyid_length*prompt_length*model_length)
       )
@@ -155,6 +163,3 @@ approximate_price_gpt <-
     res
 
 }
-
-
-

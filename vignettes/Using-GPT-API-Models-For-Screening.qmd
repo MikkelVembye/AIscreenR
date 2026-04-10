@@ -1,40 +1,50 @@
 ---
 title: "Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews"
 author: "Mikkel H. Vembye"
-output: 
-  rmarkdown::html_vignette:
-    number_sections: true
-    toc: true
-date: "`r Sys.Date()`"
+date: "`r format(Sys.time(), '%Y.%m.%d')`"
 bibliography: AIscreenR.bib
-link-citations: yes
+link-citations: true
 csl: apa.csl
-vignette: >
-  %\VignetteIndexEntry{Using OpenAI's GPT API models for Title and Abstract Screening in Systematic Reviews}
+format:
+  html:
+    code-fold: false
+    code-tools: true
+    code-summary: "Show the code"
+    toc: true
+vignette: |
+  %\VignetteIndexEntry{Using GPT API Models For Screening}
+  %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
-  %\VignetteEngine{knitr::rmarkdown}
+execute: 
+  echo: fenced
+  warning: false
+  message: false
+knitr:
+  opts_chunk: 
+    fig.pos: "H"
+    fig.retina: 2
+    cache: FALSE
+    R.options:
+      knitr.graphics.auto_pdf: true
+      width: 100
+      knitr.kable.NA: "-"
+      dplyr.summarise.inform: FALSE
+      scipen: 10
+      pillar.sigfig: 4 
 editor_options: 
   chunk_output_type: console
 ---
-
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  out.width = "100%",
-  eval = FALSE
-)
-```
 
 <div class="warning" style='margin-left:2em; margin-right:2em; margin-bottom:2em; margin-top:2em; padding:0.1em; background-color: #d7dbdd; border: solid #bdc3c7 3px'>
 <span>
 <p style='margin-top:1em; text-align:center'>
 <b>Important note</b></p>
 <p style='margin:1em'>
-*Always remember that title and abstract screeening with GPT API models can be case sensitive. Therefore,  see [Vembye, Christensen, Mølgaard, & Schytt](https://psycnet.apa.org/record/2026-37236-001) [-@vembye_generative_2025] for an overview of how and when GPT API models can be used for title and abstract (TAB) screening (find the preprint of Vembye et al. 2025 [here](https://osf.io/preprints/osf/yrhzm)). Our most recent results suggest that the `gpt-4o-mini` is an effective model for screening titles and abstracts with performances in many cases on par with `gpt-4`. This is a very cheap model (200 times cheaper than `gpt-4`). Therefore, to reduce costs, we recommendation always testing the performance of `gpt-4o-mini` before considering other models. For an overview of additional research on the use of GPT API models for title and abstract screening, see Syriani et al. [-@Syriani2023; -@Syriani2024], Guo et al., [-@Guo2024], and Gargari et al. [-@Gargari2024]. On a related line of research, Alshami et al. [-@Alshami2023], Khraisha et al. [-@Khraisha2024], and Issaiy et al. [-@Issaiy2024] explored the use of the ChatGPT web browser interface for TAB screening. Based on our experience, we believe these two lines of research should not be conflated, as they rely on different GPT models and setups.*
+*Always remember that title and abstract screeening with GPT API models can be case sensitive. Therefore,  see [Vembye, Christensen, Mølgaard, & Schytt](https://psycnet.apa.org/record/2026-37236-001) [-@vembye_generative_2025] for an overview of how and when GPT API models can be used for title and abstract (TAB) screening (find the preprint of Vembye et al. 2025 [here](https://osf.io/preprints/osf/yrhzm)). Our most recent results suggest that the `gpt-4o-mini` is an effective model for screening titles and abstracts with performances in many cases on par with the `gpt-4` and `gpt-5` models. This is a very cheap model (200 times cheaper than `gpt-4`). Therefore, to reduce costs, we recommendation always testing the performance of `gpt-4o-mini` before considering other models. Prompting `gpt-5` models can be different from `gpt-4` models. Therefore, see the [comparistion of model](../articles/comparing-reasoning-models.html) article on the AIscreenR webpage for guidance.*
 </p></span>
 </div>
 
+# Introduction
 Conducting a systematic review is most often resource-demanding. A critical first step to ensure the quality of systematic reviews and meta-analyses herein involves detecting all eligible references related to the literature under review [@Polanin2019]. This entails searching all pertinent literature databases relevant to the given review, most often resulting in thousands of titles and abstracts to be screened for relevance. Manual screening hereof can be a time-consuming and tedious task. However, overlooking relevant studies at this stage can be consequential, leading to substantially biased results if the missed studies differ systematically from the detected studies. To mitigate this resource issue, we demonstrate in this vignette how to use OpenAI's GPT (Generative Pre-trained Transformer) API (Application Programming Interface) models for title and abstract screening in R. Specifically, we show how to create a test dataset and assess whether GPT is viable as the second screener in your review [cf. @vembye_generative_2025]. 
 \ 
 
@@ -71,10 +81,12 @@ At this stage, we expect that you have a collection of RIS files containing titl
 
 ## Load relevant R packages
 To get started, we first load all R package needed to construct and run the screening.
-```{r, eval = FALSE, warning=FALSE, message=FALSE}
+```{r}
+#| echo: true
+#| eval: false
+
 # Loading packages 
 library(AIscreenR) # Used to screen and calculate gpt vs. human performance
-library(synthesisr)  # Used to load RIS files
 library(tibble)    # Used to work with tibbles
 library(dplyr)     # Used to manipulate data
 library(purrr)     # For loops 
@@ -86,10 +98,13 @@ library(future)    # Used to conduct screenings in parallel
 Now, we are ready to conduct the first step of the screening: loading the RIS file data into R and converting it to a data frame. This can be done by using `read_refs()` from `synthesisr`. This is an updated version of the `read_bibliography()` function from the `revtools` package that works reliable. In the below example, we use RIS file data from a review regarding the effects of the FRIENDS preventive programme on anxiety symptoms in children and adolescents [@Filges2024]. Be aware, that this data is used for illustrative purposes only. In the example, we assume that the human reviewers have already started screening and identified several relevant and irrelevant studies, which they will use to create the test data. Thus, we can load the RIS files, which we downloaded from the EPPI-reviewer, separately for the in- and excluded RIS files. This allows us to track the human decision by adding a `human_code` variable, where `1` and `0` indicate whether a study is included or excluded, respectively.
 
 ```{r}
+#| echo: true
+#| eval: false
+
 # NOTE: Find the RIS files behind this vignette at https://osf.io/kfbvu/
 
 # Loading EXCLUDED studies
-ris_dat_excl <- read_refs("friends_excl.ris") |> # Add the path to your RIS file here
+ris_dat_excl <- read_ris_to_dataframe("friends_excl.ris") |> # Add the path to your RIS file here
   as_tibble() |>
   select(author, eppi_id, title, abstract) |> # Using only relevant variables
   mutate(
@@ -115,7 +130,7 @@ ris_dat_excl
 #># ℹ Use `print(n = ...)` to see more rows
 
 # Loading INCLUDED studies
-ris_dat_incl <- read_refs("friends_incl.ris") |> 
+ris_dat_incl <- read_ris_to_dataframe("friends_incl.ris") |> 
   suppressWarnings() |> 
   as_tibble() |>
   select(author, eppi_id, title, abstract) |>
@@ -145,7 +160,10 @@ ris_dat_incl
 
 ## Create the test dataset
 Now that we have loaded our reference data, we can construct the test data by randomly sampling 150 irrelevant records [as suggested in @vembye_generative_2025] and 50 relevant records that include both a title and an abstract.  For this purpose we use `sample_references()`. Again, this is for illustration purposes only, as you may not yet have access to 50 relevant records at this stage of screening. We recommend identifying at least 10 relevant references before constructing the test data. As further described in Vembye et al. [-@vembye_generative_2025], we remove all records without abstracts, as these can distort the accuracy of the screening.
-```{r, eval = FALSE}
+```{r}
+#| echo: true
+#| eval: false
+
 set.seed(09042024)
 
 excl_sample <- 
@@ -193,9 +211,8 @@ Before you can use the `AIscreenR` functions to screen your references, you must
 
 \  
 
-```{r eval=TRUE, echo=FALSE, fig.cap='*Figure 1 - Generate API key from OpenAI*'}
-knitr::include_graphics("helper-stuff/API_key_pic.png")
-```
+![*Figure 1 - Generate API key from OpenAI*](helper_stuff/API_key_pic.png){#fig:api_key}
+
 \ 
 
 Once you have generated your secret API key, remember to store it safely, as you will not be able to view it again. **NOTE:** *If you lose your API key, you can simply generate a new one*. 
@@ -211,6 +228,9 @@ After retrieving your API key, you could theoretically add it directly to the `A
 The easiest way to manage your API key is to add it permanently to your R environment as an environment variable. You can do this by using `usethis::edit_r_environ()`.
 
 ```{r}
+#| echo: true
+#| eval: false
+
 # Run code to open your .Renviron file
 usethis::edit_r_environ()
 ```
@@ -218,9 +238,8 @@ usethis::edit_r_environ()
 In the `.Renviron` file, write `CHATGPT_KEY=your_key` as depicted in Figure 2. 
 \  
 
-```{r eval=TRUE, echo=FALSE, fig.cap='*Figure 2 - R environment file*'}
-knitr::include_graphics("helper-stuff/Renviron.png")
-```
+![*Figure 2 - R environment file*](helper_stuff/Renviron.png){#fig:renviron}
+
 \ 
 
 Thereafter, close and save the `.Renviron` file and restart `RStudio` (ctrl + shift + F10). From now on, the `AIscreenR` functions will automatically use `get_api_key()` to retrieve your API key from your R environment. With this approach, you will not need to worry about your API key again—unless you update RStudio, delete the key deliberately, or get a new computer. In such cases, you will need to repeat this process.
@@ -233,9 +252,8 @@ Consequently, after restarting RStudio, your API key will no longer be present i
 `set_api_key(key = secret_decrypt(encrypt_key, "YOUR_SECRET_KEY_FOR_DECRYTING"))`. For further details on this approach, refer to the [`HTTR2`](https://httr2.r-lib.org/articles/wrapping-apis.html#basics) package.
 \  
 
-```{r eval=TRUE, echo=FALSE, fig.cap='*Figure 3 - Set API key*'}
-knitr::include_graphics("helper-stuff/set_api.png")
-```
+![*Figure 3 - Set API key*](helper_stuff/set_api.png){#fig:set_api}
+
 \ 
 
 
@@ -243,7 +261,10 @@ knitr::include_graphics("helper-stuff/set_api.png")
 
 The next step involves writing one or more prompts to be used for screening. This can be done in several ways. You can either write your prompt directly in R, as illustrated below:
 
-```{r, eval = FALSE}
+```{r}
+#| echo: true
+#| eval: false
+
 prompt <- "We are screening studies for a systematic literature review. 
 The topic of the systematic review is the effect of the FRIENDS preventive programme
 on reducing anxiety symptoms in children and adolescents. The FRIENDS programme is a 
@@ -259,13 +280,13 @@ Or you can simply write it in Word, as shown in Figures 4.
 
 \  
 
-```{r eval=TRUE, echo=FALSE, fig.cap='*Figure 4 - Prompting in Word*'}
-knitr::include_graphics("helper-stuff/friends_prompt.png")
-```
-\ 
+![*Figure 4 - Prompting in Word*](helper_stuff/friends_prompt.png){#fig:friends_prompt}
 
 Then you can load your prompt(s) via `readtext()` from the `readtext` package. 
 ```{r}
+#| echo: true
+#| eval: false
+
 word_path <-  system.file("extdata", "word_prompt_1.docx", package = "AIscreenR")
 
 prompt <- 
@@ -288,7 +309,10 @@ Optional
  6. The number of screenings you want to run with the given model (Default is `1` but with cheap models it can be advantageous to conduct multiple screenings and make inclusion judgments based on how many times a study has been included across the given number of screenings).
  7. Set the request per minutes.
 
-```{r, message=FALSE, eval=FALSE}
+```{r}
+#| echo: true
+#| eval: false
+
 # Gets information about whether you have access to a given model and 
 # how many requests per minutes you are allow to send. 
 models_rpm <- rate_limits_per_minute("gpt-4o-mini")
@@ -316,7 +340,10 @@ plan(sequential)
 
 We have now conducted the test screening and can get the raw results as below. 
 
-```{r, message=FALSE, eval=FALSE}
+```{r}
+#| echo: true
+#| eval: false
+
 # The print output when calling the result object
 result_object
 #> 
@@ -345,7 +372,10 @@ result_object$answer_data_aggregated |>
 
 It may happen that you experience that some of your screening requests failed for some transient reasons, such as server overload or other issues. To recover these failed requests, you can use `screen_errors()`, as shown below. 
 
-```{r, eval=FALSE}
+```{r}
+#| echo: true
+#| eval: false
+
 result_object <- 
   result_object |> 
   screen_errors()
@@ -354,7 +384,10 @@ result_object <-
 # Analyze Screening
 We have now completed the test screening and want to assess whether it is viable to use the `gpt-4o-mini` model as our second screener. For the purpose, we can use `screen_analyzer()`. 
 
-```{r screen_stats}
+```{r}
+#| echo: true
+#| eval: false
+
 screen_performance <- 
   result_object |> 
   screen_analyzer(human_decision = human_code) # state the name of the variable containing the human decision. 
@@ -369,15 +402,16 @@ screen_performance
 ## Assess results via a benchmark scheme
 But you might ask, how to assess whether the performances for of the model is acceptable as a second screener? To answer this question, we recommend assessing it through benchmarking. In Vembye et al. [-@vembye_generative_2025], we developed a benchmark scheme based on typical duplicate human screening performance from 22 high-quality reviews. This scheme is presented in Figure 5.
 
-```{r eval=TRUE, echo=FALSE, fig.cap='*Figure 5 - Generic benchmark scheme from Vembye et al. (2025)*'}
-knitr::include_graphics("helper-stuff/benchmark_scheme.png")
-```
+![*Figure 5 - Generic benchmark scheme from Vembye et al. (2025)*](helper_stuff/benchmark_scheme.png){#fig:benchmark_scheme}
 
 By using this benchmark scheme, we see that the `gpt-4o-mini` model performs on least on par with typical human screening performance. Therefore, the benchmark scheme suggests that the model is suitable as a full second screener for the review.
 
 ## Make judgments over multiple screenings
 Since we have conducted multiple (i.e., 10) screenings with the `gpt-4o-mini` model, we can adjust our inclusion decision based on the number of times a study record has been included across these 10 screenings. To obtain this information, you can use the following code:
 ```{r}
+#| echo: true
+#| eval: false
+
 incl_dist <- attr(screen_performance, "p_incl_data")
 incl_dist |> select(model, recall, specificity, criteria)
 #> # A tibble: 10 × 4
@@ -406,6 +440,9 @@ Even though, the `gpt-4o-mini` model yielded a highly acceptable screening perfo
 To get detailed descriptions of GPT's reasons for exclusion (alternatively inclusion), you can set `decision_description = TRUE` and run the screening again, as shown below.
 
 ```{r}
+#| echo: true
+#| eval: false
+
 disagree_dat <- 
   result_object$answer_data_aggregated |> 
   filter(human_code == 1, final_decision_gpt_num == 0, incl_p == 0)
@@ -438,6 +475,9 @@ For now, we recommend obtaining detailed descriptions only for records where the
 Here is an example of an abstract that was included by the human reviewers and excluded by GPT.
 
 ```{r}
+#| echo: true
+#| eval: false
+
 # Example of abstract included by the human and excluded by gpt-4o-mini
 result_object_detail$answer_data$abstract[1]
 #> [1] "Introduction: Many universal school-based preventative intervention trials 
@@ -464,6 +504,9 @@ result_object_detail$answer_data$abstract[1]
 
 and this is GPT's detailed response.
 ```{r}
+#| echo: true
+#| eval: false
+
 # Example of explanation for exclusion 
 # Seems reasonable why the records was thrown out by gpt.
 result_object_detail$answer_data$detailed_description[1]
@@ -481,7 +524,10 @@ As can be seen from this answer, it is reasonable why the title and abstract has
 
 When you have decided to use a GPT model as your second screener, you will likely want to know the cost of the full screening. You can obtain this information by using `approximate_price_gpt()`.
 
-```{r, eval = FALSE}
+```{r}
+#| echo: true
+#| eval: false
+
 # All RIS file data
 all_dat <- 
   bind_rows(ris_dat_excl, ris_dat_incl) |> # Use RIS file data here
@@ -518,6 +564,9 @@ When examining the price, it becomes clear why prioritizing the use of `gpt-4o-m
 You are now ready to run the full screening!  In this example, you can do so by substituting `test_dat` with `all_dat` in the code used to screen the test data, as shown below
 
 ```{r}
+#| echo: true
+#| eval: false
+
 # Set parallel plan
 plan(multisession) 
 
@@ -545,24 +594,25 @@ To steer the screening process when dealing with a large collection of RIS files
 
 # Convert Relevant Records Back to a RIS File
 
-Once the full screening has been conducted, you may want to load the relevant studies back into your systematic review software tool. To do this, you can use `write_refs()` from the `synthesisr` package. This function converts the data frame containing the included references into a RIS file, which can then be imported into the systematic review software.
+Once the full screening has been conducted, you may want to load the relevant studies back into your systematic review software tool. To do this, you can use `save_dataframe_to_ris()`. This function converts the data frame containing the included references into a RIS file, which can then be imported into the systematic review software.
 
 ```{r}
+#| echo: true
+#| eval: false
+
 incl_refs <- result_object$answer_data_aggregated |> 
   filter(incl_p >= 0.1) 
   
 
-write_refs(as.data.frame(incl_refs), file = "file_name.ris", format = "ris")
+save_dataframe_to_ris(as.data.frame(incl_refs), file = "file_name.ris")
 ```
 
-If you like to convert the data to a bib file, then use `format = "bib"`.
+# Other Sources of Information
+In this vignette, we have demonstrated how to conduct a title and abstract screening with a GPT API model. See other articles at the AIscreenR website:
 
-# Future Package Updates
-In this vignette, we have demonstrated how to conduct a title and abstract screening with a GPT API model. In future versions of the package, we plan to add additional articles that will cover:
+  1. Comparison of different GPT models for screening.
+  2. For how to fine-tune a model.
+  3. For report functions to assess and resolve disagreements between human and GPT decisions.
+  4. For how to use the `AIscreenR` functions with local models from Ollama.
 
-  1. How to run the full screening of all titles and abstracts most efficiently.
-  2. How to fine-tune a model.
-  3. How to use multiple-prompt screening, i.e., making one prompt per inclusion criteria instead of adding all to the same prompt. 
-  4. A new report functions to assess and resolve disagreements between human and GPT decisions.
-
-# References
+  # References

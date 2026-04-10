@@ -13,7 +13,8 @@
     max_s,
     is_trans,
     back,
-    aft
+    aft,
+    endpoint_url
   ){
 
     # Logical argument indicating whether detailed screening description is
@@ -30,12 +31,9 @@
     # Starting time
     tictoc::tic()
 
-    # Request url (might possibly be made more flexible in future applications)
-    url <- "https://api.openai.com/v1/chat/completions"
-
     # Creating the request
     req <-
-      httr2::request(url) |>
+      httr2::request(endpoint_url) |>
       httr2::req_method("POST") |>
       httr2::req_headers(
         "Content-Type" = "application/json",
@@ -182,7 +180,6 @@
     # Returning the response result
     res
 
-
   }
 
 ################################################################
@@ -203,6 +200,9 @@
     istrans,
     ba,
     af,
+    endpoint_url,
+    reasoning_effort,
+    verbosity,
     ...
 ){
 
@@ -239,6 +239,11 @@
     ...
   )
 
+  if (grepl("gpt-5", model_gpt)) {
+    if (!is.null(reasoning_effort)) body$reasoning_effort <- reasoning_effort
+    if (!is.null(verbosity)) body$verbosity <- verbosity
+  }
+
   # Setting the iterations
   if(iterations > 1) iterations <- 1:iterations
 
@@ -256,7 +261,8 @@
       max_s = maxs,
       is_trans = istrans,
       back = ba,
-      aft = af
+      aft = af,
+      endpoint_url = endpoint_url
     ),
     .options = furrr::furrr_options(seed = furrr_seed)
   ) |>

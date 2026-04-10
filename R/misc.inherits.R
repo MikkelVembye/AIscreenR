@@ -79,3 +79,4 @@ is_gpt_tbl <- function(x){
 is_gpt_agg_tbl <- function(x){
   inherits(x, "gpt_agg_tbl")
 }
+

@@ -1,0 +1,9 @@
+*.html
+*.R
+*.quarto
+/.quarto/
+*.knit.md
+^\.quarto$
+^vignettes/\.quarto$
+^vignettes/.*\.quarto$
+**/*.quarto_ipynb

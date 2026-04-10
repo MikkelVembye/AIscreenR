@@ -4,15 +4,15 @@
 \alias{set_api_key}
 \title{Creating a temporary R environment API key variable}
 \usage{
-set_api_key(key, env_var = "CHATGPT_KEY")
+set_api_key(key, env_var = "OPENAI_API_KEY")
 }
 \arguments{
-\item{key}{Character string with an (ideally encrypt) API key. See how to encrypt key here:
+\item{key}{Character string with an (ideally encrypted) API key. See how to encrypt key here:
 \url{https://httr2.r-lib.org/articles/wrapping-apis.html#basics}. If not provided, it
 returns a password box in which the true API key can be secretly entered.}
 
 \item{env_var}{Character string indicating the name of the temporary R environment variable with
-the API key and the used AI model. Currently, the argument only takes \code{env_var = "CHATGPT_KEY"}.}
+the API key and the used AI model. Default is \code{env_var = "OPENAI_API_KEY"}.}
 }
 \value{
 A temporary environment variable with the name from \code{env_var}.
@@ -28,7 +28,7 @@ Find more information about this issue at \url{https://httr2.r-lib.org/articles/
 When set_api_key() has successfully been executed, \code{get_api_key()} automatically
 retrieves the API key from the R environment and the users do not need to specify the API when running
 functions from the package that call the API. The API key can be permanently set by
-using \code{\link[usethis:edit]{usethis::edit_r_environ()}}. Then write \verb{CHATGPT_KEY=[insert your api key here]} and close
+using \code{\link[usethis:edit]{usethis::edit_r_environ()}}. Then write \verb{OPENAI_API_KEY=[insert your api key here]} and close
 the \code{.Renviron} window and restart R.
 }
 \note{

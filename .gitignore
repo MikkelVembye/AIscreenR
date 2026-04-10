@@ -1,3 +1,9 @@
 .Rproj.user
 docs
 inst/doc
+^inst/extdata/comparison-results/.*\.rds$
+inst/extdata/comparison-results/*.rds
+.Rhistory
+
+/.quarto/
+**/*.quarto_ipynb

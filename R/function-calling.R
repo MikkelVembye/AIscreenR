@@ -4,6 +4,10 @@
 #
 #----------------------------------------------------------------
 
+#----------------------------------------------------------------
+# Overinclusive GPT function calls
+#----------------------------------------------------------------
+
 # Body functions to tools and tool_choice
 
 inclusion_decision_description <- paste0(
@@ -22,16 +26,14 @@ tools_simple <- list(
     "function" = list(
       name = "inclusion_decision_simple",
       description = inclusion_decision_description,
+      strict = TRUE,
       parameters = list(
         type = "object",
         properties = list(
           decision_gpt = list(
             type = "string",
-            items = list(
-              type = "integer",
-              description = "An integer of either 1, 0, or 1.1"
-            ),
-            description = "List the inclusion decision"
+            description = "1=Include, 0=Exclude, 1.1=Uncertain",
+            enum = list("1", "0", "1.1")
           )
         ),
         required = list("decision_gpt"),
@@ -58,24 +60,195 @@ tools_detailed <- list(
     "function" = list(
       name = "inclusion_decision",
       description = inclusion_decision_description,
+      strict = TRUE,
       parameters = list(
         type = "object",
         properties = list(
           decision_gpt = list(
             type = "string",
-            items = list(
-              type = "integer",
-              description = "An integer of either 1, 0, or 1.1"
-            ),
-            description = "List the inclusion decision"
+            description = "1=Include, 0=Exclude, 1.1=Uncertain",
+            enum = list("1", "0", "1.1")
           ),
           detailed_description = list(
             type = "string",
-            items = list(
-              type = "string",
-              description = detailed_description_description
-            ),
-            description = "List the detailed description of your inclusion decision"
+            description = detailed_description_description
+          )
+        ),
+        required = list("decision_gpt", "detailed_description"),
+        additionalProperties = FALSE
+      )
+    )
+  )
+)
+
+#----------------------------------------------------------------
+# Binary GPT function calls
+#----------------------------------------------------------------
+
+# Body functions to tools and tool_choice
+
+inclusion_decision_description_binary <- paste0(
+  "If the study should be included for further review, write '1'.",
+  "If the study should be excluded, write '0'.",
+  "When providing the response only provide the numerical decision."
+)
+
+
+tools_simple_binary <- list(
+  # Function 1
+  list(
+    type = "function",
+    "function" = list(
+      name = "inclusion_decision_simple_binary",
+      description = inclusion_decision_description_binary,
+      strict = TRUE,
+      parameters = list(
+        type = "object",
+        properties = list(
+          decision_gpt = list(
+            type = "string",
+            description = "1=Include, 0=Exclude",
+            enum = list("1", "0")
+          )
+        ),
+        required = list("decision_gpt"),
+        additionalProperties = FALSE
+      )
+    )
+  )
+)
+
+
+detailed_description_description_binary <- paste0(
+  "If the study should be included for further reviewing, give a detailed description of your inclusion decision. ",
+  "If the study should be excluded from the review, give a detailed description of your exclusion decision. "
+)
+
+# Combines both simple and detailed descriptions
+
+tools_detailed_binary <- list(
+  # Function 1
+  list(
+    type = "function",
+    "function" = list(
+      name = "inclusion_decision_binary",
+      description = inclusion_decision_description_binary,
+      strict = TRUE,
+      parameters = list(
+        type = "object",
+        properties = list(
+          decision_gpt = list(
+            type = "string",
+            description = "1=Include, 0=Exclude",
+            enum = list("1", "0")
+          ),
+          detailed_description = list(
+            type = "string",
+            description = detailed_description_description_binary
+          )
+        ),
+        required = list("decision_gpt", "detailed_description"),
+        additionalProperties = FALSE
+      )
+    )
+  )
+)
+
+
+#----------------------------------------------------------------
+# GROQ function calling
+#----------------------------------------------------------------
+
+
+tools_simple_groq <- list(
+  list(
+    type = "function",
+    "function" = list(
+      name = "inclusion_decision_simple",
+      description = inclusion_decision_description,
+      parameters = list(
+        type = "object",
+        properties = list(
+          decision_gpt = list(
+            type = "string",
+            description = "1=Include, 0=Exclude, 1.1=Uncertain",
+            enum = list("1", "0", "1.1")
+          )
+        ),
+        required = list("decision_gpt"),
+        additionalProperties = FALSE
+      )
+    )
+  )
+)
+
+# Combines both simple and detailed descriptions
+
+tools_detailed_groq <- list(
+  list(
+    type = "function",
+    "function" = list(
+      name = "inclusion_decision",
+      description = inclusion_decision_description,
+      parameters = list(
+        type = "object",
+        properties = list(
+          decision_gpt = list(
+            type = "string",
+            description = "1=Include, 0=Exclude, 1.1=Uncertain",
+            enum = list("1", "0", "1.1")
+          ),
+          detailed_description = list(
+            type = "string",
+            description = "List the detailed description of your inclusion decision. IMPORTANT: This must match the logic of your decision_gpt exactly."
+          )
+        ),
+        required = list("decision_gpt", "detailed_description"),
+        additionalProperties = FALSE
+      )
+    )
+  )
+)
+
+tools_simple_binary_groq <- list(
+  list(
+    type = "function",
+    "function" = list(
+      name = "inclusion_decision_simple_binary",
+      description = inclusion_decision_description_binary,
+      parameters = list(
+        type = "object",
+        properties = list(
+          decision_gpt = list(
+            type = "string",
+            description = "1=Include, 0=Exclude",
+            enum = list("1", "0")
+          )
+        ),
+        required = list("decision_gpt"),
+        additionalProperties = FALSE
+      )
+    )
+  )
+)
+
+tools_detailed_binary_groq <- list(
+  list(
+    type = "function",
+    "function" = list(
+      name = "inclusion_decision_binary",
+      description = inclusion_decision_description_binary,
+      parameters = list(
+        type = "object",
+        properties = list(
+          decision_gpt = list(
+            type = "string",
+            description = "1=Include, 0=Exclude",
+            enum = list("1", "0")
+          ),
+          detailed_description = list(
+            type = "string",
+            description = "List the detailed description of your inclusion decision. IMPORTANT: This must match the logic of your decision_gpt exactly."
           )
         ),
         required = list("decision_gpt", "detailed_description"),

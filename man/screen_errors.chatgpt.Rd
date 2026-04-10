@@ -4,7 +4,7 @@
 \alias{screen_errors.chatgpt}
 \title{Re-screen failed requests.}
 \usage{
-\method{screen_errors}{chatgpt}(
+screen_errors.chatgpt(
   object,
   ...,
   api_key = get_api_key(),
@@ -52,12 +52,12 @@ Object of class \code{'chatgpt'} similar to the object returned by \code{\link[=
 See documentation value for \code{\link[=tabscreen_gpt.original]{tabscreen_gpt.original()}}.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}\if{html}{\out{<br>}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}}\if{html}{\out{<br>}}
 \if{html}{\out{<br>}}
 
 This function supports re-screening of all failed title and abstract requests
 screened with \code{\link[=tabscreen_gpt.original]{tabscreen_gpt.original()}}. This function has been deprecated because
-OpenAI has deprecated the function_call and and functions argument that was used
+OpenAI has deprecated the function_call and functions argument that was used
 in \code{\link[=tabscreen_gpt.original]{tabscreen_gpt.original()}}.
 }
 \examples{

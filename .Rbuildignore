@@ -13,3 +13,6 @@ README.md
 ^LICENSE\.md$
 ^cran-comments\.md$
 ^CRAN-SUBMISSION$
+^vignettes/articles$
+^inst/extdata/comparison-results/.*\.rds$
+^vignettes/\.quarto$

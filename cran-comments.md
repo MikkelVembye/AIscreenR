@@ -2,16 +2,19 @@
 
 This is a minor version update of AIscreenR. The package provides functions for conducting title and abstract screening in systematic reviews with AI models, such as OpenAI's GPT (Generative Pre-trained Transformer) API (Application Programming Interface) models. In this submission, we have 
 
-1) made minor changes to in the vignette to make it more clear
-2) updated the prize data so it includes all up-to-date models, including the newly released gpt-5 models
-3) added two new functions that support the data generation for fine tuning OpenAI's models
-4) added Thomas Olsen as co-author of the package
-5) updated all references in the package
-6) changed an invalid URL appearing in the vignette
+1) Adding tabscreen_groq() function to screen titles and abstracts using Groq AI.
+2) Adding tabscreen_ollama() function to screen titles and abstracts using local ollama models.
+3) Adding functions to read and write RIS files: read_ris_to_dataframe() and save_dataframe_to_ris().
+4) Adding function to generate disagreement reports: generate_disagreement_report().
+5) Adding articles for fine-tuning OpenAI models, generating disagreement reports, generating fine-tuning data and reading/writing RIS files.
+6) Adding article for comparing performance of reasoning models (including gpt-5 models) with gpt-4o-mini.
+7) Making it possible to steer the model's (over)inclusion behavior via the overinclusive argument in tabscreen_* functions. 
+8) Updated prize data, including all up-to-date models
+
 
 ## Test environments
 
-* local Windows 10 Enterprise, R 4.5.1
+* local Windows 10 Enterprise, R 4.5.2
 * ubuntu 20.04.3 LTS (on Github), R devel, release, oldrelease
 * macOS-latest (on Github), R release
 * windows-latest (on Github), R release
