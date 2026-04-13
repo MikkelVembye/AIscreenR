@@ -28,7 +28,7 @@ A dataset with n rows.
 \description{
 \code{sample_references}samples n rows from the dataset with titles and abstracts either with or without replacement.
 This function is supposed to support the construct of a test dataset,
-as suggested by \href{https://dx.doi.org/10.1037/met0000769}{Vembye et al. (2025)}.
+as suggested by \href{https://psycnet.apa.org/fulltext/2026-37236-001.html}{Vembye et al. (2025)}.
 }
 \examples{
 

@@ -187,7 +187,7 @@ repeated questions to check for consistency across answers. All of which can be 
 The function draws on the newly developed function calling which is called via the
 tools argument in the request body. This is the main difference between \code{\link[=tabscreen_gpt.tools]{tabscreen_gpt.tools()}}
 and \code{\link[=tabscreen_gpt.original]{tabscreen_gpt.original()}}. Function calls ensure more reliable and consistent responses to ones
-requests. See \href{https://dx.doi.org/10.1037/met0000769}{Vembye, Christensen, Mølgaard, and Schytt. (2025)}
+requests. See \href{https://psycnet.apa.org/fulltext/2026-37236-001.html}{Vembye, Christensen, Mølgaard, and Schytt. (2025)}
 for guidance on how adequately to conduct title and abstract screening with GPT models.
 }
 \note{
