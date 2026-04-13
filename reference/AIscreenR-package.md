@@ -22,7 +22,7 @@ Useful links:
 ## Author
 
 **Maintainer**: Mikkel H. Vembye <mikkel.vembye@gmail.com>
-([ORCID](https://orcid.org/0000-0001-9071-0724)) \[copyright holder\]
+([ORCID](https://orcid.org/0000-0001-9071-0724))
 
 Authors:
 
