@@ -41,71 +41,13 @@ We have not experienced this issue in previous releases, and we are uncertain ho
     From: inst/doc/Using-GPT-API-Models-For-Screening.html
     Status: 403
     Message: Forbidden
-  URL: https://openai.com/blog/function-calling-and-other-api-updates
-    From: man/tabscreen_gpt.original.Rd
-    Status: 403
-    Message: Forbidden
-  URL: https://openai.com/pricing
-    From: man/tabscreen_gpt.original.Rd
-    Status: 403
-    Message: Forbidden
-  URL: https://platform.openai.com/
-    From: DESCRIPTION
-          man/AIscreenR-package.Rd
-    Status: 403
-    Message: Forbidden
-  URL: https://platform.openai.com/account/api-keys
-    From: man/get_api_key.Rd
-          man/set_api_key.Rd
-          man/tabscreen_gpt.original.Rd
-          inst/doc/Using-GPT-API-Models-For-Screening.html
-    Status: 403
-    Message: Forbidden
-  URL: https://platform.openai.com/docs/api-reference/chat/create
-    From: man/screen_errors.chatgpt.Rd
-          man/screen_errors.gpt.Rd
-          man/tabscreen_gpt.original.Rd
-          man/tabscreen_gpt.tools.Rd
-    Status: 403
-    Message: Forbidden
-  URL: https://platform.openai.com/docs/api-reference/chat/create#chat-create-tool_choice
-    From: man/tabscreen_gpt.tools.Rd
-    Status: 403
-    Message: Forbidden
-  URL: https://platform.openai.com/docs/api-reference/chat/create#chat-create-tools
-    From: man/tabscreen_gpt.tools.Rd
-    Status: 403
-    Message: Forbidden
-  URL: https://platform.openai.com/docs/api-reference/chat/create#chat/create-top_p
-    From: man/approximate_price_gpt.Rd
-          man/tabscreen_gpt.original.Rd
-          man/tabscreen_gpt.tools.Rd
-    Status: 403
-    Message: Forbidden
-  URL: https://platform.openai.com/docs/guides/reasoning
-    From: man/tabscreen_gpt.tools.Rd
-    Status: 403
-    Message: Forbidden
-  URL: https://platform.openai.com/docs/models/model-endpoint-compatibility
-    From: man/approximate_price_gpt.Rd
-          man/rate_limits_per_minute.Rd
-          man/tabscreen_gpt.original.Rd
-          man/tabscreen_gpt.tools.Rd
-    Status: 403
-    Message: Forbidden
-  URL: https://platform.openai.com/finetune/
-    From: man/save_fine_tune_data.Rd
-    Status: 403
-    Message: Forbidden
-  URL: https://psycnet.apa.org/fulltext/2026-37236-001.html
+  URL: https://psycnet.apa.org/record/2026-37236-001
     From: man/sample_references.Rd
+          man/tabscreen_gpt.original.Rd
           man/tabscreen_gpt.tools.Rd
           man/tabscreen_groq.Rd
           man/tabscreen_ollama.Rd
-    Status: 404
-    Message: Not Found
-  URL: https://psycnet.apa.org/record/2026-37236-001
-    From: inst/doc/Using-GPT-API-Models-For-Screening.html
+          inst/doc/Using-GPT-API-Models-For-Screening.html
     Status: 404
     Message: Not Found
 
