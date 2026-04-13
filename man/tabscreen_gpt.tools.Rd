@@ -180,13 +180,13 @@ for each title and abstract across multiple repeated questions.}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}\if{html}{\out{<br>}}
 \if{html}{\out{<br>}}
-This function supports the conduct of title and abstract screening with GPT API models in R.
-Specifically, it allows the user to draw on GPT-3.5, GPT-4, GPT-4o, GPT-4o-mini, and fine-tuned models.
-The function allows to run title and abstract screening across multiple prompts and with
-repeated questions to check for consistency across answers. All of which can be done in parallel.
-The function draws on the newly developed function calling which is called via the
+This function supports title and abstract screening using GPT API models in R.
+Specifically, it allows users to draw on all OpenAI GPT API completion models, including fine-tuned versions.
+The function enables title and abstract screening across multiple prompts, with
+repeated questions to assess consistency across responses. All of this can be performed in parallel.
+The function utilizes function calling, which is invoked via the
 tools argument in the request body. This is the main difference between \code{\link[=tabscreen_gpt.tools]{tabscreen_gpt.tools()}}
-and \code{\link[=tabscreen_gpt.original]{tabscreen_gpt.original()}}. Function calls ensure more reliable and consistent responses to ones
+and \code{\link[=tabscreen_gpt.original]{tabscreen_gpt.original()}}. Function calls ensure more reliable and consistent responses to users'
 requests. See \href{https://psycnet.apa.org/record/2026-37236-001}{Vembye, Christensen, Mølgaard, and Schytt. (2025)}
 for guidance on how adequately to conduct title and abstract screening with GPT models.
 }
