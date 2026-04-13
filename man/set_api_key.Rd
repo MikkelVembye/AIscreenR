@@ -32,7 +32,7 @@ using \code{\link[usethis:edit]{usethis::edit_r_environ()}}. Then write \verb{OP
 the \code{.Renviron} window and restart R.
 }
 \note{
-Find your personal API key at \url{https://platform.openai.com/account/api-keys}.
+Find your personal API key via the OpenAI quickstart guide at \url{https://developers.openai.com/api/docs/quickstart#generate-an-api-key}.
 }
 \examples{
 \dontrun{

@@ -21,7 +21,7 @@
 #' If \code{key} is missing, it returns a password box in which the true API key can be entered.
 #' @export
 #'
-#' @note Find your personal API key at \url{https://platform.openai.com/account/api-keys}.
+#' @note Find your personal API key via the OpenAI quickstart guide at \url{https://developers.openai.com/api/docs/quickstart#generate-an-api-key}.
 #' @seealso \code{\link{get_api_key}}
 #'
 #' @examples
@@ -53,7 +53,7 @@ set_api_key <- function(key, env_var = "OPENAI_API_KEY") {
 #' @return The specified API key (NOTE: Avoid exposing this in the console).
 #' @export
 #'
-#' @note Find your personal API key at \url{https://platform.openai.com/account/api-keys}.
+#' @note Find your personal API key via the OpenAI quickstart guide at \url{https://developers.openai.com/api/docs/quickstart#generate-an-api-key}.
 #' @seealso \code{\link{set_api_key}}.
 #'
 #'

@@ -61,7 +61,7 @@ Find available model at
 \item{functions}{Function to steer output. Default is \code{incl_function_simple}.
 To get detailed responses use the hidden function call \code{incl_function} from the package. Also see 'Examples below.
 Find further documentation for function calling at
-\url{https://openai.com/blog/function-calling-and-other-api-updates}.}
+\url{https://developers.openai.com/api/reference/resources/chat#chat-create-tools}.}
 
 \item{function_call_name}{Functions to call.
 Default is \code{list(name = "inclusion_decision_simple")}. To get detailed responses
@@ -81,8 +81,8 @@ request/question should be included in the data. Default = \code{TRUE}.}
 per request should be included in the output data. Default = \code{TRUE}. When \code{TRUE},
 the output object will include price information of the conducted screening.}
 
-\item{api_key}{Numerical value with your personal API key. Find at
-\url{https://platform.openai.com/account/api-keys}. Use
+\item{api_key}{Numerical value with your personal API key. Find setup guidance at
+\url{https://developers.openai.com/api/docs/quickstart#generate-an-api-key}. Use
 \code{\link[httr2:secrets]{httr2::secret_make_key()}}, \code{\link[httr2:secrets]{httr2::secret_encrypt()}}, and
 \code{\link[httr2:secrets]{httr2::secret_decrypt()}} to scramble and decrypt the api key and
 use \code{\link[=set_api_key]{set_api_key()}} to securely automate the use of the
@@ -166,7 +166,7 @@ use \code{\link[=tabscreen_gpt.tools]{tabscreen_gpt.tools()}}.
 The function allows to run title and abstract screening across multiple prompts and with
 repeated questions to check for consistency across answers. This function draws
 on the newly developed function calling to better steer the output of the responses.
-This function was used in \href{https://osf.io/preprints/osf/yrhzm}{Vembye, Christensen, Mølgaard, and Schytt. (2025)}.
+This function was used in \href{https://psycnet.apa.org/record/2026-37236-001}{Vembye, Christensen, Mølgaard, and Schytt. (2025)}.
 }
 \note{
 The \code{answer_data_sum} data contains the following mandatory variables:
@@ -226,7 +226,7 @@ The \code{price_data} data contains the following variables:
 \bold{price_total_dollar} \tab \code{integer} \tab total price for all tokens for the correspondent gpt-model. \cr
 }
 
-Find current token pricing at \url{https://openai.com/pricing}.
+Find current token pricing at \url{https://developers.openai.com/api/docs/pricing}.
 }
 \examples{
 \dontrun{
@@ -261,7 +261,7 @@ tabscreen_gpt.original(
 \references{
 Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2025)
 \emph{GPT API Models Can Function as Highly Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
-A Proof of Concept and Common Guidelines} \url{https://osf.io/preprints/osf/yrhzm}
+A Proof of Concept and Common Guidelines} \url{https://psycnet.apa.org/record/2026-37236-001}
 
 Wickham H (2023).
 \emph{httr2: Perform HTTP Requests and Process the Responses}.

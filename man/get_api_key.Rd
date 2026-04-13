@@ -24,7 +24,7 @@ Then write \verb{OPENAI_API_KEY=[insert your api key here]} and close the \code{
 For backward compatibility, it will also check \code{CHATGPT_KEY} if \code{OPENAI_API_KEY} is not set.
 }
 \note{
-Find your personal API key at \url{https://platform.openai.com/account/api-keys}.
+Find your personal API key via the OpenAI quickstart guide at \url{https://developers.openai.com/api/docs/quickstart#generate-an-api-key}.
 }
 \examples{
 \dontrun{

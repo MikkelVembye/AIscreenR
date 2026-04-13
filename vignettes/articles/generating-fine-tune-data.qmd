@@ -30,7 +30,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-If you experience that the GPT model screening underperform, a solution is to fine-tune the model on your specific screening task. This article demonstrates how to prepare and format your data for fine-tuning OpenAI models using the `AIscreenR` package. The process involves two main functions: `create_fine_tune_data()` to structure the prompts and `save_fine_tune_data()` to save the data in the required `jsonl` format. See OpenAI’s fine-tuning guide for an overview of dataset preparation and format requirements [OpenAI Docs: Fine-tuning guide](https://platform.openai.com/docs/guides/supervised-fine-tuning?monitoring=ui).
+If you experience that the GPT model screening underperform, a solution is to fine-tune the model on your specific screening task. This article demonstrates how to prepare and format your data for fine-tuning OpenAI models using the `AIscreenR` package. The process involves two main functions: `create_fine_tune_data()` to structure the prompts and `save_fine_tune_data()` to save the data in the required `jsonl` format. See OpenAI’s fine-tuning guide for an overview of dataset preparation and format requirements [OpenAI Docs: Fine-tuning guide](https://developers.openai.com/api/docs/guides/supervised-fine-tuning).
 
 ## Setup
 
@@ -109,7 +109,7 @@ role_subject <- paste0(
 
 Finally, we use `save_fine_tune_data()` to convert our data frame into the `jsonl` format required by OpenAI. Each line in the output file will be a JSON object representing a single training example, containing the system message, the user prompt (our question), and the assistant's expected response (the true answer).
 
-The function will write the file to your current working directory. OpenAI requires JSON Lines (.jsonl) files for fine-tuning datasets; see the fine-tuning data preparation guide and API reference for file requirements [OpenAI Docs: Fine-tuning guide](https://platform.openai.com/docs/guides/supervised-fine-tuning?monitoring=ui).
+The function will write the file to your current working directory. OpenAI requires JSON Lines (.jsonl) files for fine-tuning datasets; see the fine-tuning data preparation guide and API reference for file requirements [OpenAI Docs: Fine-tuning guide](https://developers.openai.com/api/docs/guides/supervised-fine-tuning).
 
 ```{r}
 #| echo: true

@@ -13,7 +13,7 @@
 #' repeated questions to check for consistency across answers. All of which can be done in parallel.
 #' The function draws on the newly developed function calling which is called via the
 #' tools argument in the request body. Function calls ensure more reliable and consistent responses to ones
-#' requests. See [Vembye, Christensen, Mølgaard, and Schytt. (2025)](https://psycnet.apa.org/fulltext/2026-37236-001.html)
+#' requests. See [Vembye, Christensen, Mølgaard, and Schytt. (2025)](https://psycnet.apa.org/record/2026-37236-001)
 #' for guidance on how adequately to conduct title and abstract screening with OLLAMA models.
 #'
 #' @references Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2025).

@@ -71,8 +71,8 @@ create_fine_tune_data <- function(data, prompt, studyid, title, abstract){
 #'
 #' @description
 #'  This function creates `jsonl` training data that can be used to fine tune models from OpenAI.
-#'  To generate a fine tuned model, this written data can be uploaded to
-#'  \url{https://platform.openai.com/finetune/}.
+#'  To generate a fine tuned model, this written data can be uploaded via
+#'  \url{https://developers.openai.com/api/docs/guides/supervised-fine-tuning}.
 #'
 #' @param data The dataset with questions strings that should be used for training.
 #'  The data must be of class `'fine_tune_data'`, containing two variables named question and true_answer.

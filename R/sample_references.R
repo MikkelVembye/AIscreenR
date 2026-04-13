@@ -3,7 +3,7 @@
 #' @description
 #' `sample_references`samples n rows from the dataset with titles and abstracts either with or without replacement.
 #'  This function is supposed to support the construct of a test dataset,
-#'  as suggested by [Vembye et al. (2025)](https://psycnet.apa.org/fulltext/2026-37236-001.html).
+#'  as suggested by [Vembye et al. (2025)](https://psycnet.apa.org/record/2026-37236-001).
 #'
 #' @references Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2025).
 #'    Generative Pretrained Transformer Models Can Function as Highly Reliable Second Screeners of Titles

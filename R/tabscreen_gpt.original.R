@@ -18,11 +18,11 @@
 #' The function allows to run title and abstract screening across multiple prompts and with
 #' repeated questions to check for consistency across answers. This function draws
 #' on the newly developed function calling to better steer the output of the responses.
-#' This function was used in [Vembye, Christensen, Mølgaard, and Schytt. (2025)](https://osf.io/preprints/osf/yrhzm).
+#' This function was used in [Vembye, Christensen, Mølgaard, and Schytt. (2025)](https://psycnet.apa.org/record/2026-37236-001).
 #'
 #' @references Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2025)
 #'   \emph{GPT API Models Can Function as Highly Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
-#'   A Proof of Concept and Common Guidelines} \url{https://osf.io/preprints/osf/yrhzm}
+#'   A Proof of Concept and Common Guidelines} \url{https://psycnet.apa.org/record/2026-37236-001}
 #'
 #' Wickham H (2023).
 #' \emph{httr2: Perform HTTP Requests and Process the Responses}.
@@ -41,7 +41,7 @@
 #' @param functions Function to steer output. Default is `incl_function_simple`.
 #'   To get detailed responses use the hidden function call `incl_function` from the package. Also see 'Examples below.
 #'   Find further documentation for function calling at
-#'   \url{https://openai.com/blog/function-calling-and-other-api-updates}.
+#'   \url{https://developers.openai.com/api/reference/resources/chat#chat-create-tools}.
 #' @param function_call_name Functions to call.
 #'   Default is `list(name = "inclusion_decision_simple")`. To get detailed responses
 #'   use `list(name = "inclusion_decision")`. Also see 'Examples below.
@@ -56,8 +56,8 @@
 #' @param token_info Logical indicating whether the number of prompt and completion tokens
 #'   per request should be included in the output data. Default = `TRUE`. When `TRUE`,
 #'   the output object will include price information of the conducted screening.
-#' @param api_key Numerical value with your personal API key. Find at
-#'  \url{https://platform.openai.com/account/api-keys}. Use
+#' @param api_key Numerical value with your personal API key. Find setup guidance at
+#'  \url{https://developers.openai.com/api/docs/quickstart#generate-an-api-key}. Use
 #'  [httr2::secret_make_key()], [httr2::secret_encrypt()], and
 #'  [httr2::secret_decrypt()] to scramble and decrypt the api key and
 #'  use [set_api_key()] to securely automate the use of the
@@ -167,7 +167,7 @@
 #'  \bold{price_total_dollar} \tab \code{integer} \tab total price for all tokens for the correspondent gpt-model. \cr
 #' }
 #'
-#' Find current token pricing at \url{https://openai.com/pricing}.
+#' Find current token pricing at \url{https://developers.openai.com/api/docs/pricing}.
 #'
 #' @importFrom stats df
 #' @import dplyr
