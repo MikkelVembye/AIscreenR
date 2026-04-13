@@ -1,6 +1,6 @@
 # Changelog
 
-## AIscreenR 0.3.0.9000
+## AIscreenR 0.3.1
 
 - Updating documentation of tabscreen_gpt()
 
