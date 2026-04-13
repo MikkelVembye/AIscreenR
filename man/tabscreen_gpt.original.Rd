@@ -47,14 +47,14 @@ automatically.}
 \item{abstract}{Name of variable containing the abstract information.}
 
 \item{...}{Further argument to pass to the request body.
-See \url{https://platform.openai.com/docs/api-reference/chat/create}.}
+See \url{https://developers.openai.com/api/reference/resources/chat}.}
 
 \item{model}{Character string with the name of the completion model. Can take
 multiple models, including gpt-4 models. Default = \code{"gpt-4"} (i.e., gpt-4-0613). This model has
 been shown to outperform the gpt-3.5-turbo models in terms of its ability to detect
 relevant studies (Vembye et al., Under preparation).
 Find available model at
-\url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.}
+\url{https://developers.openai.com/api/docs/models/model-endpoint-compatibility}.}
 
 \item{role}{Character string indicate the role of the user. Default is \code{"user"}.}
 
@@ -72,7 +72,7 @@ where the model considers the results of the tokens with top_p probability mass.
 So 0.1 means only the tokens comprising the top 10\% probability mass are considered.
 We generally recommend altering this or temperature but not both.' (OPEN-AI). Default is 1.
 Find documentation at
-\url{https://platform.openai.com/docs/api-reference/chat/create#chat/create-top_p}.}
+\url{https://developers.openai.com/api/reference/resources/chat#chat/create-top_p}.}
 
 \item{time_info}{Logical indicating whether the run time of each
 request/question should be included in the data. Default = \code{TRUE}.}
@@ -107,7 +107,7 @@ should be used instead' (Wickham, 2023).}
 
 \item{rpm}{Numerical value indicating the number of requests per minute (rpm)
 available for the specified api key. Find more information at
-\url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.
+\url{https://developers.openai.com/api/docs/models/model-endpoint-compatibility}.
 Alternatively, use \code{\link[=rate_limits_per_minute]{rate_limits_per_minute()}}.}
 
 \item{reps}{Numerical value indicating the number of times the same

@@ -1,12 +1,12 @@
 #' @param ... Further argument to pass to the request body.
-#'  See \url{https://platform.openai.com/docs/api-reference/chat/create}.
+#'  See \url{https://developers.openai.com/api/reference/resources/chat}.
 #' @param time_info Logical indicating whether the run time of each
 #'  request/question should be included in the data. Default = `TRUE`.
 #' @param token_info Logical indicating whether the total number of tokens
 #' per request should be included in the output data. Default = `TRUE`.
 #' @param model Character string with the name of the completion model.
 #'  Default = `"gpt-3.5-turbo-0301"`. Find available model at
-#' \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.
+#' \url{https://developers.openai.com/api/docs/models/model-endpoint-compatibility}.
 #' @param role Character string indicate the role of the user. Default is `"user"`.
 #' @param api_key Numerical value with your personal API key. Find at
 #'  \url{https://platform.openai.com/account/api-keys}. Use

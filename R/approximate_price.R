@@ -13,7 +13,7 @@
 #' @param model Character string with the name of the completion model. Can take
 #'   multiple models, including gpt-4 models. Default = `"gpt-4o-mini"`.
 #'   Find available model at
-#'   \url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.
+#'   \url{https://developers.openai.com/api/docs/models/model-endpoint-compatibility}.
 #' @param reps Numerical value indicating the number of times the same
 #'   question should be sent to the GPT server. This can be useful to test consistency
 #'   between answers. Default is `1` but when using gpt-3.5-turbo or gpt-4o-mini models, we recommend setting this
@@ -23,7 +23,7 @@
 #'   So 0.1 means only the tokens comprising the top 10% probability mass are considered.
 #'   We generally recommend altering this or temperature but not both.' (OPEN-AI). Default is 1.
 #'   Find documentation at
-#' \url{https://platform.openai.com/docs/api-reference/chat/create#chat/create-top_p}.
+#' \url{https://developers.openai.com/api/reference/resources/chat#chat/create-top_p}.
 #'
 #' @param token_word_ratio The multiplier used to approximate the number of tokens per word.
 #'   Default is `1.6` which we empirically have found to be the average number of tokens per word.

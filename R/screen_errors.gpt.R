@@ -30,7 +30,7 @@
 #'   that a precise wait time is not available that the `backoff` strategy
 #'   should be used instead' (Wickham, 2023). If missing, the `after` value
 #'   from the original screening conducted with [tabscreen_gpt()] will be used.
-#' @param ... Further argument to pass to the request body. See \url{https://platform.openai.com/docs/api-reference/chat/create}.
+#' @param ... Further argument to pass to the request body. See \url{https://developers.openai.com/api/reference/resources/chat}.
 #'  If used in the original screening in [tabscreen_gpt()], the argument(s)
 #'  must be specified again here.
 #'

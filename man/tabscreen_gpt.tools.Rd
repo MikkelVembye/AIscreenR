@@ -44,25 +44,25 @@ automatically.}
 \item{model}{Character string with the name of the completion model. Can take
 multiple models. Default is the latest \code{"gpt-4o-mini"}.
 Find available model at
-\url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.}
+\url{https://developers.openai.com/api/docs/models/model-endpoint-compatibility}.}
 
 \item{role}{Character string indicating the role of the user. Default is \code{"user"}.}
 
 \item{tools}{This argument allows this user to apply customized functions.
-See \url{https://platform.openai.com/docs/api-reference/chat/create#chat-create-tools}.
+See \url{https://developers.openai.com/api/reference/resources/chat#chat-create-tools}.
 Default is \code{NULL}. If not specified the default function calls from \code{AIscreenR} are used.}
 
 \item{tool_choice}{If a customized function is provided this argument
 'controls which (if any) tool is called by the model' (OpenAI). Default is \code{NULL}.
 If set to \code{NULL} when using a customized function, the default is \code{"auto"}.
-See \url{https://platform.openai.com/docs/api-reference/chat/create#chat-create-tool_choice}.}
+See \url{https://developers.openai.com/api/reference/resources/chat#chat-create-tool_choice}.}
 
 \item{top_p}{'An alternative to sampling with temperature, called nucleus sampling,
 where the model considers the results of the tokens with top_p probability mass.
 So 0.1 means only the tokens comprising the top 10\% probability mass are considered.
 We generally recommend altering this or temperature but not both.' (OpenAI). Default is 1.
 Find documentation at
-\url{https://platform.openai.com/docs/api-reference/chat/create#chat/create-top_p}.}
+\url{https://developers.openai.com/api/reference/resources/chat#chat/create-top_p}.}
 
 \item{time_info}{Logical indicating whether the run time of each
 request/question should be included in the data. Default is \code{TRUE}.}
@@ -99,7 +99,7 @@ should be used instead' (Wickham, 2023).}
 
 \item{rpm}{Numerical value indicating the number of requests per minute (rpm)
 available for the specified model. Find more information at
-\url{https://platform.openai.com/docs/models/model-endpoint-compatibility}.
+\url{https://developers.openai.com/api/docs/models/model-endpoint-compatibility}.
 Alternatively, use \code{\link[=rate_limits_per_minute]{rate_limits_per_minute()}}.}
 
 \item{reps}{Numerical value indicating the number of times the same
@@ -145,10 +145,10 @@ Default is \code{FALSE}.}
 \item{fine_tuned}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{custom_model} instead.}
 
 \item{reasoning_effort}{Character string indicating the level of reasoning effort required for the task. Default is \code{"low"}.
-Can take the values \code{"low"}, \code{"medium"}, and \code{"high"}. See \url{https://platform.openai.com/docs/guides/reasoning} for more information.}
+Can take the values \code{"low"}, \code{"medium"}, and \code{"high"}. See \url{https://developers.openai.com/api/docs/guides/reasoning} for more information.}
 
 \item{verbosity}{Character string indicating the level of verbosity in the model's responses. Default is \code{"low"}.
-Can take the values \code{"low"}, \code{"medium"}, and \code{"high"}. See \url{https://platform.openai.com/docs/api-reference/chat/create} for more information.}
+Can take the values \code{"low"}, \code{"medium"}, and \code{"high"}. See \url{https://developers.openai.com/api/reference/resources/chat} for more information.}
 
 \item{overinclusive}{Logical indicating whether uncertain decisions (\code{"1.1"}) should be
 allowed in the default function calling setup. Default is \code{TRUE}, which means that the
@@ -158,7 +158,7 @@ will only return binary decisions (i.e., "1" or "0"). This argument only affects
 function calling setup.}
 
 \item{...}{Further argument to pass to the request body.
-See \url{https://platform.openai.com/docs/api-reference/chat/create}.}
+See \url{https://developers.openai.com/api/reference/resources/chat}.}
 }
 \value{
 An object of class \code{'gpt'}. The object is a list containing the following

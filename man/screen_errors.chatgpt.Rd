@@ -19,7 +19,7 @@ screen_errors.chatgpt(
 \item{object}{An object of class \code{'chatgpt'}.}
 
 \item{...}{Further argument to pass to the request body.
-See \url{https://platform.openai.com/docs/api-reference/chat/create}.
+See \url{https://developers.openai.com/api/reference/resources/chat}.
 If used in the original screening (e.g., with \code{\link[=tabscreen_gpt.original]{tabscreen_gpt.original()}}), the argument(s)
 must be specified again here.}
 
