@@ -37,10 +37,6 @@ There was 2 NOTEs:
 We have not experienced this issue in previous releases, and we are uncertain how to resolve this discrepancy and whether it is consequential for the package building. 
 
   Found the following (possibly) invalid URLs:
-  URL: https://auth.openai.com/create-account
-    From: inst/doc/Using-GPT-API-Models-For-Screening.html
-    Status: 403
-    Message: Forbidden
   URL: https://psycnet.apa.org/record/2026-37236-001
     From: man/sample_references.Rd
           man/tabscreen_gpt.original.Rd
@@ -51,7 +47,7 @@ We have not experienced this issue in previous releases, and we are uncertain ho
     Status: 404
     Message: Not Found
 
-These are all valid URLs important for guiding the package user.
+This is the correct URL
 
 ## revdepcheck results
 
