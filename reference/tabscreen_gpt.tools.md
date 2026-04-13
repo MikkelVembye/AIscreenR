@@ -2,16 +2,16 @@
 
 **\[stable\]**  
   
-This function supports the conduct of title and abstract screening with
-GPT API models in R. Specifically, it allows the user to draw on
-GPT-3.5, GPT-4, GPT-4o, GPT-4o-mini, and fine-tuned models. The function
-allows to run title and abstract screening across multiple prompts and
-with repeated questions to check for consistency across answers. All of
-which can be done in parallel. The function draws on the newly developed
-function calling which is called via the tools argument in the request
-body. This is the main difference between `tabscreen_gpt.tools()` and
+This function supports title and abstract screening using GPT API models
+in R. Specifically, it allows users to draw on all OpenAI GPT API
+completion models, including fine-tuned versions. The function enables
+title and abstract screening across multiple prompts, with repeated
+questions to assess consistency across responses. All of this can be
+performed in parallel. The function utilizes function calling, which is
+invoked via the tools argument in the request body. This is the main
+difference between `tabscreen_gpt.tools()` and
 [`tabscreen_gpt.original()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.original.md).
-Function calls ensure more reliable and consistent responses to ones
+Function calls ensure more reliable and consistent responses to users'
 requests. See [Vembye, Christensen, Mølgaard, and Schytt.
 (2025)](https://psycnet.apa.org/record/2026-37236-001) for guidance on
 how adequately to conduct title and abstract screening with GPT models.

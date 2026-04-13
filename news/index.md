@@ -1,10 +1,12 @@
 # Changelog
 
-## AIscreenR (development version)
+## AIscreenR 0.3.0.9000
+
+- Updating documentation of tabscreen_gpt()
 
 ## AIscreenR 0.3.0
 
-## AIscreenR 0.2.0.9000
+CRAN release: 2026-04-13
 
 - Adding tabscreen_groq() function to screen titles and abstracts using
   Groq AI.
