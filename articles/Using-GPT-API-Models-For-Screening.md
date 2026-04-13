@@ -272,11 +272,10 @@ the screening: generating your API key and handling it in R.
 
 Before you can use the `AIscreenR` functions to screen your references,
 you must generate your own secret API key from OpenAI. To do so, first
-ensure you have an OpenAI account (*If you have not created one yet, you
-can sign up [here](https://auth.openai.com/create-account).* Once you
-have an account, use the OpenAI quickstart instructions at
-<https://developers.openai.com/api/docs/quickstart#generate-an-api-key>
-and create a new secret key (see Figure 1 below).
+ensure you have an OpenAI account. If you have not created one yet,
+follow the OpenAI quickstart instructions at
+<https://developers.openai.com/api/docs/quickstart#generate-an-api-key>,
+then create a new secret key (see Figure 1 below).
 
  
 
