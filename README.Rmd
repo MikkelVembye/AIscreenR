@@ -40,8 +40,10 @@ You can install the development version of AIscreenR from [GitHub](https://githu
 
 ```{r}
 # install.packages("devtools")
-devtools::install_github("MikkelVembye/AIscreenR")
+devtools::install_github("MikkelVembye/AIscreenR", build_vignettes = TRUE)
 ```
+
+Installing the the development package along with its vignette may take several minutes. Using `build_vignettes = FALSE` speeds up the installation, but you cannot to access the package’s vignette in R afterward.
 
 # Setting API key and checking rate limits
 
