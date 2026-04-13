@@ -13,7 +13,7 @@
 * Making new refinements to the tabscreen_* functions. Making it possible to steer the model's (over)inclusion behavior via the overinclusive argument in tabscreen_* functions. 
 * Updated prize data, including all up-to-date models
 
-# AIscreenR 0.1.1.9000
+# AIscreenR 0.2.0
 
 * Minor change in the setup of the vignette
 * Updated prize data, including all up-to-date models
