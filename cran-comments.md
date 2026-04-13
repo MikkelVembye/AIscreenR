@@ -26,12 +26,19 @@ This is a minor version update of AIscreenR. The package provides functions for 
 
 As for previous versions, there were no ERRORs and WARNINGs.
 
-There was 1 NOTE:
+There was 2 NOTEs:
 
- * On win-builder release, devel, and oldrelease:
+* On win-builder oldrelease:
+
+  Author field differs from that derived from Authors@R
+  Author:    'Mikkel H. Vembye [aut, cre] (ORCID: <https://orcid.org/0000-0001-9071-0724>), Thomas Olsen [aut]'
+  Authors@R: 'Mikkel H. Vembye [aut, cre] (<https://orcid.org/0000-0001-9071-0724>), Thomas Olsen [aut]'
+
+We have not experienced this issue in previous releases, and we are uncertain how to resolve this discrepancy and whether it is consequential for the package building. 
+
   Found the following (possibly) invalid URLs:
-  URL: https://openai.com/api/pricing/
-    From: man/model_prizes.Rd
+  URL: https://auth.openai.com/create-account
+    From: inst/doc/Using-GPT-API-Models-For-Screening.html
     Status: 403
     Message: Forbidden
   URL: https://openai.com/blog/function-calling-and-other-api-updates
@@ -40,7 +47,6 @@ There was 1 NOTE:
     Message: Forbidden
   URL: https://openai.com/pricing
     From: man/tabscreen_gpt.original.Rd
-          man/tabscreen_gpt.tools.Rd
     Status: 403
     Message: Forbidden
   URL: https://platform.openai.com/
@@ -56,8 +62,7 @@ There was 1 NOTE:
     Status: 403
     Message: Forbidden
   URL: https://platform.openai.com/docs/api-reference/chat/create
-    From: man/screen_errors.Rd
-          man/screen_errors.chatgpt.Rd
+    From: man/screen_errors.chatgpt.Rd
           man/screen_errors.gpt.Rd
           man/tabscreen_gpt.original.Rd
           man/tabscreen_gpt.tools.Rd
@@ -77,13 +82,8 @@ There was 1 NOTE:
           man/tabscreen_gpt.tools.Rd
     Status: 403
     Message: Forbidden
-  URL: https://platform.openai.com/docs/guides/rate-limits/overview
-    From: man/rate_limits_per_minute.Rd
-    Status: 403
-    Message: Forbidden
-  URL: https://platform.openai.com/docs/guides/rate-limits/what-are-the-rate-limits-for-our-api
-    From: man/tabscreen_gpt.original.Rd
-          man/tabscreen_gpt.tools.Rd
+  URL: https://platform.openai.com/docs/guides/reasoning
+    From: man/tabscreen_gpt.tools.Rd
     Status: 403
     Message: Forbidden
   URL: https://platform.openai.com/docs/models/model-endpoint-compatibility
@@ -97,6 +97,17 @@ There was 1 NOTE:
     From: man/save_fine_tune_data.Rd
     Status: 403
     Message: Forbidden
+  URL: https://psycnet.apa.org/fulltext/2026-37236-001.html
+    From: man/sample_references.Rd
+          man/tabscreen_gpt.tools.Rd
+          man/tabscreen_groq.Rd
+          man/tabscreen_ollama.Rd
+    Status: 404
+    Message: Not Found
+  URL: https://psycnet.apa.org/record/2026-37236-001
+    From: inst/doc/Using-GPT-API-Models-For-Screening.html
+    Status: 404
+    Message: Not Found
 
 These are all valid URLs important for guiding the package user.
 
