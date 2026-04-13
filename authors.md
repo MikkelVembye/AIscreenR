@@ -2,7 +2,7 @@
 
 ## Authors
 
-- **Mikkel H. Vembye**. Author, maintainer, copyright holder.
+- **Mikkel H. Vembye**. Author, maintainer.
   [](https://orcid.org/0000-0001-9071-0724)
 
 - **Thomas Olsen**. Author.
