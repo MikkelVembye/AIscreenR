@@ -36,7 +36,7 @@ afterward.
 # Setting API key and checking rate limits
 
 ``` r
-# Find your api key at https://platform.openai.com/account/api-keys 
+# Find your api key via https://developers.openai.com/api/docs/quickstart#generate-an-api-key
 # Thereafter, either encrypt it with the secret functions from the httr2 package
 # see https://httr2.r-lib.org/reference/secrets.html or run set_api_key() 
 # and then enter you key.
@@ -229,10 +229,10 @@ agg_dat |> select(human_code, final_decision_gpt, final_decision_gpt_num)
 Filges, T., Andersen, D, & Jørgensen, A-M. K (2015). Functional Family
 Therapy (FFT) for Young People in Treatment for Non-opioid Drug Use: A
 Systematic Review. *Campbell Systematic Reviews*.
-<https://doi.org/10.4073/csr.2015.14>
+<https://journals.sagepub.com/doi/full/10.4073/csr.2015.14>
 
 Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W.
 (2025). Generative pretrained transformer models can function as highly
 reliable second screeners of titles and abstracts in systematic reviews:
-A proof of concept and common guidelines. *Psychological Methods*,
-Online first. <https://doi.org/10.1037/met0000769>
+A proof of concept and common guidelines. *Psychological Methods*.
+<https://psycnet.apa.org/record/2026-37236-001>.

@@ -84,7 +84,7 @@ use <code><a href="tabscreen_gpt.tools.html">tabscreen_gpt.tools()</a></code>.
 The function allows to run title and abstract screening across multiple prompts and with
 repeated questions to check for consistency across answers. This function draws
 on the newly developed function calling to better steer the output of the responses.
-This function was used in <a href="https://osf.io/preprints/osf/yrhzm" class="external-link">Vembye, Christensen, Mølgaard, and Schytt. (2025)</a>.</p>
+This function was used in <a href="https://psycnet.apa.org/record/2026-37236-001" class="external-link">Vembye, Christensen, Mølgaard, and Schytt. (2025)</a>.</p>
     </div>
 
     <div class="section level2">
@@ -167,7 +167,7 @@ Find available model at
 <dd><p>Function to steer output. Default is <code>incl_function_simple</code>.
 To get detailed responses use the hidden function call <code>incl_function</code> from the package. Also see 'Examples below.
 Find further documentation for function calling at
-<a href="https://openai.com/blog/function-calling-and-other-api-updates" class="external-link">https://openai.com/blog/function-calling-and-other-api-updates</a>.</p></dd>
+<a href="https://developers.openai.com/api/reference/resources/chat#chat-create-tools" class="external-link">https://developers.openai.com/api/reference/resources/chat#chat-create-tools</a>.</p></dd>
 
 
 <dt id="arg-function-call-name">function_call_name<a class="anchor" aria-label="anchor" href="#arg-function-call-name"></a></dt>
@@ -197,8 +197,8 @@ the output object will include price information of the conducted screening.</p>
 
 
 <dt id="arg-api-key">api_key<a class="anchor" aria-label="anchor" href="#arg-api-key"></a></dt>
-<dd><p>Numerical value with your personal API key. Find at
-<a href="https://platform.openai.com/account/api-keys" class="external-link">https://platform.openai.com/account/api-keys</a>. Use
+<dd><p>Numerical value with your personal API key. Find setup guidance at
+<a href="https://developers.openai.com/api/docs/quickstart#generate-an-api-key" class="external-link">https://developers.openai.com/api/docs/quickstart#generate-an-api-key</a>. Use
 <code><a href="https://httr2.r-lib.org/reference/secrets.html" class="external-link">httr2::secret_make_key()</a></code>, <code><a href="https://httr2.r-lib.org/reference/secrets.html" class="external-link">httr2::secret_encrypt()</a></code>, and
 <code><a href="https://httr2.r-lib.org/reference/secrets.html" class="external-link">httr2::secret_decrypt()</a></code> to scramble and decrypt the api key and
 use <code><a href="set_api_key.html">set_api_key()</a></code> to securely automate the use of the
@@ -311,13 +311,13 @@ error data set (<code>error_data</code>) having the same variables as <code>answ
 but with failed request references only.
 <br></p>
 
-<p>The <code>price_data</code> data contains the following variables:</p><table class="table table"><tr><td><b>model</b></td><td><code>character</code></td><td>gpt model.</td></tr><tr><td><b>input_price_dollar</b></td><td><code>integer</code></td><td>price for all prompt/input tokens for the correspondent gpt-model.</td></tr><tr><td><b>output_price_dollar</b></td><td><code>integer</code></td><td>price for all completion/output tokens for the correspondent gpt-model.</td></tr><tr><td><b>price_total_dollar</b></td><td><code>integer</code></td><td>total price for all tokens for the correspondent gpt-model.</td></tr></table><p>Find current token pricing at <a href="https://openai.com/pricing" class="external-link">https://openai.com/pricing</a>.</p>
+<p>The <code>price_data</code> data contains the following variables:</p><table class="table table"><tr><td><b>model</b></td><td><code>character</code></td><td>gpt model.</td></tr><tr><td><b>input_price_dollar</b></td><td><code>integer</code></td><td>price for all prompt/input tokens for the correspondent gpt-model.</td></tr><tr><td><b>output_price_dollar</b></td><td><code>integer</code></td><td>price for all completion/output tokens for the correspondent gpt-model.</td></tr><tr><td><b>price_total_dollar</b></td><td><code>integer</code></td><td>total price for all tokens for the correspondent gpt-model.</td></tr></table><p>Find current token pricing at <a href="https://developers.openai.com/api/docs/pricing" class="external-link">https://developers.openai.com/api/docs/pricing</a>.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Vembye, M. H., Christensen, J., Mølgaard, A. B., &amp; Schytt, F. L. W. (2025)
 <em>GPT API Models Can Function as Highly Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
-A Proof of Concept and Common Guidelines</em> <a href="https://osf.io/preprints/osf/yrhzm" class="external-link">https://osf.io/preprints/osf/yrhzm</a></p>
+A Proof of Concept and Common Guidelines</em> <a href="https://psycnet.apa.org/record/2026-37236-001" class="external-link">https://psycnet.apa.org/record/2026-37236-001</a></p>
 <p>Wickham H (2023).
 <em>httr2: Perform HTTP Requests and Process the Responses</em>.
 https://httr2.r-lib.org, https://github.com/r-lib/httr2.</p>

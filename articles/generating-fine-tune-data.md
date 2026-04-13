@@ -11,7 +11,7 @@ to structure the prompts and
 to save the data in the required `jsonl` format. See OpenAI’s
 fine-tuning guide for an overview of dataset preparation and format
 requirements [OpenAI Docs: Fine-tuning
-guide](https://platform.openai.com/docs/guides/supervised-fine-tuning?monitoring=ui).
+guide](https://developers.openai.com/api/docs/guides/supervised-fine-tuning).
 
 ## Setup
 
@@ -140,7 +140,7 @@ The function will write the file to your current working directory.
 OpenAI requires JSON Lines (.jsonl) files for fine-tuning datasets; see
 the fine-tuning data preparation guide and API reference for file
 requirements [OpenAI Docs: Fine-tuning
-guide](https://platform.openai.com/docs/guides/supervised-fine-tuning?monitoring=ui).
+guide](https://developers.openai.com/api/docs/guides/supervised-fine-tuning).
 
 ``` r
 # This code will write a file named "fine_tune_data.jsonl"

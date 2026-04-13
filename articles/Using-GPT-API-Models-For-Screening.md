@@ -7,15 +7,15 @@ can be case sensitive. Therefore, see [Vembye, Christensen, Mølgaard, &
 Schytt](https://psycnet.apa.org/record/2026-37236-001)
 ([2025](#ref-vembye_generative_2025)) for an overview of how and when
 GPT API models can be used for title and abstract (TAB) screening (find
-the preprint of Vembye et al. 2025
-[here](https://osf.io/preprints/osf/yrhzm)). Our most recent results
-suggest that the `gpt-4o-mini` is an effective model for screening
-titles and abstracts with performances in many cases on par with the
-`gpt-4` and `gpt-5` models. This is a very cheap model (200 times
-cheaper than `gpt-4`). Therefore, to reduce costs, we recommendation
-always testing the performance of `gpt-4o-mini` before considering other
-models. Prompting `gpt-5` models can be different from `gpt-4` models.
-Therefore, see the [comparistion of
+the article record of Vembye et al. 2025
+[here](https://psycnet.apa.org/record/2026-37236-001)). Our most recent
+results suggest that the `gpt-4o-mini` is an effective model for
+screening titles and abstracts with performances in many cases on par
+with the `gpt-4` and `gpt-5` models. This is a very cheap model (200
+times cheaper than `gpt-4`). Therefore, to reduce costs, we
+recommendation always testing the performance of `gpt-4o-mini` before
+considering other models. Prompting `gpt-5` models can be different from
+`gpt-4` models. Therefore, see the [comparistion of
 model](https://mikkelvembye.github.io/AIscreenR/articles/comparing-reasoning-models.html)
 article on the AIscreenR webpage for guidance.*
 
@@ -274,9 +274,9 @@ Before you can use the `AIscreenR` functions to screen your references,
 you must generate your own secret API key from OpenAI. To do so, first
 ensure you have an OpenAI account (*If you have not created one yet, you
 can sign up [here](https://auth.openai.com/create-account).* Once you
-have an account, go to <https://platform.openai.com/account/api-keys>
-and press the `+ Create new secret key` button (see Figure 1 below) and
-name your key.
+have an account, use the OpenAI quickstart instructions at
+<https://developers.openai.com/api/docs/quickstart#generate-an-api-key>
+and create a new secret key (see Figure 1 below).
 
  
 

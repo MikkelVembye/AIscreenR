@@ -229,5 +229,5 @@ false positive rate (41 studies), though at the highest cost.
 Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W.
 (2025). Generative pretrained transformer models can function as highly
 reliable second screeners of titles and abstracts in systematic reviews:
-A proof of concept and common guidelines. *Psychological Methods*,
-Online first. <https://doi.org/10.1037/met0000769>
+A proof of concept and common guidelines. *Psychological Methods*.
+<https://psycnet.apa.org/record/2026-37236-001>.

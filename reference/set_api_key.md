@@ -48,8 +48,8 @@ Then write `OPENAI_API_KEY=[insert your api key here]` and close the
 
 ## Note
 
-Find your personal API key at
-<https://platform.openai.com/account/api-keys>.
+Find your personal API key via the OpenAI quickstart guide at
+<https://developers.openai.com/api/docs/quickstart#generate-an-api-key>.
 
 ## See also
 

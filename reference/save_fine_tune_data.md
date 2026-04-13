@@ -2,7 +2,8 @@
 
 This function creates `jsonl` training data that can be used to fine
 tune models from OpenAI. To generate a fine tuned model, this written
-data can be uploaded to <https://platform.openai.com/finetune/>.
+data can be uploaded via
+<https://developers.openai.com/api/docs/guides/supervised-fine-tuning>.
 
 ## Usage
 

@@ -3,7 +3,7 @@
 `sample_references`samples n rows from the dataset with titles and
 abstracts either with or without replacement. This function is supposed
 to support the construct of a test dataset, as suggested by [Vembye et
-al. (2025)](https://psycnet.apa.org/fulltext/2026-37236-001.html).
+al. (2025)](https://psycnet.apa.org/record/2026-37236-001).
 
 ## Usage
 

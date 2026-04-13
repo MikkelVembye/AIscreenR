@@ -13,9 +13,8 @@ body. This is the main difference between `tabscreen_gpt.tools()` and
 [`tabscreen_gpt.original()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.original.md).
 Function calls ensure more reliable and consistent responses to ones
 requests. See [Vembye, Christensen, Mølgaard, and Schytt.
-(2025)](https://psycnet.apa.org/fulltext/2026-37236-001.html) for
-guidance on how adequately to conduct title and abstract screening with
-GPT models.
+(2025)](https://psycnet.apa.org/record/2026-37236-001) for guidance on
+how adequately to conduct title and abstract screening with GPT models.
 
 ## Usage
 

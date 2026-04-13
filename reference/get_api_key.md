@@ -34,8 +34,8 @@ also check `CHATGPT_KEY` if `OPENAI_API_KEY` is not set.
 
 ## Note
 
-Find your personal API key at
-<https://platform.openai.com/account/api-keys>.
+Find your personal API key via the OpenAI quickstart guide at
+<https://developers.openai.com/api/docs/quickstart#generate-an-api-key>.
 
 ## See also
 

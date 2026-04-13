@@ -19,7 +19,7 @@ prompts and with repeated questions to check for consistency across
 answers. This function draws on the newly developed function calling to
 better steer the output of the responses. This function was used in
 [Vembye, Christensen, Mølgaard, and Schytt.
-(2025)](https://osf.io/preprints/osf/yrhzm).
+(2025)](https://psycnet.apa.org/record/2026-37236-001).
 
 ## Usage
 
@@ -101,7 +101,7 @@ tabscreen_gpt.original(
   detailed responses use the hidden function call `incl_function` from
   the package. Also see 'Examples below. Find further documentation for
   function calling at
-  <https://openai.com/blog/function-calling-and-other-api-updates>.
+  <https://developers.openai.com/api/reference/resources/chat#chat-create-tools>.
 
 - function_call_name:
 
@@ -133,8 +133,9 @@ tabscreen_gpt.original(
 
 - api_key:
 
-  Numerical value with your personal API key. Find at
-  <https://platform.openai.com/account/api-keys>. Use
+  Numerical value with your personal API key. Find setup guidance at
+  <https://developers.openai.com/api/docs/quickstart#generate-an-api-key>.
+  Use
   [`httr2::secret_make_key()`](https://httr2.r-lib.org/reference/secrets.html),
   [`httr2::secret_encrypt()`](https://httr2.r-lib.org/reference/secrets.html),
   and
@@ -303,14 +304,15 @@ The `price_data` data contains the following variables:
 | **output_price_dollar** | `integer`   | price for all completion/output tokens for the correspondent gpt-model. |
 | **price_total_dollar**  | `integer`   | total price for all tokens for the correspondent gpt-model.             |
 
-Find current token pricing at <https://openai.com/pricing>.
+Find current token pricing at
+<https://developers.openai.com/api/docs/pricing>.
 
 ## References
 
 Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W.
 (2025) *GPT API Models Can Function as Highly Reliable Second Screeners
 of Titles and Abstracts in Systematic Reviews: A Proof of Concept and
-Common Guidelines* <https://osf.io/preprints/osf/yrhzm>
+Common Guidelines* <https://psycnet.apa.org/record/2026-37236-001>
 
 Wickham H (2023). *httr2: Perform HTTP Requests and Process the
 Responses*. https://httr2.r-lib.org, https://github.com/r-lib/httr2.

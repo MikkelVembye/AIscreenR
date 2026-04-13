@@ -2,7 +2,7 @@
 
 Provides functions to conduct title and abstract screening in systematic
 reviews using large language models, such as the Generative Pre-trained
-Transformer (GPT) models from 'OpenAI' <https://platform.openai.com/>.
+Transformer (GPT) models from 'OpenAI' <https://developers.openai.com/>.
 These functions can enhance the quality of title and abstract screenings
 while reducing the total screening time significantly. In addition, the
 package includes tools for quality assessment of title and abstract

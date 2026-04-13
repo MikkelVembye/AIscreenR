@@ -73,7 +73,7 @@
 
 
 
-    <p>If you experience that the GPT model screening underperform, a solution is to fine-tune the model on your specific screening task. This article demonstrates how to prepare and format your data for fine-tuning OpenAI models using the <code>AIscreenR</code> package. The process involves two main functions: <code><a href="../reference/create_fine_tune_data.html">create_fine_tune_data()</a></code> to structure the prompts and <code><a href="../reference/save_fine_tune_data.html">save_fine_tune_data()</a></code> to save the data in the required <code>jsonl</code> format. See OpenAI’s fine-tuning guide for an overview of dataset preparation and format requirements <a href="https://platform.openai.com/docs/guides/supervised-fine-tuning?monitoring=ui" class="external-link">OpenAI Docs: Fine-tuning guide</a>.</p>
+    <p>If you experience that the GPT model screening underperform, a solution is to fine-tune the model on your specific screening task. This article demonstrates how to prepare and format your data for fine-tuning OpenAI models using the <code>AIscreenR</code> package. The process involves two main functions: <code><a href="../reference/create_fine_tune_data.html">create_fine_tune_data()</a></code> to structure the prompts and <code><a href="../reference/save_fine_tune_data.html">save_fine_tune_data()</a></code> to save the data in the required <code>jsonl</code> format. See OpenAI’s fine-tuning guide for an overview of dataset preparation and format requirements <a href="https://developers.openai.com/api/docs/guides/supervised-fine-tuning" class="external-link">OpenAI Docs: Fine-tuning guide</a>.</p>
 <section class="level2"><h2 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h2>
 <p>First, we load the necessary packages for this workflow. We will use <code>AIscreenR</code> for the main functions and <code>dplyr</code> for data manipulation.</p>
@@ -172,7 +172,7 @@
 </section><section class="level2"><h2 id="step-4-write-data-to-a--jsonl-file">Step 4: Write data to a .jsonl file<a class="anchor" aria-label="anchor" href="#step-4-write-data-to-a--jsonl-file"></a>
 </h2>
 <p>Finally, we use <code><a href="../reference/save_fine_tune_data.html">save_fine_tune_data()</a></code> to convert our data frame into the <code>jsonl</code> format required by OpenAI. Each line in the output file will be a JSON object representing a single training example, containing the system message, the user prompt (our question), and the assistant’s expected response (the true answer).</p>
-<p>The function will write the file to your current working directory. OpenAI requires JSON Lines (.jsonl) files for fine-tuning datasets; see the fine-tuning data preparation guide and API reference for file requirements <a href="https://platform.openai.com/docs/guides/supervised-fine-tuning?monitoring=ui" class="external-link">OpenAI Docs: Fine-tuning guide</a>.</p>
+<p>The function will write the file to your current working directory. OpenAI requires JSON Lines (.jsonl) files for fine-tuning datasets; see the fine-tuning data preparation guide and API reference for file requirements <a href="https://developers.openai.com/api/docs/guides/supervised-fine-tuning" class="external-link">OpenAI Docs: Fine-tuning guide</a>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># This code will write a file named "fine_tune_data.jsonl"</span></span>
