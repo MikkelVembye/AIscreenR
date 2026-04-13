@@ -28,7 +28,7 @@ As for previous versions, there were no ERRORs and WARNINGs.
 
 There was 2 NOTEs:
 
-* On win-builder oldrelease:
+* On win-builder release and oldrelease:
 
   Author field differs from that derived from Authors@R
   Author:    'Mikkel H. Vembye [aut, cre] (ORCID: <https://orcid.org/0000-0001-9071-0724>), Thomas Olsen [aut]'
