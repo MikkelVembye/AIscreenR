@@ -80,7 +80,7 @@ tabscreen_gpt.original(
 - ...:
 
   Further argument to pass to the request body. See
-  <https://platform.openai.com/docs/api-reference/chat/create>.
+  <https://developers.openai.com/api/reference/resources/chat>.
 
 - model:
 
@@ -89,7 +89,7 @@ tabscreen_gpt.original(
   gpt-4-0613). This model has been shown to outperform the gpt-3.5-turbo
   models in terms of its ability to detect relevant studies (Vembye et
   al., Under preparation). Find available model at
-  <https://platform.openai.com/docs/models/model-endpoint-compatibility>.
+  <https://developers.openai.com/api/docs/models/model-endpoint-compatibility>.
 
 - role:
 
@@ -117,7 +117,7 @@ tabscreen_gpt.original(
   probability mass are considered. We generally recommend altering this
   or temperature but not both.' (OPEN-AI). Default is 1. Find
   documentation at
-  <https://platform.openai.com/docs/api-reference/chat/create#chat/create-top_p>.
+  <https://developers.openai.com/api/reference/resources/chat#chat/create-top_p>.
 
 - time_info:
 
@@ -175,7 +175,7 @@ tabscreen_gpt.original(
 
   Numerical value indicating the number of requests per minute (rpm)
   available for the specified api key. Find more information at
-  <https://platform.openai.com/docs/models/model-endpoint-compatibility>.
+  <https://developers.openai.com/api/docs/models/model-endpoint-compatibility>.
   Alternatively, use
   [`rate_limits_per_minute()`](https://mikkelvembye.github.io/AIscreenR/reference/rate_limits_per_minute.md).
 

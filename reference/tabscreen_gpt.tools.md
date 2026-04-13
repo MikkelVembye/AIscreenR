@@ -75,7 +75,7 @@ tabscreen_gpt(data, prompt, studyid, title, abstract,
   Character string with the name of the completion model. Can take
   multiple models. Default is the latest `"gpt-4o-mini"`. Find available
   model at
-  <https://platform.openai.com/docs/models/model-endpoint-compatibility>.
+  <https://developers.openai.com/api/docs/models/model-endpoint-compatibility>.
 
 - role:
 
@@ -84,7 +84,7 @@ tabscreen_gpt(data, prompt, studyid, title, abstract,
 - tools:
 
   This argument allows this user to apply customized functions. See
-  <https://platform.openai.com/docs/api-reference/chat/create#chat-create-tools>.
+  <https://developers.openai.com/api/reference/resources/chat#chat-create-tools>.
   Default is `NULL`. If not specified the default function calls from
   `AIscreenR` are used.
 
@@ -94,7 +94,7 @@ tabscreen_gpt(data, prompt, studyid, title, abstract,
   any) tool is called by the model' (OpenAI). Default is `NULL`. If set
   to `NULL` when using a customized function, the default is `"auto"`.
   See
-  <https://platform.openai.com/docs/api-reference/chat/create#chat-create-tool_choice>.
+  <https://developers.openai.com/api/reference/resources/chat#chat-create-tool_choice>.
 
 - top_p:
 
@@ -104,7 +104,7 @@ tabscreen_gpt(data, prompt, studyid, title, abstract,
   probability mass are considered. We generally recommend altering this
   or temperature but not both.' (OpenAI). Default is 1. Find
   documentation at
-  <https://platform.openai.com/docs/api-reference/chat/create#chat/create-top_p>.
+  <https://developers.openai.com/api/reference/resources/chat#chat/create-top_p>.
 
 - time_info:
 
@@ -169,7 +169,7 @@ tabscreen_gpt(data, prompt, studyid, title, abstract,
 
   Numerical value indicating the number of requests per minute (rpm)
   available for the specified model. Find more information at
-  <https://platform.openai.com/docs/models/model-endpoint-compatibility>.
+  <https://developers.openai.com/api/docs/models/model-endpoint-compatibility>.
   Alternatively, use
   [`rate_limits_per_minute()`](https://mikkelvembye.github.io/AIscreenR/reference/rate_limits_per_minute.md).
 
@@ -246,15 +246,16 @@ tabscreen_gpt(data, prompt, studyid, title, abstract,
 
   Character string indicating the level of reasoning effort required for
   the task. Default is `"low"`. Can take the values `"low"`, `"medium"`,
-  and `"high"`. See <https://platform.openai.com/docs/guides/reasoning>
-  for more information.
+  and `"high"`. See
+  <https://developers.openai.com/api/docs/guides/reasoning> for more
+  information.
 
 - verbosity:
 
   Character string indicating the level of verbosity in the model's
   responses. Default is `"low"`. Can take the values `"low"`,
   `"medium"`, and `"high"`. See
-  <https://platform.openai.com/docs/api-reference/chat/create> for more
+  <https://developers.openai.com/api/reference/resources/chat> for more
   information.
 
 - overinclusive:
@@ -270,7 +271,7 @@ tabscreen_gpt(data, prompt, studyid, title, abstract,
 - ...:
 
   Further argument to pass to the request body. See
-  <https://platform.openai.com/docs/api-reference/chat/create>.
+  <https://developers.openai.com/api/reference/resources/chat>.
 
 ## Value
 

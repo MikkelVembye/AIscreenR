@@ -90,7 +90,7 @@ screen_errors.gpt(
 - ...:
 
   Further argument to pass to the request body. See
-  <https://platform.openai.com/docs/api-reference/chat/create>. If used
+  <https://developers.openai.com/api/reference/resources/chat>. If used
   in the original screening in
   [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md),
   the argument(s) must be specified again here.

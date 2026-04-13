@@ -5,7 +5,7 @@
 `rate_limits_per_minute` reports the rate limits for a given API model.
 The function returns the available requests per minute (RPM) as well as
 tokens per minute (TPM). Find general information at
-<https://platform.openai.com/docs/models/model-endpoint-compatibility>.
+<https://developers.openai.com/api/docs/models/model-endpoint-compatibility>.
 
 ## Usage
 
@@ -24,7 +24,7 @@ rate_limits_per_minute(
   Character string with the name of the completion model. Default is
   `"gpt-4o-mini"`. Can take multiple values. For OpenAI models, find
   available models at
-  <https://platform.openai.com/docs/models/model-endpoint-compatibility>.
+  <https://developers.openai.com/api/docs/models/model-endpoint-compatibility>.
   For Groq models, find available models at
   <https://console.groq.com/docs/models>.
 

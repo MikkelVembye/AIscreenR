@@ -133,7 +133,7 @@ automatically.</p></dd>
 <dd><p>Character string with the name of the completion model. Can take
 multiple models. Default is the latest <code>"gpt-4o-mini"</code>.
 Find available model at
-<a href="https://platform.openai.com/docs/models/model-endpoint-compatibility" class="external-link">https://platform.openai.com/docs/models/model-endpoint-compatibility</a>.</p></dd>
+<a href="https://developers.openai.com/api/docs/models/model-endpoint-compatibility" class="external-link">https://developers.openai.com/api/docs/models/model-endpoint-compatibility</a>.</p></dd>
 
 
 <dt id="arg-role">role<a class="anchor" aria-label="anchor" href="#arg-role"></a></dt>
@@ -142,7 +142,7 @@ Find available model at
 
 <dt id="arg-tools">tools<a class="anchor" aria-label="anchor" href="#arg-tools"></a></dt>
 <dd><p>This argument allows this user to apply customized functions.
-See <a href="https://platform.openai.com/docs/api-reference/chat/create#chat-create-tools" class="external-link">https://platform.openai.com/docs/api-reference/chat/create#chat-create-tools</a>.
+See <a href="https://developers.openai.com/api/reference/resources/chat#chat-create-tools" class="external-link">https://developers.openai.com/api/reference/resources/chat#chat-create-tools</a>.
 Default is <code>NULL</code>. If not specified the default function calls from <code>AIscreenR</code> are used.</p></dd>
 
 
@@ -150,7 +150,7 @@ Default is <code>NULL</code>. If not specified the default function calls from <
 <dd><p>If a customized function is provided this argument
 'controls which (if any) tool is called by the model' (OpenAI). Default is <code>NULL</code>.
 If set to <code>NULL</code> when using a customized function, the default is <code>"auto"</code>.
-See <a href="https://platform.openai.com/docs/api-reference/chat/create#chat-create-tool_choice" class="external-link">https://platform.openai.com/docs/api-reference/chat/create#chat-create-tool_choice</a>.</p></dd>
+See <a href="https://developers.openai.com/api/reference/resources/chat#chat-create-tool_choice" class="external-link">https://developers.openai.com/api/reference/resources/chat#chat-create-tool_choice</a>.</p></dd>
 
 
 <dt id="arg-top-p">top_p<a class="anchor" aria-label="anchor" href="#arg-top-p"></a></dt>
@@ -159,7 +159,7 @@ where the model considers the results of the tokens with top_p probability mass.
 So 0.1 means only the tokens comprising the top 10% probability mass are considered.
 We generally recommend altering this or temperature but not both.' (OpenAI). Default is 1.
 Find documentation at
-<a href="https://platform.openai.com/docs/api-reference/chat/create#chat/create-top_p" class="external-link">https://platform.openai.com/docs/api-reference/chat/create#chat/create-top_p</a>.</p></dd>
+<a href="https://developers.openai.com/api/reference/resources/chat#chat/create-top_p" class="external-link">https://developers.openai.com/api/reference/resources/chat#chat/create-top_p</a>.</p></dd>
 
 
 <dt id="arg-time-info">time_info<a class="anchor" aria-label="anchor" href="#arg-time-info"></a></dt>
@@ -212,7 +212,7 @@ should be used instead' (Wickham, 2023).</p></dd>
 <dt id="arg-rpm">rpm<a class="anchor" aria-label="anchor" href="#arg-rpm"></a></dt>
 <dd><p>Numerical value indicating the number of requests per minute (rpm)
 available for the specified model. Find more information at
-<a href="https://platform.openai.com/docs/models/model-endpoint-compatibility" class="external-link">https://platform.openai.com/docs/models/model-endpoint-compatibility</a>.
+<a href="https://developers.openai.com/api/docs/models/model-endpoint-compatibility" class="external-link">https://developers.openai.com/api/docs/models/model-endpoint-compatibility</a>.
 Alternatively, use <code><a href="rate_limits_per_minute.html">rate_limits_per_minute()</a></code>.</p></dd>
 
 
@@ -280,12 +280,12 @@ Default is <code>FALSE</code>.</p></dd>
 
 <dt id="arg-reasoning-effort">reasoning_effort<a class="anchor" aria-label="anchor" href="#arg-reasoning-effort"></a></dt>
 <dd><p>Character string indicating the level of reasoning effort required for the task. Default is <code>"low"</code>.
-Can take the values <code>"low"</code>, <code>"medium"</code>, and <code>"high"</code>. See <a href="https://platform.openai.com/docs/guides/reasoning" class="external-link">https://platform.openai.com/docs/guides/reasoning</a> for more information.</p></dd>
+Can take the values <code>"low"</code>, <code>"medium"</code>, and <code>"high"</code>. See <a href="https://developers.openai.com/api/docs/guides/reasoning" class="external-link">https://developers.openai.com/api/docs/guides/reasoning</a> for more information.</p></dd>
 
 
 <dt id="arg-verbosity">verbosity<a class="anchor" aria-label="anchor" href="#arg-verbosity"></a></dt>
 <dd><p>Character string indicating the level of verbosity in the model's responses. Default is <code>"low"</code>.
-Can take the values <code>"low"</code>, <code>"medium"</code>, and <code>"high"</code>. See <a href="https://platform.openai.com/docs/api-reference/chat/create" class="external-link">https://platform.openai.com/docs/api-reference/chat/create</a> for more information.</p></dd>
+Can take the values <code>"low"</code>, <code>"medium"</code>, and <code>"high"</code>. See <a href="https://developers.openai.com/api/reference/resources/chat" class="external-link">https://developers.openai.com/api/reference/resources/chat</a> for more information.</p></dd>
 
 
 <dt id="arg-overinclusive">overinclusive<a class="anchor" aria-label="anchor" href="#arg-overinclusive"></a></dt>
@@ -299,7 +299,7 @@ function calling setup.</p></dd>
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Further argument to pass to the request body.
-See <a href="https://platform.openai.com/docs/api-reference/chat/create" class="external-link">https://platform.openai.com/docs/api-reference/chat/create</a>.</p></dd>
+See <a href="https://developers.openai.com/api/reference/resources/chat" class="external-link">https://developers.openai.com/api/reference/resources/chat</a>.</p></dd>
 
 </dl></div>
     <div class="section level2">
