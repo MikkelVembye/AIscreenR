@@ -46,7 +46,7 @@ Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W.
 (2025). Generative Pretrained Transformer Models Can Function as Highly
 Reliable Second Screeners of Titles and Abstracts in Systematic Reviews:
 A Proof of Concept and Common Guidelines. *Psychological Methods*.
-<https://dx.doi.org/10.1037/met0000769>
+[doi:10.1037/met0000769](https://doi.org/10.1037/met0000769)
 
 ## Examples
 
