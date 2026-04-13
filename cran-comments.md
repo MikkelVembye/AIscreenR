@@ -27,8 +27,6 @@ There was 2 NOTEs:
   Author:    'Mikkel H. Vembye [aut, cre] (ORCID: <https://orcid.org/0000-0001-9071-0724>), Thomas Olsen [aut]'
   Authors@R: 'Mikkel H. Vembye [aut, cre] (<https://orcid.org/0000-0001-9071-0724>), Thomas Olsen [aut]'
 
-We have not experienced this issue in previous releases, and we are uncertain how to resolve this discrepancy and whether it is consequential for the package building. 
-
   Found the following (possibly) invalid URLs:
   URL: https://psycnet.apa.org/record/2026-37236-001
     From: man/sample_references.Rd
