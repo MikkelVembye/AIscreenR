@@ -8,7 +8,8 @@ for consistency across answers. All of which can be done in parallel.
 The function draws on function calling which is called via the tools
 argument in the request body. Function calls ensure more reliable and
 consistent responses to ones requests. See [Vembye, Christensen,
-Mølgaard, and Schytt. (2025)](https://dx.doi.org/10.1037/met0000769) for
+Mølgaard, and Schytt.
+(2025)](https://psycnet.apa.org/fulltext/2026-37236-001.html) for
 guidance on how adequately to conduct title and abstract screening with
 GPT models.
 
