@@ -18,7 +18,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Mikkel H. Vembye \email{mikkel.vembye@gmail.com} (\href{https://orcid.org/0000-0001-9071-0724}{ORCID}) [copyright holder]
+\strong{Maintainer}: Mikkel H. Vembye \email{mikkel.vembye@gmail.com} (\href{https://orcid.org/0000-0001-9071-0724}{ORCID})
 
 Authors:
 \itemize{
