@@ -2,6 +2,8 @@
 
 ## AIscreenR 0.3.1
 
+CRAN release: 2026-04-13
+
 - Updating documentation of tabscreen_gpt()
 
 ## AIscreenR 0.3.0
