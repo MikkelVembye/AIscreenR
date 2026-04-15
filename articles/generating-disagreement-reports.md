@@ -73,6 +73,6 @@ GPT”.
 Running the code above will produce an HTML file named
 `disagreement_report.html`. This will look like this:
 
-![](../../inst/figures/report.png)
+![](figures/report.png)
 
 *Example disagreement report*
