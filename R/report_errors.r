@@ -52,6 +52,8 @@
 #'
 #' @export
 
+# Fjern special symboler
+# Sort by disagreemnts first in the report, then agreements
 report <- function(
     data,
     studyid,
@@ -109,11 +111,11 @@ report <- function(
     file <- paste0(file, ".qmd")
   }
 
+  human_code_vec <- data |> dplyr::pull({{ human_code }})
+  final_decision_vec <- data |> dplyr::pull({{ final_decision_gpt_num }})
+
   # Only set document_subtitle if it wasn't explicitly provided or is empty
   if (document_subtitle == "") {
-    human_code_vec <- data |> dplyr::pull({{ human_code }})
-    final_decision_vec <- data |> dplyr::pull({{ final_decision_gpt_num }})
-
     if (all(human_code_vec == 1) && all(final_decision_vec == 0)) {
       document_subtitle <- "Included by humans, excluded by GPT"
     } else if (all(human_code_vec == 0) && all(final_decision_vec == 1)) {
@@ -145,45 +147,128 @@ report <- function(
   studyid_txt  <- paste0("**STUDY-ID: ", studyid_vec, ":**", "\n\n")
   title_text   <- paste0("-- *Title:* '", gsub("'", " ", gsub("\"", " ", title_vec)), "'", "\n\n")
   abs_txt      <- paste0("-- *Abstract*: '", gsub("'", " ", gsub("\"", " ", abstract_vec)), "'", "\n\n")
-  gpt_num_answer <- paste0("-- *Answer (GPT - numeric)*: ", data |> dplyr::pull({{ final_decision_gpt_num }}), "\n\n")
-  human_answer   <- paste0("-- *Answer (Human)*: ", data |> dplyr::pull({{ human_code }}), "\n\n")
+  gpt_num_answer <- paste0("-- *Answer (GPT - numeric)*: ", final_decision_vec, "\n\n")
+  human_answer   <- paste0("-- *Answer (Human)*: ", human_code_vec, "\n\n")
 
   
   if (missing(gpt_answer)){
-    answer_txt <- NULL
+    answer_txt <- rep("", length(studyid_txt))
     warning("Argument 'gpt_answer' is missing. The report will include only numeric GPT answers from 'final_decision_gpt_num'.")
   } else {
     gpt_answer <- data |> dplyr::pull({{ gpt_answer }})
     answer_txt <- paste0("-- *Answer (GPT)*: ", gpt_answer, "\n\n")
   }
   
-  comment_text <- paste0("*Please add a comment on whether and why you agree with the GPT decision or not:*\n\n \n\n")
+  # Keep disagreements first, then agreements, and label each section.
+  is_disagreement <- human_code_vec != final_decision_vec
+  is_disagreement[is.na(is_disagreement)] <- FALSE
+  is_agreement <- !is_disagreement
+  is_false_exclusion <- human_code_vec == 1 & final_decision_vec == 0
+  is_false_exclusion[is.na(is_false_exclusion)] <- FALSE
+  is_false_inclusion <- human_code_vec == 0 & final_decision_vec == 1
+  is_false_inclusion[is.na(is_false_inclusion)] <- FALSE
+
+  comment_text <- rep("*Please add a comment on whether and why you agree with the GPT decision or not:*\n\n \n\n", length(studyid_txt))
+  row_text <- paste0(studyid_txt, title_text, abs_txt, answer_txt, gpt_num_answer, human_answer, comment_text)
+
+  # Stop early if a single study block is too large for a practical report entry.
+  max_entry_bytes <- 50000L
+  row_sizes <- nchar(row_text, type = "bytes", keepNA = TRUE)
+  if (any(row_sizes > max_entry_bytes, na.rm = TRUE)) {
+    too_big_idx <- which(row_sizes > max_entry_bytes)
+    too_big_studies <- studyid_vec[too_big_idx]
+    stop(
+      paste0(
+        "One or more report entries are too large (>", max_entry_bytes, " bytes): ",
+        paste0("row ", too_big_idx, " (studyid=", too_big_studies, ")", collapse = ", "),
+        ". Please shorten title, abstract, or GPT answer for those entries."
+      ),
+      call. = FALSE
+    )
+  }
+
+  has_disagreements <- any(is_disagreement)
+  has_agreements <- any(is_agreement)
+  has_both_groups <- has_disagreements && has_agreements
   
-  print_test <- paste0(studyid_txt, title_text, abs_txt, answer_txt, gpt_num_answer, human_answer, comment_text, collapse = "")
+  
+  if (has_both_groups) {
+    disagreement_section <- "##### Disagreements\n\n"
+    if (any(is_false_exclusion)) {
+      disagreement_section <- paste0(
+        disagreement_section,
+        "###### False exclusion\n\n",
+        paste0(row_text[is_false_exclusion], collapse = ""),
+        "\n"
+      )
+    }
+    if (any(is_false_inclusion)) {
+      disagreement_section <- paste0(
+        disagreement_section,
+        "###### False inclusion\n\n",
+        paste0(row_text[is_false_inclusion], collapse = ""),
+        "\n"
+      )
+    }
+    if (!any(is_false_exclusion) && !any(is_false_inclusion)) {
+      disagreement_section <- paste0(
+        disagreement_section,
+        paste0(row_text[is_disagreement], collapse = ""),
+        "\n"
+      )
+    }
+
+    agreement_section <- paste0(
+      "##### Agreements\n\n",
+      paste0(row_text[is_agreement], collapse = ""),
+      "\n"
+    )
+
+    print_test <- paste0(disagreement_section, agreement_section)
+  } else if (has_disagreements) {
+    disagreement_section <- "##### Disagreements\n\n"
+    if (any(is_false_exclusion)) {
+      disagreement_section <- paste0(
+        disagreement_section,
+        "###### False exclusion\n\n",
+        paste0(row_text[is_false_exclusion], collapse = ""),
+        "\n"
+      )
+    }
+    if (any(is_false_inclusion)) {
+      disagreement_section <- paste0(
+        disagreement_section,
+        "###### False inclusion\n\n",
+        paste0(row_text[is_false_inclusion], collapse = ""),
+        "\n"
+      )
+    }
+    if (!any(is_false_exclusion) && !any(is_false_inclusion)) {
+      disagreement_section <- paste0(
+        disagreement_section,
+        paste0(row_text[is_disagreement], collapse = ""),
+        "\n"
+      )
+    }
+    print_test <- disagreement_section
+  } else {
+    print_test <- paste0(row_text[is_agreement], collapse = "")
+  }
 
   # Create the header
-  header <- paste("---\ntitle: \"", document_title, "\"\nsubtitle: \"", document_subtitle, "\"\nformat:\n  ", format, " \n---")
-  
-  # Create the R setup chunk
-  rsetup <- "```{r setup, include=FALSE}\nknitr::opts_chunk$set(echo = TRUE)\n```"
-  
-  # Create the methods chunk
-  print_test_literal <- encodeString(print_test, quote = "\"")
-  methods <- paste0(
-    "```{r, echo=FALSE, results='asis', include=TRUE}\n",
-    "print_test <- ", print_test_literal, "\n",
-    "base::cat(print_test)\n",
-    "```"
+  header <- paste(
+    "---\ntitle: \"", document_title,
+    "\"\nsubtitle: \"", document_subtitle,
+    "\"\nformat:\n  ", format,
+    " \n---"
   )
 
   # Full path to the Quarto source file
   qmd_path <- file.path(directory, file)
-  
+
   # Writing to the Quarto file
-  con <- file(qmd_path, "w")
-  writeLines(header, con)
-  writeLines(rsetup, con)
-  writeLines(methods, con)
+  con <- file(qmd_path, "w", encoding = "UTF-8")
+  writeLines(c(header, "", print_test), con, useBytes = TRUE)
   close(con)
   
   # Define path to the rendered file

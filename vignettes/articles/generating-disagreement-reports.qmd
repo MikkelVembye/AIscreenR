@@ -85,4 +85,4 @@ Note that we did not provide a `document_subtitle`. The `report()` function auto
 
 Running the code above will produce an HTML file named `disagreement_report.html`. This will look like this:
 
-![*Example disagreement report*](../../inst/figures/report.png)
+![*Example disagreement report*](figures/report.png)
