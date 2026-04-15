@@ -1,10 +1,12 @@
-# AIscreenR (development version)
+# AIscreenR 0.3.1.9000
+
+* Updating data handling of report()
+* Correcting path in generating-disagreement-reports article
 
 # AIscreenR 0.3.1
 
 * Updating documentation of tabscreen_gpt()
-* Updating data handling of report()
-* Correcting path in generating-disagreement-reports article
+
 
 # AIscreenR 0.3.0
 
