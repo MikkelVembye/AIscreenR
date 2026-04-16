@@ -319,7 +319,7 @@ R environment as an environment variable. You can do this by using
 usethis::edit_r_environ()
 ```
 
-In the `.Renviron` file, write `CHATGPT_KEY=your_key` as depicted in
+In the `.Renviron` file, write `OPENAI_API_KEY=your_key` as depicted in
 Figure 2.  
 
 ![](helper_stuff/Renviron.png)
@@ -328,9 +328,9 @@ Figure 2.  
 
  
 
-Thereafter, close and save the `.Renviron` file and restart `RStudio`
-(ctrl + shift + F10). From now on, the `AIscreenR` functions will
-automatically use
+Thereafter, close and save the `.Renviron` file and restart `RStudio` or
+`Positron` **(ctrl + shift + F10)**. From now on, the `AIscreenR`
+functions will automatically use
 [`get_api_key()`](https://mikkelvembye.github.io/AIscreenR/reference/get_api_key.md)
 to retrieve your API key from your R environment. With this approach,
 you will not need to worry about your API key again—unless you update

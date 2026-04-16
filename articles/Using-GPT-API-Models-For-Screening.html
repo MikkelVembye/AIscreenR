@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AIscreenR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -258,13 +258,13 @@
 <code class="sourceCode R"><span><span class="co"># Run code to open your .Renviron file</span></span>
 <span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">edit_r_environ</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>In the <code>.Renviron</code> file, write <code>CHATGPT_KEY=your_key</code> as depicted in Figure 2.  </p>
+<p>In the <code>.Renviron</code> file, write <code>OPENAI_API_KEY=your_key</code> as depicted in Figure 2.  </p>
 <div class="quarto-figure quarto-figure-center">
 <figure><p><img src="helper_stuff/Renviron.png"></p>
 <figcaption><em>Figure 2 - R environment file</em></figcaption></figure>
 </div>
 <p> </p>
-<p>Thereafter, close and save the <code>.Renviron</code> file and restart <code>RStudio</code> (ctrl + shift + F10). From now on, the <code>AIscreenR</code> functions will automatically use <code><a href="../reference/get_api_key.html">get_api_key()</a></code> to retrieve your API key from your R environment. With this approach, you will not need to worry about your API key again—unless you update RStudio, delete the key deliberately, or get a new computer. In such cases, you will need to repeat this process.</p>
+<p>Thereafter, close and save the <code>.Renviron</code> file and restart <code>RStudio</code> or <code>Positron</code> <strong>(ctrl + shift + F10)</strong>. From now on, the <code>AIscreenR</code> functions will automatically use <code><a href="../reference/get_api_key.html">get_api_key()</a></code> to retrieve your API key from your R environment. With this approach, you will not need to worry about your API key again—unless you update RStudio, delete the key deliberately, or get a new computer. In such cases, you will need to repeat this process.</p>
 </section><section class="level3"><h4 id="temporary-solution">Temporary solution<a class="anchor" aria-label="anchor" href="#temporary-solution"></a>
 </h4>
 <p>If you do not want to add you API key permanently to your R environment, you can use <code><a href="../reference/set_api_key.html">set_api_key()</a></code>. When executing <code><a href="../reference/set_api_key.html">set_api_key()</a></code>, a pop-up window will appear where you can enter your API key. This will add your API key as temporary environment variable. Consequently, after restarting RStudio, your API key will no longer be present in your R environment. Alternatively, you can pass a decrypted key to the <code><a href="../reference/set_api_key.html">set_api_key()</a></code>, like <code>set_api_key(key = secret_decrypt(encrypt_key, "YOUR_SECRET_KEY_FOR_DECRYTING"))</code>. For further details on this approach, refer to the <a href="https://httr2.r-lib.org/articles/wrapping-apis.html#basics" class="external-link"><code>HTTR2</code></a> package.  </p>
