@@ -338,33 +338,36 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
   }
 
   # Check if the user want to use gpt-4 model with iterations
-  if (any(stringr::str_detect(model, "gpt-4")) && max(reps) > 1 && !force){
+  ## Consider updating to include gpt-5. But we need to think more deeply about this as not
+  ## all (future) models necessarily include a number
 
-    gpt4_dat <-
-      tibble::tibble(model, reps) |>
-      dplyr::filter(!stringr::str_detect(model, "mini|nano"))
-
-      if(nrow(gpt4_dat) > 0){
-
-        gpt4_reps <-
-          gpt4_dat |>
-          dplyr::filter(stringr::str_detect(model, "gpt-4")) |>
-          dplyr::pull(reps) |>
-          max()
-
-        if (gpt4_reps > 1){
-
-          max_reps_mes_gpt4 <-
-            paste("* Are you sure you want to use", gpt4_reps, "iterations with a gpt-4 model?",
-                  "If so, set force = TRUE.")
-          stop(max_reps_mes_gpt4)
-
-        }
-
-      }
-
-
-  }
+#  if (any(stringr::str_detect(model, "gpt-4")) && max(reps) > 1 && !force){
+#
+#    gpt4_dat <-
+#      tibble::tibble(model, reps) |>
+#      dplyr::filter(!stringr::str_detect(model, "mini|nano"))
+#
+#      if(nrow(gpt4_dat) > 0){
+#
+#        gpt4_reps <-
+#          gpt4_dat |>
+#          dplyr::filter(stringr::str_detect(model, "gpt-4")) |>
+#          dplyr::pull(reps) |>
+#          max()
+#
+#        if (gpt4_reps > 1){
+#
+#          max_reps_mes_gpt4 <-
+#            paste("* Are you sure you want to use", gpt4_reps, "iterations with a gpt-4 model?",
+#                  "If so, set force = TRUE.")
+#          stop(max_reps_mes_gpt4)
+#
+#        }
+#
+#      }
+#
+#
+#  }
 
   # Ensuring that the rpm argument fits to the corresponding model
   if (length(rpm) > 1 && length(model) != length(rpm)){
