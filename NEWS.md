@@ -3,7 +3,7 @@
 * Updating data handling of report(), removing bug
 * Correcting path in generating-disagreement-reports article
 * Updating the handling of coding missing abstracts in the vignette now when using read_ris_to_dataframe()
-* Updating the default inclusion threshold then conducting replicate screenings. 
+* Updating the default inclusion threshold and documentation hereof when conducting replicate screenings. 
 
 # AIscreenR 0.3.1
 
