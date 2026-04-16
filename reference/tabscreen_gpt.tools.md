@@ -211,18 +211,21 @@ tabscreen_gpt(data, prompt, studyid, title, abstract,
 
   Numerical value indicating the probability threshold for which a
   studies should be included. ONLY relevant when the same questions is
-  requested multiple times (i.e., when any reps \> 1). Default is 0.5,
+  requested multiple times (i.e., when any reps \> 1). Default is 0.1,
   indicating that titles and abstracts should only be included if GPT
-  has included the study more than 50 percent of the times.
+  has included the study more than 10 percent of the times (e.g., 1 out
+  of 10 screenings). This has been shown by Vembye et al. (2025) to work
+  well with cheaper models.
 
 - incl_cutoff_lower:
 
   Numerical value indicating the probability threshold above which
-  studies should be check by a human. ONLY relevant when the same
-  questions is requested multiple times (i.e., when any reps \> 1).
-  Default is 0.4, meaning that if you ask GPT the same questions 10
-  times and it includes the title and abstract 4 times, we suggest that
-  the study should be check by a human.
+  studies should be checked by a human. ONLY relevant when the same
+  questions is requested multiple times (i.e., when any reps \> 1) and
+  `incl_cutoff_upper` \> 0.1. Records with inclusion probabilities
+  between `incl_cutoff_lower` and `incl_cutoff_upper` will be flagged
+  for human checking. Default is `NULL`, which means that no studies
+  will be flagged for human checking.
 
 - force:
 
