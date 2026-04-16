@@ -236,14 +236,14 @@ The easiest way to manage your API key is to add it permanently to your R enviro
 usethis::edit_r_environ()
 ```
 
-In the `.Renviron` file, write `CHATGPT_KEY=your_key` as depicted in Figure 2. 
+In the `.Renviron` file, write `OPENAI_API_KEY=your_key` as depicted in Figure 2. 
 \  
 
 ![*Figure 2 - R environment file*](helper_stuff/Renviron.png){#fig:renviron}
 
 \ 
 
-Thereafter, close and save the `.Renviron` file and restart `RStudio` (ctrl + shift + F10). From now on, the `AIscreenR` functions will automatically use `get_api_key()` to retrieve your API key from your R environment. With this approach, you will not need to worry about your API key again—unless you update RStudio, delete the key deliberately, or get a new computer. In such cases, you will need to repeat this process.
+Thereafter, close and save the `.Renviron` file and restart `RStudio` or `Positron` **(ctrl + shift + F10)**. From now on, the `AIscreenR` functions will automatically use `get_api_key()` to retrieve your API key from your R environment. With this approach, you will not need to worry about your API key again—unless you update RStudio, delete the key deliberately, or get a new computer. In such cases, you will need to repeat this process.
 
 ### Temporary solution
 
