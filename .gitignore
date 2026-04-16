@@ -7,3 +7,7 @@ inst/extdata/comparison-results/*.rds
 
 /.quarto/
 **/*.quarto_ipynb
+_quarto.yml
+_site/
+vignettes/_site/
+vignettes/articles/_site/

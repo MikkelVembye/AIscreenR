@@ -1,6 +1,7 @@
 *.html
 *.R
 *.quarto
+_site/
 /.quarto/
 *.knit.md
 ^\.quarto$

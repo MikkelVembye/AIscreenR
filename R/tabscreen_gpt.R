@@ -490,8 +490,8 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
   if (any(reps > 1)) {
     if(is.numeric(incl_cutoff_upper) && is.null(incl_cutoff_lower)) incl_cutoff_lower <- incl_cutoff_upper
 
-    if (is.null(incl_cutoff_upper)) incl_cutoff_upper <- 0.5
-    if (is.null(incl_cutoff_lower)) incl_cutoff_lower <- incl_cutoff_upper - 0.1
+    if (is.null(incl_cutoff_upper)) incl_cutoff_upper <- 0.1
+    if (is.null(incl_cutoff_lower)) incl_cutoff_lower <- incl_cutoff_upper
   }
 
   #.........................

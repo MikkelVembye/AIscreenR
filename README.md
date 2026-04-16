@@ -48,7 +48,7 @@ several minutes. Using `build_vignettes = FALSE` speeds up the
 installation, but you cannot to access the package’s vignette in R
 afterward.
 
-# Setting API key and checking rate limits
+## Setting API key and checking rate limits
 
 ``` r
 # Find your api key via https://developers.openai.com/api/docs/quickstart#generate-an-api-key
@@ -72,7 +72,7 @@ rate_limits
 #> 1 gpt-4o-mini               30000         150000000
 ```
 
-# How to load RIS files.
+## How to load RIS files
 
 In this example we have downloaded the RIS files from the
 [EPPI-Reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914), and
@@ -239,7 +239,7 @@ agg_dat |> select(human_code, final_decision_gpt, final_decision_gpt_num)
 #> 10          1 Include                                 1
 ```
 
-# References
+## References
 
 Filges, T., Andersen, D, & Jørgensen, A-M. K (2015). Functional Family
 Therapy (FFT) for Young People in Treatment for Non-opioid Drug Use: A
