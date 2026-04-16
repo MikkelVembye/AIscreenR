@@ -161,7 +161,8 @@ ris_dat_excl <- read_ris_to_dataframe("friends_excl.ris") |> # Add the path to y
   select(author, eppi_id, title, abstract) |> # Using only relevant variables
   mutate(
     human_code = 0, #Tracking the human decision
-    across(c(author, title, abstract), ~ na_if(., "NA"))
+    # Remove records without abstracts as these can distort the screening performance of the model
+    across(c(author, title, abstract), ~ na_if(., "")) 
   )
 
 ris_dat_excl
@@ -188,7 +189,7 @@ ris_dat_incl <- read_ris_to_dataframe("friends_incl.ris") |>
   select(author, eppi_id, title, abstract) |>
   mutate(
     human_code = 1, #Tracking the human decision
-    across(c(author, title, abstract), ~ na_if(., "NA"))
+    across(c(author, title, abstract), ~ na_if(., ""))
   )
 
 ris_dat_incl
