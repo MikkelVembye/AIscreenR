@@ -8,6 +8,8 @@
   when using read_ris_to_dataframe()
 - Updating the default inclusion threshold and documentation hereof when
   conducting replicate screenings.
+- Removing bug in tabscreen_gpt() when using multiple reps and gpt-5
+  models
 
 ## AIscreenR 0.3.1
 
