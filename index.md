@@ -24,8 +24,8 @@ You can install the development version of AIscreenR from
 [GitHub](https://github.com/) with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("MikkelVembye/AIscreenR", build_vignettes = TRUE)
+# install.packages("remotes")
+remotes::install_github("MikkelVembye/AIscreenR", build_vignettes = TRUE)
 ```
 
 Installing the the development package along with its vignette may take
