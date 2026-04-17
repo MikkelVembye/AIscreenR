@@ -1,11 +1,11 @@
-# AIscreenR 0.3.1.9000
+# AIscreenR 0.3.1.9003
 
 ## Minor improvements
 * Updating the default inclusion threshold and documentation hereof when conducting replicate screenings to be aligned with the finding from Vembye et al. (2025).
 * Updating the handling of coding missing abstracts in the vignette now when using `read_ris_to_dataframe()`.
 
 ## Bug fixes
-* Fixed bug in `report()`.
+* Fixed bug in `report()` when rendering large amounts of text.
 * Fixed bug in `tabscreen_gpt()` when using multiple reps and gpt-5 models.
 * Correcting path in generating-disagreement-reports article.
 
