@@ -19,6 +19,9 @@
 - Fixed bug in
   [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
   when using multiple reps and gpt-5 models.
+- Fixed bug in
+  [`screen_analyzer()`](https://mikkelvembye.github.io/AIscreenR/reference/screen_analyzer.md)
+  when working with multiple prompts, models, and reps.
 - Correcting path in generating-disagreement-reports article.
 - Set max_tries in
   [`rate_limits_per_minute()`](https://mikkelvembye.github.io/AIscreenR/reference/rate_limits_per_minute.md)
