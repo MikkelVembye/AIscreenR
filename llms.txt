@@ -61,7 +61,7 @@ rate_limits
 
 In this example we have downloaded the RIS files from the
 [EPPI-Reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914), and
-the fis-files comes from the review by Filges et al. (2015) on
+the RIS files comes from the review by Filges et al. (2015) on
 family-based interventions for drug abuse reduction in young people. The
 files are included in the package for tutorial purposes only.
 
