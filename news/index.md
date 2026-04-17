@@ -25,38 +25,59 @@
 
 CRAN release: 2026-04-13
 
-- Updating documentation of tabscreen_gpt()
+- Updating documentation of
+  [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
 
 ## AIscreenR 0.3.0
 
 CRAN release: 2026-04-13
 
-- Adding tabscreen_groq() function to screen titles and abstracts using
-  Groq AI.
-- Adding tabscreen_ollama() function to screen titles and abstracts
-  using local ollama models.
-- Adding functions to read and write RIS files: read_ris_to_dataframe()
-  and save_dataframe_to_ris().
+### New features
+
+- Adding
+  [`tabscreen_groq()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_groq.md)
+  function to screen titles and abstracts using Groq AI.
+- Adding
+  [`tabscreen_ollama()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_ollama.md)
+  function to screen titles and abstracts using local ollama models.
+- Adding functions to read and write RIS files:
+  [`read_ris_to_dataframe()`](https://mikkelvembye.github.io/AIscreenR/reference/read_ris_to_dataframe.md)
+  and
+  [`save_dataframe_to_ris()`](https://mikkelvembye.github.io/AIscreenR/reference/save_dataframe_to_ris.md).
 - Adding function to generate disagreement reports:
-  generate_disagreement_report().
+  `generate_disagreement_report()`.
+- Making new refinements to the tabscreen\_\* functions. Making it
+  possible to steer the model’s (over)inclusion behavior via the
+  `overinclusive = TRUE` argument in tabscreen\_\* functions.
+
+### Further documentation
+
 - Adding articles for fine-tuning OpenAI models, generating disagreement
   reports, generating fine-tuning data and reading/writing RIS files.
 - Adding article for comparing performance of reasoning models
   (including gpt-5 models) with gpt-4o-mini.
-- Making new refinements to the tabscreen\_\* functions. Making it
-  possible to steer the model’s (over)inclusion behavior via the
-  overinclusive argument in tabscreen\_\* functions.
+
+### Minor improvements
+
 - Updated prize data, including all up-to-date models
 
 ## AIscreenR 0.2.0
 
 CRAN release: 2025-08-18
 
-- Minor change in the setup of the vignette
-- Updated prize data, including all up-to-date models
-- Adding create_fine_tune_data() and write_fine_tune_data() to generate
-  data for fine tuning OpenAI’s models
-- Adding Thomas Olsen as co-author
+- Adding Thomas Olsen as co-author.
+
+### New features
+
+- Adding
+  [`create_fine_tune_data()`](https://mikkelvembye.github.io/AIscreenR/reference/create_fine_tune_data.md)
+  and `write_fine_tune_data()` to generate data for fine tuning OpenAI’s
+  models.
+
+### Minor improvements
+
+- Minor change in the setup of the vignette.
+- Updated prize data, including all up-to-date models.
 
 ## AIscreenR 0.1.1
 
@@ -65,8 +86,9 @@ CRAN release: 2024-11-26
 - A typo in the vignette has been corrected.
 - The vignette now draws on functions from synthesisr instead of
   revtools to handle RIS files.
-- tabscreen_gpt() now treats the study ID variable as a factor to keep
-  original order of the dataset with titles and abstracts.
+- [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
+  now treats the study ID variable as a factor to keep original order of
+  the dataset with titles and abstracts.
 
 ## AIscreenR 0.1.0
 
