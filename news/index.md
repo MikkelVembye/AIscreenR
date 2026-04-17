@@ -1,6 +1,6 @@
 # Changelog
 
-## AIscreenR 0.3.1.9003
+## AIscreenR 0.3.1.9004
 
 ### Minor improvements
 
@@ -20,6 +20,9 @@
   [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
   when using multiple reps and gpt-5 models.
 - Correcting path in generating-disagreement-reports article.
+- Set max_tries in
+  [`rate_limits_per_minute()`](https://mikkelvembye.github.io/AIscreenR/reference/rate_limits_per_minute.md)
+  to avoid message from httr2.
 
 ## AIscreenR 0.3.1
 
