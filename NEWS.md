@@ -7,6 +7,7 @@
 ## Bug fixes
 * Fixed bug in `report()` when rendering large amounts of text.
 * Fixed bug in `tabscreen_gpt()` when using multiple reps and gpt-5 models.
+* Fixed bug in `screen_analyzer()` when working with multiple prompts, models, and reps.
 * Correcting path in generating-disagreement-reports article.
 * Set max_tries in `rate_limits_per_minute()` to avoid message from httr2.
 

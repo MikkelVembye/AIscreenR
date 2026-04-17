@@ -139,7 +139,8 @@ screen_analyzer <- function(x, human_decision = human_code, key_result = TRUE){
         )
 
     }) |>
-      purrr::list_rbind()
+      purrr::list_rbind() |> 
+      dplyr::arrange(promptid)
 
     if (key_result) {
       res_p_incl <-
