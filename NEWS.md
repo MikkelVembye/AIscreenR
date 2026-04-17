@@ -1,4 +1,4 @@
-# AIscreenR 0.3.1.9003
+# AIscreenR 0.3.1.9004
 
 ## Minor improvements
 * Updating the default inclusion threshold and documentation hereof when conducting replicate screenings to be aligned with the finding from Vembye et al. (2025).
@@ -8,6 +8,7 @@
 * Fixed bug in `report()` when rendering large amounts of text.
 * Fixed bug in `tabscreen_gpt()` when using multiple reps and gpt-5 models.
 * Correcting path in generating-disagreement-reports article.
+* Set max_tries in `rate_limits_per_minute()` to avoid message from httr2.
 
 # AIscreenR 0.3.1
 

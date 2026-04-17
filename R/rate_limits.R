@@ -106,6 +106,7 @@ rate_limits_per_minute <- function(
     httr2::req_body_json(body) |>
     httr2::req_retry(
       is_transient = is_trans,
+      max_tries = 2 # Setting retries to 2 to avoid message from httr2
     ) |>
     httr2::req_user_agent("AIscreenR (http://mikkelvembye.github.io/AIscreenR/)")
 
