@@ -1,6 +1,6 @@
 # Changelog
 
-## AIscreenR 0.3.1.9000
+## AIscreenR 0.3.1.9003
 
 ### Minor improvements
 
@@ -14,7 +14,8 @@
 ### Bug fixes
 
 - Fixed bug in
-  [`report()`](https://mikkelvembye.github.io/AIscreenR/reference/report.md).
+  [`report()`](https://mikkelvembye.github.io/AIscreenR/reference/report.md)
+  when rendering large amounts of text.
 - Fixed bug in
   [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
   when using multiple reps and gpt-5 models.
