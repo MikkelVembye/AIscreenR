@@ -220,3 +220,83 @@ save_fine_tune_data(
 After running this code, you will have `training_data.jsonl` and
 `validation_data.jsonl` files. When you create a fine-tuning job on the
 OpenAI platform, you can upload both of these files.
+
+## Step 6: Uploading to OpenAI and Starting Fine-Tuning
+
+To upload the files to OpenAI, navigate to the OpenAI platform and go to
+the fine-tuning section. This can be found using the following link:
+[OpenAI Platform: Fine-tuning](https://platform.openai.com/finetune).
+Here you can see previous fine-tuning jobs and create new ones. When
+creating a new fine-tuning job.
+
+To create a new fine-tuning job, click the “Create” button. See picture
+below for reference. ![Creating a fine-tuning
+job](figures%5CInkedfine_tune_LI.jpg)
+
+After clicking “Create”, you will firstly be prompted to select choose
+the fine-tuning method. For this we recommend selecting “Supervised”,
+which is the most appropriate method for classification tasks. For more
+information see: [OpenAI Docs: Model
+optimization](https://developers.openai.com/api/docs/guides/model-optimization).
+After selecting the method, you will be asked to choose the model you
+want to fine-tune. This will be the base model that your fine-tuned
+version will be built upon. After selecting the model, you will be asked
+to upload your training and validation files. You can upload the
+`training_data.jsonl` and `validation_data.jsonl` files that you created
+in the previous steps. Here you can also specify the hyperparameters for
+your fine-tuning job, such as the number of epochs, batch size, and
+learning rate. Once you have configured all the settings, you can start
+the fine-tuning process. For more detailed information on fine-tuning
+jobs, see the OpenAI documentation: [OpenAI Docs: Fine-tuning
+guide](https://developers.openai.com/api/docs/guides/supervised-fine-tuning).
+
+For reference see the picture below, which shows the interface for
+creating a fine-tuning job on the OpenAI platform.
+
+![](figures%5Ccreate_model.png)
+
+*Creating a fine-tuning job*
+
+## Step 7: Using the fine-tuned model for screening
+
+After your fine-tuning job is complete, you will have a new model that
+is specifically trained on your screening task. You can use this
+fine-tuned model in the
+[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
+function by specifying the `model` argument with the name of your
+fine-tuned model and setting the `custom_model` argument to TRUE. This
+will allow you to leverage the improved performance of the fine-tuned
+model for your screening tasks.
+
+First ensure that your fine-tuning job is completed successfully and
+that the performance metrics are satisfactory. Once the fine-tuning
+process is complete, you need to note the name of your fine-tuned model.
+The model name is specified in the “Output model” field of the
+fine-tuning job details page on the OpenAI platform. See picture below
+for reference. ![Fine-tuning job details](figures%5Cmodel_done.png)
+
+Once you have the model name, you can use it in the
+[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
+function as follows:
+
+``` r
+# Example of using the fine-tuned model in tabscreen_gpt
+result_obj <- 
+  tabscreen_gpt(
+    data = data, # The dataset containing the studies to be screened
+    prompt = prompt, # The prompt to use for screening, should be the same as the one used for fine-tuning
+    studyid = studyid, # The column in the dataset that contains the study IDs
+    title = title, # The column in the dataset that contains the study titles
+    abstract = abstract, # The column in the dataset that contains the study abstracts
+    model = "ft:gpt-4o-mini-2024-07-18:vivecampbell:test-validation:ArhB2f8d", # The model to use for screening, now set to the name of your fine-tuned model
+    reps = 1, # Number of repetitions (set to 1 for this example)
+    decision_description = FALSE, # Whether to include the model's reasoning in the output (set to FALSE for this comparison)
+    custom_model = TRUE # Set to TRUE to indicate that we are using a fine-tuned model
+)
+```
+
+The
+[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
+function will now use your fine-tuned model for screening, which should
+yield improved performance on your specific task compared to using a
+base model.

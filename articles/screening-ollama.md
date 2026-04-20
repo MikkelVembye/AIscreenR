@@ -21,18 +21,67 @@ Ollama models are typically large and require substantial local compute
 resources (e.g., RAM, disk space, and possibly a GPU) to run
 efficiently.
 
-## Get started
+### Get started
 
-First the user is requiered to install Ollama locally. Please refer to
-the [Ollama documentation](https://ollama.com/docs/) for installation
-instructions. The user is also requiered to have installed the preferred
-Ollama model(s) locally. You can check which models you have installed
-by running `ollama list` in your terminal. Available models can be found
-in the [Ollama model directory](https://ollama.com/models). To install a
-model, run `ollama pull <model_name>` in your terminal or install
-directly in the Ollama app. Be aware that not all models support
-function-calling. Be sure to use a model that supports this feature,
-e.g., `llama3.2:latest`.
+Before using
+[`tabscreen_ollama()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_ollama.md),
+make sure Ollama is installed and at least one compatible model is
+available locally (or via cloud). For more information on Ollama cloud
+see [Ollama Cloud](https://docs.ollama.com/cloud).
+
+#### 1) Install Ollama
+
+Install Ollama from the official website: <https://ollama.com/download>.
+
+#### 2) Check whether Ollama is running and list local models
+
+You can view locally installed models with:
+
+``` bash
+ollama ls
+```
+
+If this returns an empty list, you need to pull at least one model
+before screening.
+
+#### 3) Find a model to use
+
+Browse available models in the official model library:
+<https://ollama.com/models>
+
+Choose a model that supports tool/function-calling, as
+[`tabscreen_ollama()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_ollama.md)
+relies on structured output. A model that supports tool/function-calling
+will have a `tools` tag in model documentation. An example model that
+supports tools is `llama3.2:latest`.
+
+![](figures%5Collama_llama32.png)
+
+*llama3.2:latest documentation*.
+
+#### 4) Install (pull) a model locally
+
+Pull the selected model in your terminal. For example:
+
+``` bash
+ollama pull llama3.2:latest
+```
+
+You can then confirm installation again with:
+
+``` bash
+ollama ls
+```
+
+![](figures%5Collama_installation.png)
+
+*ollama installation and verification of llama3.2:latest*.
+
+Note: An alternative way to install models is through the Ollama desktop
+app, which provides an interface for managing models and interacting
+with the local Ollama server. However, we recommend using the terminal
+for installation to ensure the correct model version is installed and to
+checking the model’s tool/function-calling capabilities.
 
 ### Data
 

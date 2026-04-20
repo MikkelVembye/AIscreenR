@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AIscreenR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1.9007</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,14 +76,41 @@
     <section class="section level2"><h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>Screening titles and abstracts through online APIs can raise privacy concerns and reproducibility challenges. This vignette introduces <code><a href="../reference/tabscreen_ollama.html">tabscreen_ollama()</a></code>, a function that uses locally hosted Ollama models screen titles and abstracts while maintaining data privacy and control. This function builds on the <code><a href="../reference/tabscreen_gpt.tools.html">tabscreen_gpt()</a></code> approach, adapting it for local execution with Ollama models. Therefore, the output structure and key arguments remain the same but data remains on the local machine. This gives users full control over model versions and data handling, making it suitable for sensitive or regulated datasets. Furthermore, this approach allows users to use all Ollama models including their own custom or finetuned models as long as these are installed within the ollama framework. Using Ollama locally also eliminates the need for API keys. The user should however be aware that Ollama models are typically large and require substantial local compute resources (e.g., RAM, disk space, and possibly a GPU) to run efficiently.</p>
-</section><section class="section level2"><h2 id="get-started">Get started<a class="anchor" aria-label="anchor" href="#get-started"></a>
-</h2>
-<p>First the user is requiered to install Ollama locally. Please refer to the <a href="https://ollama.com/docs/" class="external-link">Ollama documentation</a> for installation instructions. The user is also requiered to have installed the preferred Ollama model(s) locally. You can check which models you have installed by running <code>ollama list</code> in your terminal. Available models can be found in the <a href="https://ollama.com/models" class="external-link">Ollama model directory</a>. To install a model, run <code>ollama pull &lt;model_name&gt;</code> in your terminal or install directly in the Ollama app. Be aware that not all models support function-calling. Be sure to use a model that supports this feature, e.g., <code>llama3.2:latest</code>.</p>
-<section class="level2"><h3 id="data">Data<a class="anchor" aria-label="anchor" href="#data"></a>
+<section class="level2"><h3 id="get-started">Get started<a class="anchor" aria-label="anchor" href="#get-started"></a>
+</h3>
+<p>Before using <code><a href="../reference/tabscreen_ollama.html">tabscreen_ollama()</a></code>, make sure Ollama is installed and at least one compatible model is available locally (or via cloud). For more information on Ollama cloud see <a href="https://docs.ollama.com/cloud" class="external-link">Ollama Cloud</a>.</p>
+<section class="level3"><h4 id="install-ollama">1) Install Ollama<a class="anchor" aria-label="anchor" href="#install-ollama"></a>
+</h4>
+<p>Install Ollama from the official website: <a href="https://ollama.com/download" class="external-link">https://ollama.com/download</a>.</p>
+</section><section class="level3"><h4 id="check-whether-ollama-is-running-and-list-local-models">2) Check whether Ollama is running and list local models<a class="anchor" aria-label="anchor" href="#check-whether-ollama-is-running-and-list-local-models"></a>
+</h4>
+<p>You can view locally installed models with:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ollama</span> ls</span></code></pre></div>
+<p>If this returns an empty list, you need to pull at least one model before screening.</p>
+</section><section class="level3"><h4 id="find-a-model-to-use">3) Find a model to use<a class="anchor" aria-label="anchor" href="#find-a-model-to-use"></a>
+</h4>
+<p>Browse available models in the official model library: <a href="https://ollama.com/models" class="external-link">https://ollama.com/models</a></p>
+<p>Choose a model that supports tool/function-calling, as <code><a href="../reference/tabscreen_ollama.html">tabscreen_ollama()</a></code> relies on structured output. A model that supports tool/function-calling will have a <code>tools</code> tag in model documentation. An example model that supports tools is <code>llama3.2:latest</code>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure><p><img src="figures%5Collama_llama32.png"></p>
+<figcaption><em>llama3.2:latest documentation</em>.</figcaption></figure>
+</div>
+</section><section class="level3"><h4 id="install-pull-a-model-locally">4) Install (pull) a model locally<a class="anchor" aria-label="anchor" href="#install-pull-a-model-locally"></a>
+</h4>
+<p>Pull the selected model in your terminal. For example:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ollama</span> pull llama3.2:latest</span></code></pre></div>
+<p>You can then confirm installation again with:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ollama</span> ls</span></code></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure><p><img src="figures%5Collama_installation.png"></p>
+<figcaption><em>ollama installation and verification of llama3.2:latest</em>.</figcaption></figure>
+</div>
+<p>Note: An alternative way to install models is through the Ollama desktop app, which provides an interface for managing models and interacting with the local Ollama server. However, we recommend using the terminal for installation to ensure the correct model version is installed and to checking the model’s tool/function-calling capabilities.</p>
+</section></section><section class="level2"><h3 id="data">Data<a class="anchor" aria-label="anchor" href="#data"></a>
 </h3>
 <p>Data is requiered to be in the same format as for <code><a href="../reference/tabscreen_gpt.tools.html">tabscreen_gpt()</a></code>, i.e. a data.frame or tibble with at least three columns: <code>studyid</code>, <code>title</code>, and <code>abstract</code>. For demonstration purposes, we use a small example dataset from the <code>AIscreenR</code> package.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load example data</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"filges2015_dat"</span>, package <span class="op">=</span> <span class="st">"AIscreenR"</span><span class="op">)</span></span>
 <span><span class="va">filges2015_dat</span> <span class="op">&lt;-</span> <span class="va">filges2015_dat</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="op">]</span> <span class="co"># Using only first 5 rows for demonstration</span></span>
@@ -119,7 +146,7 @@
 </h3>
 <p>We load the required packages.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Loading packages</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mikkelvembye.github.io/AIscreenR/">AIscreenR</a></span><span class="op">)</span>  <span class="co"># Used to screen and calculate gpt vs. human performance</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span>     <span class="co"># Used to work with tibbles</span></span>
@@ -132,7 +159,7 @@
 </h3>
 <p>The user should define a clear and specific prompt to guide the model’s screening decisions. Below is an example prompt for identifying studies related to Functional Family Therapy (FFT).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">prompt</span> <span class="op">&lt;-</span> <span class="st">"Evaluate the following study based on the selection criteria</span></span>
 <span><span class="st"> for a systematic review on the effects of family-based interventions on drug abuse</span></span>
 <span><span class="st"> reduction for young people in treatment for non-opioid drug use.</span></span>
@@ -163,7 +190,7 @@
 </h3>
 <p>We can now run the <code><a href="../reference/tabscreen_ollama.html">tabscreen_ollama()</a></code> function with our data and prompt. For this example, we use the <code>llama3.2:latest</code> model, which supports function-calling. We also choose not to get explanations for the decisions (decision_description = FALSE). A lot of other arguments are available, please see the function documentation for details.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Set parallel processing plan</span></span>
 <span><span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="fu">future</span><span class="fu">::</span><span class="va"><a href="https://future.futureverse.org/reference/multisession.html" class="external-link">multisession</a></span><span class="op">)</span></span>
 <span></span>
@@ -186,7 +213,7 @@
 </h2>
 <p>The results are stored in a list with several components. The main output from the GPT is in <code>results$answer_data</code>. Here we can select and display relevant columns to compare human and model decisions. Other components include <code>error_data</code> (failed requests) and, if reps &gt; 1, <code>answer_data_aggregated</code> (summary per study across reps). From the <code>results</code> object, we can also see metadata such as <code>run_date</code> and <code>arg_list</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Select the relevant output columns</span></span>
 <span></span>
 <span><span class="va">results</span><span class="op">$</span><span class="va">answer_data</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">author</span>, <span class="va">human_code</span>, <span class="va">decision_gpt</span>, <span class="va">decision_binary</span><span class="op">)</span></span>
