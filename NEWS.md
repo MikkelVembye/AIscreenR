@@ -3,6 +3,7 @@
 ## Minor improvements
 * Updating the default inclusion threshold and documentation hereof when conducting replicate screenings to be aligned with the finding from Vembye et al. (2025).
 * Updating the handling of coding missing abstracts in the vignette now when using `read_ris_to_dataframe()`.
+* Better error messages for unknown GPT models when using newer or fine-tuned models.
 
 ## Bug fixes
 * Fixed bug in `report()` when rendering large amounts of text.

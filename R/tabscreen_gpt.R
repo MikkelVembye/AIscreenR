@@ -323,7 +323,9 @@ tabscreen_gpt <- tabscreen_gpt.tools <- function(
 
   # Stop if wrong models are called
   if (!custom_model){
-    if(any(!model %in% model_prizes$model)) stop("Unknown gpt model(s) used - check model name(s).")
+    if(any(!model %in% model_prizes$model)) {
+      stop("Unknown gpt model(s) used - check model name(s) or set `custom_model = TRUE` if you are using a fine-tuned or newer model not included in the package as default!")
+    }
   }
 
   # Stop if top_p is set for gpt-5 models
