@@ -231,7 +231,7 @@ creating a new fine-tuning job.
 
 To create a new fine-tuning job, click the “Create” button. See picture
 below for reference. ![Creating a fine-tuning
-job](figures%5CInkedfine_tune_LI.jpg)
+job](figures/Inkedfine_tune_LI.jpg)
 
 After clicking “Create”, you will firstly be prompted to select choose
 the fine-tuning method. For this we recommend selecting “Supervised”,
@@ -253,7 +253,7 @@ guide](https://developers.openai.com/api/docs/guides/supervised-fine-tuning).
 For reference see the picture below, which shows the interface for
 creating a fine-tuning job on the OpenAI platform.
 
-![](figures%5Ccreate_model.png)
+![](figures/create_model.png)
 
 *Creating a fine-tuning job*
 
@@ -273,7 +273,7 @@ that the performance metrics are satisfactory. Once the fine-tuning
 process is complete, you need to note the name of your fine-tuned model.
 The model name is specified in the “Output model” field of the
 fine-tuning job details page on the OpenAI platform. See picture below
-for reference. ![Fine-tuning job details](figures%5Cmodel_done.png)
+for reference. ![Fine-tuning job details](figures/model_done.png)
 
 Once you have the model name, you can use it in the
 [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)

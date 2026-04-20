@@ -55,7 +55,7 @@ relies on structured output. A model that supports tool/function-calling
 will have a `tools` tag in model documentation. An example model that
 supports tools is `llama3.2:latest`.
 
-![](figures%5Collama_llama32.png)
+![](figures/ollama_llama32.png)
 
 *llama3.2:latest documentation*.
 
@@ -73,7 +73,7 @@ You can then confirm installation again with:
 ollama ls
 ```
 
-![](figures%5Collama_installation.png)
+![](figures/ollama_installation.png)
 
 *ollama installation and verification of llama3.2:latest*.
 
