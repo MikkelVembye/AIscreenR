@@ -12,9 +12,6 @@
   [`read_ris_to_dataframe()`](https://mikkelvembye.github.io/AIscreenR/reference/read_ris_to_dataframe.md).
 - Better error messages for unknown GPT models when using newer or
   fine-tuned models.
-- Add installation guide to ollama article.
-- Include an example of fine-tuning a model and using it to fine-tuning
-  article.
 
 ### Bug fixes
 
@@ -31,6 +28,12 @@
 - Set max_tries in
   [`rate_limits_per_minute()`](https://mikkelvembye.github.io/AIscreenR/reference/rate_limits_per_minute.md)
   to avoid message from httr2.
+
+### Further documentation
+
+- Add installation guide to ollama article.
+- Include an example of fine-tuning a model and using it to fine-tuning
+  article.
 
 ## AIscreenR 0.3.1
 
