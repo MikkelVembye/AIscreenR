@@ -190,19 +190,19 @@ After running this code, you will have `training_data.jsonl` and `validation_dat
 To upload the files to OpenAI, navigate to the OpenAI platform and go to the fine-tuning section. This can be found using the following link: [OpenAI Platform: Fine-tuning](https://platform.openai.com/finetune). Here you can see previous fine-tuning jobs and create new ones. When creating a new fine-tuning job.
 
 To create a new fine-tuning job, click the "Create" button. See picture below for reference.
-![*Creating a fine-tuning job*](figures\Inkedfine_tune_LI.jpg){#fig:fine_tune}
+![*Creating a fine-tuning job*](figures/Inkedfine_tune_LI.jpg){#fig:fine_tune}
 
 After clicking "Create", you will firstly be prompted to select choose the fine-tuning method. For this we recommend selecting "Supervised", which is the most appropriate method for classification tasks. For more information see: [OpenAI Docs: Model optimization](https://developers.openai.com/api/docs/guides/model-optimization). After selecting the method, you will be asked to choose the model you want to fine-tune. This will be the base model that your fine-tuned version will be built upon. After selecting the model, you will be asked to upload your training and validation files. You can upload the `training_data.jsonl` and `validation_data.jsonl` files that you created in the previous steps. Here you can also specify the hyperparameters for your fine-tuning job, such as the number of epochs, batch size, and learning rate. Once you have configured all the settings, you can start the fine-tuning process. For more detailed information on fine-tuning jobs, see the OpenAI documentation: [OpenAI Docs: Fine-tuning guide](https://developers.openai.com/api/docs/guides/supervised-fine-tuning).
 
 For reference see the picture below, which shows the interface for creating a fine-tuning job on the OpenAI platform.
 
-![*Creating a fine-tuning job*](figures\create_model.png){#fig:fine_tune_job}
+![*Creating a fine-tuning job*](figures/create_model.png){#fig:fine_tune_job}
 
 ## Step 7: Using the fine-tuned model for screening
 After your fine-tuning job is complete, you will have a new model that is specifically trained on your screening task. You can use this fine-tuned model in the `tabscreen_gpt()` function by specifying the `model` argument with the name of your fine-tuned model and setting the `custom_model` argument to TRUE. This will allow you to leverage the improved performance of the fine-tuned model for your screening tasks.
 
 First ensure that your fine-tuning job is completed successfully and that the performance metrics are satisfactory. Once the fine-tuning process is complete, you need to note the name of your fine-tuned model. The model name is specified in the "Output model" field of the fine-tuning job details page on the OpenAI platform. See picture below for reference. 
-![*Fine-tuning job details*](figures\model_done.png){#fig:model_done}
+![*Fine-tuning job details*](figures/model_done.png){#fig:model_done}
 
 Once you have the model name, you can use it in the `tabscreen_gpt()` function as follows:
 ```{r}

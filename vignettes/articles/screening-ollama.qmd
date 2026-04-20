@@ -58,7 +58,7 @@ Browse available models in the official model library:
 
 Choose a model that supports tool/function-calling, as `tabscreen_ollama()` relies on structured output. A model that supports tool/function-calling will have a `tools` tag in model documentation. An example model that supports tools is `llama3.2:latest`.
 
-![*llama3.2:latest documentation*.](figures\ollama_llama32.png)
+![*llama3.2:latest documentation*.](figures/ollama_llama32.png)
 
 ### 4) Install (pull) a model locally
 Pull the selected model in your terminal. For example:
@@ -73,7 +73,7 @@ You can then confirm installation again with:
 ollama ls
 ```
 
-![*ollama installation and verification of llama3.2:latest*.](figures\ollama_installation.png)
+![*ollama installation and verification of llama3.2:latest*.](figures/ollama_installation.png)
 
 Note: An alternative way to install models is through the Ollama desktop app, which provides an interface for managing models and interacting with the local Ollama server. However, we recommend using the terminal for installation to ensure the correct model version is installed and to checking the model's tool/function-calling capabilities.
 
