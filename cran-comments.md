@@ -1,13 +1,18 @@
 ## Submission
 
-This is a patch version update of AIscreenR. The package provides functions for conducting title and abstract screening in systematic reviews with AI models, such as OpenAI's GPT (Generative Pre-trained Transformer) API (Application Programming Interface) models. In this submission, we have 
+This is a patch version update of AIscreenR. The package provides functions for conducting title and abstract screening in systematic reviews with AI models, such as OpenAI's GPT (Generative Pre-trained Transformer) API (Application Programming Interface) models. The most substantial changes in this version is that we have: 
 
-1) Updating documentation of main function in the package, i.e., tabscreen_gpt()
-
+1) Fixed bug in `report()` when rendering large amounts of text.
+2) Fixed bug in `tabscreen_gpt()` when using multiple reps and gpt-5 models.
+3) Fixed bug in `screen_analyzer()` when working with multiple prompts, models, and reps.
+4) Set max_tries in `rate_limits_per_minute()` to avoid message from httr2.
+5) Updating the default inclusion threshold and documentation hereof when conducting replicate screenings to be aligned with the finding from Vembye et al. (2025).
+6) Updating the handling of coding missing abstracts in the vignette now when using `read_ris_to_dataframe()`.
+7) Better error messages for unknown GPT models when using newer or fine-tuned models.
 
 ## Test environments
 
-* local Windows 10 Enterprise R 4.5.2 
+* local Windows 10 Enterprise R 4.5.2 and R 4.5.3 
 * ubuntu 20.04.3 LTS (on Github), R devel, release, oldrelease
 * macOS-latest (on Github), R release
 * windows-latest (on Github), R release
@@ -19,13 +24,9 @@ This is a patch version update of AIscreenR. The package provides functions for 
 
 As for previous versions, there were no ERRORs and WARNINGs.
 
-There was 2 NOTEs:
+There was 1 NOTE:
 
-* On win-builder release and oldrelease:
-
-  Author field differs from that derived from Authors@R
-  Author:    'Mikkel H. Vembye [aut, cre] (ORCID: <https://orcid.org/0000-0001-9071-0724>), Thomas Olsen [aut]'
-  Authors@R: 'Mikkel H. Vembye [aut, cre] (<https://orcid.org/0000-0001-9071-0724>), Thomas Olsen [aut]'
+* On win-builder release, devel, and oldrelease:
 
   Found the following (possibly) invalid URLs:
   URL: https://psycnet.apa.org/record/2026-37236-001
