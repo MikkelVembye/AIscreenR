@@ -10,6 +10,8 @@
 - Updating the handling of coding missing abstracts in the vignette now
   when using
   [`read_ris_to_dataframe()`](https://mikkelvembye.github.io/AIscreenR/reference/read_ris_to_dataframe.md).
+- Better error messages for unknown GPT models when using newer or
+  fine-tuned models.
 
 ### Bug fixes
 
