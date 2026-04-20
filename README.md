@@ -249,5 +249,5 @@ Systematic Review. *Campbell Systematic Reviews*.
 Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W.
 (2025). Generative pretrained transformer models can function as highly
 reliable second screeners of titles and abstracts in systematic reviews:
-A proof of concept and common guidelines. *Psychological Methods*.
+A proof of concept and common guidelines. *Psychological Methods*. 1-20
 <https://psycnet.apa.org/record/2026-37236-001>.
