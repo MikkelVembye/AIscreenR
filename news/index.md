@@ -1,12 +1,10 @@
 # Changelog
 
-## AIscreenR (development version)
+## AIscreenR 0.3.2.9000
 
 ## AIscreenR 0.3.2
 
 CRAN release: 2026-04-20
-
-## AIscreenR 0.3.1.9008
 
 ### Minor improvements
 

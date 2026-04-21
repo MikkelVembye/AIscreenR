@@ -13,8 +13,8 @@
 
 ### Generating fine-tuning data
 
-- [Generating Fine-Tuning
-  Data](https://mikkelvembye.github.io/AIscreenR/articles/generating-fine-tune-data.md):
+- [Fine-Tuning
+  Models](https://mikkelvembye.github.io/AIscreenR/articles/generating-fine-tune-data.md):
 
 ### Reading and writing RIS files
 

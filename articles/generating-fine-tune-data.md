@@ -1,4 +1,4 @@
-# Generating Fine-Tuning Data
+# Fine-Tuning Models
 
 If you experience that the GPT model screening underperform, a solution
 is to fine-tune the model on your specific screening task. This article
