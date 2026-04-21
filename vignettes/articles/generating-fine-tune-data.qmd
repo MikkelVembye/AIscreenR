@@ -1,5 +1,5 @@
 ---
-title: "Generating Fine-Tuning Data"
+title: "Fine-Tuning Models"
 format:
   html:
     code-fold: false
@@ -7,7 +7,7 @@ format:
     code-summary: "Show the code"
     toc: true
 vignette: |
-  %\VignetteIndexEntry{Generating Fine-Tune Data}
+  %\VignetteIndexEntry{Fine-Tuning Models}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 execute: 
