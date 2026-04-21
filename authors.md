@@ -10,7 +10,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/MikkelVembye/AIscreenR/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/MikkelVembye/AIscreenR/blob/v0.3.2/DESCRIPTION)
 
 Vembye M, Olsen T (2026). *AIscreenR: AI Screening Tools in R for
 Systematic Reviewing*. R package version 0.3.2,
