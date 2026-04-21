@@ -117,7 +117,7 @@ screen_analyzer <- function(x, human_decision = human_code, key_result = TRUE){
   # Calculating results performance
   res <- .calc_perform(dat, hum_decision = {{ human_decision }})
 
-  if (key_result) res <- res |> dplyr::select(promptid, model, reps, top_p, p_agreement, recall, specificity)
+  if (key_result) res <- res |> dplyr::select(promptid, model, reps, top_p, p_agreement, recall, specificity, n_screened, n_missing)
 
   if ("answer_data_aggregated" %in% names || is_gpt_agg_tbl(x)){
 
