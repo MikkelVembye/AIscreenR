@@ -2,6 +2,11 @@
 
 ## AIscreenR 0.3.2.9000
 
+### Minor improvements
+
+- Adding the n_screened and n_missing variables to the key results in
+  [`screen_analyzer()`](https://mikkelvembye.github.io/AIscreenR/reference/screen_analyzer.md).
+
 ## AIscreenR 0.3.2
 
 CRAN release: 2026-04-20
