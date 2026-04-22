@@ -5,7 +5,7 @@ output_file: README.md
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-<a href="https://mikkelvembye.github.io/AIscreenR/"><img src="man/figures/AIscreenR_hex_light.png" align="right" width="180"/></a>
+# AIscreenR <a href="https://mikkelvembye.github.io/AIscreenR/"><img src="man/figures/AIscreenR_hex_light.png" align="right" width="138"/></a>
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -18,14 +18,13 @@ knitr::opts_chunk$set(
 )
 ```
 
-# AIscreenR: AI screening tools in R for systematic reviewing
-
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MikkelVembye/AIscreenR/actions/workflows/R-CMD-check.yaml) [![CRAN Version](https://www.r-pkg.org/badges/version/AIscreenR)](https://cran.r-project.org/package=AIscreenR) [![Monthly Downloads](https://cranlogs.r-pkg.org/badges/AIscreenR)](https://cranlogs.r-pkg.org/badges/AIscreenR) [![Total Downloads](https://cranlogs.r-pkg.org/badges/grand-total/AIscreenR)](https://cranlogs.r-pkg.org/badges/grand-total/AIscreenR)
 
 <!-- badges: end -->
 
+## AI screening tools in R for systematic reviewing 
 The goal of AIscreenR is to use AI tools to support screening processes (including title and abstract screening) in systematic reviews and related literature reviews. At the current stage, the main aim of the `AIscreenR` package is to use generative pre-trained transformer (GPT) models as second screeners of titles and abstracts or alternatively to reduce the number of references needed to be screened by humans. For validation measures and guidance on how to conduct reliable title and abstract screenings with GPT API models, see [Vembye et al. (2025)](https://psycnet.apa.org/record/2026-37236-001).
 
 ## Installation
