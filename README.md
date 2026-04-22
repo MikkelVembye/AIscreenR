@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-<a href="https://mikkelvembye.github.io/AIscreenR/"><img src="man/figures/AIscreenR_hex.png" align="right" width="180"/></a>
+<a href="https://mikkelvembye.github.io/AIscreenR/"><img src="man/figures/AIscreenR_hex_light.png" align="right" width="180"/></a>
 
 # AIscreenR: AI screening tools in R for systematic reviewing
 
