@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# AIscreenR <a href="https://mikkelvembye.github.io/AIscreenR/"><img src="man/figures/AIscreenR_hex_light.png" align="right" width="138"/></a>
+# AIscreenR: AI screening tools in R for systematic reviewing <a href="https://mikkelvembye.github.io/AIscreenR/"><img src="man/figures/AIscreenR_hex_light.png" align="right" width="138"/></a>
 
 <!-- badges: start -->
 
@@ -14,8 +14,6 @@ Downloads](https://cranlogs.r-pkg.org/badges/AIscreenR)](https://cranlogs.r-pkg.
 Downloads](https://cranlogs.r-pkg.org/badges/grand-total/AIscreenR)](https://cranlogs.r-pkg.org/badges/grand-total/AIscreenR)
 
 <!-- badges: end -->
-
-## AI screening tools in R for systematic reviewing
 
 The goal of AIscreenR is to use AI tools to support screening processes
 (including title and abstract screening) in systematic reviews and
