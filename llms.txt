@@ -1,6 +1,6 @@
-# AIscreenR: AI screening tools in R for systematic reviewing
+# AIscreenR [![](reference/figures/AIscreenR_hex_light.png)](https://mikkelvembye.github.io/AIscreenR/)
 
-[![](reference/figures/AIscreenR_hex_light.png)](https://mikkelvembye.github.io/AIscreenR/)
+## AI screening tools in R for systematic reviewing
 
 The goal of AIscreenR is to use AI tools to support screening processes
 (including title and abstract screening) in systematic reviews and
