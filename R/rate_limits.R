@@ -76,7 +76,7 @@ rate_limits_per_minute <- function(
   # Set endpoint URL and transient handler based on AI_tool
   if ("OpenAI" %in% AI_tool) {
 
-    api_url <- "https://api.openai.com/v1/chat/completions"
+    api_url <- "https://api.openai.com/v1/responses"
     is_trans <- gpt_is_transient
 
   } else if ("Groq" %in% AI_tool) {
@@ -88,13 +88,20 @@ rate_limits_per_minute <- function(
     stop("AI_tool must be 'OpenAI' or 'Groq'.")
   }
 
-  body <- list(
+  openai_body <- list(
+    model = model,
+    input = "1+1"
+  )
+
+  groq_body <- list(
     model = model,
     messages = list(list(
       role = "user",
       content = "1+1"
     ))
   )
+  
+  body <- if ("Groq" %in% AI_tool) groq_body else openai_body
 
   req <-
     httr2::request(api_url) |>

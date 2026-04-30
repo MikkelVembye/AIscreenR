@@ -1,27 +1,22 @@
 # Updated test for tabscreen_gpt.default functions
 
-test_that(".gpt_engine return errors correctly", {
+test_that(".gpt_engine_responses return errors correctly", {
 
   tools_choice_name <- list(
     type = "function",
-    "function" = list(
-      name = "inclusion_decision_simple"
-    )
+    name = "inclusion_decision_simple"
   )
 
   # Specifying unknown model
   body <- list(
     model = "gpt-7",
-    messages = list(list(
-      role = "user",
-      content = question
-    )),
+    input = question,
     tools = tools_simple,
     tool_choice = tools_choice_name,
     top_p = 1
   )
 
-  res <- .gpt_engine(
+  res <- .gpt_engine_responses(
     body = body,
     RPM = 10000,
     timeinf = T,
@@ -32,26 +27,23 @@ test_that(".gpt_engine return errors correctly", {
     is_trans = gpt_is_transient,
     back = NULL,
     aft = NULL,
-    endpoint_url = "https://api.openai.com/v1/chat/completions"
+    endpoint_url = "https://api.openai.com/v1/responses"
   )
 
 
   expect_equal(ncol(res), 7)
-  expect_true(stringr::str_detect(res$decision_gpt, "404"))
+  expect_true(stringr::str_detect(res$decision_gpt, "400"))
 
   # Specifying wrong api key
   body <- list(
     model = "gpt-4o",
-    messages = list(list(
-      role = "user",
-      content = question
-    )),
+    input = question,
     tools = tools_simple,
     tool_choice = tools_choice_name,
     top_p = 1
   )
 
-  res <- .gpt_engine(
+  res <- .gpt_engine_responses(
     body = body,
     RPM = 10000,
     timeinf = T,
@@ -62,55 +54,14 @@ test_that(".gpt_engine return errors correctly", {
     is_trans = gpt_is_transient,
     back = NULL,
     aft = NULL,
-    endpoint_url = "https://api.openai.com/v1/chat/completions"
+    endpoint_url = "https://api.openai.com/v1/responses"
   )
 
   expect_equal(ncol(res), 7)
   expect_true(stringr::str_detect(res$decision_gpt, "401"))
 
-  # Specifying ineligible role
-  body <- list(
-    model = "gpt-4o",
-    messages = list(list(
-      role = "use",
-      content = question
-    )),
-    tools = tools_simple,
-    tool_choice = tools_choice_name,
-    top_p = 1
-  )
-
-  res <- .gpt_engine(
-    body = body,
-    RPM = 10000,
-    timeinf = T,
-    tokeninf = T,
-    key = get_api_key(),
-    max_t = 4,
-    max_s = 10,
-    is_trans = gpt_is_transient,
-    back = NULL,
-    aft = NULL,
-    endpoint_url = "https://api.openai.com/v1/chat/completions"
-  )
-
-  expect_equal(ncol(res), 7)
-  expect_true(stringr::str_detect(res$decision_gpt, "400"))
-
-  # Specifying ineligible role
-  body <- list(
-    model = "gpt-4o",
-    messages = list(list(
-      role = "use",
-      content = question
-    )),
-    tools = tools_simple,
-    tool_choice = tools_choice_name,
-    top_p = 1
-  )
-
   # Transient is correctly add to function
-  .gpt_engine(
+  .gpt_engine_responses(
     body = body,
     RPM = 10000,
     timeinf = T,
@@ -121,23 +72,22 @@ test_that(".gpt_engine return errors correctly", {
     is_trans = gpt_is_transient(),
     back = NULL,
     aft = NULL,
-    endpoint_url = "https://api.openai.com/v1/chat/completions"
+    endpoint_url = "https://api.openai.com/v1/responses"
   ) |>
     expect_error()
 
 })
 
 
-test_that(".rep_gpt_engine controls errrors correctly", {
+test_that(".rep_gpt_engine_responses controls errrors correctly", {
 
   iterations <- 3
 
-  # Ineligible role
-  res <- .rep_gpt_engine(
+  # Ineligible question
+  res <- .rep_gpt_engine_responses(
     question = question,
     model_gpt = "gpt-4o-mini",
     topp = 1,
-    role_gpt = "use",
     tool = tools_simple,
     t_choice = "inclusion_decision_simple",
     iterations = iterations,
@@ -151,7 +101,7 @@ test_that(".rep_gpt_engine controls errrors correctly", {
     istrans = gpt_is_transient,
     ba = NULL,
     af = NULL,
-    endpoint_url = "https://api.openai.com/v1/chat/completions"
+    endpoint_url = "https://api.openai.com/v1/responses"
   )
 
   expect_equal(ncol(res), 8)
@@ -160,11 +110,10 @@ test_that(".rep_gpt_engine controls errrors correctly", {
   expect_true(all(stringr::str_detect(res$decision_gpt, "400")))
 
   # Ineligible api key
-  res <- .rep_gpt_engine(
+  res <- .rep_gpt_engine_responses(
     question = question,
     model_gpt = "gpt-4o-mini",
     topp = 1,
-    role_gpt = "user",
     tool = tools_simple,
     t_choice = "inclusion_decision_simple",
     iterations = iterations,
@@ -178,7 +127,7 @@ test_that(".rep_gpt_engine controls errrors correctly", {
     istrans = gpt_is_transient,
     ba = NULL,
     af = NULL,
-    endpoint_url = "https://api.openai.com/v1/chat/completions"
+    endpoint_url = "https://api.openai.com/v1/responses"
   )
 
   expect_equal(ncol(res), 8)
@@ -187,11 +136,10 @@ test_that(".rep_gpt_engine controls errrors correctly", {
   expect_true(all(stringr::str_detect(res$decision_gpt, "401")))
 
   # Ineligible model
-  res <- .rep_gpt_engine(
+  res <- .rep_gpt_engine_responses(
     question = question,
     model_gpt = "gpt-4o-min",
     topp = 1,
-    role_gpt = "user",
     tool = tools_simple,
     t_choice = "inclusion_decision_simple",
     iterations = iterations,
@@ -205,13 +153,13 @@ test_that(".rep_gpt_engine controls errrors correctly", {
     istrans = gpt_is_transient,
     ba = NULL,
     af = NULL,
-    endpoint_url = "https://api.openai.com/v1/chat/completions"
+    endpoint_url = "https://api.openai.com/v1/responses"
   )
 
   expect_equal(ncol(res), 8)
   expect_equal(nrow(res), iterations)
   expect_equal(max(res$n), iterations)
-  expect_true(all(stringr::str_detect(res$decision_gpt, "404")))
+  expect_true(all(stringr::str_detect(res$decision_gpt, "400")))
 
 })
 

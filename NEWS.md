@@ -1,3 +1,11 @@
+# AiscreenR 0.4.0
+
+## New features
+* Migrating from chat/completions endpoint to responses for all OpenAI functions. This includes:
+    * `tabscreen_gpt()`
+    * `screen_errors.gpt()`
+    * `rate_limits_per_minute()`
+
 # AIscreenR 0.3.2.9000
 
 ## Minor improvements

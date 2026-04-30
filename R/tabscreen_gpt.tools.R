@@ -1,7 +1,7 @@
 #' @title Title and abstract screening with GPT API models using function calls via the tools argument
 #'
-#' @name tabscreen_gpt.tools_responses
-#' @aliases tabscreen_gpt.tools_responses tabscreen_gpt
+#' @name tabscreen_gpt.tools
+#' @aliases tabscreen_gpt.tools
 #'
 #' @description
 #' `r lifecycle::badge("stable")`<br>
@@ -30,7 +30,7 @@
 #' \url{https://httr2.r-lib.org}, \url{https://github.com/r-lib/httr2}.
 #'
 #' @template common-arg
-#' @param api_url Character string with the endpoint URL for OpenAI's API. Default is `"https://api.openai.com/v1/responses"`.
+#' @param api_url Character string with the endpoint URL for OpenAI's API. Default is `"https://api.openai.com/v1/chat/completions"`.
 #' @param model Character string with the name of the completion model. Can take
 #'   multiple models. Default is the latest `"gpt-4o-mini"`.
 #'   Find available model at
@@ -48,8 +48,7 @@
 #'   So 0.1 means only the tokens comprising the top 10% probability mass are considered.
 #'   We generally recommend altering this or temperature but not both.' (OpenAI). Default is 1.
 #'   Find documentation at
-#' \url{https://developers.openai.com/api/reference/resources/chat#chat/create-top_p}. Be aware
-#' that this argument is not supported for gpt-5.4 and gpt-5.5 models and will be set to NULL if these models are used.
+#' \url{https://developers.openai.com/api/reference/resources/chat#chat/create-top_p}.
 #' @param time_info Logical indicating whether the run time of each
 #'   request/question should be included in the data. Default is `TRUE`.
 #' @param token_info Logical indicating whether token information should be included
@@ -121,7 +120,7 @@
 #'   See \url{https://developers.openai.com/api/reference/resources/chat}.
 #'
 #' @usage tabscreen_gpt.tools(data, prompt, studyid, title, abstract,
-#'   api_url = "https://api.openai.com/v1/responses", model = "gpt-4o-mini",
+#'   api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-4o-mini",
 #'   role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
 #'   time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
 #'   max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
@@ -132,7 +131,7 @@
 #'   overinclusive = TRUE, ...)
 #'
 #' tabscreen_gpt(data, prompt, studyid, title, abstract,
-#'   api_url = "https://api.openai.com/v1/responses", model = "gpt-4o-mini",
+#'   api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-4o-mini",
 #'   role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
 #'   time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
 #'   max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
@@ -265,13 +264,13 @@
 #'}
 
 # Main function
-tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
+tabscreen_gpt.tools <- function(
   data,
   prompt,
   studyid,
   title,
   abstract,
-  api_url = "https://api.openai.com/v1/responses",
+  api_url = "https://api.openai.com/v1/chat/completions",
   model = "gpt-4o-mini",
   role = "user",
   tools = NULL,
@@ -690,7 +689,7 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
       dplyr::mutate(
         res = furrr::future_pmap(
           .l = params,
-          .f = .rep_gpt_engine_responses,
+          .f = .rep_gpt_engine,
           role_gpt = role,
           tool = tools,
           t_choice = tool_choice,

@@ -127,7 +127,7 @@ screen_errors.gpt <- function(
     force <- arguments_used$force
     custom_model <- arguments_used$custom_model
     endpoint_url <- arguments_used$api_url
-    if (is.null(endpoint_url)) endpoint_url <- "https://api.openai.com/v1/chat/completions"
+  if (is.null(endpoint_url)) endpoint_url <- "https://api.openai.com/v1/responses"
     reasoning_effort <- arguments_used$reasoning_effort
     verbosity <- arguments_used$verbosity
 
