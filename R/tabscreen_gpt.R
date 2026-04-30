@@ -7,7 +7,7 @@
 #' `r lifecycle::badge("stable")`<br>
 #' <br>
 #' This function supports title and abstract screening using GPT API models in R.
-#' Specifically, it allows users to draw on all OpenAI GPT API completion models, including fine-tuned versions.
+#' Specifically, it allows users to draw on all OpenAI GPT API response models, including fine-tuned versions.
 #' The function enables title and abstract screening across multiple prompts, with
 #' repeated questions to assess consistency across responses. All of this can be performed in parallel.
 #' The function utilizes function calling, which is invoked via the
@@ -120,7 +120,7 @@
 #' @param ... Further argument to pass to the request body.
 #'   See \url{https://developers.openai.com/api/reference/resources/chat}.
 #'
-#' @usage tabscreen_gpt.tools(data, prompt, studyid, title, abstract,
+#' @usage tabscreen_gpt.tools_responses(data, prompt, studyid, title, abstract,
 #'   api_url = "https://api.openai.com/v1/responses", model = "gpt-4o-mini",
 #'   role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
 #'   time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,

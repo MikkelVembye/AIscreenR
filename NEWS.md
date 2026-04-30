@@ -1,4 +1,4 @@
-# AiscreenR 0.4.0
+# AIscreenR 0.4.0
 
 ## New features
 * Migrating from chat/completions endpoint to responses for all OpenAI functions. This includes:
