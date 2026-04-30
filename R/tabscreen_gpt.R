@@ -691,7 +691,6 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
         res = furrr::future_pmap(
           .l = params,
           .f = .rep_gpt_engine_responses,
-          role_gpt = role,
           tool = tools,
           t_choice = tool_choice,
           seeds = seed_par,
