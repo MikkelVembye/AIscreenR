@@ -643,14 +643,9 @@
   }
 
   # Creating the body to be passed to .gpt_engine()
-  # The body is created here, because it is then more easy to work with the ... functionality.
   body <- list(
     model = model_gpt,
-    input = list(
-      list(
-        content = question
-      )
-    ),
+    input = question,
     tools = tools_responses,
     tool_choice = tools_choice,
     top_p = topp,

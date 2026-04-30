@@ -703,6 +703,7 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
           ba = backoff,
           af = after,
           endpoint_url = api_url,
+
           ...,
           .options = furrr::furrr_options(seed = furrr_seed),
           .progress = progress
