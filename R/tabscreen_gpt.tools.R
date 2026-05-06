@@ -4,7 +4,7 @@
 #' @aliases tabscreen_gpt.tools
 #'
 #' @description
-#' `r lifecycle::badge("stable")`<br>
+#' `r lifecycle::badge("deprecated")`<br>
 #' <br>
 #' This function supports title and abstract screening using GPT API models in R.
 #' Specifically, it allows users to draw on all OpenAI GPT API completion models, including fine-tuned versions.

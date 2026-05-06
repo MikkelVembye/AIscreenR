@@ -3,7 +3,7 @@
 \name{tabscreen_gpt.tools_responses}
 \alias{tabscreen_gpt.tools_responses}
 \alias{tabscreen_gpt}
-\title{Title and abstract screening with GPT API models using function calls via the tools argument}
+\title{Title and abstract screening with GPT API models using function calls via the tools argument and the responses endpoint}
 \usage{
 tabscreen_gpt.tools_responses(data, prompt, studyid, title, abstract,
   api_url = "https://api.openai.com/v1/responses", model = "gpt-4o-mini",
@@ -187,9 +187,12 @@ Specifically, it allows users to draw on all OpenAI GPT API response models, inc
 The function enables title and abstract screening across multiple prompts, with
 repeated questions to assess consistency across responses. All of this can be performed in parallel.
 The function utilizes function calling, which is invoked via the
-tools argument in the request body. This is the main difference between \code{\link[=tabscreen_gpt.tools]{tabscreen_gpt.tools()}}
+tools argument in the request body. Furthermore, this function uses the responses endpoint.
+This is the main difference between \code{\link[=tabscreen_gpt.tools]{tabscreen_gpt.tools()}}
 and \code{\link[=tabscreen_gpt.original]{tabscreen_gpt.original()}}. Function calls ensure more reliable and consistent responses to users'
-requests. See \href{https://psycnet.apa.org/record/2026-37236-001}{Vembye, Christensen, Mølgaard, and Schytt. (2025)}
+requests. Using the Responses endpoint can improve performance, enable access to newer models, and reduce costs.
+\emph{\href{https://developers.openai.com/api/docs/guides/migrate-to-responses?lang=javascript&tool-use=chat-completions&update-item-definitions=chat-completions&update-multiturn=responses}{Migrate to the Responses API}}
+See \href{https://psycnet.apa.org/record/2026-37236-001}{Vembye, Christensen, Mølgaard, and Schytt. (2025)}
 for guidance on how adequately to conduct title and abstract screening with GPT models.
 }
 \note{

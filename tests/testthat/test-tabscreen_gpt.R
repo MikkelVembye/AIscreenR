@@ -83,12 +83,37 @@ test_that(".rep_gpt_engine_responses controls errrors correctly", {
 
   iterations <- 3
 
-  # Ineligible question
+  # Ineligible tool
+  test_tool <- list(
+    list(
+      type = "function",
+      "function" = list(
+        name = "inclusion_decision_simple",
+        description = "A test function",
+        strict = TRUE,
+        parameters = list(
+          # Invalid schema type
+          type = "invalid_schema_type",
+          properties = list(
+            decision = list(
+              type = "string",
+              description = "The decision of the screening. Should be either 1 for include, 0 for exclude, or NA for uncertain."
+            ),
+            reason = list(
+              type = "string",
+              description = "A brief reason for the decision."
+            )
+          )
+        )
+      )
+    )
+  )
+
   res <- .rep_gpt_engine_responses(
     question = question,
     model_gpt = "gpt-4o-mini",
     topp = 1,
-    tool = tools_simple,
+    tool = test_tool,
     t_choice = "inclusion_decision_simple",
     iterations = iterations,
     req_per_min = 10000,
@@ -107,7 +132,8 @@ test_that(".rep_gpt_engine_responses controls errrors correctly", {
   expect_equal(ncol(res), 8)
   expect_equal(nrow(res), iterations)
   expect_equal(max(res$n), iterations)
-  expect_true(all(stringr::str_detect(res$decision_gpt, "400")))
+  expect_true(all(c("decision_gpt", "decision_binary", "n") %in% names(res)))
+  expect_true(all(stringr::str_detect(res$decision_gpt, "400|invalid|schema|type")))
 
   # Ineligible api key
   res <- .rep_gpt_engine_responses(

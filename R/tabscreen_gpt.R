@@ -1,4 +1,4 @@
-#' @title Title and abstract screening with GPT API models using function calls via the tools argument
+#' @title Title and abstract screening with GPT API models using function calls via the tools argument and the responses endpoint
 #'
 #' @name tabscreen_gpt.tools_responses
 #' @aliases tabscreen_gpt.tools_responses tabscreen_gpt
@@ -11,9 +11,12 @@
 #' The function enables title and abstract screening across multiple prompts, with
 #' repeated questions to assess consistency across responses. All of this can be performed in parallel.
 #' The function utilizes function calling, which is invoked via the
-#' tools argument in the request body. This is the main difference between [tabscreen_gpt.tools()]
+#' tools argument in the request body. Furthermore, this function uses the responses endpoint.
+#' This is the main difference between [tabscreen_gpt.tools()]
 #' and [tabscreen_gpt.original()]. Function calls ensure more reliable and consistent responses to users'
-#' requests. See [Vembye, Christensen, Mølgaard, and Schytt. (2025)](https://psycnet.apa.org/record/2026-37236-001)
+#' requests. Using the Responses endpoint can improve performance, enable access to newer models, and reduce costs.
+#' \emph{\href{https://developers.openai.com/api/docs/guides/migrate-to-responses?lang=javascript&tool-use=chat-completions&update-item-definitions=chat-completions&update-multiturn=responses}{Migrate to the Responses API}}
+#' See [Vembye, Christensen, Mølgaard, and Schytt. (2025)](https://psycnet.apa.org/record/2026-37236-001)
 #' for guidance on how adequately to conduct title and abstract screening with GPT models.
 #'
 #' @references Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2025).

@@ -12,6 +12,7 @@ reference:
       - tabscreen_gpt.original
       - tabscreen_groq
       - tabscreen_ollama
+      - tabscreen_gpt.tools_responses
 
   - title: "Screen failed requests"
     desc: "R functions to re-screen failied title and abstract requests"
