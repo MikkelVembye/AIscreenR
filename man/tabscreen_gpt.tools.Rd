@@ -167,7 +167,7 @@ following dataset with results aggregated across the iterated requests/questions
 for each title and abstract across multiple repeated questions.}
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}\if{html}{\out{<br>}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}\if{html}{\out{<br>}}
 \if{html}{\out{<br>}}
 This function supports title and abstract screening using GPT API models in R.
 Specifically, it allows users to draw on all OpenAI GPT API completion models, including fine-tuned versions.
