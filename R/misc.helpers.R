@@ -19,7 +19,7 @@ utils::globalVariables(
     "submodel", "prompt", "data", "tools", "tool_choice", "is.gpt", "criteria", "incl_p_cutoff", "incl_p", "title","supplementary","file_path","file_content","combination_idx","rep_num",
     "current_file_path","safe_basename","current_prompt","current_model",
     "current_rep_num","current_study_id","current_prompt_id",
-    "current_vector_store_name","precomputed_supplementary","total_price_dollar", "groq_model_prizes", "n_missing"
+    "current_vector_store_name","precomputed_supplementary","total_price_dollar", "groq_model_prizes", "mistral_model_prizes", "n_missing"
     )
 )
 
@@ -208,5 +208,12 @@ testing_key_groq <- function() {
   httr2::secret_decrypt(
     "4UAcFSIHVz8Z4zED1WEj3k65xFBWlJ8dzavRDGG4dz0pBxEOXtvSkLwK6_fZaZqCr94oVtKBD6DQo82vwa2gljJMTw",
     "GROQ_KEY"
+  )
+}
+
+testing_key_mistral <- function() {
+  httr2::secret_decrypt(
+    "4UAcFSIHVz8Z4zED1WEj3k65xFBWlJ8dzavRDGG4dz0pBxEOXtvSkLwK6_fZaZqCr94oVtKBD6DQo82vwa2gljJMTw",
+    "MISTRAL_KEY"
   )
 }

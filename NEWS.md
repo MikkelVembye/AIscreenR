@@ -1,3 +1,8 @@
+# AIscreenR 0.5.0
+
+## New features
+* Adding `tabscreen_mistral()` function to screen titles and abstracts using Mistral's API models.
+
 # AIscreenR 0.4.0
 
 ## New features

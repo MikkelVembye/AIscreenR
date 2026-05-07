@@ -13,6 +13,7 @@ reference:
       - tabscreen_groq
       - tabscreen_ollama
       - tabscreen_gpt.tools_responses
+      - tabscreen_mistral
 
   - title: "Screen failed requests"
     desc: "R functions to re-screen failied title and abstract requests"
@@ -56,6 +57,7 @@ reference:
       - model_prizes
       - disagreements
       - groq_model_prizes
+      - mistral_model_prizes
 
   - title: "Coercion"
     contents:

@@ -247,7 +247,97 @@ groq_model_prizes <- data.frame(
   ),
   stringsAsFactors = FALSE
 )
-  
-model_prizes <- rbind(model_prizes, groq_model_prizes) # Combine OpenAI and GROQ model prices
 
-usethis::use_data(model_prizes, groq_model_prizes, overwrite = TRUE)
+mistral_model_prizes <- data.frame(
+  model = c(
+    # Nemo models
+    "open-mistral-nemo",
+    "open-mistral-nemo-2407",
+    "open-mistral-nemo-latest",
+
+    # Small models
+    "mistral-small",
+    "mistral-small-2603",
+    "mistral-small-latest",
+
+    # medium 3
+    "mistral-medium-2505",
+
+    # medium 3.1
+    "mistral-medium",
+    "mistral-medium-2508",
+    "mistral-medium-latest",
+
+    # medium 3.5
+    "mistral-medium-3-5",
+    "mistral-medium-3",
+
+    # Large models
+    "mistral-large",
+    "mistral-large-2512",
+    "mistral-large-latest",
+
+    # Magistral models
+    "magistral-medium",
+    "magistral-medium-2509",
+    "magistral-medium-latest"
+
+  ),
+  price_in_per_token = c(
+    0.15/mio, # open-mistral-nemo
+    0.15/mio, # open-mistral-nemo-2407
+    0.15/mio, # open-mistral-nemo-latest
+
+    0.15/mio, # mistral-small
+    0.15/mio,  # mistral-small-2603
+    0.15/mio,  # mistral-small-latest
+
+    0.4/mio, # mistral-medium-2505
+
+    0.4/mio, # mistral-medium
+    0.4/mio, # mistral-medium-2508
+    0.4/mio, # mistral-medium-latest
+
+    1.5/mio, # mistral-medium-3-5
+    1.5/mio, # mistral-medium-3
+
+    0.5/mio, # mistral-large
+    0.5/mio, # mistral-large-2512
+    0.5/mio, # mistral-large-latest
+
+    2/mio, # magistral-medium
+    2/mio, # magistral-medium-2509
+    2/mio  # magistral-medium-latest
+  ),
+  price_out_per_token = c(
+    0.15/mio, # open-mistral-nemo
+    0.15/mio, # open-mistral-nemo-2407
+    0.15/mio, # open-mistral-nemo-latest
+
+    0.6/mio, # mistral-small
+    0.6/mio,  # mistral-small-2603
+    0.6/mio,   # mistral-small-latest
+
+    2/mio, # mistral-medium-2505
+
+    2/mio, # mistral-medium
+    2/mio, # mistral-medium-2508
+    2/mio, # mistral-medium-latest
+
+    7.5/mio, # mistral-medium-3-5
+    7.5/mio, # mistral-medium-3
+
+    1.5/mio, # mistral-large
+    1.5/mio, # mistral-large-2512
+    1.5/mio, # mistral-large-latest
+
+    5/mio, # magistral-medium
+    5/mio, # magistral-medium-2509
+    5/mio  # magistral-medium-latest
+  ),
+  stringsAsFactors = FALSE
+)
+
+model_prizes <- rbind(model_prizes, groq_model_prizes, mistral_model_prizes) # Combine OpenAI, GROQ, and Mistral model prices
+
+usethis::use_data(model_prizes, groq_model_prizes, mistral_model_prizes, overwrite = TRUE)

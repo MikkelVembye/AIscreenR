@@ -207,19 +207,30 @@
 ){
 
   # Setting tool_choice argument to body
+  if (is.character(t_choice) && length(t_choice) == 1 && identical(t_choice, "auto")) { 
 
-  if (t_choice == "auto"){
+    tools_choice <- t_choice
+  } else if (is.character(t_choice) && length(t_choice) == 1 && t_choice %in% c("none", "any", "required")) {
 
-    tools_choice = t_choice
+    tools_choice <- t_choice
 
-  } else {
+  } else if (is.character(t_choice) && length(t_choice) == 1) {
 
+    # Backward compatibility for callers passing a function name as a scalar string.
     tools_choice <- list(
       type = "function",
       "function" = list(
         name = t_choice
       )
     )
+
+  } else if (is.list(t_choice)) {
+
+    tools_choice <- t_choice
+
+  } else {
+
+    stop("tool_choice must be a single character string or a list.")
 
   }
 

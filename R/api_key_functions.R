@@ -141,3 +141,53 @@ get_api_key_groq <- function(env_var = "GROQ_API_KEY") {
   key
 
 }
+
+#---------------------------------------------------
+# Mistral functions
+#---------------------------------------------------
+
+#' @title Get Mistral API key from R environment variable.
+#'
+#' @param env_var Character string indicating the name of the temporary R environment variable with
+#' the API key and the used AI model. Currently, the argument only takes \code{env_var = "MISTRAL_API_KEY"}.
+#' See [set_api_key()] to set/create this variable.
+#'
+#' @details `get_api_key_mistral()` can be used after executing [set_api_key()] or by adding the
+#' api key permanently to your R environment by using [usethis::edit_r_environ()].
+#' Then write `MISTRAL_API_KEY=[insert your api key here]` and close the `.Renviron` window and restart R.
+#'
+#' @return The specified API key (NOTE: Avoid exposing this in the console).
+#' @export
+#'
+#' @note Find your personal API key via the Mistral quickstart guide at \url{https://docs.mistral.ai/getting-started/quickstarts/studio/activate-and-generate-api-key}.
+#' @seealso \code{\link{set_api_key}}.
+#'
+#'
+#' @examples
+#' \dontrun{
+#' get_api_key_mistral()
+#' }
+
+get_api_key_mistral <- function(env_var = "MISTRAL_API_KEY") {
+  if (!env_var %in% "MISTRAL_API_KEY") {
+    stop("env_var must be 'MISTRAL_API_KEY'")
+  }
+
+  key <- Sys.getenv("MISTRAL_API_KEY")
+
+  if (identical(key, "")){
+
+    if (is_testing()) {
+
+      key <- testing_key_mistral()
+
+    } else {
+
+      stop("No API key found. Use set_api_key()")
+    }
+
+  }
+
+  key
+
+}
