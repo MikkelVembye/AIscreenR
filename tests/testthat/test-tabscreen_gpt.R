@@ -295,7 +295,7 @@ test_that("tabscreen_gpt() overinclusive chooses default tools", {
 
 })
 
-future::plan(future::multisession)
+suppressWarnings(future::plan(future::multisession))
 
 test_that("tabscreen_gpt() works with single parameter values.",{
 
@@ -921,7 +921,7 @@ test_that("API error.",{
 
 })
 
-future::plan(future::sequential)
+suppressWarnings(future::plan(future::sequential))
 
 # Test parallel
 
@@ -931,7 +931,7 @@ test_that("That paralell processing works.", {
   if(skip_github_action) skip_on_ci()
   skip_on_cran()
 
-  future::plan(future::multisession, workers = future::availableCores())
+  suppressWarnings(future::plan(future::multisession, workers = future::availableCores()))
 
   expect_message(
 
@@ -947,7 +947,7 @@ test_that("That paralell processing works.", {
     )
   )
 
-  future::plan(future::sequential)
+  suppressWarnings(future::plan(future::sequential))
 
   expect_lt(tm_par[["elapsed"]], sum(test_obj$answer_data_all$run_time))
 

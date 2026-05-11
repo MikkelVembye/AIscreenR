@@ -338,6 +338,48 @@ mistral_model_prizes <- data.frame(
   stringsAsFactors = FALSE
 )
 
-model_prizes <- rbind(model_prizes, groq_model_prizes, mistral_model_prizes) # Combine OpenAI, GROQ, and Mistral model prices
+gemini_model_prizes <- data.frame(
+  model = c(
+    # Gemini 2.5 models
+    "gemini-2.5-flash-lite-preview-09-2025",
+    "gemini-2.5-pro",
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-lite",
 
-usethis::use_data(model_prizes, groq_model_prizes, mistral_model_prizes, overwrite = TRUE)
+    # Gemini 3.1 models
+    "gemini-3-flash-preview",
+    "gemini-3.1-flash-lite",
+    "gemini-3.1-flash-lite-preview",
+    "gemini-3.1-pro-preview",
+    "gemini-3.1-pro-preview-customtools"
+  ),
+  price_in_per_token = c(
+    0.10/mio, # gemini-2.5-flash-lite-preview-09-2025
+    1.25/mio, # gemini-2.5-pro
+    0.30/mio, # gemini-2.5-flash
+    0.10/mio, # gemini-2.5-flash-lite
+
+    0.50/mio, # gemini-3-flash-preview
+    0.25/mio, # gemini-3.1-flash-lite
+    0.25/mio, # gemini-3.1-flash-lite-preview
+    2.00/mio, # gemini-3.1-pro-preview
+    2.00/mio # gemini-3.1-pro-preview-customtools
+  ),
+  price_out_per_token = c(
+    0.40/mio, # gemini-2.5-flash-lite-preview-09-2025
+    10/mio,   # gemini-2.5-pro
+    2.50/mio, # gemini-2.5-flash
+    0.40/mio, # gemini-2.5-flash-lite
+
+    3.00/mio, # gemini-3-flash-preview
+    1.50/mio, # gemini-3.1-flash-lite
+    1.50/mio, # gemini-3.1-flash-lite-preview
+    12.00/mio, # gemini-3.1-pro-preview
+    12.00/mio # gemini-3.1-pro-preview-customtools
+  ),
+  stringsAsFactors = FALSE
+)
+
+model_prizes <- rbind(model_prizes, groq_model_prizes, mistral_model_prizes, gemini_model_prizes) # Combine OpenAI, GROQ, Mistral, and Gemini model prices
+
+usethis::use_data(model_prizes, groq_model_prizes, mistral_model_prizes, gemini_model_prizes, overwrite = TRUE)

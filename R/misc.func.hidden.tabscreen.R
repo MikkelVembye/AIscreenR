@@ -261,21 +261,23 @@
   furrr_seed <- if (base::is.null(seeds)) TRUE else NULL
 
   # Running repeated in requests in parallel, and return tibble
-  furrr::future_map_dfr(
-    iterations, \(i) .gpt_engine(
-      body = body,
-      RPM = req_per_min,
-      timeinf = time_inf,
-      tokeninf = token_inf,
-      key = apikey,
-      max_t = maxt,
-      max_s = maxs,
-      is_trans = istrans,
-      back = ba,
-      aft = af,
-      endpoint_url = endpoint_url
-    ),
-    .options = furrr::furrr_options(seed = furrr_seed)
+  suppressWarnings(
+    furrr::future_map_dfr(
+      iterations, \(i) .gpt_engine(
+        body = body,
+        RPM = req_per_min,
+        timeinf = time_inf,
+        tokeninf = token_inf,
+        key = apikey,
+        max_t = maxt,
+        max_s = maxs,
+        is_trans = istrans,
+        back = ba,
+        aft = af,
+        endpoint_url = endpoint_url
+      ),
+      .options = furrr::furrr_options(seed = furrr_seed)
+    )
   ) |>
     dplyr::mutate(n = iterations) # Given run id to each repetation.
 
@@ -680,21 +682,23 @@
   furrr_seed <- if (base::is.null(seeds)) TRUE else NULL
 
   # Running repeated in requests in parallel, and return tibble
-  furrr::future_map_dfr(
-    iterations, \(i) .gpt_engine_responses(
-      body = body,
-      RPM = req_per_min,
-      timeinf = time_inf,
-      tokeninf = token_inf,
-      key = apikey,
-      max_t = maxt,
-      max_s = maxs,
-      is_trans = istrans,
-      back = ba,
-      aft = af,
-      endpoint_url = endpoint_url
-    ),
-    .options = furrr::furrr_options(seed = furrr_seed)
+  suppressWarnings(
+    furrr::future_map_dfr(
+      iterations, \(i) .gpt_engine_responses(
+        body = body,
+        RPM = req_per_min,
+        timeinf = time_inf,
+        tokeninf = token_inf,
+        key = apikey,
+        max_t = maxt,
+        max_s = maxs,
+        is_trans = istrans,
+        back = ba,
+        aft = af,
+        endpoint_url = endpoint_url
+      ),
+      .options = furrr::furrr_options(seed = furrr_seed)
+    )
   ) |>
     dplyr::mutate(n = iterations) # Given run id to each repetation.
 

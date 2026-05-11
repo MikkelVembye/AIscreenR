@@ -191,3 +191,53 @@ get_api_key_mistral <- function(env_var = "MISTRAL_API_KEY") {
   key
 
 }
+
+#---------------------------------------------------
+# Gemini functions
+#---------------------------------------------------
+
+#' @title Get Gemini API key from R environment variable.
+#'
+#' @param env_var Character string indicating the name of the temporary R environment variable with
+#' the API key and the used AI model. Currently, the argument only takes \code{env_var = "GEMINI_API_KEY"}.
+#' See [set_api_key()] to set/create this variable.
+#'
+#' @details `get_api_key_gemini()` can be used after executing [set_api_key()] or by adding the
+#' api key permanently to your R environment by using [usethis::edit_r_environ()].
+#' Then write `GEMINI_API_KEY=[insert your api key here]` and close the `.Renviron` window and restart R.
+#'
+#' @return The specified API key (NOTE: Avoid exposing this in the console).
+#' @export
+#'
+#' @note Find your personal API key via the Gemini quickstart guide at \url{https://ai.google.dev/gemini-api/docs/api-key}.
+#' @seealso \code{\link{set_api_key}}.
+#'
+#'
+#' @examples
+#' \dontrun{
+#' get_api_key_gemini()
+#' }
+
+get_api_key_gemini <- function(env_var = "GEMINI_API_KEY") {
+  if (!env_var %in% "GEMINI_API_KEY") {
+    stop("env_var must be 'GEMINI_API_KEY'")
+  }
+
+  key <- Sys.getenv("GEMINI_API_KEY")
+
+  if (identical(key, "")){
+
+    if (is_testing()) {
+
+      key <- testing_key_gemini()
+
+    } else {
+
+      stop("No API key found. Use set_api_key()")
+    }
+
+  }
+
+  key
+
+}

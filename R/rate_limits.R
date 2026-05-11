@@ -68,7 +68,9 @@ rate_limits_per_minute <- function(
       stop("AI_tool must be 'OpenAI', 'Groq', or 'Mistral'.")
     }
   }
-  furrr::future_map_dfr(model, ~ .rate_limits_per_minute_engine(model = .x, AI_tool = AI_tool, api_key = api_key))
+  suppressWarnings(
+    furrr::future_map_dfr(model, ~ .rate_limits_per_minute_engine(model = .x, AI_tool = AI_tool, api_key = api_key))
+  )
 
 }
 

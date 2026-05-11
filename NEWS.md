@@ -2,6 +2,8 @@
 
 ## New features
 * Adding `tabscreen_mistral()` function to screen titles and abstracts using Mistral's API models.
+* Adding `tabscreen_gemini()` function to screen titles and abstracts using Gemini's API models.
+
 
 # AIscreenR 0.4.0
 

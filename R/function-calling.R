@@ -43,7 +43,6 @@ tools_simple <- list(
   )
 )
 
-
 detailed_description_description <- paste0(
   "If the study should be included for further reviewing, give a detailed description of your inclusion decision. ",
   "If the study should be excluded from the review, give a detailed description of your exclusion decision. ",
@@ -254,6 +253,90 @@ tools_detailed_binary_groq <- list(
         required = list("decision_gpt", "detailed_description"),
         additionalProperties = FALSE
       )
+    )
+  )
+)
+
+#----------------------------------------------------------------
+# Gemini function calling
+#----------------------------------------------------------------
+
+tools_simple_gemini <- list(
+  list(
+    name = "inclusion_decision_simple",
+    description = inclusion_decision_description,
+    parameters = list(
+      type = "object",
+      properties = list(
+        decision_gpt = list(
+          type = "string",
+          description = "1=Include, 0=Exclude, 1.1=Uncertain",
+          enum = list("1", "0", "1.1")
+        )
+      ),
+      required = list("decision_gpt")
+    )
+  )
+)
+
+tools_detailed_gemini <- list(
+  list(
+    name = "inclusion_decision",
+    description = inclusion_decision_description,
+    parameters = list(
+      type = "object",
+      properties = list(
+        decision_gpt = list(
+          type = "string",
+          description = "1=Include, 0=Exclude, 1.1=Uncertain",
+          enum = list("1", "0", "1.1")
+        ),
+        detailed_description = list(
+          type = "string",
+          description = detailed_description_description
+        )
+      ),
+      required = list("decision_gpt", "detailed_description")
+    )
+  )
+)
+
+tools_simple_binary_gemini <- list(
+  list(
+    name = "inclusion_decision_simple_binary",
+    description = inclusion_decision_description_binary,
+    parameters = list(
+      type = "object",
+      properties = list(
+        decision_gpt = list(
+          type = "string",
+          description = "1=Include, 0=Exclude",
+          enum = list("1", "0")
+        )
+      ),
+      required = list("decision_gpt")
+    )
+  )
+)
+
+tools_detailed_binary_gemini <- list(
+  list(
+    name = "inclusion_decision_binary",
+    description = inclusion_decision_description_binary,
+    parameters = list(
+      type = "object",
+      properties = list(
+        decision_gpt = list(
+          type = "string",
+          description = "1=Include, 0=Exclude",
+          enum = list("1", "0")
+        ),
+        detailed_description = list(
+          type = "string",
+          description = detailed_description_description_binary
+        )
+      ),
+      required = list("decision_gpt", "detailed_description")
     )
   )
 )

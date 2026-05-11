@@ -14,6 +14,7 @@ reference:
       - tabscreen_ollama
       - tabscreen_gpt.tools_responses
       - tabscreen_mistral
+      - tabscreen_gemini
 
   - title: "Screen failed requests"
     desc: "R functions to re-screen failied title and abstract requests"
