@@ -113,3 +113,16 @@
 #' @references Gemini. \emph{Pricing}. \url{https://gemini.ai/pricing}
 
 "gemini_model_prizes"
+
+#' Claude model prices (last updated May 13, 2026)
+#' Data set containing input and output prizes for all Claude's API models.
+#' 
+#' @format A \code{data.frame} containing 4 rows/models and 3 variables/columns
+#' \tabular{lll}{
+#' \bold{model} \tab \code{character} \tab indicating the specific GPT model \cr
+#' \bold{price_in_per_token} \tab \code{character} \tab indicating the input prize per token \cr
+#' \bold{price_out_per_token} \tab \code{character} \tab indicating the output prize per token \cr
+#' }
+#' @references Anthropic. \emph{Pricing}. \url{https://platform.claude.com/docs/en/about-claude/pricing}
+
+"claude_model_prizes"

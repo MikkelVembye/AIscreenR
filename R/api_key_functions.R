@@ -241,3 +241,52 @@ get_api_key_gemini <- function(env_var = "GEMINI_API_KEY") {
   key
 
 }
+
+#---------------------------------------------------
+# Anthropic functions
+#----------------------------------------------------
+#' @title Get Anthropic API key from R environment variable.
+#' 
+#' @param env_var Character string indicating the name of the temporary R environment variable with
+#' the API key and the used AI model. Currently, the argument only takes \code{env_var = "ANTHROPIC_API_KEY"}.
+#' See [set_api_key()] to set/create this variable.
+#' 
+#' @details `get_api_key_anthropic()` can be used after executing [set_api_key()] or by
+#' adding the api key permanently to your R environment by using [usethis::edit_r_environ()].
+#' Then write `ANTHROPIC_API_KEY=[insert your api key here]` and close the `.Renviron` window and restart R.
+#' 
+#' @return The specified API key (NOTE: Avoid exposing this in the console).
+#' @export
+#' 
+#' @note Find your personal API key via the Anthropic at \url{https://platform.claude.com/settings/keys}.
+#' @seealso \code{\link{set_api_key}}.
+#' 
+#' @examples
+#' 
+#' \dontrun{
+#' get_api_key_anthropic()
+#' }
+
+get_api_key_anthropic <- function(env_var = "ANTHROPIC_API_KEY") {
+  if (!env_var %in% "ANTHROPIC_API_KEY") {
+    stop("env_var must be 'ANTHROPIC_API_KEY'")
+  }
+
+  key <- Sys.getenv("ANTHROPIC_API_KEY")
+
+  if (identical(key, "")){
+
+    if (is_testing()) {
+
+      key <- testing_key_anthropic()
+
+    } else {
+
+      stop("No API key found. Use set_api_key()")
+    }
+
+  }
+
+  key
+
+}

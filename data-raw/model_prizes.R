@@ -380,6 +380,46 @@ gemini_model_prizes <- data.frame(
   stringsAsFactors = FALSE
 )
 
-model_prizes <- rbind(model_prizes, groq_model_prizes, mistral_model_prizes, gemini_model_prizes) # Combine OpenAI, GROQ, Mistral, and Gemini model prices
+claude_model_prizes <- data.frame(
+  model = c(
+    # Claude Opus models
+    "claude-opus-4-7",
+    "claude-opus-4-6",
+    "claude-opus-4-5",
+    "claude-opus-4-1",
 
-usethis::use_data(model_prizes, groq_model_prizes, mistral_model_prizes, gemini_model_prizes, overwrite = TRUE)
+    # Claude Sonnet models
+    "claude-sonnet-4-6",
+    "claude-sonnet-4-5",
+
+    # Claude Haiku models
+    "claude-haiku-4-5"
+  ),
+  price_in_per_token = c(
+    5/mio,   # claude-opus-4.7
+    5/mio,   # claude-opus-4.6
+    5/mio,   # claude-opus-4.5
+    15/mio,  # claude-opus-4.1
+
+    3/mio,   # claude-sonnet-4.6
+    3/mio,   # claude-sonnet-4.5
+
+    1/mio   # claude-haiku-4.5
+  ),
+  price_out_per_token = c(
+    25/mio,  # claude-opus-4.7
+    25/mio,  # claude-opus-4.6
+    25/mio,  # claude-opus-4.5
+    75/mio,  # claude-opus-4.1
+
+    15/mio,  # claude-sonnet-4.6
+    15/mio,  # claude-sonnet-4.5
+
+    5/mio   # claude-haiku-4.5
+  ),
+  stringsAsFactors = FALSE
+)
+
+model_prizes <- rbind(model_prizes, groq_model_prizes, mistral_model_prizes, gemini_model_prizes, claude_model_prizes) # Combine OpenAI, GROQ, Mistral, Gemini, and Claude model prices
+
+usethis::use_data(model_prizes, groq_model_prizes, mistral_model_prizes, gemini_model_prizes, claude_model_prizes, overwrite = TRUE)

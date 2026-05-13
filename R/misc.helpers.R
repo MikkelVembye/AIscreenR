@@ -248,3 +248,10 @@ testing_key_gemini <- function() {
     "GEMINI_KEY"
   )
 }
+
+testing_key_anthropic <- function() {
+  httr2::secret_decrypt(
+    "4UAcFSIHVz8Z4zED1WEj3k65xFBWlJ8dzavRDGG4dz0pBxEOXtvSkLwK6_fZaZqCr94oVtKBD6DQo82vwa2gljJMTw",
+    "ANTHROPIC_KEY"
+  )
+}

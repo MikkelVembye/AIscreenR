@@ -340,3 +340,88 @@ tools_detailed_binary_gemini <- list(
     )
   )
 )
+
+#----------------------------------------------------------------
+# Anthropic-specific function calls (for Claude)
+#----------------------------------------------------------------
+
+# Anthropic uses input_schema format
+tools_simple_claude <- list(
+  list(
+    name = "inclusion_decision_simple",
+    description = inclusion_decision_description,
+    input_schema = list(
+      type = "object",
+      properties = list(
+        decision_gpt = list(
+          type = "string",
+          description = "1=Include, 0=Exclude, 1.1=Uncertain",
+          enum = list("1", "0", "1.1")
+        )
+      ),
+      required = list("decision_gpt")
+    )
+  )
+)
+
+tools_detailed_claude <- list(
+  list(
+    name = "inclusion_decision",
+    description = inclusion_decision_description,
+    input_schema = list(
+      type = "object",
+      properties = list(
+        decision_gpt = list(
+          type = "string",
+          description = "1=Include, 0=Exclude, 1.1=Uncertain",
+          enum = list("1", "0", "1.1")
+        ),
+        detailed_description = list(
+          type = "string",
+          description = detailed_description_description
+        )
+      ),
+      required = list("decision_gpt", "detailed_description")
+    )
+  )
+)
+
+tools_simple_binary_claude <- list(
+  list(
+    name = "inclusion_decision_simple_binary",
+    description = inclusion_decision_description_binary,
+    input_schema = list(
+      type = "object",
+      properties = list(
+        decision_gpt = list(
+          type = "string",
+          description = "1=Include, 0=Exclude",
+          enum = list("1", "0")
+        )
+      ),
+      required = list("decision_gpt")
+    )
+  )
+)
+
+tools_detailed_binary_claude <- list(
+  list(
+    name = "inclusion_decision_binary",
+    description = inclusion_decision_description_binary,
+    input_schema = list(
+      type = "object",
+      properties = list(
+        decision_gpt = list(
+          type = "string",
+          description = "1=Include, 0=Exclude",
+          enum = list("1", "0")
+        ),
+        detailed_description = list(
+          type = "string",
+          description = "List the detailed description of your inclusion decision. IMPORTANT: This must match the logic of your decision_gpt exactly."
+        )
+      ),
+      required = list("decision_gpt", "detailed_description")
+    )
+  )
+)

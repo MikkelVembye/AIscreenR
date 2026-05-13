@@ -64,6 +64,10 @@ rate_limits_per_minute <- function(
       api_key <- get_api_key_groq()
     } else if (AI_tool == "Mistral") {
       api_key <- get_api_key_mistral()
+    } else if (AI_tool == "Gemini") {
+      stop("Please check the rate limits for Gemini models directly in the Google Cloud Console.")
+    } else if (AI_tool == "Claude") {
+      stop("Please check the rate limits for Claude models directly in the Anthropic Console (https://platform.claude.com/settings/limits).")
     } else {
       stop("AI_tool must be 'OpenAI', 'Groq', or 'Mistral'.")
     }
