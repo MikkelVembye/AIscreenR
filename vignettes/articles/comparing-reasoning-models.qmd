@@ -180,10 +180,27 @@ The key trade-off is between recall and specificity. GPT-4o-mini prioritizes sen
 
 From a cost perspective, GPT-4o-mini was the most economical at $0.3982, while GPT-5-mini cost $2.2387 and GPT-5.1 cost $5.2719. Despite having fewer false positives, the reasoning models are roughly 5.6 to 13.2 times more expensive than GPT-4o-mini.
 
-## Conclusion
-The choice of model depends on the specific priorities of the systematic review and available budget. GPT-4o-mini remains the most cost-effective option, achieving perfect recall and high specificity (0.974), making it ideal for minimizing false negatives when budget is a primary concern. However, if reducing false positives and improving overall agreement with human judgments is a priority, GPT-5-mini and GPT-5.1 provide superior performance with agreement rates of 0.981 and 0.984, respectively, despite the higher cost.
+## Introducing Ollama models
+In addition to the OpenAI models, we also ran the same screening task using the `tabscreen_ollama()` function with the `ministral-3-8b` model. This took a lot longer to run (approximately 7 hours) than the OpenAI models, as this was run on a local machine with limited computational resources. However, this also meant that the screening did not incur any costs and that the data was not shared with any third party. For more information on how to run screenings locally using Ollama, see the vignette on [Running screenings locally with Ollama](https://mikkelvembye.github.io/AIscreenR/articles/screening-ollama.html). Adding the results from the `ministral-3-8b` model to the table above, we get the following results:
 
-The reasoning models (GPT-5-mini and GPT-5.1) demonstrate that stronger reasoning capabilities lead to more conservative and consistent screening decisions that closely align with the provided prompt. When using reasoning models, a well-crafted, detailed prompt that clearly outlines inclusion and exclusion criteria is essential to leverage their advantages. For reviews where accuracy and precision are most important and budget allows, GPT-5.1 offers the best performance with the lowest false positive rate (41 studies), though at the highest cost.
+```{r}
+#| echo: false
+#| eval: true
+table_path <- system.file("extdata", "comparison-results", "results_4omini_5mini_51_ministral_comparison.csv", package = "AIscreenR")
+
+results_table <- read.csv(table_path, check.names = FALSE)
+knitr::kable(results_table, align = "lcccc")
+```
+
+
+The `ministral-3-8b` model achieved a recall of 0.979, a specificity of 0.969, and a balanced accuracy of 0.979. It had 2 false negatives and 52 false positives. While the performance is quite good, it is not as good as the GPT-5 models, which had higher specificity and balanced accuracy. However, the `ministral-3-8b` model has the advantage of being free to use and not sharing data with any third party, which may be important consideration. It should however be noted that the `ministral-3-8b` model took much longer to run than the OpenAI models, which may be a significant drawback for larger screening tasks and that the model encountered errors for 7 studies out the 2590 studies in the dataset. These errors were due to the model not being able to follow the tool call specified in the `tabscreen_ollama()` function, which is a known issue with smaller models. Therefore, this could potentially be improved by using a larger model on a more powerful machine.
+
+## Conclusion
+The choice of model depends on the specific priorities of the systematic review, including cost, privacy, and available compute. GPT-4o-mini remains the most cost-effective OpenAI option, achieving perfect recall and high specificity (0.974), making it ideal when minimizing false negatives is the main concern. If reducing false positives and improving overall agreement with human judgments is the priority, GPT-5-mini and GPT-5.1 provide superior performance with agreement rates of 0.981 and 0.984, respectively, though at a higher cost.
+
+The Ollama result adds an important local-execution option to this comparison. Ministral-3-8b achieved recall of 0.979, specificity of 0.969, and balanced accuracy of 0.979, which is competitive with GPT-5-mini but still below GPT-5.1. Its main advantages are that it can be run locally, incurs no API cost, and does not share data with a third party. The tradeoff is that it required much longer runtime and produced a few tool-call errors, so it is best suited to workflows where privacy or offline execution outweighs speed and perfect reliability.
+
+Overall, the reasoning models (GPT-5-mini and GPT-5.1) demonstrate that stronger reasoning capabilities lead to more conservative and consistent screening decisions that closely align with the provided prompt. When using reasoning models, a well-crafted, detailed prompt that clearly outlines inclusion and exclusion criteria is essential to leverage their advantages. For reviews where accuracy and precision are most important and budget allows, GPT-5.1 offers the best OpenAI performance with the lowest false positive rate (41 studies), while Ministral-3-8b is a viable local alternative when zero-cost, privacy-preserving screening is the primary requirement.
 
 # References 
 Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2025). Generative pretrained transformer models can function as highly reliable second screeners of titles and abstracts in systematic reviews: A proof of concept and common guidelines. *Psychological Methods*. <https://psycnet.apa.org/record/2026-37236-001>.
