@@ -17,6 +17,7 @@ al. (2025)](https://psycnet.apa.org/record/2026-37236-001).
 Install the latest release from CRAN:
 
 ``` r
+
 install.packages("AIscreenR")
 ```
 
@@ -24,6 +25,7 @@ You can install the development version of AIscreenR from
 [GitHub](https://github.com/) with:
 
 ``` r
+
 # install.packages("remotes")
 remotes::install_github("MikkelVembye/AIscreenR", build_vignettes = TRUE)
 ```
@@ -36,6 +38,7 @@ afterward.
 ## Setting API key and checking rate limits
 
 ``` r
+
 # Find your api key via https://developers.openai.com/api/docs/quickstart#generate-an-api-key
 # Thereafter, either encrypt it with the secret functions from the httr2 package
 # see https://httr2.r-lib.org/reference/secrets.html or run set_api_key() 
@@ -66,6 +69,7 @@ family-based interventions for drug abuse reduction in young people. The
 files are included in the package for tutorial purposes only.
 
 ``` r
+
 
 excl_path <- system.file("extdata", "excl_tutorial.ris", package = "AIscreenR")
 
@@ -111,6 +115,7 @@ Example of how to enter a prompt in R. Can also be done in Word (see
 vignette).
 
 ``` r
+
 prompt <- "Evaluate the following study based on the selection criteria
  for a systematic review on the effects of family-based interventions on drug abuse
  reduction for young people in treatment for non-opioid drug use.
@@ -141,6 +146,7 @@ prompt <- "Evaluate the following study based on the selection criteria
 Approximate price of screening before running the screening.
 
 ``` r
+
 app_obj <- 
   approximate_price_gpt(
     data = filges2015_dat,
@@ -174,6 +180,7 @@ see [Vembye et
 al. (2025)](https://psycnet.apa.org/record/2026-37236-001).
 
 ``` r
+
 # Subsetting the number of references to speed up the tutorial screening
 plan(multisession)
 test_obj <- 

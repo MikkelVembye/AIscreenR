@@ -27,6 +27,7 @@ of the findings from Vembye et al. (2025).
 First, we load the necessary packages for our analysis.
 
 ``` r
+
 library(AIscreenR)
 library(dplyr)
 library(knitr)
@@ -45,6 +46,7 @@ The following prompt was used for all models. It is designed to be very
 specific about the required output format to ensure consistent results.
 
 ``` r
+
 prompt <- "We are screening titles and abstracts of studies for a systematic review about FRIENDS-family interventions for children/adolescents.
 
 Your task: decide INCLUDE (1) vs EXCLUDE (0) based ONLY on title + abstract.
@@ -91,6 +93,7 @@ performance of the newer GPT-5 models against this baseline.
 For the `gpt-4o-mini`model we used the following code:
 
 ``` r
+
 # Example code to run the screening for one model (e.g., gpt-5-mini with 1 repetition)
 plan(multisession)
 result_obj <- 
@@ -110,6 +113,7 @@ plan(sequential)
 For the `gpt-5-mini` we used the following code:
 
 ``` r
+
 # Example code to run the screening for one model (e.g., gpt-5-mini with 1 repetition)
 plan(multisession)
 result_obj <- 
@@ -131,6 +135,7 @@ plan(sequential)
 For the `gpt-5.1` we used the following code:
 
 ``` r
+
 # Example code to run the screening for one model (e.g., gpt-5-mini with 1 repetition)
 plan(multisession)
 result_obj <- 
@@ -165,11 +170,11 @@ function. The key metrics are:
   providing a single measure that balances performance on both relevant
   and irrelevant studies.
 
-| model       | p_agreement | recall | specificity | false_negatives | false_positives | price  |
-|:------------|:-----------:|:------:|:-----------:|:---------------:|:----------------|:------:|
-| GPT-4o-mini |    0.975    | 1.000  |    0.974    |        0        | 66              | 0.3982 |
-| GPT-5-mini  |    0.981    | 0.984  |    0.981    |        1        | 49              | 2.2387 |
-| GPT-5.1     |    0.984    | 0.984  |    0.984    |        1        | 41              | 5.2719 |
+| model | p_agreement | recall | specificity | false_negatives | false_positives | price |
+|:---|:--:|:--:|:--:|:--:|:---|:--:|
+| GPT-4o-mini | 0.975 | 1.000 | 0.974 | 0 | 66 | 0.3982 |
+| GPT-5-mini | 0.981 | 0.984 | 0.981 | 1 | 49 | 2.2387 |
+| GPT-5.1 | 0.984 | 0.984 | 0.984 | 1 | 41 | 5.2719 |
 
 ### Interpretation
 
@@ -204,25 +209,76 @@ From a cost perspective, GPT-4o-mini was the most economical at
 Despite having fewer false positives, the reasoning models are roughly
 5.6 to 13.2 times more expensive than GPT-4o-mini.
 
+### Introducing Ollama models
+
+In addition to the OpenAI models, we also ran the same screening task
+using the
+[`tabscreen_ollama()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_ollama.md)
+function with the `ministral-3-8b` model. This took a lot longer to run
+(approximately 7 hours) than the OpenAI models, as this was run on a
+local machine with limited computational resources. However, this also
+meant that the screening did not incur any costs and that the data was
+not shared with any third party. For more information on how to run
+screenings locally using Ollama, see the vignette on [Running screenings
+locally with
+Ollama](https://mikkelvembye.github.io/AIscreenR/articles/screening-ollama.html).
+Adding the results from the `ministral-3-8b` model to the table above,
+we get the following results:
+
+| model | p_agreement | recall | specificity | false_negatives | false_positives | price |
+|:---|:--:|:--:|:--:|:--:|:---|:--:|
+| GPT-4o-mini | 0.9750000 | 1.00000 | 0.9740000 | 0 | 66 | 0.3982 |
+| GPT-5-mini | 0.9810000 | 0.98400 | 0.9810000 | 1 | 49 | 2.2387 |
+| GPT-5.1 | 0.9840000 | 0.98400 | 0.9840000 | 1 | 41 | 5.2719 |
+| ministral-3-8b | 0.9790941 | 0.96875 | 0.9793569 | 2 | 52 | 0.0000 |
+
+The `ministral-3-8b` model achieved a recall of 0.979, a specificity of
+0.969, and a balanced accuracy of 0.979. It had 2 false negatives and 52
+false positives. While the performance is quite good, it is not as good
+as the GPT-5 models, which had higher specificity and balanced accuracy.
+However, the `ministral-3-8b` model has the advantage of being free to
+use and not sharing data with any third party, which may be important
+consideration. It should however be noted that the `ministral-3-8b`
+model took much longer to run than the OpenAI models, which may be a
+significant drawback for larger screening tasks and that the model
+encountered errors for 7 studies out the 2590 studies in the dataset.
+These errors were due to the model not being able to follow the tool
+call specified in the
+[`tabscreen_ollama()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_ollama.md)
+function, which is a known issue with smaller models. Therefore, this
+could potentially be improved by using a larger model on a more powerful
+machine.
+
 ### Conclusion
 
 The choice of model depends on the specific priorities of the systematic
-review and available budget. GPT-4o-mini remains the most cost-effective
-option, achieving perfect recall and high specificity (0.974), making it
-ideal for minimizing false negatives when budget is a primary concern.
-However, if reducing false positives and improving overall agreement
-with human judgments is a priority, GPT-5-mini and GPT-5.1 provide
-superior performance with agreement rates of 0.981 and 0.984,
-respectively, despite the higher cost.
+review, including cost, privacy, and available compute. GPT-4o-mini
+remains the most cost-effective OpenAI option, achieving perfect recall
+and high specificity (0.974), making it ideal when minimizing false
+negatives is the main concern. If reducing false positives and improving
+overall agreement with human judgments is the priority, GPT-5-mini and
+GPT-5.1 provide superior performance with agreement rates of 0.981 and
+0.984, respectively, though at a higher cost.
 
-The reasoning models (GPT-5-mini and GPT-5.1) demonstrate that stronger
-reasoning capabilities lead to more conservative and consistent
+The Ollama result adds an important local-execution option to this
+comparison. Ministral-3-8b achieved recall of 0.979, specificity of
+0.969, and balanced accuracy of 0.979, which is competitive with
+GPT-5-mini but still below GPT-5.1. Its main advantages are that it can
+be run locally, incurs no API cost, and does not share data with a third
+party. The tradeoff is that it required much longer runtime and produced
+a few tool-call errors, so it is best suited to workflows where privacy
+or offline execution outweighs speed and perfect reliability.
+
+Overall, the reasoning models (GPT-5-mini and GPT-5.1) demonstrate that
+stronger reasoning capabilities lead to more conservative and consistent
 screening decisions that closely align with the provided prompt. When
 using reasoning models, a well-crafted, detailed prompt that clearly
 outlines inclusion and exclusion criteria is essential to leverage their
 advantages. For reviews where accuracy and precision are most important
-and budget allows, GPT-5.1 offers the best performance with the lowest
-false positive rate (41 studies), though at the highest cost.
+and budget allows, GPT-5.1 offers the best OpenAI performance with the
+lowest false positive rate (41 studies), while Ministral-3-8b is a
+viable local alternative when zero-cost, privacy-preserving screening is
+the primary requirement.
 
 ## References
 

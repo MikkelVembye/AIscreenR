@@ -51,5 +51,6 @@ A Proof of Concept and Common Guidelines. *Psychological Methods*.
 ## Examples
 
 ``` r
+
 excl_test_dat <- filges2015_dat[1:200,] |> sample_references(100)
 ```

@@ -241,44 +241,44 @@ following components:
 The `answer_data_aggregated` data (only present when reps \> 1) contains
 the following mandatory variables:
 
-|                            |             |                                                                                                                                                                                                                |
-|----------------------------|-------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **studyid**                | `integer`   | indicating the study ID of the reference.                                                                                                                                                                      |
-| **title**                  | `character` | indicating the title of the reference.                                                                                                                                                                         |
-| **abstract**               | `character` | indicating the abstract of the reference.                                                                                                                                                                      |
-| **promptid**               | `integer`   | indicating the prompt ID.                                                                                                                                                                                      |
-| **prompt**                 | `character` | indicating the prompt.                                                                                                                                                                                         |
-| **model**                  | `character` | indicating the specific model used.                                                                                                                                                                            |
-| **question**               | `character` | indicating the final question sent to Groq's API models.                                                                                                                                                       |
-| **top_p**                  | `numeric`   | indicating the applied top_p.                                                                                                                                                                                  |
-| **incl_p**                 | `numeric`   | indicating the probability of inclusion calculated across multiple repeated responses on the same title and abstract.                                                                                          |
-| **final_decision_gpt**     | `character` | indicating the final decision reached by model - either 'Include', 'Exclude', or 'Check'.                                                                                                                      |
-| **final_decision_gpt_num** | `integer`   | indicating the final numeric decision reached by model - either 1 or 0.                                                                                                                                        |
-| **longest_answer**         | `character` | indicating the longest response obtained across multiple repeated responses on the same title and abstract. Only included if the detailed function is used. See 'Examples' below for how to use this function. |
-| **reps**                   | `integer`   | indicating the number of times the same question has been sent to Groq's API models.                                                                                                                           |
-| **n_mis_answers**          | `integer`   | indicating the number of missing responses.                                                                                                                                                                    |
+|  |  |  |
+|----|----|----|
+| **studyid** | `integer` | indicating the study ID of the reference. |
+| **title** | `character` | indicating the title of the reference. |
+| **abstract** | `character` | indicating the abstract of the reference. |
+| **promptid** | `integer` | indicating the prompt ID. |
+| **prompt** | `character` | indicating the prompt. |
+| **model** | `character` | indicating the specific model used. |
+| **question** | `character` | indicating the final question sent to Groq's API models. |
+| **top_p** | `numeric` | indicating the applied top_p. |
+| **incl_p** | `numeric` | indicating the probability of inclusion calculated across multiple repeated responses on the same title and abstract. |
+| **final_decision_gpt** | `character` | indicating the final decision reached by model - either 'Include', 'Exclude', or 'Check'. |
+| **final_decision_gpt_num** | `integer` | indicating the final numeric decision reached by model - either 1 or 0. |
+| **longest_answer** | `character` | indicating the longest response obtained across multiple repeated responses on the same title and abstract. Only included if the detailed function is used. See 'Examples' below for how to use this function. |
+| **reps** | `integer` | indicating the number of times the same question has been sent to Groq's API models. |
+| **n_mis_answers** | `integer` | indicating the number of missing responses. |
 
   
 The `answer_data` data contains the following mandatory variables:
 
-|                          |             |                                                                                                                                                                                     |
-|--------------------------|-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **studyid**              | `integer`   | indicating the study ID of the reference.                                                                                                                                           |
-| **title**                | `character` | indicating the title of the reference.                                                                                                                                              |
-| **abstract**             | `character` | indicating the abstract of the reference.                                                                                                                                           |
-| **promptid**             | `integer`   | indicating the prompt ID.                                                                                                                                                           |
-| **prompt**               | `character` | indicating the prompt.                                                                                                                                                              |
-| **model**                | `character` | indicating the specific model used.                                                                                                                                                 |
-| **iterations**           | `numeric`   | indicating the number of times the same question has been sent to Groq's API models.                                                                                                |
-| **question**             | `character` | indicating the final question sent to Groq's API models.                                                                                                                            |
-| **top_p**                | `numeric`   | indicating the applied top_p.                                                                                                                                                       |
-| **decision_gpt**         | `character` | indicating the raw decision - either `"1", "0", "1.1"` for inclusion, exclusion, or uncertainty, respectively.                                                                      |
+|  |  |  |
+|----|----|----|
+| **studyid** | `integer` | indicating the study ID of the reference. |
+| **title** | `character` | indicating the title of the reference. |
+| **abstract** | `character` | indicating the abstract of the reference. |
+| **promptid** | `integer` | indicating the prompt ID. |
+| **prompt** | `character` | indicating the prompt. |
+| **model** | `character` | indicating the specific model used. |
+| **iterations** | `numeric` | indicating the number of times the same question has been sent to Groq's API models. |
+| **question** | `character` | indicating the final question sent to Groq's API models. |
+| **top_p** | `numeric` | indicating the applied top_p. |
+| **decision_gpt** | `character` | indicating the raw decision - either `"1", "0", "1.1"` for inclusion, exclusion, or uncertainty, respectively. |
 | **detailed_description** | `character` | indicating detailed description of the given decision made by Groq's API models. Only included if the detailed function is used. See 'Examples' below for how to use this function. |
-| **decision_binary**      | `integer`   | indicating the binary decision, that is 1 for inclusion and 0 for exclusion. 1.1 decision are coded equal to 1 in this case.                                                        |
-| **prompt_tokens**        | `integer`   | indicating the number of prompt tokens sent to the server for the given request.                                                                                                    |
-| **completion_tokens**    | `integer`   | indicating the number of completion tokens sent to the server for the given request.                                                                                                |
-| **run_time**             | `numeric`   | indicating the time it took to obtain a response from the server for the given request.                                                                                             |
-| **n**                    | `integer`   | indicating request ID.                                                                                                                                                              |
+| **decision_binary** | `integer` | indicating the binary decision, that is 1 for inclusion and 0 for exclusion. 1.1 decision are coded equal to 1 in this case. |
+| **prompt_tokens** | `integer` | indicating the number of prompt tokens sent to the server for the given request. |
+| **completion_tokens** | `integer` | indicating the number of completion tokens sent to the server for the given request. |
+| **run_time** | `numeric` | indicating the time it took to obtain a response from the server for the given request. |
+| **n** | `integer` | indicating request ID. |
 
   
 If any requests failed to reach the server, the object contains an error
@@ -287,12 +287,12 @@ with failed request references only.
 
 The `price_data` data contains the following variables:
 
-|                         |             |                                                                     |
-|-------------------------|-------------|---------------------------------------------------------------------|
-| **model**               | `character` | model name.                                                         |
-| **input_price_dollar**  | `integer`   | price for all prompt/input tokens for the correspondent model.      |
-| **output_price_dollar** | `integer`   | price for all completion/output tokens for the correspondent model. |
-| **price_total_dollar**  | `integer`   | total price for all tokens for the correspondent model.             |
+|  |  |  |
+|----|----|----|
+| **model** | `character` | model name. |
+| **input_price_dollar** | `integer` | price for all prompt/input tokens for the correspondent model. |
+| **output_price_dollar** | `integer` | price for all completion/output tokens for the correspondent model. |
+| **price_total_dollar** | `integer` | total price for all tokens for the correspondent model. |
 
 Find current token pricing at <https://groq.com/pricing>.
 

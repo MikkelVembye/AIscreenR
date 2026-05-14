@@ -92,6 +92,7 @@ i.e. a data.frame or tibble with at least three columns: `studyid`,
 example dataset from the `AIscreenR` package.
 
 ``` r
+
 # Load example data
 data("filges2015_dat", package = "AIscreenR")
 filges2015_dat <- filges2015_dat[1:5, ] # Using only first 5 rows for demonstration
@@ -128,6 +129,7 @@ head(filges2015_dat)
 We load the required packages.
 
 ``` r
+
 # Loading packages
 library(AIscreenR)  # Used to screen and calculate gpt vs. human performance
 library(tibble)     # Used to work with tibbles
@@ -144,6 +146,7 @@ screening decisions. Below is an example prompt for identifying studies
 related to Functional Family Therapy (FFT).
 
 ``` r
+
 prompt <- "Evaluate the following study based on the selection criteria
  for a systematic review on the effects of family-based interventions on drug abuse
  reduction for young people in treatment for non-opioid drug use.
@@ -182,6 +185,7 @@ FALSE). A lot of other arguments are available, please see the function
 documentation for details.
 
 ``` r
+
 # Set parallel processing plan
 future::plan(future::multisession)
 
@@ -212,6 +216,7 @@ components include `error_data` (failed requests) and, if reps \> 1,
 `arg_list`.
 
 ``` r
+
 # Select the relevant output columns
 
 results$answer_data |> dplyr::select(author, human_code, decision_gpt, decision_binary)

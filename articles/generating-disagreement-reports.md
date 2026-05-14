@@ -13,6 +13,7 @@ between human and AI screening decisions.
 First, we load the necessary packages.
 
 ``` r
+
 library(dplyr)
 library(AIscreenR)
 ```
@@ -41,6 +42,7 @@ to resolve each conflict.
 In this example, we will generate an HTML report.
 
 ``` r
+
 # This code will generate a report in your current working directory
 # The report will open automatically if 'open = TRUE'
 report(

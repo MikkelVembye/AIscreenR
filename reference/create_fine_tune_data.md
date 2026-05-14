@@ -39,12 +39,12 @@ A dataset of class `'fine_tune_data'`.
 
 The dataset contains at least the following variables:
 
-|              |                            |                                                                             |
-|--------------|----------------------------|-----------------------------------------------------------------------------|
-| **studyid**  | `integer/character/factor` | indicating the study ID of the reference.                                   |
-| **title**    | `character`                | indicating the title of the reference.                                      |
-| **abstract** | `character`                | indicating the abstract of the reference.                                   |
-| **question** | `character`                | indicating the final question sent to OpenAI's GPT API models for training. |
+|  |  |  |
+|----|----|----|
+| **studyid** | `integer/character/factor` | indicating the study ID of the reference. |
+| **title** | `character` | indicating the title of the reference. |
+| **abstract** | `character` | indicating the abstract of the reference. |
+| **question** | `character` | indicating the final question sent to OpenAI's GPT API models for training. |
 
 ## See also
 

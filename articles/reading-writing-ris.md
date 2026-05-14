@@ -40,6 +40,7 @@ back to RIS format:
 ## Load the package
 
 ``` r
+
 library(AIscreenR)
 ```
 
@@ -49,6 +50,7 @@ The example below builds a small RIS file in a temporary location and
 reads it.
 
 ``` r
+
 ris <- c(
   "TY  - JOUR",
   "AU  - Author, One",
@@ -94,6 +96,7 @@ or raw RIS tags. Semicolon-separated values are automatically split into
 multiple tag lines.
 
 ``` r
+
 # Using raw RIS tags
 df_out <- data.frame(
   TY = c("JOUR", "CHAP"),
@@ -121,6 +124,7 @@ You can also use descriptive column names (they will be automatically
 mapped back to RIS tags):
 
 ``` r
+
 # Using descriptive names
 df_descriptive <- data.frame(
   source_type = c("JOUR", "CHAP"),

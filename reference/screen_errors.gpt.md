@@ -115,6 +115,7 @@ Responses*. https://httr2.r-lib.org, https://github.com/r-lib/httr2.
 ## Examples
 
 ``` r
+
 if (FALSE) { # \dontrun{
 prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
 

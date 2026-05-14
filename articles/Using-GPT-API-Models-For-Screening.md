@@ -122,6 +122,7 @@ To get started, we first load all R package needed to construct and run
 the screening.
 
 ``` r
+
 # Loading packages 
 library(AIscreenR) # Used to screen and calculate gpt vs. human performance
 library(tibble)    # Used to work with tibbles
@@ -153,6 +154,7 @@ where `1` and `0` indicate whether a study is included or excluded,
 respectively.
 
 ``` r
+
 # NOTE: Find the RIS files behind this vignette at https://osf.io/kfbvu/
 
 # Loading EXCLUDED studies
@@ -226,6 +228,7 @@ data. As further described in Vembye et al.
 abstracts, as these can distort the accuracy of the screening.
 
 ``` r
+
 set.seed(09042024)
 
 excl_sample <- 
@@ -315,6 +318,7 @@ R environment as an environment variable. You can do this by using
 [`usethis::edit_r_environ()`](https://usethis.r-lib.org/reference/edit.html).
 
 ``` r
+
 # Run code to open your .Renviron file
 usethis::edit_r_environ()
 ```
@@ -368,6 +372,7 @@ screening. This can be done in several ways. You can either write your
 prompt directly in R, as illustrated below:
 
 ``` r
+
 prompt <- "We are screening studies for a systematic literature review. 
 The topic of the systematic review is the effect of the FRIENDS preventive programme
 on reducing anxiety symptoms in children and adolescents. The FRIENDS programme is a 
@@ -391,6 +396,7 @@ Then you can load your prompt(s) via `readtext()` from the `readtext`
 package.
 
 ``` r
+
 word_path <-  system.file("extdata", "word_prompt_1.docx", package = "AIscreenR")
 
 prompt <- 
@@ -423,6 +429,7 @@ Optional
 7.  Set the request per minutes.
 
 ``` r
+
 # Gets information about whether you have access to a given model and 
 # how many requests per minutes you are allow to send. 
 models_rpm <- rate_limits_per_minute("gpt-4o-mini")
@@ -452,6 +459,7 @@ We have now conducted the test screening and can get the raw results as
 below.
 
 ``` r
+
 # The print output when calling the result object
 result_object
 #> 
@@ -485,6 +493,7 @@ issues. To recover these failed requests, you can use
 as shown below.
 
 ``` r
+
 result_object <- 
   result_object |> 
   screen_errors()
@@ -498,6 +507,7 @@ purpose, we can use
 [`screen_analyzer()`](https://mikkelvembye.github.io/AIscreenR/reference/screen_analyzer.md).
 
 ``` r
+
 screen_performance <- 
   result_object |> 
   screen_analyzer(human_decision = human_code) # state the name of the variable containing the human decision. 
@@ -535,6 +545,7 @@ number of times a study record has been included across these 10
 screenings. To obtain this information, you can use the following code:
 
 ``` r
+
 incl_dist <- attr(screen_performance, "p_incl_data")
 incl_dist |> select(model, recall, specificity, criteria)
 #> # A tibble: 10 × 4
@@ -572,6 +583,7 @@ To get detailed descriptions of GPT’s reasons for exclusion
 run the screening again, as shown below.
 
 ``` r
+
 disagree_dat <- 
   result_object$answer_data_aggregated |> 
   filter(human_code == 1, final_decision_gpt_num == 0, incl_p == 0)
@@ -608,6 +620,7 @@ Here is an example of an abstract that was included by the human
 reviewers and excluded by GPT.
 
 ``` r
+
 # Example of abstract included by the human and excluded by gpt-4o-mini
 result_object_detail$answer_data$abstract[1]
 #> [1] "Introduction: Many universal school-based preventative intervention trials 
@@ -635,6 +648,7 @@ result_object_detail$answer_data$abstract[1]
 and this is GPT’s detailed response.
 
 ``` r
+
 # Example of explanation for exclusion 
 # Seems reasonable why the records was thrown out by gpt.
 result_object_detail$answer_data$detailed_description[1]
@@ -665,6 +679,7 @@ this information by using
 [`approximate_price_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/approximate_price_gpt.md).
 
 ``` r
+
 # All RIS file data
 all_dat <- 
   bind_rows(ris_dat_excl, ris_dat_incl) |> # Use RIS file data here
@@ -707,6 +722,7 @@ so by substituting `test_dat` with `all_dat` in the code used to screen
 the test data, as shown below
 
 ``` r
+
 # Set parallel plan
 plan(multisession) 
 
@@ -747,6 +763,7 @@ into a RIS file, which can then be imported into the systematic review
 software.
 
 ``` r
+
 incl_refs <- result_object$answer_data_aggregated |> 
   filter(incl_p >= 0.1) 
   

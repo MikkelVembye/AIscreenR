@@ -319,26 +319,26 @@ iterated requests/questions.
 
 The `answer_data` data contains the following *mandatory* variables:
 
-|                          |             |                                                                                                                                                                                                            |
-|--------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **studyid**              | `integer`   | indicating the study ID of the reference.                                                                                                                                                                  |
-| **title**                | `character` | indicating the title of the reference.                                                                                                                                                                     |
-| **abstract**             | `character` | indicating the abstract of the reference.                                                                                                                                                                  |
-| **promptid**             | `integer`   | indicating the prompt ID.                                                                                                                                                                                  |
-| **prompt**               | `character` | indicating the prompt.                                                                                                                                                                                     |
-| **model**                | `character` | indicating the specific gpt-model used.                                                                                                                                                                    |
-| **iterations**           | `numeric`   | indicating the number of times the same question has been sent to OpenAI's GPT API models.                                                                                                                 |
-| **question**             | `character` | indicating the final question sent to OpenAI's GPT API models.                                                                                                                                             |
-| **top_p**                | `numeric`   | indicating the applied top_p.                                                                                                                                                                              |
-| **decision_gpt**         | `character` | indicating the raw gpt decision - either `"1", "0", "1.1"` for inclusion, exclusion, or uncertainty, respectively.                                                                                         |
+|  |  |  |
+|----|----|----|
+| **studyid** | `integer` | indicating the study ID of the reference. |
+| **title** | `character` | indicating the title of the reference. |
+| **abstract** | `character` | indicating the abstract of the reference. |
+| **promptid** | `integer` | indicating the prompt ID. |
+| **prompt** | `character` | indicating the prompt. |
+| **model** | `character` | indicating the specific gpt-model used. |
+| **iterations** | `numeric` | indicating the number of times the same question has been sent to OpenAI's GPT API models. |
+| **question** | `character` | indicating the final question sent to OpenAI's GPT API models. |
+| **top_p** | `numeric` | indicating the applied top_p. |
+| **decision_gpt** | `character` | indicating the raw gpt decision - either `"1", "0", "1.1"` for inclusion, exclusion, or uncertainty, respectively. |
 | **detailed_description** | `character` | indicating detailed description of the given decision made by OpenAI's GPT API models. ONLY included if the detailed function calling function is used. See 'Examples' below for how to use this function. |
-| **decision_binary**      | `integer`   | indicating the binary gpt decision, that is 1 for inclusion and 0 for exclusion. 1.1 decision are coded equal to 1 in this case.                                                                           |
-| **prompt_tokens**        | `integer`   | indicating the number of prompt tokens sent to the server for the given request.                                                                                                                           |
-| **completion_tokens**    | `integer`   | indicating the number of completion tokens sent to the server for the given request.                                                                                                                       |
-| **submodel**             | `character` | indicating the exact (sub)model used for screening.                                                                                                                                                        |
-| **run_time**             | `numeric`   | indicating the time it took to obtain a response from the server for the given request.                                                                                                                    |
-| **run_date**             | `character` | indicating the date the given response was received.                                                                                                                                                       |
-| **n**                    | `integer`   | indicating iteration ID. Is only different from 1, when `reps > 1`.                                                                                                                                        |
+| **decision_binary** | `integer` | indicating the binary gpt decision, that is 1 for inclusion and 0 for exclusion. 1.1 decision are coded equal to 1 in this case. |
+| **prompt_tokens** | `integer` | indicating the number of prompt tokens sent to the server for the given request. |
+| **completion_tokens** | `integer` | indicating the number of completion tokens sent to the server for the given request. |
+| **submodel** | `character` | indicating the exact (sub)model used for screening. |
+| **run_time** | `numeric` | indicating the time it took to obtain a response from the server for the given request. |
+| **run_date** | `character` | indicating the date the given response was received. |
+| **n** | `integer` | indicating iteration ID. Is only different from 1, when `reps > 1`. |
 
   
 If any requests failed, the `gpt` object contains an error dataset
@@ -349,36 +349,36 @@ When the same question is requested multiple times, the
 `answer_data_aggregated` data contains the following *mandatory*
 variables:
 
-|                            |             |                                                                                                                                                                                                                      |
-|----------------------------|-------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **studyid**                | `integer`   | indicating the study ID of the reference.                                                                                                                                                                            |
-| **title**                  | `character` | indicating the title of the reference.                                                                                                                                                                               |
-| **abstract**               | `character` | indicating the abstract of the reference.                                                                                                                                                                            |
-| **promptid**               | `integer`   | indicating the prompt ID.                                                                                                                                                                                            |
-| **prompt**                 | `character` | indicating the prompt.                                                                                                                                                                                               |
-| **model**                  | `character` | indicating the specific gpt-model used.                                                                                                                                                                              |
-| **question**               | `character` | indicating the final question sent to OpenAI's GPT API models.                                                                                                                                                       |
-| **top_p**                  | `numeric`   | indicating the applied top_p.                                                                                                                                                                                        |
-| **incl_p**                 | `numeric`   | indicating the probability of inclusion calculated across multiple repeated responses on the same title and abstract.                                                                                                |
-| **final_decision_gpt**     | `character` | indicating the final decision reached by gpt - either 'Include', 'Exclude', or 'Check'.                                                                                                                              |
-| **final_decision_gpt_num** | `integer`   | indicating the final numeric decision reached by gpt - either 1 or 0.                                                                                                                                                |
-| **longest_answer**         | `character` | indicating the longest gpt response obtained across multiple repeated responses on the same title and abstract. Only included when `decision_description = TRUE`. See 'Examples' below for how to use this function. |
-| **reps**                   | `integer`   | indicating the number of times the same question has been sent to OpenAI's GPT API models.                                                                                                                           |
-| **n_mis_answers**          | `integer`   | indicating the number of missing responses.                                                                                                                                                                          |
-| **submodel**               | `character` | indicating the exact (sub)model used for screening.                                                                                                                                                                  |
+|  |  |  |
+|----|----|----|
+| **studyid** | `integer` | indicating the study ID of the reference. |
+| **title** | `character` | indicating the title of the reference. |
+| **abstract** | `character` | indicating the abstract of the reference. |
+| **promptid** | `integer` | indicating the prompt ID. |
+| **prompt** | `character` | indicating the prompt. |
+| **model** | `character` | indicating the specific gpt-model used. |
+| **question** | `character` | indicating the final question sent to OpenAI's GPT API models. |
+| **top_p** | `numeric` | indicating the applied top_p. |
+| **incl_p** | `numeric` | indicating the probability of inclusion calculated across multiple repeated responses on the same title and abstract. |
+| **final_decision_gpt** | `character` | indicating the final decision reached by gpt - either 'Include', 'Exclude', or 'Check'. |
+| **final_decision_gpt_num** | `integer` | indicating the final numeric decision reached by gpt - either 1 or 0. |
+| **longest_answer** | `character` | indicating the longest gpt response obtained across multiple repeated responses on the same title and abstract. Only included when `decision_description = TRUE`. See 'Examples' below for how to use this function. |
+| **reps** | `integer` | indicating the number of times the same question has been sent to OpenAI's GPT API models. |
+| **n_mis_answers** | `integer` | indicating the number of missing responses. |
+| **submodel** | `character` | indicating the exact (sub)model used for screening. |
 
   
 
 The `price_data` data contains the following variables:
 
-|                         |             |                                                                           |
-|-------------------------|-------------|---------------------------------------------------------------------------|
-| **prompt**              | `character` | if multiple prompts are used this variable indicates the given prompt-id. |
-| **model**               | `character` | the specific gpt model used.                                              |
-| **iterations**          | `integer`   | indicating the number of times the same question was requested.           |
-| **input_price_dollar**  | `integer`   | price for all prompt/input tokens for the correspondent gpt-model.        |
-| **output_price_dollar** | `integer`   | price for all completion/output tokens for the correspondent gpt-model.   |
-| **total_price_dollar**  | `integer`   | total price for all tokens for the correspondent gpt-model.               |
+|  |  |  |
+|----|----|----|
+| **prompt** | `character` | if multiple prompts are used this variable indicates the given prompt-id. |
+| **model** | `character` | the specific gpt model used. |
+| **iterations** | `integer` | indicating the number of times the same question was requested. |
+| **input_price_dollar** | `integer` | price for all prompt/input tokens for the correspondent gpt-model. |
+| **output_price_dollar** | `integer` | price for all completion/output tokens for the correspondent gpt-model. |
+| **total_price_dollar** | `integer` | total price for all tokens for the correspondent gpt-model. |
 
 Find current token pricing at
 <https://developers.openai.com/api/docs/pricing> or

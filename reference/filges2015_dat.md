@@ -16,14 +16,14 @@ filges2015_dat
 
 A `tibble` with 270 rows/studies and 6 variables/columns
 
-|                |             |                                                                      |
-|----------------|-------------|----------------------------------------------------------------------|
-| **author**     | `character` | indicating the authors of the reference                              |
-| **eppi_id**    | `character` | indicating a unique eppi-ID for each study                           |
-| **studyid**    | `numeric`   | indicating a unique study-ID for each study                          |
-| **title**      | `character` | with the title of the study                                          |
-| **abstract**   | `character` | with the study abstract                                              |
-| **human_code** | `numeric`   | indicating the human screening decision. 1 = included, 0 = excluded. |
+|  |  |  |
+|----|----|----|
+| **author** | `character` | indicating the authors of the reference |
+| **eppi_id** | `character` | indicating a unique eppi-ID for each study |
+| **studyid** | `numeric` | indicating a unique study-ID for each study |
+| **title** | `character` | with the title of the study |
+| **abstract** | `character` | with the study abstract |
+| **human_code** | `numeric` | indicating the human screening decision. 1 = included, 0 = excluded. |
 
 ## References
 

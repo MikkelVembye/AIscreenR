@@ -19,6 +19,7 @@ First, we load the necessary packages for this workflow. We will use
 `AIscreenR` for the main functions and `dplyr` for data manipulation.
 
 ``` r
+
 library(AIscreenR)
 library(dplyr)
 ```
@@ -31,6 +32,7 @@ the `AIscreenR` package. To create a balanced training set, we’ll select
 `human_code`.
 
 ``` r
+
 # Extract 5 irrelevant (human_code == 0) and 5 relevant (human_code == 1) records.
 sample_dat <- filges2015_dat[c(1:5, 261:265), ]
 
@@ -47,6 +49,7 @@ for fine-tuning. It combines the `title` and `abstract` with your
 `prompt` to create a complete question for each study.
 
 ``` r
+
 ft_data_generated <-
   create_fine_tune_data(
     data = sample_dat,
@@ -115,6 +118,7 @@ We also need to define the `role_and_subject` for the model. This is a
 system message that tells the fine-tuned model how it should behave.
 
 ``` r
+
 ft_data_to_write <-
   ft_data_generated |>
   mutate(true_answer = if_else(human_code == 1, "Include", "Exclude"))
@@ -143,6 +147,7 @@ requirements [OpenAI Docs: Fine-tuning
 guide](https://developers.openai.com/api/docs/guides/supervised-fine-tuning).
 
 ``` r
+
 # This code will write a file named "fine_tune_data.jsonl"
 # to your working directory.
 save_fine_tune_data(
@@ -172,6 +177,7 @@ A common approach is to use an 80/20 or 90/10 split, where the larger
 portion is used for training.
 
 ``` r
+
 # Set a seed for reproducibility of the random split
 set.seed(123)
 
@@ -200,6 +206,7 @@ to convert our training and validation data frames into the `jsonl`
 format required by OpenAI. We will create two separate files.
 
 ``` r
+
 # This code will write two files to your working directory.
 
 # Write the training data
@@ -280,6 +287,7 @@ Once you have the model name, you can use it in the
 function as follows:
 
 ``` r
+
 # Example of using the fine-tuned model in tabscreen_gpt
 result_obj <- 
   tabscreen_gpt(

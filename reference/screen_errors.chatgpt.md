@@ -103,6 +103,7 @@ Responses*. https://httr2.r-lib.org, https://github.com/r-lib/httr2.
 ## Examples
 
 ``` r
+
 if (FALSE) { # \dontrun{
 
 set_api_key()
