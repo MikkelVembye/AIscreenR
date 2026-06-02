@@ -8,7 +8,7 @@ concerns and reproducibility challenges. This vignette introduces
 a function that uses locally hosted Ollama models screen titles and
 abstracts while maintaining data privacy and control. This function
 builds on the
-[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
+[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md)
 approach, adapting it for local execution with Ollama models. Therefore,
 the output structure and key arguments remain the same but data remains
 on the local machine. This gives users full control over model versions
@@ -86,7 +86,7 @@ checking the model’s tool/function-calling capabilities.
 ### Data
 
 Data is requiered to be in the same format as for
-[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md),
+[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md),
 i.e. a data.frame or tibble with at least three columns: `studyid`,
 `title`, and `abstract`. For demonstration purposes, we use a small
 example dataset from the `AIscreenR` package.

@@ -1,5 +1,33 @@
 # Changelog
 
+## AIscreenR 0.4.0
+
+### New features
+
+- Adding
+  [`tabscreen_mistral()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_mistral.md)
+  and
+  [`get_api_key_mistral()`](https://mikkelvembye.github.io/AIscreenR/reference/get_api_key_mistral.md)
+  functions to screen titles and abstracts using Mistral’s API models.
+- Adding
+  [`tabscreen_gemini()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gemini.md)
+  and
+  [`get_api_key_gemini()`](https://mikkelvembye.github.io/AIscreenR/reference/get_api_key_gemini.md)
+  function to screen titles and abstracts using Gemini’s API models.
+- Adding
+  [`tabscreen_claude()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_claude.md)
+  and
+  [`get_api_key_anthropic()`](https://mikkelvembye.github.io/AIscreenR/reference/get_api_key_anthropic.md)
+  function to screen titles and abstracts using Anthropics’s API models.
+
+### New features
+
+- Migrating from chat/completions endpoint to responses for all OpenAI
+  functions. This includes:
+  - [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md)
+  - [`screen_errors.gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/screen_errors.gpt.md)
+  - [`rate_limits_per_minute()`](https://mikkelvembye.github.io/AIscreenR/reference/rate_limits_per_minute.md)
+
 ## AIscreenR 0.3.2.9000
 
 ### Minor improvements
@@ -28,7 +56,7 @@ CRAN release: 2026-04-20
   [`report()`](https://mikkelvembye.github.io/AIscreenR/reference/report.md)
   when rendering large amounts of text.
 - Fixed bug in
-  [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
+  [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md)
   when using multiple reps and gpt-5 models.
 - Fixed bug in
   [`screen_analyzer()`](https://mikkelvembye.github.io/AIscreenR/reference/screen_analyzer.md)
@@ -49,7 +77,7 @@ CRAN release: 2026-04-20
 CRAN release: 2026-04-13
 
 - Updating documentation of
-  [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
+  [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md)
 
 ## AIscreenR 0.3.0
 
@@ -109,7 +137,7 @@ CRAN release: 2024-11-26
 - A typo in the vignette has been corrected.
 - The vignette now draws on functions from synthesisr instead of
   revtools to handle RIS files.
-- [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
+- [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md)
   now treats the study ID variable as a factor to keep original order of
   the dataset with titles and abstracts.
 

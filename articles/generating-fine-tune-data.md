@@ -269,7 +269,7 @@ creating a fine-tuning job on the OpenAI platform.
 After your fine-tuning job is complete, you will have a new model that
 is specifically trained on your screening task. You can use this
 fine-tuned model in the
-[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
+[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md)
 function by specifying the `model` argument with the name of your
 fine-tuned model and setting the `custom_model` argument to TRUE. This
 will allow you to leverage the improved performance of the fine-tuned
@@ -283,7 +283,7 @@ fine-tuning job details page on the OpenAI platform. See picture below
 for reference. ![Fine-tuning job details](figures/model_done.png)
 
 Once you have the model name, you can use it in the
-[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
+[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md)
 function as follows:
 
 ``` r
@@ -304,7 +304,7 @@ result_obj <-
 ```
 
 The
-[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
+[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md)
 function will now use your fine-tuned model for screening, which should
 yield improved performance on your specific task compared to using a
 base model.

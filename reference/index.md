@@ -6,8 +6,7 @@ R functions to automate title and abstract screeening with GPT API
 models
 
 - [`tabscreen_gpt.tools()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
-  [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
-  **\[stable\]** : Title and abstract screening with GPT API models
+  **\[deprecated\]** : Title and abstract screening with GPT API models
   using function calls via the tools argument
 - [`tabscreen_gpt.original()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.original.md)
   **\[deprecated\]** : Title and abstract screening with GPT API models
@@ -18,6 +17,19 @@ models
 - [`tabscreen_ollama()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_ollama.md)
   : Title and abstract screening with OLLAMA API models using function
   calls via the tools argument
+- [`tabscreen_gpt.tools_responses()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md)
+  [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md)
+  **\[stable\]** : Title and abstract screening with GPT API models
+  using function calls via the tools argument and the responses endpoint
+- [`tabscreen_mistral()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_mistral.md)
+  **\[stable\]** : Title and abstract screening with mistral's API
+  models
+- [`tabscreen_gemini()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gemini.md)
+  **\[stable\]** : Title and abstract screening with Gemini API models
+  using function calls
+- [`tabscreen_claude()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_claude.md)
+  **\[stable\]** : Title and abstract screening with Anthropic's API
+  models
 
 ## Screen failed requests
 
@@ -57,6 +69,12 @@ R functions to ease and automate API management
   : Get API key from R environment variable.
 - [`get_api_key_groq()`](https://mikkelvembye.github.io/AIscreenR/reference/get_api_key_groq.md)
   : Get GROQ API key from R environment variable.
+- [`get_api_key_anthropic()`](https://mikkelvembye.github.io/AIscreenR/reference/get_api_key_anthropic.md)
+  : Get Anthropic API key from R environment variable.
+- [`get_api_key_gemini()`](https://mikkelvembye.github.io/AIscreenR/reference/get_api_key_gemini.md)
+  : Get Gemini API key from R environment variable.
+- [`get_api_key_mistral()`](https://mikkelvembye.github.io/AIscreenR/reference/get_api_key_mistral.md)
+  : Get Mistral API key from R environment variable.
 
 ## Rate limits
 
@@ -86,6 +104,15 @@ Datasets in the package
   : Disagreement sample data
 - [`groq_model_prizes`](https://mikkelvembye.github.io/AIscreenR/reference/groq_model_prizes.md)
   : Groq model prices (last updated March 18, 2026)
+- [`mistral_model_prizes`](https://mikkelvembye.github.io/AIscreenR/reference/mistral_model_prizes.md)
+  : Mistral model prices (last updated May 7, 2026) Data set containing
+  input and output prizes for all Mistral's API models.
+- [`gemini_model_prizes`](https://mikkelvembye.github.io/AIscreenR/reference/gemini_model_prizes.md)
+  : Gemini model prices (last updated May 7, 2026) Data set containing
+  input and output prizes for all Gemini's API models.
+- [`claude_model_prizes`](https://mikkelvembye.github.io/AIscreenR/reference/claude_model_prizes.md)
+  : Claude model prices (last updated May 13, 2026) Data set containing
+  input and output prizes for all Claude's API models.
 
 ## Coercion
 

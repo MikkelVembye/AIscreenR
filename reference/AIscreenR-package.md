@@ -26,4 +26,7 @@ Useful links:
 
 Authors:
 
+- Mikkel H. Vembye <mikkel.vembye@gmail.com>
+  ([ORCID](https://orcid.org/0000-0001-9071-0724))
+
 - Thomas Olsen <thomasolsen123@hotmail.com>

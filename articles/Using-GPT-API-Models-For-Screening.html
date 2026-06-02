@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Using OpenAI’s GPT API models for Title and Abstract Screening in Systematic Reviews • AIscreenR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="Using-GPT-API-Models-For-Screening_files/libs/quarto-html/popper.min.js"></script><script src="Using-GPT-API-Models-For-Screening_files/libs/quarto-html/tippy.umd.min.js"></script><link href="Using-GPT-API-Models-For-Screening_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="Using-GPT-API-Models-For-Screening_files/libs/quarto-html/light-border.css" rel="stylesheet">
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AIscreenR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,7 +62,7 @@
       <h1>Using OpenAI’s GPT API models for Title and Abstract Screening in Systematic Reviews</h1>
 
       <p class="author">Mikkel H. Vembye</p>
-      <p class="date">2026-05-14</p>
+      <p class="date">2026-06-02</p>
 
       <small class="dont-index">Source: <a href="https://github.com/MikkelVembye/AIscreenR/blob/main/vignettes/Using-GPT-API-Models-For-Screening.qmd" class="external-link"><code>vignettes/Using-GPT-API-Models-For-Screening.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -116,7 +116,7 @@
 <p>We will walk through each of these steps one by one in the following sections.</p>
 </section><section class="section level2"><h2 id="load-and-convert-ris-file-data-to-a-data-frame">Load and Convert RIS File Data to a Data Frame<a class="anchor" aria-label="anchor" href="#load-and-convert-ris-file-data-to-a-data-frame"></a>
 </h2>
-<p>At this stage, we expect that you have a collection of RIS files containing titles and abstracts for the references you wish to screen. You can obtain RIS files in several ways: directly from the research databases, a Google Scholar search; or by exported them from your reference management tool, such as EndNote, Mendeley, and RefMan. Alternatively, you can export RIS files from systematic software tools such as <a href="https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914" class="external-link">EPPI-reviewer</a>, <a href="https://www.covidence.org/" class="external-link">Covidence</a>, <a href="https://www.metareviewer.org/" class="external-link">MetaReviewer</a>, <a href="http://www.eshackathon.org/revtools/" class="external-link"><code>revtools</code></a> <span class="citation" data-cites="westgate2019">(<a href="#ref-westgate2019" role="doc-biblioref">Westgate, 2019</a>)</span>, among others. In the example below, we load RIS files extracted from <a href="https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914" class="external-link">EPPI-reviewer</a>. A minor advantage of exporting RIS files from systematic software tools is that they often add a unique study ID to each reference, making it easier to track the screening process. However, such IDs are automatically generated in <code><a href="../reference/tabscreen_gpt.tools.html">tabscreen_gpt()</a></code> if they are missing.</p>
+<p>At this stage, we expect that you have a collection of RIS files containing titles and abstracts for the references you wish to screen. You can obtain RIS files in several ways: directly from the research databases, a Google Scholar search; or by exported them from your reference management tool, such as EndNote, Mendeley, and RefMan. Alternatively, you can export RIS files from systematic software tools such as <a href="https://eppi.ioe.ac.uk/cms/er4/" class="external-link">EPPI-reviewer</a>, <a href="https://www.covidence.org/" class="external-link">Covidence</a>, <a href="https://www.metareviewer.org/" class="external-link">MetaReviewer</a>, <a href="http://www.eshackathon.org/revtools/" class="external-link"><code>revtools</code></a> <span class="citation" data-cites="westgate2019">(<a href="#ref-westgate2019" role="doc-biblioref">Westgate, 2019</a>)</span>, among others. In the example below, we load RIS files extracted from <a href="https://eppi.ioe.ac.uk/cms/er4/" class="external-link">EPPI-reviewer</a>. A minor advantage of exporting RIS files from systematic software tools is that they often add a unique study ID to each reference, making it easier to track the screening process. However, such IDs are automatically generated in <code><a href="../reference/tabscreen_gpt.tools_responses.html">tabscreen_gpt()</a></code> if they are missing.</p>
 <section class="level2"><h3 id="load-relevant-r-packages">Load relevant R packages<a class="anchor" aria-label="anchor" href="#load-relevant-r-packages"></a>
 </h3>
 <p>To get started, we first load all R package needed to construct and run the screening.</p>
@@ -305,7 +305,7 @@
 </div>
 </section><section class="section level2"><h2 id="run-the-test-screening">Run the Test Screening<a class="anchor" aria-label="anchor" href="#run-the-test-screening"></a>
 </h2>
-<p>Now we are actually ready to conduct the title and abstract screening with <code><a href="../reference/tabscreen_gpt.tools.html">tabscreen_gpt()</a></code>. To make the <code><a href="../reference/tabscreen_gpt.tools.html">tabscreen_gpt()</a></code> running, one needs to specify the following information:</p>
+<p>Now we are actually ready to conduct the title and abstract screening with <code><a href="../reference/tabscreen_gpt.tools_responses.html">tabscreen_gpt()</a></code>. To make the <code><a href="../reference/tabscreen_gpt.tools_responses.html">tabscreen_gpt()</a></code> running, one needs to specify the following information:</p>
 <ol type="1">
 <li>The data with the title and abstract information.</li>
 <li>The prompt(s).</li>
@@ -328,7 +328,7 @@
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="va">result_object</span> <span class="op">&lt;-</span> </span>
-<span>  <span class="fu"><a href="../reference/tabscreen_gpt.tools.html">tabscreen_gpt</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="../reference/tabscreen_gpt.tools_responses.html">tabscreen_gpt</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">test_dat</span>, <span class="co"># RIS file data created above </span></span>
 <span>    prompt <span class="op">=</span> <span class="va">prompt</span>, <span class="co"># The prompt made above</span></span>
 <span>    studyid <span class="op">=</span> <span class="va">studyid</span>, <span class="co"># Name of variable containing study IDs</span></span>
@@ -439,7 +439,7 @@
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">result_object_detail</span> <span class="op">&lt;-</span> </span>
-<span>  <span class="fu"><a href="../reference/tabscreen_gpt.tools.html">tabscreen_gpt</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="../reference/tabscreen_gpt.tools_responses.html">tabscreen_gpt</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">disagree_dat</span>, </span>
 <span>    prompt <span class="op">=</span> <span class="va">prompt</span>, </span>
 <span>    studyid <span class="op">=</span> <span class="va">studyid</span>, </span>
@@ -545,7 +545,7 @@
 <span></span>
 <span><span class="co"># NOT RUN</span></span>
 <span><span class="va">result_object</span> <span class="op">&lt;-</span> </span>
-<span>  <span class="fu"><a href="../reference/tabscreen_gpt.tools.html">tabscreen_gpt</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="../reference/tabscreen_gpt.tools_responses.html">tabscreen_gpt</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">all_dat</span>, <span class="co"># RIS file data created above </span></span>
 <span>    prompt <span class="op">=</span> <span class="va">prompt</span>, <span class="co"># The prompt made above</span></span>
 <span>    studyid <span class="op">=</span> <span class="va">studyid</span>, <span class="co"># Name of variable containing study IDs</span></span>

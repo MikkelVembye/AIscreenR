@@ -84,7 +84,7 @@ process of the models.
 
 For each model (`gpt-4o-mini`, `gpt-5-mini`, `gpt-5.1`), we ran the
 screening using
-[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md).
+[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md).
 We ran the process with a single repetition (`reps = 1`) for all models.
 We used gpt-4o-mini as a baseline as this is the default model used in
 `AIscreenR` for screening tasks, and we wanted to compare the

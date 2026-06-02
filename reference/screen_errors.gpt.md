@@ -5,7 +5,7 @@
 
 This function supports re-screening of all failed title and abstract
 requests screened with
-[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)/[`tabscreen_gpt.tools()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md).
+[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md)/[`tabscreen_gpt.tools()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md).
 
 ## Usage
 
@@ -56,7 +56,7 @@ screen_errors.gpt(
   will not retry' (Wickham, 2023). Default `max_tries` is 16. If
   missing, the value of `max_seconds` from the original screening
   conducted with
-  [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
+  [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md)
   will be used.
 
 - is_transient:
@@ -65,7 +65,7 @@ screen_errors.gpt(
   returns `TRUE` or `FALSE` specifying whether or not the response
   represents a transient error' (Wickham, 2023). If missing, the
   `is_transient` function from the original screening conducted with
-  [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
+  [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md)
   will be used.
 
 - backoff:
@@ -74,7 +74,7 @@ screen_errors.gpt(
   attempts so far) and returns the number of seconds to wait' (Wickham,
   2023). If missing, the `backoff`value from the original screening
   conducted with
-  [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
+  [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md)
   will be used.
 
 - after:
@@ -84,7 +84,7 @@ screen_errors.gpt(
   precise wait time is not available that the `backoff` strategy should
   be used instead' (Wickham, 2023). If missing, the `after` value from
   the original screening conducted with
-  [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
+  [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md)
   will be used.
 
 - ...:
@@ -92,15 +92,15 @@ screen_errors.gpt(
   Further argument to pass to the request body. See
   <https://developers.openai.com/api/reference/resources/chat>. If used
   in the original screening in
-  [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md),
+  [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md),
   the argument(s) must be specified again here.
 
 ## Value
 
 An object of class `'gpt'` similar to the object returned by
-[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md).
+[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md).
 See documentation for
-[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md).
+[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md).
 
 ## References
 
@@ -109,7 +109,7 @@ Responses*. https://httr2.r-lib.org, https://github.com/r-lib/httr2.
 
 ## See also
 
-[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md),
+[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md),
 [`tabscreen_gpt.tools()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
 
 ## Examples

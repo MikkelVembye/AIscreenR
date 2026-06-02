@@ -101,19 +101,17 @@ You can obtain RIS files in several ways: directly from the research
 databases, a Google Scholar search; or by exported them from your
 reference management tool, such as EndNote, Mendeley, and RefMan.
 Alternatively, you can export RIS files from systematic software tools
-such as
-[EPPI-reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914),
+such as [EPPI-reviewer](https://eppi.ioe.ac.uk/cms/er4/),
 [Covidence](https://www.covidence.org/),
 [MetaReviewer](https://www.metareviewer.org/),
 [`revtools`](http://www.eshackathon.org/revtools/) ([Westgate,
 2019](#ref-westgate2019)), among others. In the example below, we load
 RIS files extracted from
-[EPPI-reviewer](https://eppi.ioe.ac.uk/cms/Default.aspx?tabid=2914). A
-minor advantage of exporting RIS files from systematic software tools is
-that they often add a unique study ID to each reference, making it
-easier to track the screening process. However, such IDs are
-automatically generated in
-[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
+[EPPI-reviewer](https://eppi.ioe.ac.uk/cms/er4/). A minor advantage of
+exporting RIS files from systematic software tools is that they often
+add a unique study ID to each reference, making it easier to track the
+screening process. However, such IDs are automatically generated in
+[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md)
 if they are missing.
 
 ### Load relevant R packages
@@ -408,9 +406,9 @@ prompt <-
 
 Now we are actually ready to conduct the title and abstract screening
 with
-[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md).
+[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md).
 To make the
-[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
+[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md)
 running, one needs to specify the following information:
 
 1.  The data with the title and abstract information.

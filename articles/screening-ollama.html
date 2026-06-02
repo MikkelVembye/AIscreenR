@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Title/Abstract Screening with Local Ollama Models • AIscreenR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="screening-ollama_files/libs/quarto-html/popper.min.js"></script><script src="screening-ollama_files/libs/quarto-html/tippy.umd.min.js"></script><link href="screening-ollama_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="screening-ollama_files/libs/quarto-html/light-border.css" rel="stylesheet">
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AIscreenR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,7 +75,7 @@
 
     <section class="section level2"><h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Screening titles and abstracts through online APIs can raise privacy concerns and reproducibility challenges. This vignette introduces <code><a href="../reference/tabscreen_ollama.html">tabscreen_ollama()</a></code>, a function that uses locally hosted Ollama models screen titles and abstracts while maintaining data privacy and control. This function builds on the <code><a href="../reference/tabscreen_gpt.tools.html">tabscreen_gpt()</a></code> approach, adapting it for local execution with Ollama models. Therefore, the output structure and key arguments remain the same but data remains on the local machine. This gives users full control over model versions and data handling, making it suitable for sensitive or regulated datasets. Furthermore, this approach allows users to use all Ollama models including their own custom or finetuned models as long as these are installed within the ollama framework. Using Ollama locally also eliminates the need for API keys. The user should however be aware that Ollama models are typically large and require substantial local compute resources (e.g., RAM, disk space, and possibly a GPU) to run efficiently.</p>
+<p>Screening titles and abstracts through online APIs can raise privacy concerns and reproducibility challenges. This vignette introduces <code><a href="../reference/tabscreen_ollama.html">tabscreen_ollama()</a></code>, a function that uses locally hosted Ollama models screen titles and abstracts while maintaining data privacy and control. This function builds on the <code><a href="../reference/tabscreen_gpt.tools_responses.html">tabscreen_gpt()</a></code> approach, adapting it for local execution with Ollama models. Therefore, the output structure and key arguments remain the same but data remains on the local machine. This gives users full control over model versions and data handling, making it suitable for sensitive or regulated datasets. Furthermore, this approach allows users to use all Ollama models including their own custom or finetuned models as long as these are installed within the ollama framework. Using Ollama locally also eliminates the need for API keys. The user should however be aware that Ollama models are typically large and require substantial local compute resources (e.g., RAM, disk space, and possibly a GPU) to run efficiently.</p>
 <section class="level2"><h3 id="get-started">Get started<a class="anchor" aria-label="anchor" href="#get-started"></a>
 </h3>
 <p>Before using <code><a href="../reference/tabscreen_ollama.html">tabscreen_ollama()</a></code>, make sure Ollama is installed and at least one compatible model is available locally (or via cloud). For more information on Ollama cloud see <a href="https://docs.ollama.com/cloud" class="external-link">Ollama Cloud</a>.</p>
@@ -108,7 +108,7 @@
 <p>Note: An alternative way to install models is through the Ollama desktop app, which provides an interface for managing models and interacting with the local Ollama server. However, we recommend using the terminal for installation to ensure the correct model version is installed and to checking the model’s tool/function-calling capabilities.</p>
 </section></section><section class="level2"><h3 id="data">Data<a class="anchor" aria-label="anchor" href="#data"></a>
 </h3>
-<p>Data is requiered to be in the same format as for <code><a href="../reference/tabscreen_gpt.tools.html">tabscreen_gpt()</a></code>, i.e. a data.frame or tibble with at least three columns: <code>studyid</code>, <code>title</code>, and <code>abstract</code>. For demonstration purposes, we use a small example dataset from the <code>AIscreenR</code> package.</p>
+<p>Data is requiered to be in the same format as for <code><a href="../reference/tabscreen_gpt.tools_responses.html">tabscreen_gpt()</a></code>, i.e. a data.frame or tibble with at least three columns: <code>studyid</code>, <code>title</code>, and <code>abstract</code>. For demonstration purposes, we use a small example dataset from the <code>AIscreenR</code> package.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load example data</span></span>

@@ -26,12 +26,13 @@ rate_limits_per_minute(
   available models at
   <https://developers.openai.com/api/docs/models/model-endpoint-compatibility>.
   For Groq models, find available models at
-  <https://console.groq.com/docs/models>.
+  <https://console.groq.com/docs/models>. For Mistral models, find
+  available models at <https://docs.mistral.ai/models/overview>.
 
 - AI_tool:
 
   Character string specifying the AI tool from which the API is issued.
-  Currently supports `"OpenAI"` (default) and `"Groq"`.
+  Currently supports `"OpenAI"` (default), `"Groq"`, and `"Mistral"`.
 
 - api_key:
 
@@ -39,6 +40,8 @@ rate_limits_per_minute(
   [`get_api_key()`](https://mikkelvembye.github.io/AIscreenR/reference/get_api_key.md).
   For Groq, use
   [`get_api_key_groq()`](https://mikkelvembye.github.io/AIscreenR/reference/get_api_key_groq.md).
+  For Mistral, use
+  [`get_api_key_mistral()`](https://mikkelvembye.github.io/AIscreenR/reference/get_api_key_mistral.md).
 
 ## Value
 
@@ -62,6 +65,13 @@ rate_limits_per_minute(
   model = "llama3-70b-8192",
   AI_tool = "Groq",
   api_key = get_api_key_groq()
+)
+
+# Mistral example
+rate_limits_per_minute(
+ model = "mistral-small-latest",
+ AI_tool = "Mistral",
+ api_key = get_api_key_mistral()
 )
 } # }
 ```

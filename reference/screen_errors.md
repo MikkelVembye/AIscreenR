@@ -28,7 +28,7 @@ screen_errors(
 - object:
 
   An object of either class `'gpt'` or `'groq'`, as returned by
-  [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
+  [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md)
   or
   [`tabscreen_groq()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_groq.md).
   Objects of class `'ollama'` are not supported.
@@ -91,7 +91,7 @@ screen_errors(
 - ...:
 
   Further arguments forwarded to the underlying backend function
-  ([`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
+  ([`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md)
   or
   [`tabscreen_groq()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_groq.md)).
   If arguments were supplied in the original screening and should differ
@@ -111,7 +111,7 @@ the original screening function, with:
 ## Details
 
 The backend is derived from `class(object)` and mapped to either
-[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md)
+[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md)
 or
 [`tabscreen_groq()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_groq.md).
 Only rows in `object$error_data` are re-submitted. To avoid name
@@ -124,7 +124,7 @@ overrides provided here.
 
 ## See also
 
-[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools.md),
+[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md),
 [`tabscreen_groq()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_groq.md)
 
 ## Examples

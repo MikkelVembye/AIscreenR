@@ -1,6 +1,6 @@
 # Title and abstract screening with GPT API models using function calls via the tools argument
 
-**\[stable\]**  
+**\[deprecated\]**  
   
 This function supports title and abstract screening using GPT API models
 in R. Specifically, it allows users to draw on all OpenAI GPT API
@@ -20,17 +20,6 @@ how adequately to conduct title and abstract screening with GPT models.
 
 ``` r
 tabscreen_gpt.tools(data, prompt, studyid, title, abstract,
-  api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-4o-mini",
-  role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
-  time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
-  max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
-  after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
-  decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
-  incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
-  fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low",
-  overinclusive = TRUE, ...)
-
-tabscreen_gpt(data, prompt, studyid, title, abstract,
   api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-4o-mini",
   role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
   time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
@@ -411,7 +400,7 @@ prompt <- "Is this study about a Functional Family Therapy (FFT) intervention?"
 
 plan(multisession)
 
-tabscreen_gpt(
+tabscreen_gpt.tools(
   data = filges2015_dat[1:2,],
   prompt = prompt,
   studyid = studyid,
@@ -425,7 +414,7 @@ plan(sequential)
 
  plan(multisession)
 
- tabscreen_gpt(
+ tabscreen_gpt.tools(
    data = filges2015_dat[1:2,],
    prompt = prompt,
    studyid = studyid,
