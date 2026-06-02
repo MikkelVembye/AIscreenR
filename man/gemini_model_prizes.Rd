@@ -21,6 +21,6 @@ Gemini model prices (last updated May 7, 2026)
 Data set containing input and output prizes for all Gemini's API models.
 }
 \references{
-Gemini. \emph{Pricing}. \url{https://gemini.ai/pricing}
+Gemini. \emph{Pricing}. \url{https://ai.google.dev/gemini-api/docs/pricing}
 }
 \keyword{datasets}
