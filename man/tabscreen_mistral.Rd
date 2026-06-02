@@ -44,14 +44,14 @@ Default is \code{NULL}. If not specified the default function calls from \code{A
 Can be one of \code{"auto"}, \code{"none"}, \code{"any"}, \code{"required"}, or a named
 function call object like \verb{list(type = "function", function = list(name = "my_function"))}.
 If set to \code{NULL} when using customized functions, the default is \code{"auto"}.
-See \url{https://developers.Mistral.com/api/reference/resources/chat#chat-create-tool_choice}.}
+See \url{https://docs.mistral.ai/studio-api/conversations/function-calling}.}
 
 \item{top_p}{'An alternative to sampling with temperature, called nucleus sampling,
 where the model considers the results of the tokens with top_p probability mass.
 So 0.1 means only the tokens comprising the top 10\% probability mass are considered.
 We generally recommend altering this or temperature but not both.' (Mistral). Default is 1.
 Find documentation at
-\url{https://developers.Mistral.com/api/reference/resources/chat#chat/create-top_p}.}
+\url{https://docs.mistral.ai/models/best-practices/sampling}.}
 
 \item{time_info}{Logical indicating whether the run time of each
 request/question should be included in the data. Default is \code{TRUE}.}
@@ -125,7 +125,7 @@ Default is \code{NULL}, which means that no studies will be flagged for human ch
 \item{custom_model}{Logical indicating whether a fine-tuned or custom model is used. Default is \code{FALSE}.}
 
 \item{reasoning_effort}{Character string indicating the level of reasoning effort required for the task. Default is \code{"none"}.
-Can be either \code{"none"} or \code{"high"}. See \url{https://docs.mistral.ai/studio-api/conversations/reasoning/adjustable} for more information.}
+Can be either \code{"none"} or \code{"high"}. See \url{https://docs.mistral.ai/studio-api/conversations/reasoning} for more information.}
 
 \item{overinclusive}{Logical indicating whether uncertain decisions (\code{"1.1"}) should be
 allowed in the default function calling setup. Default is \code{TRUE}, which means that the

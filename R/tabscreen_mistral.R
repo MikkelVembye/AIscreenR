@@ -42,13 +42,13 @@
 #' Can be one of `"auto"`, `"none"`, `"any"`, `"required"`, or a named
 #' function call object like `list(type = "function", function = list(name = "my_function"))`.
 #' If set to `NULL` when using customized functions, the default is `"auto"`.
-#' See \url{https://developers.Mistral.com/api/reference/resources/chat#chat-create-tool_choice}.
+#' See \url{https://docs.mistral.ai/studio-api/conversations/function-calling}.
 #' @param top_p 'An alternative to sampling with temperature, called nucleus sampling,
 #'   where the model considers the results of the tokens with top_p probability mass.
 #'   So 0.1 means only the tokens comprising the top 10% probability mass are considered.
 #'   We generally recommend altering this or temperature but not both.' (Mistral). Default is 1.
 #'   Find documentation at
-#' \url{https://developers.Mistral.com/api/reference/resources/chat#chat/create-top_p}.
+#' \url{https://docs.mistral.ai/models/best-practices/sampling}.
 #' @param time_info Logical indicating whether the run time of each
 #'   request/question should be included in the data. Default is `TRUE`.
 #' @param token_info Logical indicating whether token information should be included
@@ -110,7 +110,7 @@
 #'   10 iterations and run screening costing more than 15 USD. Default is `FALSE`.
 #' @param custom_model Logical indicating whether a fine-tuned or custom model is used. Default is `FALSE`.
 #' @param reasoning_effort Character string indicating the level of reasoning effort required for the task. Default is `"none"`. 
-#' Can be either `"none"` or `"high"`. See \url{https://docs.mistral.ai/studio-api/conversations/reasoning/adjustable} for more information.
+#' Can be either `"none"` or `"high"`. See \url{https://docs.mistral.ai/studio-api/conversations/reasoning} for more information.
 #' @param ... Further argument to pass to the request body.
 #'   See \url{https://docs.mistral.ai/api}.
 #'

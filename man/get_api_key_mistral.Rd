@@ -19,7 +19,7 @@ Get Mistral API key from R environment variable.
 }
 \details{
 \code{get_api_key_mistral()} can be used after executing \code{\link[=set_api_key]{set_api_key()}} or by adding the
-api key permanently to your R environment by using \code{\link[usethis:edit]{usethis::edit_r_environ()}}.
+api key permanently to your R environment by using \code{\link[usethis:edit_r_environ]{usethis::edit_r_environ()}}.
 Then write \verb{MISTRAL_API_KEY=[insert your api key here]} and close the \code{.Renviron} window and restart R.
 }
 \note{

@@ -62,10 +62,10 @@ include price information of the conducted screening.}
 \item{api_key}{Numerical value with your personal API key. Default setting draws
 on the \code{\link[=get_api_key]{get_api_key()}} to retrieve the API key from the R environment, so that the key is not
 compromised. The API key can be added to the R environment via \code{\link[=set_api_key]{set_api_key()}}
-or by using \code{\link[usethis:edit]{usethis::edit_r_environ()}}. In the \code{.Renviron} file, write \code{CHATGPT_KEY=INSERT_YOUR_KEY_HERE}.
+or by using \code{\link[usethis:edit_r_environ]{usethis::edit_r_environ()}}. In the \code{.Renviron} file, write \code{CHATGPT_KEY=INSERT_YOUR_KEY_HERE}.
 After entering the API key, close and save the \code{.Renviron} file and restart \code{RStudio} (ctrl + shift + F10).
-Alternatively, one can use \code{\link[httr2:secrets]{httr2::secret_make_key()}}, \code{\link[httr2:secrets]{httr2::secret_encrypt()}}, and
-\code{\link[httr2:secrets]{httr2::secret_decrypt()}} to scramble and decrypt the API key.}
+Alternatively, one can use \code{\link[httr2:secret_make_key]{httr2::secret_make_key()}}, \code{\link[httr2:secret_encrypt]{httr2::secret_encrypt()}}, and
+\code{\link[httr2:secret_decrypt]{httr2::secret_decrypt()}} to scramble and decrypt the API key.}
 
 \item{max_tries, max_seconds}{'Cap the maximum number of attempts with
 \code{max_tries} or the total elapsed time from the first request with

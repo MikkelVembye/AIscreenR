@@ -33,7 +33,7 @@
 #' @param model Character string with the name of the Gemini completion model. Can take
 #'   multiple models. Default is `"gemini-3.1-flash-lite"`.
 #'   Find available models at
-#' \url{https://ai.google.dev/gemini-api/docs/models/gemini-models}.
+#' \url{https://ai.google.dev/gemini-api/docs/models}.
 #' @param role Character string indicating the role of the user. Default is `"user"` (required for Gemini API).
 #' @param tools This argument allows users to apply customized function declarations.
 #' See \url{https://ai.google.dev/gemini-api/docs/function-calling}.

@@ -104,7 +104,7 @@
 #' Claude Opus 4.7, Claude Opus 4.6, and Claude Sonnet 4.6. `"xhigh"` is available only using Claude Opus 4.7.
 #' See \url{https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking} for more information.
 #' @param ... Further argument to pass to the request body.
-#'   See \url{https://docs.anthropic.com/claude/reference/api}.
+#'   See \url{https://platform.claude.com/docs/en/api/messages/create}.
 #'
 #' @usage tabscreen_claude(data, prompt, studyid, title, abstract,
 #'   api_url = "https://api.anthropic.com", model = "claude-sonnet-4-6",

@@ -127,7 +127,7 @@ will only return binary decisions (i.e., "1" or "0"). This argument only affects
 function calling setup.}
 
 \item{...}{Further argument to pass to the request body.
-See \url{https://docs.anthropic.com/claude/reference/api}.}
+See \url{https://platform.claude.com/docs/en/api/messages/create}.}
 }
 \value{
 An object of class \code{'gpt'}. The object is a list containing the following
