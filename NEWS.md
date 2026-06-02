@@ -1,3 +1,16 @@
+# AIscreenR 0.4.0
+
+## New features
+* Adding `tabscreen_mistral()` and `get_api_key_mistral()` functions to screen titles and abstracts using Mistral's API models.
+* Adding `tabscreen_gemini()` and `get_api_key_gemini()` function to screen titles and abstracts using Gemini's API models.
+* Adding `tabscreen_claude()` and `get_api_key_anthropic()` function to screen titles and abstracts using Anthropics's API models.
+
+## New features
+* Migrating from chat/completions endpoint to responses for all OpenAI functions. This includes:
+    * `tabscreen_gpt()`
+    * `screen_errors.gpt()`
+    * `rate_limits_per_minute()`
+
 # AIscreenR 0.3.2.9000
 
 ## Minor improvements

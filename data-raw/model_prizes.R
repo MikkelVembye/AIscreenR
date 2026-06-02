@@ -247,7 +247,179 @@ groq_model_prizes <- data.frame(
   ),
   stringsAsFactors = FALSE
 )
-  
-model_prizes <- rbind(model_prizes, groq_model_prizes) # Combine OpenAI and GROQ model prices
 
-usethis::use_data(model_prizes, groq_model_prizes, overwrite = TRUE)
+mistral_model_prizes <- data.frame(
+  model = c(
+    # Nemo models
+    "open-mistral-nemo",
+    "open-mistral-nemo-2407",
+    "open-mistral-nemo-latest",
+
+    # Small models
+    "mistral-small",
+    "mistral-small-2603",
+    "mistral-small-latest",
+
+    # medium 3
+    "mistral-medium-2505",
+
+    # medium 3.1
+    "mistral-medium",
+    "mistral-medium-2508",
+    "mistral-medium-latest",
+
+    # medium 3.5
+    "mistral-medium-3-5",
+    "mistral-medium-3",
+
+    # Large models
+    "mistral-large",
+    "mistral-large-2512",
+    "mistral-large-latest",
+
+    # Magistral models
+    "magistral-medium",
+    "magistral-medium-2509",
+    "magistral-medium-latest"
+
+  ),
+  price_in_per_token = c(
+    0.15/mio, # open-mistral-nemo
+    0.15/mio, # open-mistral-nemo-2407
+    0.15/mio, # open-mistral-nemo-latest
+
+    0.15/mio, # mistral-small
+    0.15/mio,  # mistral-small-2603
+    0.15/mio,  # mistral-small-latest
+
+    0.4/mio, # mistral-medium-2505
+
+    0.4/mio, # mistral-medium
+    0.4/mio, # mistral-medium-2508
+    0.4/mio, # mistral-medium-latest
+
+    1.5/mio, # mistral-medium-3-5
+    1.5/mio, # mistral-medium-3
+
+    0.5/mio, # mistral-large
+    0.5/mio, # mistral-large-2512
+    0.5/mio, # mistral-large-latest
+
+    2/mio, # magistral-medium
+    2/mio, # magistral-medium-2509
+    2/mio  # magistral-medium-latest
+  ),
+  price_out_per_token = c(
+    0.15/mio, # open-mistral-nemo
+    0.15/mio, # open-mistral-nemo-2407
+    0.15/mio, # open-mistral-nemo-latest
+
+    0.6/mio, # mistral-small
+    0.6/mio,  # mistral-small-2603
+    0.6/mio,   # mistral-small-latest
+
+    2/mio, # mistral-medium-2505
+
+    2/mio, # mistral-medium
+    2/mio, # mistral-medium-2508
+    2/mio, # mistral-medium-latest
+
+    7.5/mio, # mistral-medium-3-5
+    7.5/mio, # mistral-medium-3
+
+    1.5/mio, # mistral-large
+    1.5/mio, # mistral-large-2512
+    1.5/mio, # mistral-large-latest
+
+    5/mio, # magistral-medium
+    5/mio, # magistral-medium-2509
+    5/mio  # magistral-medium-latest
+  ),
+  stringsAsFactors = FALSE
+)
+
+gemini_model_prizes <- data.frame(
+  model = c(
+    # Gemini 2.5 models
+    "gemini-2.5-flash-lite-preview-09-2025",
+    "gemini-2.5-pro",
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-lite",
+
+    # Gemini 3.1 models
+    "gemini-3-flash-preview",
+    "gemini-3.1-flash-lite",
+    "gemini-3.1-flash-lite-preview",
+    "gemini-3.1-pro-preview",
+    "gemini-3.1-pro-preview-customtools"
+  ),
+  price_in_per_token = c(
+    0.10/mio, # gemini-2.5-flash-lite-preview-09-2025
+    1.25/mio, # gemini-2.5-pro
+    0.30/mio, # gemini-2.5-flash
+    0.10/mio, # gemini-2.5-flash-lite
+
+    0.50/mio, # gemini-3-flash-preview
+    0.25/mio, # gemini-3.1-flash-lite
+    0.25/mio, # gemini-3.1-flash-lite-preview
+    2.00/mio, # gemini-3.1-pro-preview
+    2.00/mio # gemini-3.1-pro-preview-customtools
+  ),
+  price_out_per_token = c(
+    0.40/mio, # gemini-2.5-flash-lite-preview-09-2025
+    10/mio,   # gemini-2.5-pro
+    2.50/mio, # gemini-2.5-flash
+    0.40/mio, # gemini-2.5-flash-lite
+
+    3.00/mio, # gemini-3-flash-preview
+    1.50/mio, # gemini-3.1-flash-lite
+    1.50/mio, # gemini-3.1-flash-lite-preview
+    12.00/mio, # gemini-3.1-pro-preview
+    12.00/mio # gemini-3.1-pro-preview-customtools
+  ),
+  stringsAsFactors = FALSE
+)
+
+claude_model_prizes <- data.frame(
+  model = c(
+    # Claude Opus models
+    "claude-opus-4-7",
+    "claude-opus-4-6",
+    "claude-opus-4-5",
+    "claude-opus-4-1",
+
+    # Claude Sonnet models
+    "claude-sonnet-4-6",
+    "claude-sonnet-4-5",
+
+    # Claude Haiku models
+    "claude-haiku-4-5"
+  ),
+  price_in_per_token = c(
+    5/mio,   # claude-opus-4.7
+    5/mio,   # claude-opus-4.6
+    5/mio,   # claude-opus-4.5
+    15/mio,  # claude-opus-4.1
+
+    3/mio,   # claude-sonnet-4.6
+    3/mio,   # claude-sonnet-4.5
+
+    1/mio   # claude-haiku-4.5
+  ),
+  price_out_per_token = c(
+    25/mio,  # claude-opus-4.7
+    25/mio,  # claude-opus-4.6
+    25/mio,  # claude-opus-4.5
+    75/mio,  # claude-opus-4.1
+
+    15/mio,  # claude-sonnet-4.6
+    15/mio,  # claude-sonnet-4.5
+
+    5/mio   # claude-haiku-4.5
+  ),
+  stringsAsFactors = FALSE
+)
+
+model_prizes <- rbind(model_prizes, groq_model_prizes, mistral_model_prizes, gemini_model_prizes, claude_model_prizes) # Combine OpenAI, GROQ, Mistral, Gemini, and Claude model prices
+
+usethis::use_data(model_prizes, groq_model_prizes, mistral_model_prizes, gemini_model_prizes, claude_model_prizes, overwrite = TRUE)

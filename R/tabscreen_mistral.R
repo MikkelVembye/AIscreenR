@@ -1,21 +1,16 @@
-#' @title Title and abstract screening with GPT API models using function calls via the tools argument and the responses endpoint
+#' @title Title and abstract screening with mistral's API models
 #'
-#' @name tabscreen_gpt.tools_responses
-#' @aliases tabscreen_gpt.tools_responses tabscreen_gpt
+#' @name tabscreen_mistral
+#' @aliases tabscreen_mistral
 #'
 #' @description
 #' `r lifecycle::badge("stable")`<br>
 #' <br>
-#' This function supports title and abstract screening using GPT API models in R.
-#' Specifically, it allows users to draw on all OpenAI GPT API response models, including fine-tuned versions.
-#' The function enables title and abstract screening across multiple prompts, with
-#' repeated questions to assess consistency across responses. All of this can be performed in parallel.
-#' The function utilizes function calling, which is invoked via the
-#' tools argument in the request body. Furthermore, this function uses the responses endpoint.
-#' This is the main difference between [tabscreen_gpt.tools()]
-#' and [tabscreen_gpt.original()]. Function calls ensure more reliable and consistent responses to users'
-#' requests. Using the Responses endpoint can improve performance, enable access to newer models, and reduce costs.
-#' \emph{\href{https://developers.openai.com/api/docs/guides/migrate-to-responses?lang=javascript&tool-use=chat-completions&update-item-definitions=chat-completions&update-multiturn=responses}{Migrate to the Responses API}}
+#' This function supports title and abstract screening using mistral's API models.
+#' This function uses the function calling feature of Mistral's API models, which allows for more 
+#' structured and accurate responses from the model. The function follows the same general structure 
+#' as the other screening functions in the package, but with some specific arguments and features that 
+#' are tailored to Mistral's API models.
 #' See [Vembye, Christensen, Mølgaard, and Schytt. (2025)](https://psycnet.apa.org/record/2026-37236-001)
 #' for guidance on how adequately to conduct title and abstract screening with GPT models.
 #'
@@ -33,32 +28,34 @@
 #' \url{https://httr2.r-lib.org}, \url{https://github.com/r-lib/httr2}.
 #'
 #' @template common-arg
-#' @param api_url Character string with the endpoint URL for OpenAI's API. Default is `"https://api.openai.com/v1/responses"`.
+#' @param api_url Character string with the endpoint URL for Mistral's API. 
+#' Default is `"https://api.mistral.ai/v1/chat/completions"`.
 #' @param model Character string with the name of the completion model. Can take
-#'   multiple models. Default is the latest `"gpt-4o-mini"`.
+#'   multiple models. Default is the latest `"mistral-small-latest"`.
 #'   Find available model at
-#' \url{https://developers.openai.com/api/docs/models/model-endpoint-compatibility}.
+#' \url{https://docs.mistral.ai/models/overview}.
 #' @param role Character string indicating the role of the user. Default is `"user"`.
 #' @param tools This argument allows this user to apply customized functions.
-#' See \url{https://developers.openai.com/api/reference/resources/chat#chat-create-tools}.
+#' See \url{https://docs.mistral.ai/studio-api/conversations/function-calling}.
 #' Default is `NULL`. If not specified the default function calls from `AIscreenR` are used.
-#' @param tool_choice If a customized function is provided this argument
-#' 'controls which (if any) tool is called by the model' (OpenAI). Default is `NULL`.
-#' If set to `NULL` when using a customized function, the default is `"auto"`.
-#' See \url{https://developers.openai.com/api/reference/resources/chat#chat-create-tool_choice}.
+#' @param tool_choice Controls which (if any) tool is called by the model.
+#' Can be one of `"auto"`, `"none"`, `"any"`, `"required"`, or a named
+#' function call object like `list(type = "function", function = list(name = "my_function"))`.
+#' If set to `NULL` when using customized functions, the default is `"auto"`.
+#' See \url{https://docs.mistral.ai/studio-api/conversations/function-calling}.
 #' @param top_p 'An alternative to sampling with temperature, called nucleus sampling,
 #'   where the model considers the results of the tokens with top_p probability mass.
 #'   So 0.1 means only the tokens comprising the top 10% probability mass are considered.
-#'   We generally recommend altering this or temperature but not both.' (OpenAI). Default is 1.
+#'   We generally recommend altering this or temperature but not both.' (Mistral). Default is 1.
 #'   Find documentation at
-#' \url{https://developers.openai.com/api/reference/resources/chat#chat/create-top_p}. Be aware
-#' that this argument is not supported for gpt-5.4 and gpt-5.5 models and will be set to NULL if these models are used.
+#' \url{https://docs.mistral.ai/models/best-practices/sampling}.
 #' @param time_info Logical indicating whether the run time of each
 #'   request/question should be included in the data. Default is `TRUE`.
 #' @param token_info Logical indicating whether token information should be included
 #'   in the output data. Default is `TRUE`. When `TRUE`, the output object will
 #'   include price information of the conducted screening.
-#' @template api-key-arg
+#' @param api_key Character string with the API key. For Mistral, use [get_api_key_mistral()].
+#' Default is `get_api_key_mistral()`, which retrieves the API key from the environment variable `MISTRAL_API_KEY`.
 #' @param max_tries,max_seconds 'Cap the maximum number of attempts with
 #'  `max_tries` or the total elapsed time from the first request with
 #'  `max_seconds`. If neither option is supplied (the default), [httr2::req_perform()]
@@ -75,14 +72,13 @@
 #'   should be used instead' (Wickham, 2023).
 #' @param rpm Numerical value indicating the number of requests per minute (rpm)
 #'   available for the specified model. Find more information at
-#'   \url{https://developers.openai.com/api/docs/models/model-endpoint-compatibility}.
+#'   \url{https://docs.mistral.ai/api}.
 #'   Alternatively, use [rate_limits_per_minute()].
 #' @param reps Numerical value indicating the number of times the same
 #'   question should be send to the server. This can be useful to test consistency
 #'   between answers, and/or can be used to make inclusion judgments based on how many times
 #'   a study has been included across a the given number of screenings.
-#'   Default is `1` but when using gpt-3.5-turbo models or gpt-4o-mini,
-#'   we recommend setting this value to `10` to catch model uncertainty.
+#'   Default is `1`.
 #' @param seed_par Numerical value for a seed to ensure that proper,
 #'   parallel-safe random numbers are produced.
 #' @param progress Logical indicating whether a progress line should be shown when running
@@ -111,39 +107,22 @@
 #'   between `incl_cutoff_lower` and `incl_cutoff_upper` will be flagged for human checking. 
 #'   Default is `NULL`, which means that no studies will be flagged for human checking.
 #' @param force Logical argument indicating whether to force the function to use more than
-#'   10 iterations for gpt-3.5 models and more than 1 iteration for gpt-4 models other than gpt-4o-mini.
-#'   This argument is developed to avoid the conduct of wrong and extreme sized screening.
-#'   Default is `FALSE`.
+#'   10 iterations and run screening costing more than 15 USD. Default is `FALSE`.
 #' @param custom_model Logical indicating whether a fine-tuned or custom model is used. Default is `FALSE`.
-#' @param fine_tuned `r lifecycle::badge("deprecated")` Use `custom_model` instead.
-#' @param reasoning_effort Character string indicating the level of reasoning effort required for the task. Default is `"low"`.
-#'  Can take the values `"low"`, `"medium"`, and `"high"`. See \url{https://developers.openai.com/api/docs/guides/reasoning} for more information.
-#' @param verbosity Character string indicating the level of verbosity in the model's responses. Default is `"low"`.
-#' Can take the values `"low"`, `"medium"`, and `"high"`. See \url{https://developers.openai.com/api/reference/resources/chat} for more information.
+#' @param reasoning_effort Character string indicating the level of reasoning effort required for the task. Default is `"none"`. 
+#' Can be either `"none"` or `"high"`. See \url{https://docs.mistral.ai/studio-api/conversations/reasoning} for more information.
 #' @param ... Further argument to pass to the request body.
-#'   See \url{https://developers.openai.com/api/reference/resources/chat}.
+#'   See \url{https://docs.mistral.ai/api}.
 #'
-#' @usage tabscreen_gpt.tools_responses(data, prompt, studyid, title, abstract,
-#'   api_url = "https://api.openai.com/v1/responses", model = "gpt-4o-mini",
+#' @usage tabscreen_mistral(data, prompt, studyid, title, abstract,
+#'   api_url = "https://api.mistral.ai/v1/chat/completions", model = "mistral-small-latest",
 #'   role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
-#'   time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
-#'   max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
+#'   time_info = TRUE, token_info = TRUE, api_key = get_api_key_mistral(),
+#'   max_tries = 16, max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
 #'   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
 #'   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
 #'   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
-#'   fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low",
-#'   overinclusive = TRUE, ...)
-#'
-#' tabscreen_gpt(data, prompt, studyid, title, abstract,
-#'   api_url = "https://api.openai.com/v1/responses", model = "gpt-4o-mini",
-#'   role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
-#'   time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
-#'   max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
-#'   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
-#'   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
-#'   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
-#'   fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low",
-#'   overinclusive = TRUE, ...)
+#'   reasoning_effort = "none", overinclusive = TRUE, ...)
 #'
 #' @return An object of class `'gpt'`. The object is a list containing the following
 #' datasets and components:
@@ -169,11 +148,11 @@
 #'  \bold{promptid} \tab \code{integer} \tab indicating the prompt ID. \cr
 #'  \bold{prompt} \tab \code{character} \tab indicating the prompt. \cr
 #'  \bold{model} \tab \code{character}   \tab indicating the specific gpt-model used. \cr
-#'  \bold{iterations} \tab \code{numeric} \tab indicating the number of times the same question has been sent to OpenAI's GPT API models. \cr
-#'  \bold{question} \tab \code{character} \tab indicating the final question sent to OpenAI's GPT API models. \cr
+#'  \bold{iterations} \tab \code{numeric} \tab indicating the number of times the same question has been sent to Mistral's GPT API models. \cr
+#'  \bold{question} \tab \code{character} \tab indicating the final question sent to Mistral's GPT API models. \cr
 #'  \bold{top_p}  \tab \code{numeric} \tab indicating the applied top_p. \cr
 #'  \bold{decision_gpt}  \tab \code{character} \tab indicating the raw gpt decision - either \code{"1", "0", "1.1"} for inclusion, exclusion, or uncertainty, respectively. \cr
-#'  \bold{detailed_description}  \tab \code{character} \tab indicating detailed description of the given decision made by OpenAI's GPT API models.
+#'  \bold{detailed_description}  \tab \code{character} \tab indicating detailed description of the given decision made by Mistral's GPT API models.
 #'  ONLY included if the detailed function calling function is used. See 'Examples' below for how to use this function. \cr
 #'  \bold{decision_binary}  \tab \code{integer} \tab indicating the binary gpt decision,
 #'  that is 1 for inclusion and 0 for exclusion. 1.1 decision are coded equal to 1 in this case. \cr
@@ -199,7 +178,7 @@
 #'  \bold{promptid} \tab \code{integer} \tab indicating the prompt ID. \cr
 #'  \bold{prompt} \tab \code{character} \tab indicating the prompt. \cr
 #'  \bold{model} \tab \code{character}   \tab indicating the specific gpt-model used. \cr
-#'  \bold{question} \tab \code{character} \tab indicating the final question sent to OpenAI's GPT API models. \cr
+#'  \bold{question} \tab \code{character} \tab indicating the final question sent to Mistral's GPT API models. \cr
 #'  \bold{top_p} \tab \code{numeric}  \tab indicating the applied top_p. \cr
 #'  \bold{incl_p} \tab \code{numeric}  \tab indicating the probability of inclusion calculated across multiple repeated responses on the same title and abstract. \cr
 #'  \bold{final_decision_gpt} \tab \code{character} \tab indicating the final decision reached by gpt - either 'Include', 'Exclude', or 'Check'. \cr
@@ -207,7 +186,7 @@
 #'  \bold{longest_answer}  \tab \code{character} \tab indicating the longest gpt response obtained
 #'  across multiple repeated responses on the same title and abstract. Only included when `decision_description = TRUE`.
 #'  See 'Examples' below for how to use this function. \cr
-#'  \bold{reps}  \tab \code{integer}  \tab indicating the number of times the same question has been sent to OpenAI's GPT API models. \cr
+#'  \bold{reps}  \tab \code{integer}  \tab indicating the number of times the same question has been sent to Mistral's GPT API models. \cr
 #'  \bold{n_mis_answers} \tab \code{integer} \tab indicating the number of missing responses. \cr
 #'  \bold{submodel} \tab \code{character} \tab indicating the exact (sub)model used for screening. \cr
 #' }
@@ -223,7 +202,7 @@
 #'  \bold{total_price_dollar} \tab \code{integer} \tab total price for all tokens for the correspondent gpt-model. \cr
 #' }
 #'
-#' Find current token pricing at \url{https://developers.openai.com/api/docs/pricing} or [model_prizes].
+#' Find current token pricing at \url{https://docs.mistral.ai/models/model-selection-guide} or [model_prizes].
 #'
 #' @importFrom stats df
 #' @import dplyr
@@ -240,7 +219,7 @@
 #'
 #' plan(multisession)
 #'
-#' tabscreen_gpt(
+#' tabscreen_mistral(
 #'   data = filges2015_dat[1:2,],
 #'   prompt = prompt,
 #'   studyid = studyid,
@@ -254,7 +233,7 @@
 #'
 #'  plan(multisession)
 #'
-#'  tabscreen_gpt(
+#'  tabscreen_mistral(
 #'    data = filges2015_dat[1:2,],
 #'    prompt = prompt,
 #'    studyid = studyid,
@@ -268,21 +247,21 @@
 #'}
 
 # Main function
-tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
+tabscreen_mistral <- function(
   data,
   prompt,
   studyid,
   title,
   abstract,
-  api_url = "https://api.openai.com/v1/responses",
-  model = "gpt-4o-mini",
+  api_url = "https://api.mistral.ai/v1/chat/completions",
+  model = "mistral-small-latest",
   role = "user",
   tools = NULL,
   tool_choice = NULL,
   top_p = 1,
   time_info = TRUE,
   token_info = TRUE,
-  api_key = get_api_key(),
+  api_key = get_api_key_mistral(),
   max_tries = 16,
   max_seconds = NULL,
   is_transient = gpt_is_transient,
@@ -298,19 +277,10 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
   incl_cutoff_lower = NULL,
   force = FALSE,
   custom_model = FALSE,
-  fine_tuned = deprecated(),
-  reasoning_effort = "medium",
-  verbosity = "low",
+  reasoning_effort = "none",
   overinclusive = TRUE,
   ...
 ){
-
-  # Handle deprecated fine_tuned argument
-
-  if (lifecycle::is_present(fine_tuned)) {
-    lifecycle::deprecate_warn("0.2.1", "tabscreen_gpt(fine_tuned)", "tabscreen_gpt(custom_model)") # Check version number
-    custom_model <- fine_tuned
-  }
 
   # Handling inherits
   if (is_gpt_tbl(data)) data <- data |> dplyr::select(-c(promptid:n)) |> tibble::as_tibble()
@@ -332,48 +302,11 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
     }
   }
 
-  # Stop if top_p is set for gpt-5 models
-  if (any(stringr::str_detect(model, "gpt-5")) && any(top_p != 1)){
-    stop("The top_p argument is not supported for gpt-5 models.")
-  }
-
   # Ensuring that users do not conduct wrong screening
   if (max(reps) > 10 && !force){
     max_reps_message <- paste("* Are you sure you want to use", max(reps), "iterations? If so, set 'force = TRUE'")
     stop(max_reps_message)
   }
-
-  # Check if the user want to use gpt-4 model with iterations
-  ## Consider updating to include gpt-5. But we need to think more deeply about this as not
-  ## all (future) models necessarily include a number
-
-#  if (any(stringr::str_detect(model, "gpt-4")) && max(reps) > 1 && !force){
-#
-#    gpt4_dat <-
-#      tibble::tibble(model, reps) |>
-#      dplyr::filter(!stringr::str_detect(model, "mini|nano"))
-#
-#      if(nrow(gpt4_dat) > 0){
-#
-#        gpt4_reps <-
-#          gpt4_dat |>
-#          dplyr::filter(stringr::str_detect(model, "gpt-4")) |>
-#          dplyr::pull(reps) |>
-#          max()
-#
-#        if (gpt4_reps > 1){
-#
-#          max_reps_mes_gpt4 <-
-#            paste("* Are you sure you want to use", gpt4_reps, "iterations with a gpt-4 model?",
-#                  "If so, set force = TRUE.")
-#          stop(max_reps_mes_gpt4)
-#
-#        }
-#
-#      }
-#
-#
-#  }
 
   # Ensuring that the rpm argument fits to the corresponding model
   if (length(rpm) > 1 && length(model) != length(rpm)){
@@ -421,17 +354,11 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
 
   }
 
-  # Validate / neutralize reasoning args
-  reasoning_supported_patterns <- c("^gpt-5")
-  reasoning_supported <- any(stringr::str_detect(model, paste(reasoning_supported_patterns, collapse = "|")))
-  if (reasoning_supported) {
-    if (!reasoning_effort %in% c("low","medium","high"))
-      stop("reasoning_effort must be one of 'low','medium','high'.")
-    if (!verbosity %in% c("low","medium","high"))
-      stop("verbosity must be one of 'low','medium','high'.")
-  } else {
-    reasoning_effort <- NULL
-    verbosity <- NULL
+  # Ensure reasoning_effort is either "none" or "high"
+  if (!is.null(reasoning_effort)) {
+    if (!reasoning_effort %in% c("none", "high")) {
+      stop("reasoning_effort must be either 'none' or 'high', see https://docs.mistral.ai/studio-api/conversations/reasoning/adjustable")
+    }
   }
 
   #.........................................
@@ -445,6 +372,9 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
   #.......................................................................
   # Collecting all arguments to be used in the screen_errors function ----
   #.......................................................................
+  
+  # Verbosity is not supported for Mistral, however we include it to avoid errors when using other functions
+  verbosity <- "Verbosity is not supported for Mistral"
 
   # List tracking the used arguments, i.e., all that are not a track in the
   # return result dataset.
@@ -516,6 +446,49 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
   # Setting auto if tool_choice is not provided
   if (!is.null(tools) && is.null(tool_choice)) tool_choice <- "auto"
 
+  # Normalize and validate tool_choice for Mistral chat-completions API.
+  if (!is.null(tool_choice)) {
+    if (is.character(tool_choice) && length(tool_choice) == 1) {
+      allowed_tool_choice <- c("auto", "none", "any", "required")
+
+      if (tool_choice %in% allowed_tool_choice) {
+        if (tool_choice %in% c("any", "required") && is.null(tools)) {
+          stop("tool_choice = 'any'/'required' requires a non-NULL tools argument.")
+        }
+      } else {
+        # Backward compatibility: allow passing function name as a scalar character.
+        tool_choice <- list(
+          type = "function",
+          "function" = list(name = tool_choice)
+        )
+      }
+    } else if (is.list(tool_choice)) {
+      has_named_function <-
+        !is.null(tool_choice$type) &&
+        identical(tool_choice$type, "function") &&
+        !is.null(tool_choice$`function`) &&
+        is.list(tool_choice$`function`) &&
+        !is.null(tool_choice$`function`$name)
+
+      if (!has_named_function) {
+        stop(
+          paste0(
+            "tool_choice list format is invalid. Use one of: ",
+            "'auto'/'none'/'any'/'required' or ",
+            "list(type = 'function', function = list(name = '<tool_name>'))."
+          )
+        )
+      }
+    } else {
+      stop(
+        paste0(
+          "tool_choice must be NULL, a single character value, or a list. ",
+          "Allowed character values are: 'auto', 'none', 'any', 'required'."
+        )
+      )
+    }
+  }
+
   # Default setting
   if (is.null(tools) && is.null(tool_choice)){
 
@@ -524,12 +497,18 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
       if (!decision_description){
 
         tools <- tools_simple
-        tool_choice <- "inclusion_decision_simple"
+        tool_choice <- list(
+          type = "function",
+          "function" = list(name = "inclusion_decision_simple")
+        )
 
       } else {
 
         tools <- tools_detailed
-        tool_choice <- "inclusion_decision"
+        tool_choice <- list(
+          type = "function",
+          "function" = list(name = "inclusion_decision")
+        )
 
       }
 
@@ -538,12 +517,18 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
       if (!decision_description){
 
         tools <- tools_simple_binary
-        tool_choice <- "inclusion_decision_simple_binary"
+        tool_choice <- list(
+          type = "function",
+          "function" = list(name = "inclusion_decision_simple_binary")
+        )
 
       } else {
 
         tools <- tools_detailed_binary
-        tool_choice <- "inclusion_decision_binary"
+        tool_choice <- list(
+          type = "function",
+          "function" = list(name = "inclusion_decision_binary")
+        )
 
       }
 
@@ -693,7 +678,8 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
       dplyr::mutate(
         res = furrr::future_pmap(
           .l = params,
-          .f = .rep_gpt_engine_responses,
+          .f = .rep_gpt_engine,
+          role_gpt = role,
           tool = tools,
           t_choice = tool_choice,
           seeds = seed_par,
@@ -706,7 +692,6 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
           ba = backoff,
           af = after,
           endpoint_url = api_url,
-
           ...,
           .options = furrr::furrr_options(seed = furrr_seed),
           .progress = progress

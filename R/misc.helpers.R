@@ -19,7 +19,7 @@ utils::globalVariables(
     "submodel", "prompt", "data", "tools", "tool_choice", "is.gpt", "criteria", "incl_p_cutoff", "incl_p", "title","supplementary","file_path","file_content","combination_idx","rep_num",
     "current_file_path","safe_basename","current_prompt","current_model",
     "current_rep_num","current_study_id","current_prompt_id",
-    "current_vector_store_name","precomputed_supplementary","total_price_dollar", "groq_model_prizes"
+    "current_vector_store_name","precomputed_supplementary","total_price_dollar", "groq_model_prizes", "mistral_model_prizes", "gemini_model_prizes", "n_missing"
     )
 )
 
@@ -57,10 +57,34 @@ error_message <- function(){
 
     code <- resp_last |> httr2::resp_status()
 
-    error_body <- httr2::resp_body_json(resp_last)
+    # Check content type to determine how to parse the response
+    content_type <- resp_last |> httr2::resp_content_type()
 
-    message <- paste0("Error ", code, ": ", error_body$error$message)
-
+    message <- tryCatch(
+      {
+        if (grepl("application/json", content_type, ignore.case = TRUE)) {
+          # Try to extract error message from JSON
+          error_body <- httr2::resp_body_json(resp_last)
+          if (!is.null(error_body$error$message)) {
+            paste0("Error ", code, ": ", error_body$error$message)
+          } else if (!is.null(error_body$message)) {
+            paste0("Error ", code, ": ", error_body$message)
+          } else {
+            paste0("Error ", code, ": ", as.character(error_body))
+          }
+        } else {
+          # Handle HTML, text, or other content types
+          body_text <- resp_last |> httr2::resp_body_string()
+          # Extract a reasonable snippet from HTML/text (first 200 chars)
+          snippet <- substr(body_text, 1, 200)
+          paste0("Error ", code, ": ", snippet)
+        }
+      },
+      error = function(e) {
+        # If parsing fails, just return the status code
+        paste0("Error ", code, ": [Could not parse error details]")
+      }
+    )
 
   } else {
 
@@ -208,5 +232,26 @@ testing_key_groq <- function() {
   httr2::secret_decrypt(
     "4UAcFSIHVz8Z4zED1WEj3k65xFBWlJ8dzavRDGG4dz0pBxEOXtvSkLwK6_fZaZqCr94oVtKBD6DQo82vwa2gljJMTw",
     "GROQ_KEY"
+  )
+}
+
+testing_key_mistral <- function() {
+  httr2::secret_decrypt(
+    "4UAcFSIHVz8Z4zED1WEj3k65xFBWlJ8dzavRDGG4dz0pBxEOXtvSkLwK6_fZaZqCr94oVtKBD6DQo82vwa2gljJMTw",
+    "MISTRAL_KEY"
+  )
+}
+
+testing_key_gemini <- function() {
+  httr2::secret_decrypt(
+    "4UAcFSIHVz8Z4zED1WEj3k65xFBWlJ8dzavRDGG4dz0pBxEOXtvSkLwK6_fZaZqCr94oVtKBD6DQo82vwa2gljJMTw",
+    "GEMINI_KEY"
+  )
+}
+
+testing_key_anthropic <- function() {
+  httr2::secret_decrypt(
+    "4UAcFSIHVz8Z4zED1WEj3k65xFBWlJ8dzavRDGG4dz0pBxEOXtvSkLwK6_fZaZqCr94oVtKBD6DQo82vwa2gljJMTw",
+    "ANTHROPIC_KEY"
   )
 }

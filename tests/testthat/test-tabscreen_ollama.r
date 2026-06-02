@@ -347,7 +347,7 @@ test_that("tabscreen_ollama() normalizes common Ollama base URLs", {
 
 })
 
-future::plan(future::multisession)
+suppressWarnings(future::plan(future::multisession))
 
 test_that("tabscreen_ollama() works with single parameter values.",{
 
@@ -760,7 +760,7 @@ test_that("tabscreen_ollama() expected errors.", {
 
 })
 
-future::plan(future::sequential)
+suppressWarnings(future::plan(future::sequential))
 
 # Test parallel
 
@@ -770,7 +770,7 @@ test_that("That parallel processing works.", {
   if(skip_github_action) skip_on_ci()
   skip_on_cran()
 
-  future::plan(future::multisession, workers = future::availableCores())
+  suppressWarnings(future::plan(future::multisession, workers = future::availableCores()))
 
   expect_message(
 
@@ -786,7 +786,7 @@ test_that("That parallel processing works.", {
     )
   )
 
-  future::plan(future::sequential)
+  suppressWarnings(future::plan(future::sequential))
 
   expect_lt(tm_par[["elapsed"]], sum(test_obj$answer_data$run_time))
 

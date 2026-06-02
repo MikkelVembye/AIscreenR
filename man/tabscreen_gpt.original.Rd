@@ -83,8 +83,8 @@ the output object will include price information of the conducted screening.}
 
 \item{api_key}{Numerical value with your personal API key. Find setup guidance at
 \url{https://developers.openai.com/api/docs/quickstart#generate-an-api-key}. Use
-\code{\link[httr2:secrets]{httr2::secret_make_key()}}, \code{\link[httr2:secrets]{httr2::secret_encrypt()}}, and
-\code{\link[httr2:secrets]{httr2::secret_decrypt()}} to scramble and decrypt the api key and
+\code{\link[httr2:secret_make_key]{httr2::secret_make_key()}}, \code{\link[httr2:secret_encrypt]{httr2::secret_encrypt()}}, and
+\code{\link[httr2:secret_decrypt]{httr2::secret_decrypt()}} to scramble and decrypt the api key and
 use \code{\link[=set_api_key]{set_api_key()}} to securely automate the use of the
 api key by setting the api key as a locale environment variable.}
 

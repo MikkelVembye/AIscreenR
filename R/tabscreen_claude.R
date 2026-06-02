@@ -1,21 +1,16 @@
-#' @title Title and abstract screening with GPT API models using function calls via the tools argument and the responses endpoint
+#' @title Title and abstract screening with Anthropic's API models
 #'
-#' @name tabscreen_gpt.tools_responses
-#' @aliases tabscreen_gpt.tools_responses tabscreen_gpt
+#' @name tabscreen_claude
+#' @aliases tabscreen_claude
 #'
 #' @description
 #' `r lifecycle::badge("stable")`<br>
 #' <br>
-#' This function supports title and abstract screening using GPT API models in R.
-#' Specifically, it allows users to draw on all OpenAI GPT API response models, including fine-tuned versions.
-#' The function enables title and abstract screening across multiple prompts, with
-#' repeated questions to assess consistency across responses. All of this can be performed in parallel.
-#' The function utilizes function calling, which is invoked via the
-#' tools argument in the request body. Furthermore, this function uses the responses endpoint.
-#' This is the main difference between [tabscreen_gpt.tools()]
-#' and [tabscreen_gpt.original()]. Function calls ensure more reliable and consistent responses to users'
-#' requests. Using the Responses endpoint can improve performance, enable access to newer models, and reduce costs.
-#' \emph{\href{https://developers.openai.com/api/docs/guides/migrate-to-responses?lang=javascript&tool-use=chat-completions&update-item-definitions=chat-completions&update-multiturn=responses}{Migrate to the Responses API}}
+#' This function supports title and abstract screening using Anthropic's API models.
+#' This function uses the function calling feature of Anthropic's API models, which allows for more 
+#' structured and accurate responses from the model. The function follows the same general structure 
+#' as the other screening functions in the package, but with some specific arguments and features that 
+#' are tailored to Anthropic's API models.
 #' See [Vembye, Christensen, Mølgaard, and Schytt. (2025)](https://psycnet.apa.org/record/2026-37236-001)
 #' for guidance on how adequately to conduct title and abstract screening with GPT models.
 #'
@@ -33,36 +28,28 @@
 #' \url{https://httr2.r-lib.org}, \url{https://github.com/r-lib/httr2}.
 #'
 #' @template common-arg
-#' @param api_url Character string with the endpoint URL for OpenAI's API. Default is `"https://api.openai.com/v1/responses"`.
+#' @param api_url Character string with the endpoint URL for Anthropic's API. 
+#' Default is `"https://api.anthropic.com"`.
 #' @param model Character string with the name of the completion model. Can take
-#'   multiple models. Default is the latest `"gpt-4o-mini"`.
+#'   multiple models. Default is the latest `"claude-sonnet-4-6"`.
 #'   Find available model at
-#' \url{https://developers.openai.com/api/docs/models/model-endpoint-compatibility}.
+#' \url{https://platform.claude.com/docs/en/about-claude/models/overview}.
 #' @param role Character string indicating the role of the user. Default is `"user"`.
 #' @param tools This argument allows this user to apply customized functions.
-#' See \url{https://developers.openai.com/api/reference/resources/chat#chat-create-tools}.
+#' See \url{https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview}.
 #' Default is `NULL`. If not specified the default function calls from `AIscreenR` are used.
-#' @param tool_choice If a customized function is provided this argument
-#' 'controls which (if any) tool is called by the model' (OpenAI). Default is `NULL`.
-#' If set to `NULL` when using a customized function, the default is `"auto"`.
-#' See \url{https://developers.openai.com/api/reference/resources/chat#chat-create-tool_choice}.
-#' @param top_p 'An alternative to sampling with temperature, called nucleus sampling,
-#'   where the model considers the results of the tokens with top_p probability mass.
-#'   So 0.1 means only the tokens comprising the top 10% probability mass are considered.
-#'   We generally recommend altering this or temperature but not both.' (OpenAI). Default is 1.
-#'   Find documentation at
-#' \url{https://developers.openai.com/api/reference/resources/chat#chat/create-top_p}. Be aware
-#' that this argument is not supported for gpt-5.4 and gpt-5.5 models and will be set to NULL if these models are used.
 #' @param time_info Logical indicating whether the run time of each
 #'   request/question should be included in the data. Default is `TRUE`.
 #' @param token_info Logical indicating whether token information should be included
 #'   in the output data. Default is `TRUE`. When `TRUE`, the output object will
 #'   include price information of the conducted screening.
-#' @template api-key-arg
+#' @param api_key Character string with the API key. For Anthropic, use [get_api_key_anthropic()].
+#' Default is `get_api_key_anthropic()`, which retrieves the API key from the environment variable `ANTHROPIC_API_KEY`.
 #' @param max_tries,max_seconds 'Cap the maximum number of attempts with
 #'  `max_tries` or the total elapsed time from the first request with
 #'  `max_seconds`. If neither option is supplied (the default), [httr2::req_perform()]
 #'  will not retry' (Wickham, 2023). The default of `max_tries` is 16.
+#' @param max_tokens Numerical value indicating the maximum number of tokens to be sent in the request body. Default is 1024.
 #' @param is_transient 'A predicate function that takes a single argument
 #'  (the response) and returns `TRUE` or `FALSE` specifying whether or not
 #'  the response represents a transient error' (Wickham, 2023). This function runs
@@ -75,14 +62,13 @@
 #'   should be used instead' (Wickham, 2023).
 #' @param rpm Numerical value indicating the number of requests per minute (rpm)
 #'   available for the specified model. Find more information at
-#'   \url{https://developers.openai.com/api/docs/models/model-endpoint-compatibility}.
+#'   \url{https://platform.claude.com/docs/en/manage-claude/rate-limits-api}.
 #'   Alternatively, use [rate_limits_per_minute()].
 #' @param reps Numerical value indicating the number of times the same
 #'   question should be send to the server. This can be useful to test consistency
 #'   between answers, and/or can be used to make inclusion judgments based on how many times
 #'   a study has been included across a the given number of screenings.
-#'   Default is `1` but when using gpt-3.5-turbo models or gpt-4o-mini,
-#'   we recommend setting this value to `10` to catch model uncertainty.
+#'   Default is `1`.
 #' @param seed_par Numerical value for a seed to ensure that proper,
 #'   parallel-safe random numbers are produced.
 #' @param progress Logical indicating whether a progress line should be shown when running
@@ -111,39 +97,25 @@
 #'   between `incl_cutoff_lower` and `incl_cutoff_upper` will be flagged for human checking. 
 #'   Default is `NULL`, which means that no studies will be flagged for human checking.
 #' @param force Logical argument indicating whether to force the function to use more than
-#'   10 iterations for gpt-3.5 models and more than 1 iteration for gpt-4 models other than gpt-4o-mini.
-#'   This argument is developed to avoid the conduct of wrong and extreme sized screening.
-#'   Default is `FALSE`.
+#'   10 iterations and run screening costing more than 15 USD. Default is `FALSE`.
 #' @param custom_model Logical indicating whether a fine-tuned or custom model is used. Default is `FALSE`.
-#' @param fine_tuned `r lifecycle::badge("deprecated")` Use `custom_model` instead.
-#' @param reasoning_effort Character string indicating the level of reasoning effort required for the task. Default is `"low"`.
-#'  Can take the values `"low"`, `"medium"`, and `"high"`. See \url{https://developers.openai.com/api/docs/guides/reasoning} for more information.
-#' @param verbosity Character string indicating the level of verbosity in the model's responses. Default is `"low"`.
-#' Can take the values `"low"`, `"medium"`, and `"high"`. See \url{https://developers.openai.com/api/reference/resources/chat} for more information.
+#' @param reasoning_effort Character string indicating the level of reasoning effort required for the task. Default is `"none"`. 
+#' Can be either `"low"`, `"medium"`, `"high"`, `"xhigh"` or `"max"`. `"max"` is available only using Claude Mythos Preview, 
+#' Claude Opus 4.7, Claude Opus 4.6, and Claude Sonnet 4.6. `"xhigh"` is available only using Claude Opus 4.7.
+#' See \url{https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking} for more information.
 #' @param ... Further argument to pass to the request body.
-#'   See \url{https://developers.openai.com/api/reference/resources/chat}.
+#'   See \url{https://platform.claude.com/docs/en/api/messages/create}.
 #'
-#' @usage tabscreen_gpt.tools_responses(data, prompt, studyid, title, abstract,
-#'   api_url = "https://api.openai.com/v1/responses", model = "gpt-4o-mini",
-#'   role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
-#'   time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
-#'   max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
+#' @usage tabscreen_claude(data, prompt, studyid, title, abstract,
+#'   api_url = "https://api.anthropic.com", model = "claude-sonnet-4-6",
+#'   role = "user", tools = NULL,
+#'   time_info = TRUE, token_info = TRUE, api_key = get_api_key_anthropic(),
+#'   max_tries = 16, max_tokens = 1024, max_seconds = NULL, 
+#'   is_transient = gpt_is_transient, backoff = NULL,
 #'   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
 #'   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
 #'   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
-#'   fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low",
-#'   overinclusive = TRUE, ...)
-#'
-#' tabscreen_gpt(data, prompt, studyid, title, abstract,
-#'   api_url = "https://api.openai.com/v1/responses", model = "gpt-4o-mini",
-#'   role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
-#'   time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
-#'   max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
-#'   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
-#'   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
-#'   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
-#'   fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low",
-#'   overinclusive = TRUE, ...)
+#'   reasoning_effort = "medium", overinclusive = TRUE, ...)
 #'
 #' @return An object of class `'gpt'`. The object is a list containing the following
 #' datasets and components:
@@ -169,11 +141,10 @@
 #'  \bold{promptid} \tab \code{integer} \tab indicating the prompt ID. \cr
 #'  \bold{prompt} \tab \code{character} \tab indicating the prompt. \cr
 #'  \bold{model} \tab \code{character}   \tab indicating the specific gpt-model used. \cr
-#'  \bold{iterations} \tab \code{numeric} \tab indicating the number of times the same question has been sent to OpenAI's GPT API models. \cr
-#'  \bold{question} \tab \code{character} \tab indicating the final question sent to OpenAI's GPT API models. \cr
-#'  \bold{top_p}  \tab \code{numeric} \tab indicating the applied top_p. \cr
+#'  \bold{iterations} \tab \code{numeric} \tab indicating the number of times the same question has been sent to Anthropic's API models. \cr
+#'  \bold{question} \tab \code{character} \tab indicating the final question sent to Anthropic's API models. \cr
 #'  \bold{decision_gpt}  \tab \code{character} \tab indicating the raw gpt decision - either \code{"1", "0", "1.1"} for inclusion, exclusion, or uncertainty, respectively. \cr
-#'  \bold{detailed_description}  \tab \code{character} \tab indicating detailed description of the given decision made by OpenAI's GPT API models.
+#'  \bold{detailed_description}  \tab \code{character} \tab indicating detailed description of the given decision made by Anthropic's API models.
 #'  ONLY included if the detailed function calling function is used. See 'Examples' below for how to use this function. \cr
 #'  \bold{decision_binary}  \tab \code{integer} \tab indicating the binary gpt decision,
 #'  that is 1 for inclusion and 0 for exclusion. 1.1 decision are coded equal to 1 in this case. \cr
@@ -199,15 +170,14 @@
 #'  \bold{promptid} \tab \code{integer} \tab indicating the prompt ID. \cr
 #'  \bold{prompt} \tab \code{character} \tab indicating the prompt. \cr
 #'  \bold{model} \tab \code{character}   \tab indicating the specific gpt-model used. \cr
-#'  \bold{question} \tab \code{character} \tab indicating the final question sent to OpenAI's GPT API models. \cr
-#'  \bold{top_p} \tab \code{numeric}  \tab indicating the applied top_p. \cr
+#'  \bold{question} \tab \code{character} \tab indicating the final question sent to Anthropic's API models. \cr
 #'  \bold{incl_p} \tab \code{numeric}  \tab indicating the probability of inclusion calculated across multiple repeated responses on the same title and abstract. \cr
 #'  \bold{final_decision_gpt} \tab \code{character} \tab indicating the final decision reached by gpt - either 'Include', 'Exclude', or 'Check'. \cr
 #'  \bold{final_decision_gpt_num}  \tab \code{integer}  \tab indicating the final numeric decision reached by gpt - either 1 or 0. \cr
 #'  \bold{longest_answer}  \tab \code{character} \tab indicating the longest gpt response obtained
 #'  across multiple repeated responses on the same title and abstract. Only included when `decision_description = TRUE`.
 #'  See 'Examples' below for how to use this function. \cr
-#'  \bold{reps}  \tab \code{integer}  \tab indicating the number of times the same question has been sent to OpenAI's GPT API models. \cr
+#'  \bold{reps}  \tab \code{integer}  \tab indicating the number of times the same question has been sent to Anthropic's API models. \cr
 #'  \bold{n_mis_answers} \tab \code{integer} \tab indicating the number of missing responses. \cr
 #'  \bold{submodel} \tab \code{character} \tab indicating the exact (sub)model used for screening. \cr
 #' }
@@ -223,7 +193,7 @@
 #'  \bold{total_price_dollar} \tab \code{integer} \tab total price for all tokens for the correspondent gpt-model. \cr
 #' }
 #'
-#' Find current token pricing at \url{https://developers.openai.com/api/docs/pricing} or [model_prizes].
+#' Find current token pricing at \url{https://docs.mistral.ai/models/model-selection-guide} or [model_prizes].
 #'
 #' @importFrom stats df
 #' @import dplyr
@@ -240,7 +210,7 @@
 #'
 #' plan(multisession)
 #'
-#' tabscreen_gpt(
+#' tabscreen_claude(
 #'   data = filges2015_dat[1:2,],
 #'   prompt = prompt,
 #'   studyid = studyid,
@@ -254,7 +224,7 @@
 #'
 #'  plan(multisession)
 #'
-#'  tabscreen_gpt(
+#'  tabscreen_claude(
 #'    data = filges2015_dat[1:2,],
 #'    prompt = prompt,
 #'    studyid = studyid,
@@ -268,22 +238,21 @@
 #'}
 
 # Main function
-tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
+tabscreen_claude <- function(
   data,
   prompt,
   studyid,
   title,
   abstract,
-  api_url = "https://api.openai.com/v1/responses",
-  model = "gpt-4o-mini",
+  api_url = "https://api.anthropic.com",
+  model = "claude-sonnet-4-6",
   role = "user",
   tools = NULL,
-  tool_choice = NULL,
-  top_p = 1,
   time_info = TRUE,
   token_info = TRUE,
-  api_key = get_api_key(),
+  api_key = get_api_key_anthropic(),
   max_tries = 16,
+  max_tokens = 1024,
   max_seconds = NULL,
   is_transient = gpt_is_transient,
   backoff = NULL,
@@ -298,19 +267,10 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
   incl_cutoff_lower = NULL,
   force = FALSE,
   custom_model = FALSE,
-  fine_tuned = deprecated(),
   reasoning_effort = "medium",
-  verbosity = "low",
   overinclusive = TRUE,
   ...
 ){
-
-  # Handle deprecated fine_tuned argument
-
-  if (lifecycle::is_present(fine_tuned)) {
-    lifecycle::deprecate_warn("0.2.1", "tabscreen_gpt(fine_tuned)", "tabscreen_gpt(custom_model)") # Check version number
-    custom_model <- fine_tuned
-  }
 
   # Handling inherits
   if (is_gpt_tbl(data)) data <- data |> dplyr::select(-c(promptid:n)) |> tibble::as_tibble()
@@ -332,48 +292,11 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
     }
   }
 
-  # Stop if top_p is set for gpt-5 models
-  if (any(stringr::str_detect(model, "gpt-5")) && any(top_p != 1)){
-    stop("The top_p argument is not supported for gpt-5 models.")
-  }
-
   # Ensuring that users do not conduct wrong screening
   if (max(reps) > 10 && !force){
     max_reps_message <- paste("* Are you sure you want to use", max(reps), "iterations? If so, set 'force = TRUE'")
     stop(max_reps_message)
   }
-
-  # Check if the user want to use gpt-4 model with iterations
-  ## Consider updating to include gpt-5. But we need to think more deeply about this as not
-  ## all (future) models necessarily include a number
-
-#  if (any(stringr::str_detect(model, "gpt-4")) && max(reps) > 1 && !force){
-#
-#    gpt4_dat <-
-#      tibble::tibble(model, reps) |>
-#      dplyr::filter(!stringr::str_detect(model, "mini|nano"))
-#
-#      if(nrow(gpt4_dat) > 0){
-#
-#        gpt4_reps <-
-#          gpt4_dat |>
-#          dplyr::filter(stringr::str_detect(model, "gpt-4")) |>
-#          dplyr::pull(reps) |>
-#          max()
-#
-#        if (gpt4_reps > 1){
-#
-#          max_reps_mes_gpt4 <-
-#            paste("* Are you sure you want to use", gpt4_reps, "iterations with a gpt-4 model?",
-#                  "If so, set force = TRUE.")
-#          stop(max_reps_mes_gpt4)
-#
-#        }
-#
-#      }
-#
-#
-#  }
 
   # Ensuring that the rpm argument fits to the corresponding model
   if (length(rpm) > 1 && length(model) != length(rpm)){
@@ -421,17 +344,34 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
 
   }
 
-  # Validate / neutralize reasoning args
-  reasoning_supported_patterns <- c("^gpt-5")
-  reasoning_supported <- any(stringr::str_detect(model, paste(reasoning_supported_patterns, collapse = "|")))
-  if (reasoning_supported) {
-    if (!reasoning_effort %in% c("low","medium","high"))
-      stop("reasoning_effort must be one of 'low','medium','high'.")
-    if (!verbosity %in% c("low","medium","high"))
-      stop("verbosity must be one of 'low','medium','high'.")
-  } else {
+  # Ensure reasoning_effort is either "low", "medium", "high", "xhigh" or "max"
+  if (!reasoning_effort %in% c("low", "medium", "high", "xhigh", "max")){
+    warning("reasoning_effort must be either 'low', 'medium', 'high', 'xhigh' or 'max'. Setting reasoning_effort to NULL.")
     reasoning_effort <- NULL
-    verbosity <- NULL
+  }
+
+  # Ensure reasoning_effort is available for the used model
+  if (!custom_model){
+    if (!reasoning_effort %in% c("low", "medium", "high", "xhigh", "max")){
+      stop("reasoning_effort must be either 'low', 'medium', 'high', 'xhigh' or 'max'.")
+    }
+    supported_reasoning_models <- any(grepl("mythos|opus-4-7|opus-4-6|sonnet-4-6", model, ignore.case = TRUE))
+    supports_xhigh <- any(grepl("opus-4-7", model, ignore.case = TRUE))
+
+    if (reasoning_effort %in% c("xhigh", "max") && !supported_reasoning_models){
+      stop("reasoning_effort = 'xhigh'/'max' is only available for Claude Mythos Preview, Claude Opus 4.7, Claude Opus 4.6, and Claude Sonnet 4.6.")
+    }
+    if (reasoning_effort == "xhigh" && !supports_xhigh){
+      stop("reasoning_effort = 'xhigh' is only available for Claude Opus 4.7.")
+    }
+  }
+
+  # Message reasoning not being used if unsupported model is selected
+  if (!custom_model && !is.null(reasoning_effort) && !is.na(reasoning_effort)) {
+    thinking_models <- c("claude-mythos-preview", "claude-opus-4-7", "claude-opus-4-6", "claude-sonnet-4-6")
+    if (!any(grepl(paste(thinking_models, collapse = "|"), model, ignore.case = TRUE))) {
+      message("Be aware that reasoning_effort is only available for Claude Mythos Preview, Claude Opus 4.7, Claude Opus 4.6, and Claude Sonnet 4.6. The argument will be ignored for the used model(s).")
+    }
   }
 
   #.........................................
@@ -452,7 +392,6 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
     list(
       role = role,
       tools = tools,
-      tool_choice = tool_choice,
       time_info = time_info,
       token_info = token_info,
       max_tries = max_tries,
@@ -472,7 +411,7 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
       custom_model = custom_model,
       api_url = api_url,
       reasoning_effort = reasoning_effort,
-      verbosity = verbosity,
+      max_tokens = max_tokens,
       ...
     )
 
@@ -481,18 +420,6 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
   if ("max_completion_tokens" %in% names(arg_list) && !is.null(arg_list$max_completion_tokens)) {
     if (arg_list$max_completion_tokens < 9) {
       stop("Cannot retrieve results from server with tokens below 9.")
-    }
-  }
-
-  if ("max_tokens" %in% names(arg_list) && !is.null(arg_list$max_tokens)) {
-    if (arg_list$max_tokens < 9) {
-      stop("Cannot retrieve results from server with tokens below 9.")
-    }
-  }
-
-  if(decision_description){
-    if ("max_completion_tokens" %in% names(arg_list) || "max_tokens" %in% names(arg_list)){
-      stop("the max_completion_tokens argument does not work with descriptive screening.")
     }
   }
 
@@ -511,44 +438,22 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
   # If the users want to add own function call to the function
   # Some further stop messages
   if (!is.null(tools) && !is.list(tools)) stop("The tools function must be of a list.")
-  if (is.null(tools) && !is.null(tool_choice)) stop("You must provide a tool or set 'tool_choice = NULL'.")
-
-  # Setting auto if tool_choice is not provided
-  if (!is.null(tools) && is.null(tool_choice)) tool_choice <- "auto"
 
   # Default setting
-  if (is.null(tools) && is.null(tool_choice)){
-
+  if (is.null(tools)){
     if (overinclusive) {
-
       if (!decision_description){
-
-        tools <- tools_simple
-        tool_choice <- "inclusion_decision_simple"
-
+        tools <- tools_simple_claude
       } else {
-
-        tools <- tools_detailed
-        tool_choice <- "inclusion_decision"
-
+        tools <- tools_detailed_claude
       }
-
     } else {
-
       if (!decision_description){
-
-        tools <- tools_simple_binary
-        tool_choice <- "inclusion_decision_simple_binary"
-
+        tools <- tools_simple_binary_claude
       } else {
-
-        tools <- tools_detailed_binary
-        tool_choice <- "inclusion_decision_binary"
-
+        tools <- tools_detailed_binary_claude
       }
-
     }
-
   }
 
   #.......................
@@ -579,7 +484,6 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
 
     # Preserve values (NULL -> NA for downstream mutate)
     reasoning_effort_val <- if (is.null(reasoning_effort)) NA_character_ else reasoning_effort
-    verbosity_val        <- if (is.null(verbosity)) NA_character_ else verbosity
 
     # Creating the question data that will later be passed to the .rep_gpt_engine()
     question_dat <-
@@ -610,15 +514,13 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
         # removing line shift symbols and creating the main question
         question = stringr::str_replace_all(question_raw, "\n\n", " "),
         question = stringr::str_remove_all(question, "\n"),
-        reasoning_effort = reasoning_effort_val,
-        verbosity = verbosity_val
+        reasoning_effort = reasoning_effort_val
       ) |>
       dplyr::select(-question_raw) |>
-      dplyr::slice(rep(seq_len(dplyr::n()), each = length(top_p))) |>
       dplyr::mutate(
-        topp = rep(top_p, studyid_length*prompt_length*model_length)
+        topp = NA_real_
       ) |>
-      dplyr::arrange(promptid, model, topp, iterations, studyid)
+      dplyr::arrange(promptid, model, iterations, studyid)
 
     #...................................
     # Approximate price calculation ----
@@ -685,7 +587,7 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
     furrr_seed <- if (is.null(seed_par)) TRUE else NULL
 
     params <- question_dat |>
-      dplyr::select(question, model_gpt = model, topp, iterations, req_per_min, reasoning_effort, verbosity)
+      dplyr::select(question, model_gpt = model, iterations, req_per_min, reasoning_effort)
 
 
     answer_dat <-
@@ -693,23 +595,23 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
       dplyr::mutate(
         res = furrr::future_pmap(
           .l = params,
-          .f = .rep_gpt_engine_responses,
+          .f = .rep_claude_engine,
+          role_gpt = role,
           tool = tools,
-          t_choice = tool_choice,
           seeds = seed_par,
           time_inf = time_info,
           token_inf = token_info,
-          apikey = api_key,
-          maxt = max_tries,
-          maxs = max_seconds,
-          istrans = is_transient,
-          ba = backoff,
-          af = after,
+          api_key = api_key,
+          max_t = max_tries,
+          max_s = max_seconds,
+          is_trans = is_transient,
+          back = backoff,
+          aft = after,
           endpoint_url = api_url,
-
           ...,
           .options = furrr::furrr_options(seed = furrr_seed),
-          .progress = progress
+          .progress = progress,
+          max_tokens = max_tokens
         )
       ) |>
       tidyr::unnest(res) |>
@@ -758,8 +660,7 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
       answer_dat_aggregated <-
         dplyr::left_join(question_dat, answer_dat_sum) |>
         suppressMessages() |>
-        dplyr::select(-c(iterations, req_per_min)) |>
-        dplyr::rename(top_p = topp) |>
+        dplyr::select(-c(iterations, req_per_min, topp)) |>
         tibble::new_tibble(class = "gpt_agg_tbl")
 
       attr(answer_dat_aggregated, "incl_cutoff_upper") <- incl_cutoff_upper

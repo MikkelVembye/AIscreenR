@@ -87,3 +87,42 @@
 #' @references GROQ. \emph{Pricing}. \url{https://groq.com/pricing}
 
 "groq_model_prizes"
+
+#' Mistral model prices (last updated May 7, 2026)
+#' Data set containing input and output prizes for all Mistral's API models.
+#' 
+#' @format A \code{data.frame} containing 4 rows/models and 3 variables/columns
+#' \tabular{lll}{
+#' \bold{model} \tab \code{character} \tab indicating the specific GPT model \cr
+#' \bold{price_in_per_token} \tab \code{character} \tab indicating the input prize per token \cr
+#' \bold{price_out_per_token} \tab \code{character} \tab indicating the output prize per token \cr
+#' }
+#' @references Mistral. \emph{Pricing}. \url{https://mistral.ai/pricing}
+
+"mistral_model_prizes"
+
+#' Gemini model prices (last updated May 7, 2026)
+#' Data set containing input and output prizes for all Gemini's API models.
+#' 
+#' @format A \code{data.frame} containing 4 rows/models and 3 variables/columns
+#' \tabular{lll}{
+#' \bold{model} \tab \code{character} \tab indicating the specific GPT model \cr
+#' \bold{price_in_per_token} \tab \code{character} \tab indicating the input prize per token \cr
+#' \bold{price_out_per_token} \tab \code{character} \tab indicating the output prize per token \cr
+#' }
+#' @references Gemini. \emph{Pricing}. \url{https://ai.google.dev/gemini-api/docs/pricing}
+
+"gemini_model_prizes"
+
+#' Claude model prices (last updated May 13, 2026)
+#' Data set containing input and output prizes for all Claude's API models.
+#' 
+#' @format A \code{data.frame} containing 4 rows/models and 3 variables/columns
+#' \tabular{lll}{
+#' \bold{model} \tab \code{character} \tab indicating the specific GPT model \cr
+#' \bold{price_in_per_token} \tab \code{character} \tab indicating the input prize per token \cr
+#' \bold{price_out_per_token} \tab \code{character} \tab indicating the output prize per token \cr
+#' }
+#' @references Anthropic. \emph{Pricing}. \url{https://platform.claude.com/docs/en/about-claude/pricing}
+
+"claude_model_prizes"

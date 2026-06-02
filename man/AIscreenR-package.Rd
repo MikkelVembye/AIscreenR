@@ -22,6 +22,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Mikkel H. Vembye \email{mikkel.vembye@gmail.com} (\href{https://orcid.org/0000-0001-9071-0724}{ORCID})
   \item Thomas Olsen \email{thomasolsen123@hotmail.com}
 }
 
