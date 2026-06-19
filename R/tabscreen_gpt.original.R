@@ -559,9 +559,11 @@ tabscreen_gpt.original <- function(
     furrr_seed <- if (is.null(seeds)) TRUE else NULL
 
     final_res <-
-      furrr::future_map_dfr(
-        iterations, \(i) ask_gpt_engine(body = body, RPM = req_per_min),
-        .options = furrr::furrr_options(seed = furrr_seed)
+      suppressWarnings(
+        furrr::future_map_dfr(
+          iterations, \(i) ask_gpt_engine(body = body, RPM = req_per_min),
+          .options = furrr::furrr_options(seed = furrr_seed)
+        )
       ) |>
       dplyr::mutate(n = iterations)
 

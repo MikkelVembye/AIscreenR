@@ -1,22 +1,19 @@
-#' @title Title and abstract screening with GPT API models using function calls via the tools argument and the responses endpoint
+#' @title Title and abstract screening with GPT API models using function calls via the tools argument
 #'
-#' @name tabscreen_gpt.tools_responses
-#' @aliases tabscreen_gpt.tools_responses tabscreen_gpt
+#' @name tabscreen_gpt.tools
+#' @aliases tabscreen_gpt.tools
 #'
 #' @description
-#' `r lifecycle::badge("stable")`<br>
+#' `r lifecycle::badge("deprecated")`<br>
 #' <br>
 #' This function supports title and abstract screening using GPT API models in R.
-#' Specifically, it allows users to draw on all OpenAI GPT API response models, including fine-tuned versions.
+#' Specifically, it allows users to draw on all OpenAI GPT API completion models, including fine-tuned versions.
 #' The function enables title and abstract screening across multiple prompts, with
 #' repeated questions to assess consistency across responses. All of this can be performed in parallel.
 #' The function utilizes function calling, which is invoked via the
-#' tools argument in the request body. Furthermore, this function uses the responses endpoint.
-#' This is the main difference between [tabscreen_gpt.tools()]
+#' tools argument in the request body. This is the main difference between [tabscreen_gpt.tools()]
 #' and [tabscreen_gpt.original()]. Function calls ensure more reliable and consistent responses to users'
-#' requests. Using the Responses endpoint can improve performance, enable access to newer models, and reduce costs.
-#' \emph{\href{https://developers.openai.com/api/docs/guides/migrate-to-responses?lang=javascript&tool-use=chat-completions&update-item-definitions=chat-completions&update-multiturn=responses}{Migrate to the Responses API}}
-#' See [Vembye, Christensen, Mølgaard, and Schytt. (2025)](https://psycnet.apa.org/record/2026-37236-001)
+#' requests. See [Vembye, Christensen, Mølgaard, and Schytt. (2025)](https://psycnet.apa.org/record/2026-37236-001)
 #' for guidance on how adequately to conduct title and abstract screening with GPT models.
 #'
 #' @references Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2025).
@@ -33,7 +30,7 @@
 #' \url{https://httr2.r-lib.org}, \url{https://github.com/r-lib/httr2}.
 #'
 #' @template common-arg
-#' @param api_url Character string with the endpoint URL for OpenAI's API. Default is `"https://api.openai.com/v1/responses"`.
+#' @param api_url Character string with the endpoint URL for OpenAI's API. Default is `"https://api.openai.com/v1/chat/completions"`.
 #' @param model Character string with the name of the completion model. Can take
 #'   multiple models. Default is the latest `"gpt-4o-mini"`.
 #'   Find available model at
@@ -51,8 +48,7 @@
 #'   So 0.1 means only the tokens comprising the top 10% probability mass are considered.
 #'   We generally recommend altering this or temperature but not both.' (OpenAI). Default is 1.
 #'   Find documentation at
-#' \url{https://developers.openai.com/api/reference/resources/chat#chat/create-top_p}. Be aware
-#' that this argument is not supported for gpt-5.4 and gpt-5.5 models and will be set to NULL if these models are used.
+#' \url{https://developers.openai.com/api/reference/resources/chat#chat/create-top_p}.
 #' @param time_info Logical indicating whether the run time of each
 #'   request/question should be included in the data. Default is `TRUE`.
 #' @param token_info Logical indicating whether token information should be included
@@ -123,19 +119,8 @@
 #' @param ... Further argument to pass to the request body.
 #'   See \url{https://developers.openai.com/api/reference/resources/chat}.
 #'
-#' @usage tabscreen_gpt.tools_responses(data, prompt, studyid, title, abstract,
-#'   api_url = "https://api.openai.com/v1/responses", model = "gpt-4o-mini",
-#'   role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
-#'   time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
-#'   max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
-#'   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
-#'   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
-#'   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
-#'   fine_tuned = deprecated(), reasoning_effort = "medium", verbosity = "low",
-#'   overinclusive = TRUE, ...)
-#'
-#' tabscreen_gpt(data, prompt, studyid, title, abstract,
-#'   api_url = "https://api.openai.com/v1/responses", model = "gpt-4o-mini",
+#' @usage tabscreen_gpt.tools(data, prompt, studyid, title, abstract,
+#'   api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-4o-mini",
 #'   role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
 #'   time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
 #'   max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
@@ -240,7 +225,7 @@
 #'
 #' plan(multisession)
 #'
-#' tabscreen_gpt(
+#' tabscreen_gpt.tools(
 #'   data = filges2015_dat[1:2,],
 #'   prompt = prompt,
 #'   studyid = studyid,
@@ -254,7 +239,7 @@
 #'
 #'  plan(multisession)
 #'
-#'  tabscreen_gpt(
+#'  tabscreen_gpt.tools(
 #'    data = filges2015_dat[1:2,],
 #'    prompt = prompt,
 #'    studyid = studyid,
@@ -268,13 +253,13 @@
 #'}
 
 # Main function
-tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
+tabscreen_gpt.tools <- function(
   data,
   prompt,
   studyid,
   title,
   abstract,
-  api_url = "https://api.openai.com/v1/responses",
+  api_url = "https://api.openai.com/v1/chat/completions",
   model = "gpt-4o-mini",
   role = "user",
   tools = NULL,
@@ -693,7 +678,8 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
       dplyr::mutate(
         res = furrr::future_pmap(
           .l = params,
-          .f = .rep_gpt_engine_responses,
+          .f = .rep_gpt_engine,
+          role_gpt = role,
           tool = tools,
           t_choice = tool_choice,
           seeds = seed_par,
@@ -706,7 +692,6 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
           ba = backoff,
           af = after,
           endpoint_url = api_url,
-
           ...,
           .options = furrr::furrr_options(seed = furrr_seed),
           .progress = progress

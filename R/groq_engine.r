@@ -293,25 +293,27 @@
   
   # Running repeated requests in parallel, and return tibble
   final_res <-
-    furrr::future_map_dfr(
-      iter_seq, \(i) {
-        result <- safe_groq_engine(
-          body = api_body, 
-          RPM = req_per_min, 
-          time_inf = time_inf,
-          token_inf = token_inf,
-          api_key = api_key,
-          max_t = max_t,
-          max_s = max_s,
-          is_trans = is_trans,
-          back = back,
-          aft = aft,
-          endpoint_url = endpoint_url
-        )
-        result <- dplyr::mutate(result, n = i)
-        return(result)
-      },
-      .options = furrr::furrr_options(seed = furrr_seed_opt)
+    suppressWarnings(
+      furrr::future_map_dfr(
+        iter_seq, \(i) {
+          result <- safe_groq_engine(
+            body = api_body, 
+            RPM = req_per_min, 
+            time_inf = time_inf,
+            token_inf = token_inf,
+            api_key = api_key,
+            max_t = max_t,
+            max_s = max_s,
+            is_trans = is_trans,
+            back = back,
+            aft = aft,
+            endpoint_url = endpoint_url
+          )
+          result <- dplyr::mutate(result, n = i)
+          return(result)
+        },
+        .options = furrr::furrr_options(seed = furrr_seed_opt)
+      )
     )
   
   final_res

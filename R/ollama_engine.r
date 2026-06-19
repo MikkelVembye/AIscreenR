@@ -306,21 +306,23 @@
   furrr_seed_opt <- if (is.null(seeds)) TRUE else NULL
   
   final_res <-
-    furrr::future_map_dfr(
-      iter_seq, \(i) {
-        result <- safe_ollama_engine(
-          body = api_body, 
-          time_inf = time_inf,
-          max_t = max_t,
-          max_s = max_s,
-          back = back,
-          aft = aft,
-          endpoint_url = endpoint_url
-        )
-        result <- dplyr::mutate(result, n = i)
-        return(result)
-      },
-      .options = furrr::furrr_options(seed = furrr_seed_opt)
+    suppressWarnings(
+      furrr::future_map_dfr(
+        iter_seq, \(i) {
+          result <- safe_ollama_engine(
+            body = api_body, 
+            time_inf = time_inf,
+            max_t = max_t,
+            max_s = max_s,
+            back = back,
+            aft = aft,
+            endpoint_url = endpoint_url
+          )
+          result <- dplyr::mutate(result, n = i)
+          return(result)
+        },
+        .options = furrr::furrr_options(seed = furrr_seed_opt)
+      )
     )
   
   final_res

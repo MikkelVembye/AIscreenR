@@ -16,13 +16,16 @@ Default is \code{"gpt-4o-mini"}. Can take multiple values.
 For OpenAI models, find available models at
 \url{https://developers.openai.com/api/docs/models/model-endpoint-compatibility}.
 For Groq models, find available models at
-\url{https://console.groq.com/docs/models}.}
+\url{https://console.groq.com/docs/models}.
+For Mistral models, find available models at
+\url{https://docs.mistral.ai/models/overview}.}
 
 \item{AI_tool}{Character string specifying the AI tool from which the API is
-issued. Currently supports \code{"OpenAI"} (default) and \code{"Groq"}.}
+issued. Currently supports \code{"OpenAI"} (default), \code{"Groq"}, and \code{"Mistral"}.}
 
 \item{api_key}{Character string with the API key. For OpenAI, use \code{\link[=get_api_key]{get_api_key()}}.
-For Groq, use \code{\link[=get_api_key_groq]{get_api_key_groq()}}.}
+For Groq, use \code{\link[=get_api_key_groq]{get_api_key_groq()}}.
+For Mistral, use \code{\link[=get_api_key_mistral]{get_api_key_mistral()}}.}
 }
 \value{
 A \code{tibble} including variables with information about the model used,
@@ -51,6 +54,13 @@ rate_limits_per_minute(
   model = "llama3-70b-8192",
   AI_tool = "Groq",
   api_key = get_api_key_groq()
+)
+
+# Mistral example
+rate_limits_per_minute(
+ model = "mistral-small-latest",
+ AI_tool = "Mistral",
+ api_key = get_api_key_mistral()
 )
 }
 }

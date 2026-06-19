@@ -12,6 +12,10 @@ reference:
       - tabscreen_gpt.original
       - tabscreen_groq
       - tabscreen_ollama
+      - tabscreen_gpt.tools_responses
+      - tabscreen_mistral
+      - tabscreen_gemini
+      - tabscreen_claude
 
   - title: "Screen failed requests"
     desc: "R functions to re-screen failied title and abstract requests"
@@ -37,6 +41,9 @@ reference:
       - set_api_key
       - get_api_key
       - get_api_key_groq
+      - get_api_key_anthropic
+      - get_api_key_gemini
+      - get_api_key_mistral
 
   - title: "Rate limits"
     desc: "R functions to find api rate limits"
@@ -55,6 +62,9 @@ reference:
       - model_prizes
       - disagreements
       - groq_model_prizes
+      - mistral_model_prizes
+      - gemini_model_prizes
+      - claude_model_prizes
 
   - title: "Coercion"
     contents:

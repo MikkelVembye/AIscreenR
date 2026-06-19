@@ -28,7 +28,7 @@ Find more information about this issue at \url{https://httr2.r-lib.org/articles/
 When set_api_key() has successfully been executed, \code{get_api_key()} automatically
 retrieves the API key from the R environment and the users do not need to specify the API when running
 functions from the package that call the API. The API key can be permanently set by
-using \code{\link[usethis:edit]{usethis::edit_r_environ()}}. Then write \verb{OPENAI_API_KEY=[insert your api key here]} and close
+using \code{\link[usethis:edit_r_environ]{usethis::edit_r_environ()}}. Then write \verb{OPENAI_API_KEY=[insert your api key here]} and close
 the \code{.Renviron} window and restart R.
 }
 \note{
