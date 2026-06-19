@@ -253,6 +253,7 @@
   if (grepl("gpt-5", model_gpt)) {
     if (!is.null(reasoning_effort)) body$reasoning_effort <- reasoning_effort
     if (!is.null(verbosity)) body$verbosity <- verbosity
+    body$top_p <- NULL
   }
 
   # Setting the iterations
@@ -671,8 +672,8 @@
     if (!is.null(verbosity)) body$text <- list(verbosity = verbosity)
   }
 
-  # If the model is gpt-5.4 or gpt-5.5, set top_p to NULL as it is not supported for these models.
-  if (grepl("gpt-5.4|gpt-5.5", model_gpt)){
+  # gpt-5 models do not support top_p at all.
+  if (grepl("gpt-5", model_gpt)){
     body$top_p <- NULL
   }
 
