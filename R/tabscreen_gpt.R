@@ -644,6 +644,9 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
 
     if (messages){
       message(paste0("* The approximate price of the current (simple) screening will be around $", app_price, "."))
+      if (any(stringr::str_detect(model, "gpt-5"))){
+        message(paste0("* Be aware that the price approximations are based on rough estimates of reasoning costs for gpt-5 models. The actual price may therefore deviate from the approximation."))
+      }
     }
 
     } else {
@@ -661,7 +664,7 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
       message(
         paste0(
           "* Be aware that getting descriptive, detailed responses will substantially increase",
-          " the prize of the screening relative to the noted approximate prize."
+          " the price of the screening relative to the noted approximate price."
         )
       )
     }
