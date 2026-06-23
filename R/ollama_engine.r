@@ -212,21 +212,22 @@
 
 .rep_ollama_engine <- function(
     question,
-    model_gpt, 
-    topp, 
+    model_gpt,
+    topp,
     iterations,
-    role_gpt, 
-    tool, 
-    t_choice, 
-    seeds, 
+    role_gpt,
+    tool,
+    t_choice,
+    ctx_length = NULL,
+    seeds,
     time_inf,
-    max_t, 
-    max_s, 
+    max_t,
+    max_s,
     back,
-    aft, 
-    system_guard_msg = NULL, 
+    aft,
+    system_guard_msg = NULL,
     endpoint_url,
-    ... 
+    ...
 ) {
   detailed_for_wrapper <- FALSE
   if (is.list(tool)) {
@@ -301,6 +302,10 @@
   additional_args <- list(...)
   if (length(additional_args) > 0) {
     api_body <- c(api_body, additional_args)
+  }
+  if (!is.null(ctx_length)) {
+    if (is.null(api_body$options)) api_body$options <- list()
+    api_body$options$num_ctx <- as.integer(ctx_length)
   }
   iter_seq <- if(iterations > 1) 1:iterations else 1
   furrr_seed_opt <- if (is.null(seeds)) TRUE else NULL
