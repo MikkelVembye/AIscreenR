@@ -334,7 +334,7 @@ save_dataframe_to_ris <- function(df, file_path) {
     RI = "researcher_id",
     AUID = "author_id",
     PY = "year",
-    Y1 = "year",
+    Y1 = "year_raw",
     EY = "year_early_access",
     CRDT = "date_created",
     RC = "date_created",
@@ -354,7 +354,7 @@ save_dataframe_to_ris <- function(df, file_path) {
     TT = "title_transliterated",
     JA = "journal_ja",
     JF = "journal_jf",
-    JO = "journal_jo",
+    JO = "journal",
     JT = "journal_jt",
     T3 = "journal_t3",
     TA = "journal_abbreviated",
@@ -571,6 +571,35 @@ save_dataframe_to_ris <- function(df, file_path) {
     }
   }
 
+  if ("year_raw" %in% names(result_df)) {
+    if (!"year" %in% names(result_df)) {
+      result_df[["year"]] <- suppressWarnings(as.integer(sub("^(\\d{4}).*", "\\1", result_df[["year_raw"]])))
+    } else {
+      empty <- is.na(result_df[["year"]]) | result_df[["year"]] == ""
+      result_df[["year"]][empty] <- sub("^(\\d{4}).*", "\\1", result_df[["year_raw"]][empty])
+      result_df[["year"]] <- suppressWarnings(as.integer(sub("^(\\d{4}).*", "\\1", result_df[["year"]])))
+    }
+  } else if ("year" %in% names(result_df)) {
+    result_df[["year"]] <- suppressWarnings(as.integer(sub("^(\\d{4}).*", "\\1", result_df[["year"]])))
+  }
+
+  title_fallbacks <- c("title_transliterated", "title_book", "title_foreign", "title_otherlang")
+  if (!"title" %in% names(result_df)) {
+    for (fb in title_fallbacks) {
+      if (fb %in% names(result_df)) {
+        result_df[["title"]] <- result_df[[fb]]
+        break
+      }
+    }
+  } else {
+    for (fb in title_fallbacks) {
+      if (fb %in% names(result_df)) {
+        empty <- is.na(result_df[["title"]]) | result_df[["title"]] == ""
+        result_df[["title"]][empty] <- result_df[[fb]][empty]
+      }
+    }
+  }
+
   attr(result_df, "ris_tag_used") <- tag_used
   if (is.list(raw_values)) attr(result_df, "ris_raw_values") <- raw_values
   if (!is.null(field_order)) attr(result_df, "ris_field_order") <- field_order
@@ -611,6 +640,7 @@ save_dataframe_to_ris <- function(df, file_path) {
     researcher_id = "RI",
     author_id = "AUID",
     year = "PY",
+    year_raw = "Y1",
     year_early_access = "EY",
     date_created = "CRDT",
     date_revised = "LR",
@@ -629,7 +659,6 @@ save_dataframe_to_ris <- function(df, file_path) {
     journal = "JO",
     journal_ja = "JA",
     journal_jf = "JF",
-    journal_jo = "JO",
     journal_jt = "JT",
     journal_t3 = "T3",
     journal_abbreviated = "TA",
