@@ -74,7 +74,7 @@ df
 
       source_type                   author            title year
     1        JOUR Author, One; Author, Two An example title 2020
-    2        CHAP            Author, Three    Another title     
+    2        CHAP            Author, Three    Another title   NA
 
 The output data frame has descriptive column names instead of RIS tags.
 For example:
