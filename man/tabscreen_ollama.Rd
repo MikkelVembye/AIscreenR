@@ -5,13 +5,13 @@
 \alias{tabscreen_ollama}
 \title{Title and abstract screening with OLLAMA API models using function calls via the tools argument}
 \usage{
-tabscreen_ollama(data, prompt, studyid, title, abstract, 
-api_url = "http://127.0.0.1:11434/api/chat", ..., model, role = "user", 
-tools = NULL, tool_choice = NULL, top_p = 1, time_info = TRUE, 
-max_tries = 16, max_seconds = NULL, backoff = NULL, after = NULL, 
-reps = 1, seed_par = NULL, progress = TRUE, decision_description = FALSE, 
-overinclusive = TRUE, messages = TRUE, incl_cutoff_upper = NULL, 
-incl_cutoff_lower = NULL, force = FALSE)
+tabscreen_ollama(data, prompt, studyid, title, abstract,
+api_url = "http://127.0.0.1:11434/api/chat", ..., model, role = "user",
+tools = NULL, tool_choice = NULL, context_length = NULL, top_p = 1,
+time_info = TRUE, max_tries = 16, max_seconds = NULL, backoff = NULL,
+after = NULL, reps = 1, seed_par = NULL, progress = TRUE,
+decision_description = FALSE, overinclusive = TRUE, messages = TRUE,
+incl_cutoff_upper = NULL, incl_cutoff_lower = NULL, force = FALSE)
 }
 \arguments{
 \item{data}{Dataset containing the titles and abstracts.}
@@ -40,6 +40,13 @@ For detailed responses, the function uses tools that include detailed descriptio
 
 \item{tool_choice}{Specification for which tool to use. Default behavior is set based on \code{decision_description} parameter.
 For simple responses uses "inclusion_decision_simple", for detailed responses uses "inclusion_decision".}
+
+\item{context_length}{Integer specifying the context window size (in tokens) for the model.
+Ollama automatically sets the context length based on available VRAM: 4k for < 24 GiB,
+32k for 24--48 GiB, and 256k for >= 48 GiB. For tasks requiring large context (e.g.,
+long abstracts or detailed prompts), Ollama recommends setting this to at least \code{64000}.
+Corresponds to \code{options$num_ctx} in the Ollama request body. Default is \code{NULL}
+(uses Ollama's VRAM-based default).}
 
 \item{top_p}{An alternative to sampling with temperature, called nucleus sampling,
 where the model considers the results of the tokens with top_p probability mass.

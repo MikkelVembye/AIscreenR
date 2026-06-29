@@ -63,7 +63,7 @@ So 0.1 means only the tokens comprising the top 10\% probability mass are consid
 We generally recommend altering this or temperature but not both.' (OpenAI). Default is 1.
 Find documentation at
 \url{https://developers.openai.com/api/reference/resources/chat#chat/create-top_p}. Be aware
-that this argument is not supported for gpt-5.4 and gpt-5.5 models and will be set to NULL if these models are used.}
+that this argument is not supported for any gpt-5 model and will be set to NULL if a gpt-5 model is used.}
 
 \item{time_info}{Logical indicating whether the run time of each
 request/question should be included in the data. Default is \code{TRUE}.}
