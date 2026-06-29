@@ -39,6 +39,12 @@
 #'   For detailed responses, the function uses tools that include detailed description capabilities.
 #' @param tool_choice Specification for which tool to use. Default behavior is set based on `decision_description` parameter.
 #'   For simple responses uses "inclusion_decision_simple", for detailed responses uses "inclusion_decision".
+#' @param context_length Integer specifying the context window size (in tokens) for the model.
+#'   Ollama automatically sets the context length based on available VRAM: 4k for < 24 GiB,
+#'   32k for 24--48 GiB, and 256k for >= 48 GiB. For tasks requiring large context (e.g.,
+#'   long abstracts or detailed prompts), Ollama recommends setting this to at least `64000`.
+#'   Corresponds to `options$num_ctx` in the Ollama request body. Default is `NULL`
+#'   (uses Ollama's VRAM-based default).
 #' @param top_p An alternative to sampling with temperature, called nucleus sampling,
 #'   where the model considers the results of the tokens with top_p probability mass.
 #'   So 0.1 means only the tokens comprising the top 10% probability mass are considered.
@@ -86,13 +92,13 @@
 #'   Default is `FALSE`.
 #' @param ... Further argument to pass to the request body.
 #'
-#' @usage tabscreen_ollama(data, prompt, studyid, title, abstract, 
-#' api_url = "http://127.0.0.1:11434/api/chat", ..., model, role = "user", 
-#' tools = NULL, tool_choice = NULL, top_p = 1, time_info = TRUE, 
-#' max_tries = 16, max_seconds = NULL, backoff = NULL, after = NULL, 
-#' reps = 1, seed_par = NULL, progress = TRUE, decision_description = FALSE, 
-#' overinclusive = TRUE, messages = TRUE, incl_cutoff_upper = NULL, 
-#' incl_cutoff_lower = NULL, force = FALSE)
+#' @usage tabscreen_ollama(data, prompt, studyid, title, abstract,
+#' api_url = "http://127.0.0.1:11434/api/chat", ..., model, role = "user",
+#' tools = NULL, tool_choice = NULL, context_length = NULL, top_p = 1,
+#' time_info = TRUE, max_tries = 16, max_seconds = NULL, backoff = NULL,
+#' after = NULL, reps = 1, seed_par = NULL, progress = TRUE,
+#' decision_description = FALSE, overinclusive = TRUE, messages = TRUE,
+#' incl_cutoff_upper = NULL, incl_cutoff_lower = NULL, force = FALSE)
 #' 
 #' @return An object of class \code{"gpt"}. The object is a list containing the following
 #' components:
@@ -199,6 +205,7 @@ tabscreen_ollama <- function(
   role = "user",
   tools = NULL,
   tool_choice = NULL,
+  context_length = NULL,
   top_p = 1,
   time_info = TRUE,
   max_tries = 16,
@@ -459,6 +466,7 @@ tabscreen_ollama <- function(
       role = role,
       tools = tools,
       tool_choice = tool_choice,
+      context_length = context_length,
       reps = reps,
       time_info = time_info,
       max_tries = max_tries,
@@ -558,6 +566,16 @@ tabscreen_ollama <- function(
         )
       )
     }
+
+    if (!is.null(context_length)) {
+      message(
+        paste0(
+          "* context_length is set to ", context_length, " tokens. ",
+          "Be aware that larger context lengths require more VRAM. ",
+          "Ensure you have sufficient memory available before running the screening."
+        )
+      )
+    }
   }
 
   #.......................................
@@ -605,6 +623,7 @@ tabscreen_ollama <- function(
         role_gpt = role,
         tool = tools,
         t_choice = tool_choice,
+        ctx_length = context_length,
         system_guard_msg = tool_guard_msg,
         seeds = seed_par,
         time_inf = time_info,
