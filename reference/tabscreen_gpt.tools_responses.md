@@ -110,8 +110,8 @@ tabscreen_gpt(data, prompt, studyid, title, abstract,
   or temperature but not both.' (OpenAI). Default is 1. Find
   documentation at
   <https://developers.openai.com/api/reference/resources/chat#chat/create-top_p>.
-  Be aware that this argument is not supported for gpt-5.4 and gpt-5.5
-  models and will be set to NULL if these models are used.
+  Be aware that this argument is not supported for any gpt-5 model and
+  will be set to NULL if a gpt-5 model is used.
 
 - time_info:
 

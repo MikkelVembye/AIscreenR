@@ -75,13 +75,13 @@ for guidance on how adequately to conduct title and abstract screening with OLLA
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">tabscreen_ollama</span><span class="op">(</span><span class="va">data</span>, <span class="va">prompt</span>, <span class="va">studyid</span>, <span class="va">title</span>, <span class="va">abstract</span>, </span>
-<span>api_url <span class="op">=</span> <span class="st">"http://127.0.0.1:11434/api/chat"</span>, <span class="va">...</span>, <span class="va">model</span>, role <span class="op">=</span> <span class="st">"user"</span>, </span>
-<span>tools <span class="op">=</span> <span class="cn">NULL</span>, tool_choice <span class="op">=</span> <span class="cn">NULL</span>, top_p <span class="op">=</span> <span class="fl">1</span>, time_info <span class="op">=</span> <span class="cn">TRUE</span>, </span>
-<span>max_tries <span class="op">=</span> <span class="fl">16</span>, max_seconds <span class="op">=</span> <span class="cn">NULL</span>, backoff <span class="op">=</span> <span class="cn">NULL</span>, after <span class="op">=</span> <span class="cn">NULL</span>, </span>
-<span>reps <span class="op">=</span> <span class="fl">1</span>, seed_par <span class="op">=</span> <span class="cn">NULL</span>, progress <span class="op">=</span> <span class="cn">TRUE</span>, decision_description <span class="op">=</span> <span class="cn">FALSE</span>, </span>
-<span>overinclusive <span class="op">=</span> <span class="cn">TRUE</span>, messages <span class="op">=</span> <span class="cn">TRUE</span>, incl_cutoff_upper <span class="op">=</span> <span class="cn">NULL</span>, </span>
-<span>incl_cutoff_lower <span class="op">=</span> <span class="cn">NULL</span>, force <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">tabscreen_ollama</span><span class="op">(</span><span class="va">data</span>, <span class="va">prompt</span>, <span class="va">studyid</span>, <span class="va">title</span>, <span class="va">abstract</span>,</span>
+<span>api_url <span class="op">=</span> <span class="st">"http://127.0.0.1:11434/api/chat"</span>, <span class="va">...</span>, <span class="va">model</span>, role <span class="op">=</span> <span class="st">"user"</span>,</span>
+<span>tools <span class="op">=</span> <span class="cn">NULL</span>, tool_choice <span class="op">=</span> <span class="cn">NULL</span>, context_length <span class="op">=</span> <span class="cn">NULL</span>, top_p <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>time_info <span class="op">=</span> <span class="cn">TRUE</span>, max_tries <span class="op">=</span> <span class="fl">16</span>, max_seconds <span class="op">=</span> <span class="cn">NULL</span>, backoff <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>after <span class="op">=</span> <span class="cn">NULL</span>, reps <span class="op">=</span> <span class="fl">1</span>, seed_par <span class="op">=</span> <span class="cn">NULL</span>, progress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>decision_description <span class="op">=</span> <span class="cn">FALSE</span>, overinclusive <span class="op">=</span> <span class="cn">TRUE</span>, messages <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>incl_cutoff_upper <span class="op">=</span> <span class="cn">NULL</span>, incl_cutoff_lower <span class="op">=</span> <span class="cn">NULL</span>, force <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -135,6 +135,15 @@ For detailed responses, the function uses tools that include detailed descriptio
 <dt id="arg-tool-choice">tool_choice<a class="anchor" aria-label="anchor" href="#arg-tool-choice"></a></dt>
 <dd><p>Specification for which tool to use. Default behavior is set based on <code>decision_description</code> parameter.
 For simple responses uses "inclusion_decision_simple", for detailed responses uses "inclusion_decision".</p></dd>
+
+
+<dt id="arg-context-length">context_length<a class="anchor" aria-label="anchor" href="#arg-context-length"></a></dt>
+<dd><p>Integer specifying the context window size (in tokens) for the model.
+Ollama automatically sets the context length based on available VRAM: 4k for &lt; 24 GiB,
+32k for 24–48 GiB, and 256k for &gt;= 48 GiB. For tasks requiring large context (e.g.,
+long abstracts or detailed prompts), Ollama recommends setting this to at least <code>64000</code>.
+Corresponds to <code>options$num_ctx</code> in the Ollama request body. Default is <code>NULL</code>
+(uses Ollama's VRAM-based default).</p></dd>
 
 
 <dt id="arg-top-p">top_p<a class="anchor" aria-label="anchor" href="#arg-top-p"></a></dt>

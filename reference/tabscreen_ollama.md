@@ -20,13 +20,13 @@ models.
 ## Usage
 
 ``` r
-tabscreen_ollama(data, prompt, studyid, title, abstract, 
-api_url = "http://127.0.0.1:11434/api/chat", ..., model, role = "user", 
-tools = NULL, tool_choice = NULL, top_p = 1, time_info = TRUE, 
-max_tries = 16, max_seconds = NULL, backoff = NULL, after = NULL, 
-reps = 1, seed_par = NULL, progress = TRUE, decision_description = FALSE, 
-overinclusive = TRUE, messages = TRUE, incl_cutoff_upper = NULL, 
-incl_cutoff_lower = NULL, force = FALSE)
+tabscreen_ollama(data, prompt, studyid, title, abstract,
+api_url = "http://127.0.0.1:11434/api/chat", ..., model, role = "user",
+tools = NULL, tool_choice = NULL, context_length = NULL, top_p = 1,
+time_info = TRUE, max_tries = 16, max_seconds = NULL, backoff = NULL,
+after = NULL, reps = 1, seed_par = NULL, progress = TRUE,
+decision_description = FALSE, overinclusive = TRUE, messages = TRUE,
+incl_cutoff_upper = NULL, incl_cutoff_lower = NULL, force = FALSE)
 ```
 
 ## Arguments
@@ -82,6 +82,16 @@ incl_cutoff_lower = NULL, force = FALSE)
   `decision_description` parameter. For simple responses uses
   "inclusion_decision_simple", for detailed responses uses
   "inclusion_decision".
+
+- context_length:
+
+  Integer specifying the context window size (in tokens) for the model.
+  Ollama automatically sets the context length based on available VRAM:
+  4k for \< 24 GiB, 32k for 24–48 GiB, and 256k for \>= 48 GiB. For
+  tasks requiring large context (e.g., long abstracts or detailed
+  prompts), Ollama recommends setting this to at least `64000`.
+  Corresponds to `options$num_ctx` in the Ollama request body. Default
+  is `NULL` (uses Ollama's VRAM-based default).
 
 - top_p:
 
