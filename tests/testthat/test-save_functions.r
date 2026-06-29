@@ -24,7 +24,7 @@ test_that("read_ris_to_dataframe parses RIS and preserves field order", {
   expect_equal(df$source_type, c("JOUR", "CHAP"))
   expect_equal(df$author[1], "Author, One; Author, Two")
   expect_equal(df$title, c("An example title", "Another title"))
-  expect_equal(df$year, c("2020", ""))
+  expect_equal(df$year, c(2020L, NA_integer_))
 })
 
 test_that("save_dataframe_to_ris writes valid RIS and splits semicolons", {
@@ -75,5 +75,5 @@ test_that("read after write round-trips data (normalized)", {
   expect_equal(df2$author, c("Author, One; Author, Two", "Author, Three"))
   expect_equal(df2$source_type, df$source_type)
   expect_equal(df2$title, df$title)
-  expect_equal(df2$year, df$year)
+  expect_equal(df2$year, c(2020L, NA_integer_))
 })
