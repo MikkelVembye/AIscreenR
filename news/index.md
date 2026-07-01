@@ -20,7 +20,7 @@
   [`get_api_key_anthropic()`](https://mikkelvembye.github.io/AIscreenR/reference/get_api_key_anthropic.md)
   function to screen titles and abstracts using Anthropics’s API models.
 
-### New features
+### Major improvements
 
 - Migrating from chat/completions endpoint to responses for all OpenAI
   functions. This includes:
@@ -28,10 +28,10 @@
   - [`screen_errors.gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/screen_errors.gpt.md)
   - [`rate_limits_per_minute()`](https://mikkelvembye.github.io/AIscreenR/reference/rate_limits_per_minute.md)
 
-## AIscreenR 0.3.2.9000
-
 ### Minor improvements
 
+- Updated the prize function with up-to-date prizes for the GPT-5
+  models.
 - Adding the n_screened and n_missing variables to the key results in
   [`screen_analyzer()`](https://mikkelvembye.github.io/AIscreenR/reference/screen_analyzer.md).
 
