@@ -108,10 +108,10 @@ sample_references <- function(
         "Consider reducing `c_target` or `R_c`."
       ))
     }
-
+  
     target_data <- data |>
       dplyr::filter(.data[[relevant_col]] == 1) |>
-      dplyr::slice_sample(n = k)
+      dplyr::slice_sample(n = k, replace = TRUE)
 
     guarantee <- if (!is.null(c_target)) 1 - c_target^k else NA_real_
 
