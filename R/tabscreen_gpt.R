@@ -116,7 +116,7 @@
 #'   Default is `FALSE`.
 #' @param custom_model Logical indicating whether a fine-tuned or custom model is used. Default is `FALSE`.
 #' @param fine_tuned `r lifecycle::badge("deprecated")` Use `custom_model` instead.
-#' @param reasoning_effort Character string indicating the level of reasoning effort required for the task. Default is `"low"`.
+#' @param reasoning_effort Character string indicating the level of reasoning effort required for the task. Default is `"medium"`.
 #'  Can take the values `"low"`, `"medium"`, and `"high"`. See \url{https://developers.openai.com/api/docs/guides/reasoning} for more information.
 #' @param verbosity Character string indicating the level of verbosity in the model's responses. Default is `"low"`.
 #' Can take the values `"low"`, `"medium"`, and `"high"`. See \url{https://developers.openai.com/api/reference/resources/chat} for more information.
