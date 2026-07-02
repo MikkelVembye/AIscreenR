@@ -255,8 +255,8 @@ tabscreen_gpt(data, prompt, studyid, title, abstract,
 - reasoning_effort:
 
   Character string indicating the level of reasoning effort required for
-  the task. Default is `"low"`. Can take the values `"low"`, `"medium"`,
-  and `"high"`. See
+  the task. Default is `"medium"`. Can take the values `"low"`,
+  `"medium"`, and `"high"`. See
   <https://developers.openai.com/api/docs/guides/reasoning> for more
   information.
 
