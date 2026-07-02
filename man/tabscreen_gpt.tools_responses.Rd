@@ -146,7 +146,7 @@ Default is \code{FALSE}.}
 
 \item{fine_tuned}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{custom_model} instead.}
 
-\item{reasoning_effort}{Character string indicating the level of reasoning effort required for the task. Default is \code{"low"}.
+\item{reasoning_effort}{Character string indicating the level of reasoning effort required for the task. Default is \code{"medium"}.
 Can take the values \code{"low"}, \code{"medium"}, and \code{"high"}. See \url{https://developers.openai.com/api/docs/guides/reasoning} for more information.}
 
 \item{verbosity}{Character string indicating the level of verbosity in the model's responses. Default is \code{"low"}.

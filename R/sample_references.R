@@ -25,6 +25,7 @@
 #' @param id_col Character string naming the record ID column. Default `"record_id"`.
 #' @param prob_vec Vector of probability weights. Only used in simple random sampling.
 #'   Default is a uniform vector of 1/n.
+#' @param seed Integer. Random seed for reproducibility. Default is 123.
 #'
 #' @return When `n` is NULL and `relevant_col` is provided, a list with:
 #'   \item{target_set}{Data frame of k target records}
@@ -49,6 +50,7 @@
 #'   \doi{10.1037/met0000769}
 #'
 #' @examples
+#' \dontrun{
 #' # Compute k from c_target and R_c:
 #' target_studies <- sample_references(
 #'   data = combined_data,
@@ -59,7 +61,7 @@
 #'
 #' # Simple random sampling:
 #' excl_test_dat <- filges2015_dat[1:200, ] |> sample_references(100)
-#'
+#'}
 #' @export
 
 sample_references <- function(
