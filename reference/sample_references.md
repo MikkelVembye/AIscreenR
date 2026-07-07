@@ -44,8 +44,11 @@ sample_references(
 - relevant_col:
 
   Character string naming the binary relevance column (1 = relevant).
-  Only used when `n` is NULL; otherwise falls back to simple random
-  sampling behaviour.
+  Can also be a character vector of multiple column names, in which case
+  a record is treated as relevant only if *all* of the named columns
+  equal 1 (e.g. `human_code == 1` and `decision_binary == 1`). Only used
+  when `n` is NULL; otherwise falls back to simple random sampling
+  behaviour.
 
 - c_target:
 
@@ -126,6 +129,14 @@ if (FALSE) { # \dontrun{
 target_studies <- sample_references(
   data = combined_data,
   relevant_col = "decision_binary",
+  c_target = 0.95,
+  R_c = 0.90
+)
+
+# Relevant only if both the human coder and the model flagged the record:
+target_studies <- sample_references(
+  data = combined_data,
+  relevant_col = c("human_code", "decision_binary"),
   c_target = 0.95,
   R_c = 0.90
 )

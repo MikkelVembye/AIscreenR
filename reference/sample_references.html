@@ -96,7 +96,10 @@ target set size) is computed from <code>c_target</code> and <code>R_c</code>.</p
 
 <dt id="arg-relevant-col">relevant_col<a class="anchor" aria-label="anchor" href="#arg-relevant-col"></a></dt>
 <dd><p>Character string naming the binary relevance column (1 = relevant).
-Only used when <code>n</code> is NULL; otherwise falls back to simple random sampling behaviour.</p></dd>
+Can also be a character vector of multiple column names, in which case a record
+is treated as relevant only if <em>all</em> of the named columns equal 1 (e.g. <code>human_code == 1</code>
+and <code>decision_binary == 1</code>). Only used when <code>n</code> is NULL; otherwise falls back to
+simple random sampling behaviour.</p></dd>
 
 
 <dt id="arg-c-target">c_target<a class="anchor" aria-label="anchor" href="#arg-c-target"></a></dt>
@@ -170,6 +173,14 @@ Common Guidelines. <em>Psychological Methods</em>.
 <span class="r-in"><span><span class="va">target_studies</span> <span class="op">&lt;-</span> <span class="fu">sample_references</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">combined_data</span>,</span></span>
 <span class="r-in"><span>  relevant_col <span class="op">=</span> <span class="st">"decision_binary"</span>,</span></span>
+<span class="r-in"><span>  c_target <span class="op">=</span> <span class="fl">0.95</span>,</span></span>
+<span class="r-in"><span>  R_c <span class="op">=</span> <span class="fl">0.90</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Relevant only if both the human coder and the model flagged the record:</span></span></span>
+<span class="r-in"><span><span class="va">target_studies</span> <span class="op">&lt;-</span> <span class="fu">sample_references</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">combined_data</span>,</span></span>
+<span class="r-in"><span>  relevant_col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"human_code"</span>, <span class="st">"decision_binary"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  c_target <span class="op">=</span> <span class="fl">0.95</span>,</span></span>
 <span class="r-in"><span>  R_c <span class="op">=</span> <span class="fl">0.90</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
