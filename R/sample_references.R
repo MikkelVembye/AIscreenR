@@ -16,7 +16,10 @@
 #'   sampling is used directly. If NULL and `relevant_col` is provided, k (the
 #'   target set size) is computed from `c_target` and `R_c`.
 #' @param relevant_col Character string naming the binary relevance column (1 = relevant).
-#'   Only used when `n` is NULL; otherwise falls back to simple random sampling behaviour.
+#'   Can also be a character vector of multiple column names, in which case a record
+#'   is treated as relevant only if *all* of the named columns equal 1 (e.g. `human_code == 1`
+#'   and `decision_binary == 1`). Only used when `n` is NULL; otherwise falls back to
+#'   simple random sampling behaviour.
 #' @param c_target Numeric in (0,1). Desired recall level (e.g. 0.95). Used to compute k.
 #' @param R_c Numeric in (0,1). Desired reliability, i.e. probability of achieving
 #'   `c_target` recall (e.g. 0.90). Used to compute k.
@@ -55,6 +58,14 @@
 #' target_studies <- sample_references(
 #'   data = combined_data,
 #'   relevant_col = "decision_binary",
+#'   c_target = 0.95,
+#'   R_c = 0.90
+#' )
+#'
+#' # Relevant only if both the human coder and the model flagged the record:
+#' target_studies <- sample_references(
+#'   data = combined_data,
+#'   relevant_col = c("human_code", "decision_binary"),
 #'   c_target = 0.95,
 #'   R_c = 0.90
 #' )
@@ -99,8 +110,17 @@ sample_references <- function(
     }
     n <- ceiling(log(1 - R_c) / log(c_target))
 
+    if (!all(relevant_col %in% names(data))) {
+      stop(
+        "`relevant_col` = ", paste(dQuote(setdiff(relevant_col, names(data)), q = FALSE), collapse = ", "),
+        " was not found in `data`."
+      )
+    }
+
     k <- n
-    n_relevant <- sum(data[[relevant_col]] == 1, na.rm = TRUE)
+    # Make a logical vector indicating with TRUE if the record is relevant (1) in all of the specified columns
+    is_relevant <- Reduce(`&`, lapply(relevant_col, function(col) data[[col]] == 1))
+    n_relevant <- sum(is_relevant, na.rm = TRUE)
 
     if (n_relevant < k) {
       stop(paste0(
@@ -108,9 +128,8 @@ sample_references <- function(
         "Consider reducing `c_target` or `R_c`."
       ))
     }
-  
-    target_data <- data |>
-      dplyr::filter(.data[[relevant_col]] == 1) |>
+
+    target_data <- data[is_relevant & !is.na(is_relevant), ] |>
       dplyr::slice_sample(n = k, replace = TRUE)
 
     guarantee <- if (!is.null(c_target)) 1 - c_target^k else NA_real_

@@ -25,7 +25,10 @@ sampling is used directly. If NULL and \code{relevant_col} is provided, k (the
 target set size) is computed from \code{c_target} and \code{R_c}.}
 
 \item{relevant_col}{Character string naming the binary relevance column (1 = relevant).
-Only used when \code{n} is NULL; otherwise falls back to simple random sampling behaviour.}
+Can also be a character vector of multiple column names, in which case a record
+is treated as relevant only if \emph{all} of the named columns equal 1 (e.g. \code{human_code == 1}
+and \code{decision_binary == 1}). Only used when \code{n} is NULL; otherwise falls back to
+simple random sampling behaviour.}
 
 \item{c_target}{Numeric in (0,1). Desired recall level (e.g. 0.95). Used to compute k.}
 
@@ -70,6 +73,14 @@ relevant records (L). See \href{https://doi.org/10.1002/jrsm.1690}{Hou & Tipton 
 target_studies <- sample_references(
   data = combined_data,
   relevant_col = "decision_binary",
+  c_target = 0.95,
+  R_c = 0.90
+)
+
+# Relevant only if both the human coder and the model flagged the record:
+target_studies <- sample_references(
+  data = combined_data,
+  relevant_col = c("human_code", "decision_binary"),
   c_target = 0.95,
   R_c = 0.90
 )
