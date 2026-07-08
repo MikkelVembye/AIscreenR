@@ -29,6 +29,7 @@
 #' @param prob_vec Vector of probability weights. Only used in simple random sampling.
 #'   Default is a uniform vector of 1/n.
 #' @param seed Integer. Random seed for reproducibility. Default is 123.
+#' @param message Logical. Whether to print a message about the target set size and reliability guarantee. Default is FALSE.
 #'
 #' @return When `n` is NULL and `relevant_col` is provided, a list with:
 #'   \item{target_set}{Data frame of k target records}
@@ -84,7 +85,8 @@ sample_references <- function(
     with_replacement = FALSE,
     id_col = "record_id",
     prob_vec = NULL,
-    seed = 123
+    seed = 123,
+    message = FALSE
 ) {
 
   if (!is.null(seed)) {
@@ -129,12 +131,20 @@ sample_references <- function(
       ))
     }
 
-    target_data <- data[is_relevant & !is.na(is_relevant), ] |>
-      dplyr::slice_sample(n = k, replace = TRUE)
+    relevant_data <- data[is_relevant & !is.na(is_relevant), ]
 
-    guarantee <- if (!is.null(c_target)) 1 - c_target^k else NA_real_
+    # Draw with replacement from the relevant pool, one at a time, until k
+    # distinct records are collected 
+    drawn_idx <- integer(0) # Initialize an empty vector to store the indices of drawn records
+    while (length(unique(drawn_idx)) < k) { # Continue drawing until we have k unique records
+      drawn_idx <- c(drawn_idx, sample.int(n_relevant, size = 1)) # Draw one record at a time and append its index to drawn_idx.
+    }
+    target_idx <- unique(drawn_idx)[seq_len(k)] # Select the first k unique indices from the drawn indices
+    target_data <- relevant_data[target_idx, ] # Subset the relevant data to get the target set
 
-    if (!is.null(c_target) && !is.null(R_c)) {
+    guarantee <- if (!is.null(c_target)) 1 - c_target^k else NA_real_ # Compute the reliability guarantee based on c_target and k
+
+    if (message && !is.null(c_target) && !is.null(R_c)) {
       message(paste0(
         "Target set of size k = ", k, " sampled with replacement.\n",
         "Reliability guarantee: P(recall >= ", c_target, ") >= ", round(guarantee, 4)
@@ -160,3 +170,4 @@ sample_references <- function(
   data[sample(NROW(data), size = n, replace = with_replacement, prob = prob_vec), ]
 
 }
+

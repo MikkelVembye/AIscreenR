@@ -13,7 +13,8 @@ sample_references(
   with_replacement = FALSE,
   id_col = "record_id",
   prob_vec = NULL,
-  seed = 123
+  seed = 123,
+  message = FALSE
 )
 }
 \arguments{
@@ -44,6 +45,8 @@ Only used in simple random sampling.}
 Default is a uniform vector of 1/n.}
 
 \item{seed}{Integer. Random seed for reproducibility. Default is 123.}
+
+\item{message}{Logical. Whether to print a message about the target set size and reliability guarantee. Default is FALSE.}
 }
 \value{
 When \code{n} is NULL and \code{relevant_col} is provided, a list with:
