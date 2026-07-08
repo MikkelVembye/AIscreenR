@@ -23,7 +23,8 @@ sample_references(
   with_replacement = FALSE,
   id_col = "record_id",
   prob_vec = NULL,
-  seed = 123
+  seed = 123,
+  message = FALSE
 )
 ```
 
@@ -76,6 +77,11 @@ sample_references(
 - seed:
 
   Integer. Random seed for reproducibility. Default is 123.
+
+- message:
+
+  Logical. Whether to print a message about the target set size and
+  reliability guarantee. Default is FALSE.
 
 ## Value
 

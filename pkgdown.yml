@@ -1,5 +1,5 @@
 pandoc: 3.8.3
-pkgdown: 2.2.0
+pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   articles/comparing-reasoning-models: comparing-reasoning-models.html
@@ -8,7 +8,7 @@ articles:
   articles/reading-writing-ris: reading-writing-ris.html
   articles/screening-ollama: screening-ollama.html
   Using-GPT-API-Models-For-Screening: Using-GPT-API-Models-For-Screening.html
-last_built: 2026-07-07T09:29Z
+last_built: 2026-07-08T09:14Z
 urls:
   reference: https://mikkelvembye.github.io/AIscreenR/reference
   article: https://mikkelvembye.github.io/AIscreenR/articles
