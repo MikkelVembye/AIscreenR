@@ -483,7 +483,7 @@ tabscreen_groq <- function(
       )
     }
 
-    if ("No information" %in% unique(question_dat$abstract)) {
+    if ("No information" %in% unique(dplyr::pull(question_dat, {{ abstract }}))) {
       message(
         paste0(
           "* Consider removing references that has no abstract ",
