@@ -80,6 +80,19 @@
     if (decision %in% allowed_decisions) {
       return(decision)
     }
+
+    # Some Ollama models return a numeric-looking decision (e.g. "1.0", "0.0")
+    # instead of the exact canonical string. Normalize by value so these are
+    # still recognized rather than rejected as an invalid decision.
+    decision_num <- suppressWarnings(as.numeric(decision))
+    if (!is.na(decision_num)) {
+      allowed_num <- suppressWarnings(as.numeric(allowed_decisions))
+      match_idx <- which(!is.na(allowed_num) & allowed_num == decision_num)
+      if (length(match_idx) > 0) {
+        return(allowed_decisions[match_idx[1]])
+      }
+    }
+
     paste0(
       "Error: Tool call returned invalid decision '",
       substr(decision, 1, 80),
