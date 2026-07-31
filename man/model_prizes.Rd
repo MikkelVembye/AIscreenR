@@ -3,9 +3,9 @@
 \docType{data}
 \name{model_prizes}
 \alias{model_prizes}
-\title{Model prize data (last updated March 18, 2026)}
+\title{Model prize data (last updated July 31, 2026)}
 \format{
-A \code{data.frame} containing 36 rows/models and 3 variables/columns
+A \code{data.frame} containing 42 rows/models and 3 variables/columns
 
 \tabular{lll}{
 \bold{model} \tab \code{character} \tab indicating the specific GPT model \cr

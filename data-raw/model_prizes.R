@@ -1,4 +1,4 @@
-# Models Prizes March 18 2026
+# Models Prizes July 31 2026
 
 mio <- 1000000
 
@@ -73,7 +73,21 @@ model_prizes <-
 
       # GPT-5.4-nano models
       "gpt-5.4-nano",
-      "gpt-5.4-nano-2026-03-17"
+      "gpt-5.4-nano-2026-03-17",
+
+      # GPT-5.4 Pro models
+      "gpt-5.4-pro",
+
+      # GPT-5.5 models
+      "gpt-5.5",
+
+      # GPT-5.5 Pro models
+      "gpt-5.5-pro",
+
+      # GPT-5.6 models
+      "gpt-5.6-sol",
+      "gpt-5.6-terra",
+      "gpt-5.6-luna"
     ),
 
     price_in_per_token = c(
@@ -145,7 +159,21 @@ model_prizes <-
 
       # GPT-5.4-nano models
       0.2/mio,   # gpt-5.4-nano
-      0.2/mio   # gpt-5.4-nano-2026-03-17
+      0.2/mio,   # gpt-5.4-nano-2026-03-17
+
+      # GPT-5.4 Pro models
+      30/mio,    # gpt-5.4-pro
+
+      # GPT-5.5 models
+      5/mio,     # gpt-5.5
+
+      # GPT-5.5 Pro models
+      30/mio,    # gpt-5.5-pro
+
+      # GPT-5.6 models
+      5/mio,     # gpt-5.6-sol
+      2/mio,     # gpt-5.6-terra
+      0.2/mio    # gpt-5.6-luna
 
     ),
 
@@ -218,7 +246,21 @@ model_prizes <-
 
       # GPT-5.4-nano models
       1.25/mio,   # gpt-5.4-nano
-      1.25/mio   # gpt-5.4-nano-2026-03-17
+      1.25/mio,   # gpt-5.4-nano-2026-03-17
+
+      # GPT-5.4 Pro models
+      180/mio,    # gpt-5.4-pro
+
+      # GPT-5.5 models
+      30/mio,     # gpt-5.5
+
+      # GPT-5.5 Pro models
+      180/mio,    # gpt-5.5-pro
+
+      # GPT-5.6 models
+      30/mio,     # gpt-5.6-sol
+      12/mio,     # gpt-5.6-terra
+      1.2/mio     # gpt-5.6-luna
     )
   )
 
