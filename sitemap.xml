@@ -36,6 +36,7 @@
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/print.gpt.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/print.gpt_price.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/print.groq.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/reference/rank_one_diagnostic.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/rate_limits_per_minute.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/read_ris_to_dataframe.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/report.html</loc></url>
@@ -47,6 +48,7 @@
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/screen_errors.gpt.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/screen_errors.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/set_api_key.html</loc></url>
+<url><loc>https://mikkelvembye.github.io/AIscreenR/reference/solve_or_guess.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_claude.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gemini.html</loc></url>
 <url><loc>https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.original.html</loc></url>

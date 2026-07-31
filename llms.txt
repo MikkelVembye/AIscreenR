@@ -295,6 +295,11 @@ R functions to analyze agreement between humans and GPT
 - [`screen_analyzer()`](https://mikkelvembye.github.io/AIscreenR/reference/screen_analyzer.md)
   **\[stable\]** : Analyze performance between the human and AI
   screening.
+- [`solve_or_guess()`](https://mikkelvembye.github.io/AIscreenR/reference/solve_or_guess.md)
+  : Fit the solve-or-guess model to compare an automated screener
+  against human raters
+- [`rank_one_diagnostic()`](https://mikkelvembye.github.io/AIscreenR/reference/rank_one_diagnostic.md)
+  : Rank-one diagnostic for a solve-or-guess fit
 
 ## Fine tuning
 
