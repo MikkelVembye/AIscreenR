@@ -108,7 +108,7 @@ rank_one_diagnostic <- function(x, B = 1000, seed = NULL, verbose = TRUE) {
   # back off the logit scale - used as starting values for fit_rank_one() and
   # to simulate raters in the bootstrap below.
   fit <- x$fit
-  p_hat <- setNames(
+  p_hat <- stats::setNames(
     vapply(RATERS, function(r) {
       stats::plogis(fit$rater_ability$estimate[
         fit$rater_ability$rater_id == r & fit$rater_ability$parameter_id == "intercept"
