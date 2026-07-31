@@ -28,6 +28,8 @@ reference:
     desc: "R functions to analyze agreement between humans and GPT"
     contents:
       - screen_analyzer
+      - solve_or_guess
+      - rank_one_diagnostic
 
   - title: "Fine tuning"
     desc: "R functions generate data that can be used for fine tuning of models"

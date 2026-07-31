@@ -1,5 +1,10 @@
 # AIscreenR (development version)
 
+# AIscreenR 0.5.0
+
+## New features
+* Adding `solve_or_guess()` and `rank_one_diagnostic()` to evaluate screening performance without requiring a gold-standard label set. `solve_or_guess()` estimates each rater's (system or human) solving probability from patterns of agreement alone, and `rank_one_diagnostic()` checks whether that model's core assumption holds for a given fit.
+
 # AIscreenR 0.4.0
 
 ## New features
