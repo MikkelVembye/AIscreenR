@@ -167,8 +167,8 @@ solve_or_guess <- function(evaluations,
   ci <-
     boot_p |>
     summarise(
-      ci_lower = stats::quantile(p, ci_probs[1]),
-      ci_upper = stats::quantile(p, ci_probs[2]),
+      ci_lower = unname(stats::quantile(p, ci_probs[1])),
+      ci_upper = unname(stats::quantile(p, ci_probs[2])),
       .by = rater_id
     )
 
@@ -211,8 +211,8 @@ solve_or_guess <- function(evaluations,
       tibble::tibble(
         comparison = paste0(system_rater_id, " / ", hr),
         ratio_hat  = p_of(system_rater_id) / p_of(hr),
-        ci_lower   = stats::quantile(r, ci_probs[1]),
-        ci_upper   = stats::quantile(r, ci_probs[2])
+        ci_lower   = unname(stats::quantile(r, ci_probs[1])),
+        ci_upper   = unname(stats::quantile(r, ci_probs[2]))
       )
     }) |>
     purrr::list_rbind()

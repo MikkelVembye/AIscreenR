@@ -56,9 +56,10 @@ rank_one_diagnostic <- function(x, B = 1000, seed = NULL, verbose = TRUE) {
   }
   if (!is.null(seed)) set.seed(seed)
 
-  # Rater order matches solve_or_guess(): system rater first, then the rest.
+  # Rater order matches solve_or_guess(): system rater first, then the
+  # reference raters in the order originally supplied to solve_or_guess()
   evaluations <- x$evaluations
-  RATERS <- c(x$system_rater_id, setdiff(unique(evaluations$rater_id), x$system_rater_id))
+  RATERS <- c(x$system_rater_id, x$reference_raters)
   m <- length(RATERS)
 
   # One column per rater. observed_mask records which (item, rater) cells were
