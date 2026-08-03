@@ -24,6 +24,13 @@ test_that(".cohens_kappa_numerator() matches a hand-computed example", {
   expect_equal(out[1, 2], 0.5, tolerance = 1e-8)
 })
 
+test_that(".cohens_kappa_numerator() returns 0, not NaN, for a pair with zero overlap", {
+  Y <- cbind(c(1, 1, 0, 0), c(0, 0, 2, 2))
+  out <- .cohens_kappa_numerator(Y)
+  expect_equal(out[1, 2], 0)
+  expect_false(anyNA(out))
+})
+
 test_that(".logistic_fit() recovers the intercept-only solution", {
   Z <- matrix(1, nrow = 10, ncol = 1)
   y <- rep(0.8, 10)
@@ -66,6 +73,23 @@ test_that(".solve_or_guess_fast() excludes unrated items instead of treating the
   rated <- human_estimates$item_id %in% paste0("s", 1:5)
   expect_true(all(!is.na(human_estimates$expected_success[rated])))
   expect_true(all(is.na(human_estimates$expected_success[!rated])))
+})
+
+no_overlap_evaluations <- data.frame(
+  item_id  = c(paste0("s", 1:10), paste0("s", 1:5), paste0("s", 6:10)),
+  rater_id = rep(c("system", "human1", "human2"), c(10, 5, 5)),
+  evaluation = c(
+    "Include", "Include", "Exclude", "Exclude", "Include",
+    "Exclude", "Include", "Exclude", "Include", "Exclude",
+    "Include", "Include", "Exclude", "Exclude", "Include",
+    "Exclude", "Include", "Exclude", "Include", "Exclude"
+  ),
+  stringsAsFactors = FALSE
+)
+
+test_that(".solve_or_guess_fast() handles two raters who never rated the same item", {
+  fit <- .solve_or_guess_fast(no_overlap_evaluations, system_rater_id = "system", verbose = FALSE)
+  expect_setequal(unique(fit$rater_ability$rater_id), c("system", "human1", "human2"))
 })
 
 test_that(".nonparametric_bootstrap_solve_or_guess() returns B replicates", {

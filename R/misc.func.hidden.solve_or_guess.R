@@ -381,6 +381,12 @@
       col_j <- col_j[keep]
       nij <- length(col_i)
 
+      if (nij == 0) {
+        # These two raters never rated the same item - no basis for an
+        # agreement estimate, so leave this entry at its neutral default (0).
+        next
+      }
+
       observed <- sum(col_i == col_j) / nij
 
       all_labels <- unique(c(col_i, col_j))
