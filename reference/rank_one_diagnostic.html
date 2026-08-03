@@ -3,11 +3,11 @@
 solve_or_guess is consistent with its core assumption: a
 single solving probability per rater explains how often any two raters
 agree. Under this assumption, each pair of raters' agreement rate should
-be fully explained by a shared chance baseline plus the product of their
-two individual solving probabilities, with nothing pair-specific left
-over. Departure from that structure is measured by a residual sum of
-squares (T_obs), computed over rater pairs that share at least one
-rated item.
+be fully explained by a pair-specific chance baseline, determined by each
+rater's own fitted guessing behavior, plus the product of their two
+individual solving probabilities, with nothing else left over. Departure
+from that structure is measured by a residual sum of squares (T_obs),
+computed over rater pairs that share at least one rated item.
 The significance of T_obs is
 assessed with a parametric bootstrap. Here we simulate fresh datasets from the
 fitted model, refit the rank-one form, and recompute the residual each
@@ -18,11 +18,11 @@ solving probability per rater."><meta property="og:description" content="This fu
 solve_or_guess is consistent with its core assumption: a
 single solving probability per rater explains how often any two raters
 agree. Under this assumption, each pair of raters' agreement rate should
-be fully explained by a shared chance baseline plus the product of their
-two individual solving probabilities, with nothing pair-specific left
-over. Departure from that structure is measured by a residual sum of
-squares (T_obs), computed over rater pairs that share at least one
-rated item.
+be fully explained by a pair-specific chance baseline, determined by each
+rater's own fitted guessing behavior, plus the product of their two
+individual solving probabilities, with nothing else left over. Departure
+from that structure is measured by a residual sum of squares (T_obs),
+computed over rater pairs that share at least one rated item.
 The significance of T_obs is
 assessed with a parametric bootstrap. Here we simulate fresh datasets from the
 fitted model, refit the rank-one form, and recompute the residual each
@@ -77,11 +77,11 @@ solving probability per rater."></head><body>
 <code><a href="solve_or_guess.html">solve_or_guess</a></code> is consistent with its core assumption: a
 single solving probability per rater explains how often any two raters
 agree. Under this assumption, each pair of raters' agreement rate should
-be fully explained by a shared chance baseline plus the product of their
-two individual solving probabilities, with nothing pair-specific left
-over. Departure from that structure is measured by a residual sum of
-squares (<code>T_obs</code>), computed over rater pairs that share at least one
-rated item.</p>
+be fully explained by a pair-specific chance baseline, determined by each
+rater's own fitted guessing behavior, plus the product of their two
+individual solving probabilities, with nothing else left over. Departure
+from that structure is measured by a residual sum of squares (<code>T_obs</code>),
+computed over rater pairs that share at least one rated item.</p>
 <p>The significance of <code>T_obs</code> is
 assessed with a parametric bootstrap. Here we simulate fresh datasets from the
 fitted model, refit the rank-one form, and recompute the residual each
@@ -119,7 +119,7 @@ degrees-of-freedom summary. Default <code>TRUE</code>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>An object of class <code>"sog_rank_one"</code>, a list with elements:</p><table class="table table"><tr><td><b>T_obs</b></td><td><code>numeric</code></td><td>the observed rank-one residual sum of squares, computed from the real data.</td></tr><tr><td><b>T_boot</b></td><td><code>numeric</code></td><td>length-<code>B</code> vector of the residual recomputed from each parametric bootstrap replicate - the simulated null distribution that <code>T_obs</code> is compared against.</td></tr><tr><td><b>B</b></td><td><code>integer</code></td><td>the number of bootstrap replicates used.</td></tr><tr><td><b>n_valid_pairs</b></td><td><code>integer</code></td><td>number of rater pairs that share at least one rated item, and so contribute to <code>T_obs</code>/<code>T_boot</code>.</td></tr><tr><td><b>n_params</b></td><td><code>integer</code></td><td>number of free parameters in the rank-one form (one solving probability per rater, plus the shared chance constant).</td></tr><tr><td><b>df</b></td><td><code>integer</code></td><td><code>n_valid_pairs - n_params</code>. A non-positive value means there are no more valid pairs than parameters, but the bootstrap p-value is still valid regardless, since the rank-one equations are nonlinear.</td></tr><tr><td><b>p_value</b></td><td><code>numeric</code></td><td>fraction of <code>T_boot</code> at least as large as <code>T_obs</code> - a small value means the observed agreement is not well explained by a single solving probability per rater.</td></tr><tr><td><b>raters</b></td><td><code>character</code></td><td>rater identifiers in the order used to build the underlying agreement matrix (system rater first, then the rest).</td></tr></table></div>
+    <p>An object of class <code>"sog_rank_one"</code>, a list with elements:</p><table class="table table"><tr><td><b>T_obs</b></td><td><code>numeric</code></td><td>the observed rank-one residual sum of squares, computed from the real data.</td></tr><tr><td><b>T_boot</b></td><td><code>numeric</code></td><td>length-<code>B</code> vector of the residual recomputed from each parametric bootstrap replicate - the simulated null distribution that <code>T_obs</code> is compared against.</td></tr><tr><td><b>B</b></td><td><code>integer</code></td><td>the number of bootstrap replicates used.</td></tr><tr><td><b>n_valid_pairs</b></td><td><code>integer</code></td><td>number of rater pairs that share at least one rated item, and so contribute to <code>T_obs</code>/<code>T_boot</code>.</td></tr><tr><td><b>n_params</b></td><td><code>integer</code></td><td>number of free parameters in the rank-one form (one solving probability per rater; the pair-specific chance baseline is fixed from the fit, not re-estimated).</td></tr><tr><td><b>df</b></td><td><code>integer</code></td><td><code>n_valid_pairs - n_params</code>. A non-positive value means there are no more valid pairs than parameters, but the bootstrap p-value is still valid regardless, since the rank-one equations are nonlinear.</td></tr><tr><td><b>p_value</b></td><td><code>numeric</code></td><td>fraction of <code>T_boot</code> at least as large as <code>T_obs</code> - a small value means the observed agreement is not well explained by a single solving probability per rater.</td></tr><tr><td><b>raters</b></td><td><code>character</code></td><td>rater identifiers in the order used to build the underlying agreement matrix (system rater first, then the rest).</td></tr></table></div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Rohe, K., Krauska, A. N., Collins, G., Higgins, J., &amp; Pustejovsky, J. (2026).

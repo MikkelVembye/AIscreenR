@@ -5,8 +5,9 @@ This function checks whether the solve-or-guess fit from
 is consistent with its core assumption: a single solving probability per
 rater explains how often any two raters agree. Under this assumption,
 each pair of raters' agreement rate should be fully explained by a
-shared chance baseline plus the product of their two individual solving
-probabilities, with nothing pair-specific left over. Departure from that
+pair-specific chance baseline, determined by each rater's own fitted
+guessing behavior, plus the product of their two individual solving
+probabilities, with nothing else left over. Departure from that
 structure is measured by a residual sum of squares (`T_obs`), computed
 over rater pairs that share at least one rated item.
 
@@ -54,7 +55,7 @@ An object of class `"sog_rank_one"`, a list with elements:
 | **T_boot** | `numeric` | length-`B` vector of the residual recomputed from each parametric bootstrap replicate - the simulated null distribution that `T_obs` is compared against. |
 | **B** | `integer` | the number of bootstrap replicates used. |
 | **n_valid_pairs** | `integer` | number of rater pairs that share at least one rated item, and so contribute to `T_obs`/`T_boot`. |
-| **n_params** | `integer` | number of free parameters in the rank-one form (one solving probability per rater, plus the shared chance constant). |
+| **n_params** | `integer` | number of free parameters in the rank-one form (one solving probability per rater; the pair-specific chance baseline is fixed from the fit, not re-estimated). |
 | **df** | `integer` | `n_valid_pairs - n_params`. A non-positive value means there are no more valid pairs than parameters, but the bootstrap p-value is still valid regardless, since the rank-one equations are nonlinear. |
 | **p_value** | `numeric` | fraction of `T_boot` at least as large as `T_obs` - a small value means the observed agreement is not well explained by a single solving probability per rater. |
 | **raters** | `character` | rater identifiers in the order used to build the underlying agreement matrix (system rater first, then the rest). |
