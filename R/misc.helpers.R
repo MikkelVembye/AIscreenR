@@ -20,7 +20,7 @@ utils::globalVariables(
     "current_file_path","safe_basename","current_prompt","current_model",
     "current_rep_num","current_study_id","current_prompt_id",
     "current_vector_store_name","precomputed_supplementary","total_price_dollar", "groq_model_prizes", "mistral_model_prizes", "gemini_model_prizes", "n_missing",
-    "parameter_id", "rater_id", "estimate", "p_hat", "bootstrap_iter", "p", "evaluation", "item_id"
+    "parameter_id", "rater_id", "estimate", "p_hat", "bootstrap_iter", "p", "evaluation", "item_id", "ci_lower", "ci_upper", "q_lower", "q_upper"
     )
 )
 

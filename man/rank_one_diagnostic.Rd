@@ -23,7 +23,7 @@ An object of class \code{"sog_rank_one"}, a list with elements:
 \bold{T_boot} \tab \code{numeric} \tab length-\code{B} vector of the residual recomputed from each parametric bootstrap replicate - the simulated null distribution that \code{T_obs} is compared against. \cr
 \bold{B} \tab \code{integer} \tab the number of bootstrap replicates used. \cr
 \bold{n_valid_pairs} \tab \code{integer} \tab number of rater pairs that share at least one rated item, and so contribute to \code{T_obs}/\code{T_boot}. \cr
-\bold{n_params} \tab \code{integer} \tab number of free parameters in the rank-one form (one solving probability per rater, plus the shared chance constant). \cr
+\bold{n_params} \tab \code{integer} \tab number of free parameters in the rank-one form (one solving probability per rater; the pair-specific chance baseline is fixed from the fit, not re-estimated). \cr
 \bold{df} \tab \code{integer} \tab \code{n_valid_pairs - n_params}. A non-positive value means there are no more valid pairs than parameters, but the bootstrap p-value is still valid regardless, since the rank-one equations are nonlinear. \cr
 \bold{p_value} \tab \code{numeric} \tab fraction of \code{T_boot} at least as large as \code{T_obs} - a small value means the observed agreement is not well explained by a single solving probability per rater. \cr
 \bold{raters} \tab \code{character} \tab rater identifiers in the order used to build the underlying agreement matrix (system rater first, then the rest). \cr
@@ -34,11 +34,11 @@ This function checks whether the solve-or-guess fit from
 \code{\link{solve_or_guess}} is consistent with its core assumption: a
 single solving probability per rater explains how often any two raters
 agree. Under this assumption, each pair of raters' agreement rate should
-be fully explained by a shared chance baseline plus the product of their
-two individual solving probabilities, with nothing pair-specific left
-over. Departure from that structure is measured by a residual sum of
-squares (\code{T_obs}), computed over rater pairs that share at least one
-rated item.
+be fully explained by a pair-specific chance baseline, determined by each
+rater's own fitted guessing behavior, plus the product of their two
+individual solving probabilities, with nothing else left over. Departure
+from that structure is measured by a residual sum of squares (\code{T_obs}),
+computed over rater pairs that share at least one rated item.
 
 The significance of \code{T_obs} is
 assessed with a parametric bootstrap. Here we simulate fresh datasets from the

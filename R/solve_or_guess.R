@@ -115,6 +115,9 @@ solve_or_guess <- function(evaluations,
   if (system_rater_id %in% reference_raters) {
     stop("`system_rater_id` must not also appear in `reference_raters`.")
   }
+  if (length(reference_raters) < 2) {
+    warning("At least 2 reference raters (3 total) are recommended.")
+  }
 
   if (is_gpt(evaluations) || is_gpt_tbl(evaluations) || is_gpt_agg_tbl(evaluations)) {
     evaluations <- .tabscreen_to_wide(evaluations, human_decision = reference_raters)
@@ -164,17 +167,22 @@ solve_or_guess <- function(evaluations,
     mutate(p = .logit_inv(estimate)) |>
     select(bootstrap_iter, rater_id, p)
 
+  # Basic (pivotal) bootstrap CI: 2*p_hat - bootstrap quantile, which has
+  # better coverage than the plain percentile interval when the bootstrap
+  # distribution of p is skewed (Rohe et al., 2026).
   ci <-
     boot_p |>
     summarise(
-      ci_lower = unname(stats::quantile(p, ci_probs[1])),
-      ci_upper = unname(stats::quantile(p, ci_probs[2])),
+      q_lower = unname(stats::quantile(p, ci_probs[1])),
+      q_upper = unname(stats::quantile(p, ci_probs[2])),
       .by = rater_id
     )
 
   solving_probabilities <-
     abilities |>
     left_join(ci, by = "rater_id") |>
+    mutate(ci_lower = 2 * p_hat - q_upper, ci_upper = 2 * p_hat - q_lower) |>
+    select(rater_id, p_hat, ci_lower, ci_upper) |>
     arrange(desc(p_hat))
 
   # Compute Cohen's kappa for a single pair of raters, ignoring any items that either rater did not rate (NA)
@@ -204,15 +212,20 @@ solve_or_guess <- function(evaluations,
   # Helper function to get the estimated solving probability for a given rater
   p_of <- function(r) abilities$p_hat[abilities$rater_id == r]
 
-  # Compute the kappa-ratio of the system rater against each reference rater, with a bootstrap confidence interval
+  # Compute the kappa-ratio of the system rater against each reference rater,
+  # with a basic (pivotal) bootstrap CI computed on the log scale (safer than
+  # the raw ratio scale when a reference rater's p_hat is close to zero) and
+  # then exponentiated back.
   kappa_ratios <-
     purrr::map(reference_raters, function(hr) {
-      r <- boot_wide[[system_rater_id]] / boot_wide[[hr]]
+      ratio_hat <- p_of(system_rater_id) / p_of(hr)
+      log_ratio_hat <- log(ratio_hat)
+      log_r <- log(boot_wide[[system_rater_id]] / boot_wide[[hr]])
       tibble::tibble(
         comparison = paste0(system_rater_id, " / ", hr),
-        ratio_hat  = p_of(system_rater_id) / p_of(hr),
-        ci_lower   = unname(stats::quantile(r, ci_probs[1])),
-        ci_upper   = unname(stats::quantile(r, ci_probs[2]))
+        ratio_hat  = ratio_hat,
+        ci_lower   = exp(2 * log_ratio_hat - unname(stats::quantile(log_r, ci_probs[2]))),
+        ci_upper   = exp(2 * log_ratio_hat - unname(stats::quantile(log_r, ci_probs[1])))
       )
     }) |>
     purrr::list_rbind()

@@ -5,11 +5,11 @@
 #' \code{\link{solve_or_guess}} is consistent with its core assumption: a
 #' single solving probability per rater explains how often any two raters
 #' agree. Under this assumption, each pair of raters' agreement rate should
-#' be fully explained by a shared chance baseline plus the product of their
-#' two individual solving probabilities, with nothing pair-specific left
-#' over. Departure from that structure is measured by a residual sum of
-#' squares (`T_obs`), computed over rater pairs that share at least one
-#' rated item.
+#' be fully explained by a pair-specific chance baseline, determined by each
+#' rater's own fitted guessing behavior, plus the product of their two
+#' individual solving probabilities, with nothing else left over. Departure
+#' from that structure is measured by a residual sum of squares (`T_obs`),
+#' computed over rater pairs that share at least one rated item.
 #'
 #' The significance of `T_obs` is
 #' assessed with a parametric bootstrap. Here we simulate fresh datasets from the
@@ -36,7 +36,7 @@
 #'  \bold{T_boot} \tab \code{numeric} \tab length-`B` vector of the residual recomputed from each parametric bootstrap replicate - the simulated null distribution that `T_obs` is compared against. \cr
 #'  \bold{B} \tab \code{integer} \tab the number of bootstrap replicates used. \cr
 #'  \bold{n_valid_pairs} \tab \code{integer} \tab number of rater pairs that share at least one rated item, and so contribute to `T_obs`/`T_boot`. \cr
-#'  \bold{n_params} \tab \code{integer} \tab number of free parameters in the rank-one form (one solving probability per rater, plus the shared chance constant). \cr
+#'  \bold{n_params} \tab \code{integer} \tab number of free parameters in the rank-one form (one solving probability per rater; the pair-specific chance baseline is fixed from the fit, not re-estimated). \cr
 #'  \bold{df} \tab \code{integer} \tab `n_valid_pairs - n_params`. A non-positive value means there are no more valid pairs than parameters, but the bootstrap p-value is still valid regardless, since the rank-one equations are nonlinear. \cr
 #'  \bold{p_value} \tab \code{numeric} \tab fraction of `T_boot` at least as large as `T_obs` - a small value means the observed agreement is not well explained by a single solving probability per rater. \cr
 #'  \bold{raters} \tab \code{character} \tab rater identifiers in the order used to build the underlying agreement matrix (system rater first, then the rest). \cr
@@ -79,7 +79,8 @@ rank_one_diagnostic <- function(x, B = 1000, seed = NULL, verbose = TRUE) {
 
   # pairs with at least one overlapping item; NaN (no overlap) excluded
   valid_pairs <- upper.tri(A_obs) & !is.na(A_obs)
-  n_params <- 1 + m
+  # Just the m solving probabilities - Pe below is fixed from the fit, not a free parameter here.
+  n_params <- m
   n_valid  <- sum(valid_pairs)
   df <- n_valid - n_params
 
@@ -88,21 +89,6 @@ rank_one_diagnostic <- function(x, B = 1000, seed = NULL, verbose = TRUE) {
       "Valid rater pairs (with overlap): %d / %d possible. Parameters: %d. Degrees of freedom: %d.",
       n_valid, choose(m, 2), n_params, df
     ))
-  }
-
-  # Fits the chance constant c and each rater's solving probability p (on the
-  # logit scale, so both stay in (0, 1)) by minimizing the squared distance
-  # between an agreement matrix A and the rank-one prediction c + (1-c) p_a p_b.
-  # Returns that minimized sum of squares
-  fit_rank_one <- function(A, p_init, c_init, valid) {
-    obj <- function(par) {
-      c0 <- stats::plogis(par[1]); p <- stats::plogis(par[-1])
-      pred <- c0 + (1 - c0) * outer(p, p)
-      sum((A[valid] - pred[valid])^2)
-    }
-    clamp <- function(v) pmin(pmax(v, 1e-3), 1 - 1e-3)
-    init <- c(stats::qlogis(clamp(c_init)), stats::qlogis(clamp(p_init)))
-    stats::optim(init, obj, method = "BFGS")$value
   }
 
   # Each rater's fitted solving probability (the intercept term), converted
@@ -137,10 +123,27 @@ rank_one_diagnostic <- function(x, B = 1000, seed = NULL, verbose = TRUE) {
   }
   Pi <- Pi / rowSums(Pi)
 
+  # mu[a, ] is rater a's fitted marginal distribution over answers: solve
+  # (prob p_a) gives the true answer's distribution (tau), guess gives Pi[a, ].
+  mu <- outer(p_hat, tau) + (1 - p_hat) * Pi
+  # Pe(a,b) = <mu^(a), mu^(b)> is the pair-specific chance-agreement baseline
+  # (Corollary 2); one_minus_tau2 is the one factor shared by every pair.
+  Pe <- mu %*% t(mu)
+  one_minus_tau2 <- 1 - sum(tau^2)
+
+  fit_rank_one <- function(A, p_init, valid) {
+    init <- stats::qlogis(pmin(pmax(p_init, 1e-3), 1 - 1e-3))
+    # Only the minimized residual is needed for T_obs/T_boot, so the fitted p's are discarded.
+    stats::optim(init, function(par) {
+      p <- stats::plogis(par)
+      pred <- Pe + one_minus_tau2 * outer(p, p) # Corollary 2's rank-one form
+      sum((A[valid] - pred[valid])^2)
+    }, method = "BFGS")$value
+  }
+
   # Observed T: fit the rank-one form to the real agreement matrix.
   n <- nrow(wide)
-  c_init <- sum(tau^2)
-  T_obs <- fit_rank_one(A_obs, p_init = p_hat, c_init = c_init, valid = valid_pairs)
+  T_obs <- fit_rank_one(A_obs, p_init = p_hat, valid = valid_pairs)
 
   # Simulate one dataset under the fitted model: draw a true answer per item,
   # then for each rater either "solve" it (copy the true answer) or "guess"
@@ -157,7 +160,7 @@ rank_one_diagnostic <- function(x, B = 1000, seed = NULL, verbose = TRUE) {
     R[!observed_mask] <- NA
     A <- matrix(1, m, m, dimnames = list(RATERS, RATERS))
     for (a in 1:m) for (b in 1:m) if (a != b) A[a, b] <- mean(R[, a] == R[, b], na.rm = TRUE)
-    fit_rank_one(A, p_init = p_hat, c_init = c_init, valid = valid_pairs)
+    fit_rank_one(A, p_init = p_hat, valid = valid_pairs)
   }
 
   # Repeat B times to build the null distribution of T, then see how extreme
