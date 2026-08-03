@@ -46,6 +46,28 @@ test_that(".solve_or_guess_fast() returns valid, correctly structured output", {
   expect_equal(as.vector(guess_sums), rep(1, length(guess_sums)), tolerance = 1e-6)
 })
 
+partial_evaluations <- data.frame(
+  item_id  = c(paste0("s", 1:10), paste0("s", 1:5)),
+  rater_id = rep(c("system", "human"), c(10, 5)),
+  evaluation = c(
+    "Include", "Include", "Exclude", "Exclude", "Include",
+    "Exclude", "Include", "Exclude", "Include", "Exclude",
+    "Include", "Include", "Exclude", "Exclude", "Include"
+  ),
+  stringsAsFactors = FALSE
+)
+
+test_that(".solve_or_guess_fast() excludes unrated items instead of treating them as a 'MISSING' answer", {
+  fit <- .solve_or_guess_fast(partial_evaluations, system_rater_id = "system", verbose = FALSE)
+
+  expect_setequal(unique(fit$guessing_distribution$evaluation), c("Include", "Exclude"))
+
+  human_estimates <- fit$item_estimates[fit$item_estimates$rater_id == "human", ]
+  rated <- human_estimates$item_id %in% paste0("s", 1:5)
+  expect_true(all(!is.na(human_estimates$expected_success[rated])))
+  expect_true(all(is.na(human_estimates$expected_success[!rated])))
+})
+
 test_that(".nonparametric_bootstrap_solve_or_guess() returns B replicates", {
   boot <- .nonparametric_bootstrap_solve_or_guess(
     evaluations, system_rater_id = "system", B = 3, progress = FALSE

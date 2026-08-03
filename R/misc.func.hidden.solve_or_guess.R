@@ -74,9 +74,14 @@
   # guessed it.
   #
   # Inputs:
-  #   R0:  length-n vector of the system's (machine's) answers, coded 1..d
-  #   R_h: n x h matrix of human answers, coded 1..d
+  #   R0:  length-n vector of the system's (machine's) answers, coded 1..d,
+  #        with 0 marking an item the system never rated
+  #   R_h: n x h matrix of human answers, coded 1..d, with 0 marking an item
+  #        that rater never rated
   #   Z:   n x f feature matrix (including an intercept column)
+  #
+  # A 0 entry contributes nothing to that item's candidate-answer scoring,
+  # and nothing to that rater's solve/guess counts
   #
   # Output (a list):
   #   - S0:          length-n, estimated chance the system truly knew each item's answer
@@ -111,14 +116,17 @@
       val <- piY[y]
 
       r0i <- R0[i]
-      if (r0i == y) {
-        val <- val * (s0_vec[i] + (1 - s0_vec[i]) * piG0[y])
-      } else {
-        val <- val * ((1 - s0_vec[i]) * piG0[r0i])
+      if (r0i != 0) {
+        if (r0i == y) {
+          val <- val * (s0_vec[i] + (1 - s0_vec[i]) * piG0[y])
+        } else {
+          val <- val * ((1 - s0_vec[i]) * piG0[r0i])
+        }
       }
 
       for (a in 1:h) {
         r_ai <- R_h[i, a]
+        if (r_ai == 0) next
         if (r_ai == y) {
           val <- val * (sA_mat[i, a] + (1 - sA_mat[i, a]) * piGa[a, y])
         } else {
@@ -141,18 +149,21 @@
   # (rather than guessed it and happened to match). This only applies to the
   # answer they actually gave, weighted by how likely that answer is to be
   # the true one.
-  S0 <- numeric(n) # chance the system knew the answer, per item
-  Sa <- matrix(0, nrow = n, ncol = h) # chance each human knew the answer, per item
+  S0 <- rep(NA_real_, n) # chance the system knew the answer, per item (NA where not rated)
+  Sa <- matrix(NA_real_, nrow = n, ncol = h) # chance each human knew the answer, per item (NA where not rated)
 
   for (i in 1:n) {
     r0i <- R0[i]
-    denomSolve0 <- s0_vec[i] + (1 - s0_vec[i]) * piG0[r0i]
-    if (denomSolve0 < 1e-15) denomSolve0 <- 1e-15
-    alpha0i <- s0_vec[i] / denomSolve0
-    S0[i] <- gammaMat[i, r0i] * alpha0i
+    if (r0i != 0) {
+      denomSolve0 <- s0_vec[i] + (1 - s0_vec[i]) * piG0[r0i]
+      if (denomSolve0 < 1e-15) denomSolve0 <- 1e-15
+      alpha0i <- s0_vec[i] / denomSolve0
+      S0[i] <- gammaMat[i, r0i] * alpha0i
+    }
 
     for (a in 1:h) {
       r_ai <- R_h[i, a]
+      if (r_ai == 0) next
       denomSolve_a <- sA_mat[i, a] + (1 - sA_mat[i, a]) * piGa[a, r_ai]
       if (denomSolve_a < 1e-15) denomSolve_a <- 1e-15
       alpha_ai <- sA_mat[i, a] / denomSolve_a
@@ -169,12 +180,15 @@
 
   for (i in 1:n) {
     r0i <- R0[i]
-    alpha0i <- S0[i] / (gammaMat[i, r0i] + 1e-15)
-    guessCount0_term <- sum(gammaMat[i, ]) - gammaMat[i, r0i] * alpha0i
-    countG0[r0i] <- countG0[r0i] + guessCount0_term
+    if (r0i != 0) {
+      alpha0i <- S0[i] / (gammaMat[i, r0i] + 1e-15)
+      guessCount0_term <- sum(gammaMat[i, ]) - gammaMat[i, r0i] * alpha0i
+      countG0[r0i] <- countG0[r0i] + guessCount0_term
+    }
 
     for (a in 1:h) {
       ra <- R_h[i, a]
+      if (ra == 0) next
       alpha_ai <- Sa[i, a] / (gammaMat[i, ra] + 1e-15)
       guessCount_a_term <- sum(gammaMat[i, ]) - gammaMat[i, ra] * alpha_ai
       countGa[a, ra] <- countGa[a, ra] + guessCount_a_term
@@ -272,13 +286,17 @@
       piGa_new[a, ] <- countGa[a, ] / sum(countGa[a, ])
     }
 
-    # (iii) Update beta0 (machine logistic parameters)
-    beta0_new <- .logistic_fit(Z, S0, start = beta0)
+    # (iii) Update beta0 (machine logistic parameters) fit only on items
+    # the system actually rated (R0 != 0)
+    obs0 <- R0 != 0
+    beta0_new <- .logistic_fit(Z[obs0, , drop = FALSE], S0[obs0], start = beta0)
 
-    # (iv) Update beta_a for each human rater via logistic regression
+    # (iv) Update beta_a for each human rater via logistic regression,
+    # fit only on the items that rater actually rated (R_h[, a] != 0)
     betaList_new <- list()
     for (a in 1:h) {
-      betaList_new[[a]] <- .logistic_fit(Z, Sa[, a], start = betaList[[a]])
+      obs_a <- R_h[, a] != 0
+      betaList_new[[a]] <- .logistic_fit(Z[obs_a, , drop = FALSE], Sa[obs_a, a], start = betaList[[a]])
     }
 
     # Accept parameter updates
@@ -346,10 +364,10 @@
 
 .cohens_kappa_numerator <- function(Y) {
 
-# input: An n x m matrix with integer values (interpreted as categorical labels)
-# output: An m x m matrix where element [i,j] contains the difference between observed and expected agreement for columns i and j
+# input: An n x m matrix with integer values (interpreted as categorical labels);
+#        0 marks a rater who did not rate that item.
+# output: An m x m matrix where element [i,j] contains the difference between observed and expected agreement for columns i and j, over items both raters actually rated
 
-  n <- nrow(Y)
   m <- ncol(Y)
 
   result <- matrix(0, m, m)
@@ -358,15 +376,19 @@
     for (j in i:m) {
       col_i <- Y[, i]
       col_j <- Y[, j]
+      keep <- col_i != 0 & col_j != 0
+      col_i <- col_i[keep]
+      col_j <- col_j[keep]
+      nij <- length(col_i)
 
-      observed <- sum(col_i == col_j) / n
+      observed <- sum(col_i == col_j) / nij
 
       all_labels <- unique(c(col_i, col_j))
 
       expected <- 0
       for (label in all_labels) {
-        p_i <- sum(col_i == label) / n
-        p_j <- sum(col_j == label) / n
+        p_i <- sum(col_i == label) / nij
+        p_j <- sum(col_j == label) / nij
         expected <- expected + (p_i * p_j)
       }
 
@@ -400,25 +422,28 @@
   all_items <- unique(evaluations$item_id)
   all_raters <- unique(evaluations$rater_id)
 
-  # Build a full grid to catch missing evaluations
+  # Build a full grid so every item has a row for every rater. A rater who
+  # never actually rated a given item gets no contribution to that item's
+  # fit at all below (coded 0)
   full_grid <- expand.grid(item_id = all_items, rater_id = all_raters,
                             stringsAsFactors = FALSE)
   merged <- left_join(full_grid, evaluations, by = c("item_id", "rater_id"))
 
-  # Check for missing evaluations
   num_missing <- sum(is.na(merged$evaluation))
   if (num_missing > 0) {
-    warning(sprintf("There are %d missing evaluations. Treated as 'MISSING' class.",
-                     num_missing))
+    warning(sprintf(
+      "There are %d rater-item pairs with no evaluation; excluded from that rater's fit.",
+      num_missing
+    ))
   }
 
-  # Convert missing to "MISSING"
-  merged$evaluation <- as.character(merged$evaluation)
-  merged$evaluation[is.na(merged$evaluation)] <- "MISSING"
-  merged$evaluation <- factor(merged$evaluation, exclude = NULL)
-
-  evaluation_levels <- levels(merged$evaluation)
+  evaluation_levels <- sort(unique(evaluations$evaluation))
   d <- length(evaluation_levels)
+
+  # Code each evaluation as its position in evaluation_levels; 0 marks an
+  # item that rater never rated.
+  merged$evaluation_code <- match(merged$evaluation, evaluation_levels)
+  merged$evaluation_code[is.na(merged$evaluation_code)] <- 0L
 
   # Identify system vs. human raters
   if (!(system_rater_id %in% all_raters)) {
@@ -436,12 +461,12 @@
   n <- length(item_order)
   h <- length(human_raters)
 
-  # Create a matrix of dimension (n, 1+h) for all rater evaluations
-  big_mat <- matrix(NA_integer_, nrow = n, ncol = (h + 1))
+  # Create a matrix of dimension (n, 1+h) for all rater evaluations (0 = not rated)
+  big_mat <- matrix(0L, nrow = n, ncol = (h + 1))
   for (i_item in seq_len(n)) {
     # subset the rows for item i_item
     irows <- merged[merged$item_id == item_order[i_item], ]
-    big_mat[i_item, ] <- as.integer(irows$evaluation)
+    big_mat[i_item, ] <- irows$evaluation_code
   }
   R0 <- big_mat[, 1] # System
   R_h <- big_mat[, -1, drop = FALSE] # Humans
