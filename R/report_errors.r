@@ -142,6 +142,36 @@ report <- function(
   abstract_vec<- data |> 
     dplyr::pull({{ abstract }})|> 
     htmltools::htmlEscape()
+  
+  author_col <- c("author", "authors")
+  author_col <- author_col[author_col %in% names(data)]
+
+  if (length(author_col) > 0) {
+    author_vec <- data[[author_col[1]]] |>
+      as.character() |>
+      htmltools::htmlEscape()
+    author_txt <- paste0("-- **Author**: ", gsub("'", " ", gsub("\"", " ", author_vec)), "\n\n")
+  } else {
+    author_txt <- rep("", length(studyid_vec))
+  }
+
+  if ("year" %in% names(data)) {
+    year_vec <- data[["year"]] |>
+      as.character() |>
+      htmltools::htmlEscape()
+    year_txt <- paste0("-- **Year**: ", year_vec, "\n\n")
+  } else {
+    year_txt <- rep("", length(studyid_vec))
+  }
+
+  if ("journal" %in% names(data)) {
+    journal_vec <- data[["journal"]] |>
+      as.character() |>
+      htmltools::htmlEscape()
+    journal_txt <- paste0("-- **Journal**: ", gsub("'", " ", gsub("\"", " ", journal_vec)), "\n\n")
+  } else {
+    journal_txt <- rep("", length(studyid_vec))
+  }
 
   model_col <- c("submodel", "model")
   model_col <- model_col[model_col %in% names(data)]
@@ -190,7 +220,7 @@ report <- function(
   is_false_inclusion[is.na(is_false_inclusion)] <- FALSE
 
   comment_text <- rep("*Please add a comment on whether and why you agree with the GPT decision or not:*\n\n&nbsp;\n\n", length(studyid_txt))
-  row_text <- paste0(studyid_txt, title_text, abs_txt, answer_txt, gpt_num_answer, human_answer, comment_text, model_txt, time_txt)
+  row_text <- paste0(studyid_txt, title_text, author_txt, year_txt, journal_txt, abs_txt, answer_txt, gpt_num_answer, human_answer, comment_text, model_txt, time_txt)
 
   # Stop early if a single study block is too large for a practical report entry.
   max_entry_bytes <- 50000L
