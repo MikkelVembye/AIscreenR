@@ -12,7 +12,8 @@ read_ris_to_dataframe(file_path)
 \value{
 A data.frame with one row per record and one column per encountered
 RIS tag, using descriptive column names. Columns are ordered by first appearance of the
-tag in the file. Repeated tag values are collapsed with "; ".
+tag in the file. Repeated tag values are collapsed with "; ". Lines with invalid UTF-8
+byte sequences have those bytes reinterpreted and repaired to fit the valid UTF-8 encoding.
 }
 \description{
 Parses an RIS file into a data.frame, preserving the order of tags as they

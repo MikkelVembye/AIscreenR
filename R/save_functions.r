@@ -8,7 +8,8 @@
 #'
 #' @return A data.frame with one row per record and one column per encountered
 #'   RIS tag, using descriptive column names. Columns are ordered by first appearance of the
-#'   tag in the file. Repeated tag values are collapsed with "; ".
+#'   tag in the file. Repeated tag values are collapsed with "; ". Lines with invalid UTF-8
+#'   byte sequences have those bytes reinterpreted and repaired to fit the valid UTF-8 encoding.
 #'
 #' @examples
 #' \dontrun{
@@ -17,7 +18,27 @@
 #'
 #' @export
 read_ris_to_dataframe <- function(file_path) {
-  lines <- readLines(file_path, encoding = "UTF-8")
+  lines <- readLines(file_path, encoding = "UTF-8", warn = FALSE)
+
+  # Repair any lines with invalid UTF-8 byte sequences
+  invalid_utf8 <- !validUTF8(lines)
+  if (any(invalid_utf8)) {
+    repaired <- vapply(lines[invalid_utf8], .repair_invalid_utf8_line, character(1), USE.NAMES = FALSE) # Repair each invalid line
+    still_invalid <- !validUTF8(repaired) # Lines where some byte(s) could not be decoded under any candidate encoding
+    if (any(still_invalid)) {
+      dropped_line_numbers <- which(invalid_utf8)[still_invalid]
+      repaired[still_invalid] <- iconv(repaired[still_invalid], from = "UTF-8", to = "UTF-8", sub = "")
+      warning(
+        sprintf(
+          "%d line(s) had byte(s) that could not be decoded by any candidate encoding (Windows-1252/Latin-1) and were dropped: line(s) %s.",
+          length(dropped_line_numbers),
+          paste(dropped_line_numbers, collapse = ", ")
+        ),
+        call. = FALSE
+      )
+    }
+    lines[invalid_utf8] <- repaired
+  }
 
   preallocate_size <- max(1L, length(lines) %/% 5L + 1L) # Rough estimate: average 5 lines per record (varies widely), so preallocate for that many records to improve performance
   records <- vector("list", preallocate_size) # To store parsed records as lists of fields
@@ -809,6 +830,54 @@ save_dataframe_to_ris <- function(df, file_path) {
 
 # Helper function: normalize whitespace consistently across read/write.
 .norm_space <- function(x) gsub("[[:space:]]+", " ", trimws(x))
+
+# Helper function: expected length of the UTF-8 sequence starting with lead byte b, or 0 if b
+# cannot start a valid sequence (used to locate exactly which bytes on a line are invalid).
+.utf8_lead_len <- function(b) {
+  v <- as.integer(b)
+  if (v < 0x80L) return(1L) # This is a single-byte ASCII character
+  if (v >= 0xC2L && v <= 0xDFL) return(2L) # This is the lead byte of a 2-byte UTF-8 sequence
+  if (v >= 0xE0L && v <= 0xEFL) return(3L) # This is the lead byte of a 3-byte UTF-8 sequence
+  if (v >= 0xF0L && v <= 0xF4L) return(4L) # This is the lead byte of a 4-byte UTF-8 sequence
+  0L
+}
+
+# Helper function: repair a line with invalid UTF-8 bytes by reinterpreting only the
+# offending byte(s) under the first candidate encoding that can decode them, leaving
+# already-valid UTF-8 elsewhere on the line untouched.
+.repair_invalid_utf8_line <- function(line, candidate_encodings = c("WINDOWS-1252", "ISO-8859-1")) {
+  raw_bytes <- charToRaw(line)
+  n <- length(raw_bytes)
+  out <- vector("list", n)
+  out_n <- 0L
+  i <- 1L
+  while (i <= n) {
+    run_len <- .utf8_lead_len(raw_bytes[i]) # Determine the expected length of the UTF-8 sequence starting with this byte
+    valid_seq <- run_len >= 1L && (i + run_len - 1L) <= n && # Check if the sequence is within bounds
+      (run_len == 1L || all(as.integer(raw_bytes[(i + 1L):(i + run_len - 1L)]) %in% 128:191))
+    if (valid_seq) {
+      out_n <- out_n + 1L # Increment the output counter
+      out[[out_n]] <- raw_bytes[i:(i + run_len - 1L)] # Append the valid UTF-8 sequence to the output
+      i <- i + run_len # Move the index forward by the length of the valid sequence
+    } else {
+      recovered <- NULL
+      for (enc in candidate_encodings) { # Try each candidate encoding to recover the invalid byte
+        # Attempt to convert the single invalid byte to UTF-8 using the candidate encoding
+        res <- tryCatch(iconv(list(raw_bytes[i]), from = enc, to = "UTF-8", toRaw = TRUE), error = function(e) NULL)
+        if (!is.null(res) && length(res[[1L]]) > 0L) { # If the conversion was successful and produced output
+          recovered <- res[[1L]] # Use the first successful recovery
+          break
+        }
+      }
+      if (!is.null(recovered)) { # If a recovery was successful, append it to the output
+        out_n <- out_n + 1L
+        out[[out_n]] <- recovered
+      }
+      i <- i + 1L # Move to the next byte regardless of whether recovery was successful
+    }
+  }
+  rawToChar(unlist(out[seq_len(out_n)]))
+}
 
 # Helper function: decide which RIS tag to write for a given column and row.
 .resolve_ris_tag <- function(col_name, row_idx, tag_meta = NULL, reverse_tag_map = NULL) {
