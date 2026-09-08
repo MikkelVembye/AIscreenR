@@ -150,8 +150,10 @@ save_dataframe_to_ris <- function(df, file_path) {
   tag_meta <- attr(df, "ris_tag_used", exact = TRUE) # Metadata about which original tag was used for each column
   raw_meta <- attr(df, "ris_raw_values", exact = TRUE) # Raw values per tag
   record_order <- attr(df, "ris_record_order", exact = TRUE) # Original record order
-  has_meta <- is.list(tag_meta) && length(tag_meta) > 0 # Check if metadata exists
-  has_raw <- is.list(raw_meta) && length(raw_meta) > 0 # Check if raw values exist
+  has_meta <- is.list(tag_meta) && length(tag_meta) > 0 &&
+    all(vapply(tag_meta, length, integer(1)) == nrow(df)) # Check if metadata exists and matches df's row count
+  has_raw <- is.list(raw_meta) && length(raw_meta) > 0 &&
+    all(vapply(raw_meta, length, integer(1)) == nrow(df)) # Check if raw values exist and match df's row count
   has_record_order <- is.list(record_order) && length(record_order) == nrow(df) # Check if record order exists
   reverse_tag_map <- .get_reverse_ris_tag_map() # Get reverse mapping of descriptive names to RIS tags
 
@@ -778,7 +780,7 @@ save_dataframe_to_ris <- function(df, file_path) {
 .reverse_map_ris_tags <- function(df) {
   reverse_tag_map <- .get_reverse_ris_tag_map()
   result_df <- data.frame(matrix(ncol = 0, nrow = nrow(df)))
-  
+
   # Process each column in the input data frame and map back to RIS tags
   for (col_name in names(df)) {
     base_name <- sub("[0-9]+$", "", col_name)
@@ -789,7 +791,18 @@ save_dataframe_to_ris <- function(df, file_path) {
     } else {
       col_name
     }
-    result_df[[ris_tag]] <- df[[col_name]]
+    new_val <- as.character(df[[col_name]])
+    if (ris_tag %in% names(result_df)) {
+      # Multiple columns (e.g. author, author2) can map to the same RIS tag
+      # (e.g. AU); combine them instead of overwriting so no values are lost.
+      existing <- result_df[[ris_tag]]
+      result_df[[ris_tag]] <- ifelse(
+        is.na(existing) | existing == "", new_val,
+        ifelse(is.na(new_val) | new_val == "", existing, paste(existing, new_val, sep = "; "))
+      )
+    } else {
+      result_df[[ris_tag]] <- new_val
+    }
   }
   result_df
 }
