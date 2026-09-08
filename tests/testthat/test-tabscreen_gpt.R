@@ -32,7 +32,7 @@ test_that(".gpt_engine_responses return errors correctly", {
 
 
   expect_equal(ncol(res), 7)
-  expect_true(stringr::str_detect(res$decision_gpt, "400"))
+  expect_true(stringr::str_detect(res$decision_gpt, "404"))
 
   # Specifying wrong api key
   body <- list(
@@ -185,7 +185,7 @@ test_that(".rep_gpt_engine_responses controls errrors correctly", {
   expect_equal(ncol(res), 8)
   expect_equal(nrow(res), iterations)
   expect_equal(max(res$n), iterations)
-  expect_true(all(stringr::str_detect(res$decision_gpt, "400")))
+  expect_true(all(stringr::str_detect(res$decision_gpt, "404")))
 
 })
 
