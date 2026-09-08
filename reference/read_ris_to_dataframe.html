@@ -69,7 +69,8 @@ single semicolon-separated string.</p>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A data.frame with one row per record and one column per encountered
 RIS tag, using descriptive column names. Columns are ordered by first appearance of the
-tag in the file. Repeated tag values are collapsed with "; ".</p>
+tag in the file. Repeated tag values are collapsed with "; ". Lines with invalid UTF-8
+byte sequences have those bytes reinterpreted and repaired to fit the valid UTF-8 encoding.</p>
     </div>
 
     <div class="section level2">
