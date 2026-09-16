@@ -84,7 +84,7 @@ solving probability.
 
 If you're using this to validate an AI screener e.g to evaluate the performance
 of \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}. We recommend using
-\code{kappa_ratios$ratio_hat} (system solving probability / reference rater's
+\code{kappa_ratios$ratio_hat} (AI solving probability / reference rater's
 solving probability), together with its bootstrap CI, as a good number for comparison per reference rater:
 \itemize{
 \item CI contains 1: the AI and that reference rater are
@@ -94,10 +94,10 @@ often than that reference rater. The AI is underperforming.
 \item CI entirely above 1: the AI is solving significantly more
 often than that reference rater. The AI is performing better than humans.
 }
-\code{p_hat} alone is confounded by how easy/hard the item set happens to be,
+\code{p_hat} alone is influenced by how easy/hard the item set happens to be,
 which is exactly what the ratio cancels out. With two or more reference
 raters, also compare the \code{gpt/human} ratios against the \code{human/human}
-pairwise \code{kappa} values in \code{pairwise_kappa}: if the AI-human ratios fall
+pairwise \code{kappa} values in \code{pairwise_kappa}. If the AI-human ratios fall
 inside the same range as the human-human ones, the AI is behaving like
 "one more rater" rather than an outlier.
 }
