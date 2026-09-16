@@ -14,7 +14,6 @@ test_that("solve_or_guess() fits a plain wide data.frame and returns expected st
     reference_raters = "human",
     B = 5,
     seed = 1,
-    verbose = FALSE,
     progress = FALSE
   )
 
@@ -55,7 +54,6 @@ test_that("solve_or_guess() supports multiple reference raters and drops missing
     reference_raters = c("human_1", "human_2"),
     B = 5,
     seed = 2,
-    verbose = FALSE,
     progress = FALSE
   ))
 
@@ -78,7 +76,6 @@ test_that("solve_or_guess() accepts a tabscreen result object directly", {
     reference_raters = "human_code",
     B = 5,
     seed = 3,
-    verbose = FALSE,
     progress = FALSE
   )
 

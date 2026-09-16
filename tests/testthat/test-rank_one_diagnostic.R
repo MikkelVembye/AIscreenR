@@ -22,7 +22,6 @@ test_that("rank_one_diagnostic() returns correctly structured output", {
     reference_raters = c("human_1", "human_2"),
     B = 5,
     seed = 1,
-    verbose = FALSE,
     progress = FALSE
   )
 

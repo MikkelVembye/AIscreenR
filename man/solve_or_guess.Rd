@@ -12,7 +12,6 @@ solve_or_guess(
   B = 1000,
   conf_level = 0.95,
   seed = NULL,
-  verbose = TRUE,
   progress = TRUE
 )
 }
@@ -51,9 +50,6 @@ parallel whenever a non-sequential \code{future::plan()} is active (e.g.
 
 \item{seed}{Optional integer seed, set before bootstrapping, for reproducibility.}
 
-\item{verbose}{Logical; print progress messages while fitting/bootstrapping.
-Default \code{TRUE}.}
-
 \item{progress}{Logical; show a progress bar for the \code{B} bootstrap
 refits. Default \code{TRUE}.}
 }
@@ -84,18 +80,41 @@ each reference human rater is the primary comparison: a bootstrap interval
 that contains 1 means the two are statistically indistinguishable in
 solving probability.
 }
+\section{Interpreting the results}{
+
+If you're using this to validate an AI screener e.g to evaluate the performance
+of \code{\link[=tabscreen_gpt]{tabscreen_gpt()}}. We recommend using
+\code{kappa_ratios$ratio_hat} (system solving probability / reference rater's
+solving probability), together with its bootstrap CI, as a good number for comparison per reference rater:
+\itemize{
+\item CI contains 1: the AI and that reference rater are
+statistically indistinguishable in solving probability.
+\item CI entirely below 1: the AI is solving significantly less
+often than that reference rater. The AI is underperforming.
+\item CI entirely above 1: the AI is solving significantly more
+often than that reference rater. The AI is performing better than humans.
+}
+\code{p_hat} alone is confounded by how easy/hard the item set happens to be,
+which is exactly what the ratio cancels out. With two or more reference
+raters, also compare the \code{gpt/human} ratios against the \code{human/human}
+pairwise \code{kappa} values in \code{pairwise_kappa}: if the AI-human ratios fall
+inside the same range as the human-human ones, the AI is behaving like
+"one more rater" rather than an outlier.
+}
+
 \examples{
 \dontrun{
 evaluations <- data.frame(
   item_id  = paste0("study_", 1:50),
-  human    = sample(c("Include", "Exclude"), 50, replace = TRUE),
+  human1   = sample(c("Include", "Exclude"), 50, replace = TRUE),
+  human2   = sample(c("Exclude", "Include"), 50, replace = TRUE),
   gpt      = sample(c("Include", "Exclude"), 50, replace = TRUE)
 )
 
 fit <- solve_or_guess(
   evaluations,
   system_rater_id = "gpt",
-  reference_raters = "human",
+  reference_raters = c("human1", "human2"),
   B = 200
 )
 

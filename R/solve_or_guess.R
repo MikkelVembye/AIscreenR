@@ -17,6 +17,26 @@
 #' The solve or guess model: Validating automated systems against
 #' heterogeneous human raters. Working paper.
 #'
+#' @section Interpreting the results:
+#' If you're using this to validate an AI screener e.g to evaluate the performance
+#' of [tabscreen_gpt()]. We recommend using
+#' `kappa_ratios$ratio_hat` (AI solving probability / reference rater's
+#' solving probability), together with its bootstrap CI, as a good number for comparison per reference rater:
+#' \itemize{
+#'  \item CI contains 1: the AI and that reference rater are
+#'    statistically indistinguishable in solving probability.
+#'  \item CI entirely below 1: the AI is solving significantly less
+#'    often than that reference rater. The AI is underperforming.
+#'  \item CI entirely above 1: the AI is solving significantly more
+#'    often than that reference rater. The AI is performing better than humans.
+#' }
+#' `p_hat` alone is influenced by how easy/hard the item set happens to be,
+#' which is exactly what the ratio cancels out. With two or more reference
+#' raters, also compare the `gpt/human` ratios against the `human/human`
+#' pairwise `kappa` values in `pairwise_kappa`. If the AI-human ratios fall
+#' inside the same range as the human-human ones, the AI is behaving like
+#' "one more rater" rather than an outlier.
+#'
 #' @param evaluations Either (a) a `data.frame`/`tibble` with one row per item
 #'   (study), containing at least one column with the AI decision and at
 #'   least one column with a human decision - see `system_rater_id` and
@@ -44,8 +64,6 @@
 #'   `future::plan(future::multisession)`).
 #' @param conf_level Confidence level for the bootstrap intervals. Default `0.95`.
 #' @param seed Optional integer seed, set before bootstrapping, for reproducibility.
-#' @param verbose Logical; print progress messages while fitting/bootstrapping.
-#'   Default `TRUE`.
 #' @param progress Logical; show a progress bar for the `B` bootstrap
 #'   refits. Default `TRUE`.
 #'
@@ -69,14 +87,15 @@
 #' \dontrun{
 #' evaluations <- data.frame(
 #'   item_id  = paste0("study_", 1:50),
-#'   human    = sample(c("Include", "Exclude"), 50, replace = TRUE),
+#'   human1   = sample(c("Include", "Exclude"), 50, replace = TRUE),
+#'   human2   = sample(c("Exclude", "Include"), 50, replace = TRUE),
 #'   gpt      = sample(c("Include", "Exclude"), 50, replace = TRUE)
 #' )
 #'
 #' fit <- solve_or_guess(
 #'   evaluations,
 #'   system_rater_id = "gpt",
-#'   reference_raters = "human",
+#'   reference_raters = c("human1", "human2"),
 #'   B = 200
 #' )
 #'
@@ -103,7 +122,6 @@ solve_or_guess <- function(evaluations,
                             B = 1000,
                             conf_level = 0.95,
                             seed = NULL,
-                            verbose = TRUE,
                             progress = TRUE) {
 
   if (!is.character(system_rater_id) || length(system_rater_id) != 1) {
@@ -155,7 +173,7 @@ solve_or_guess <- function(evaluations,
     transmute(rater_id, p_hat = .logit_inv(estimate))
 
   # Bootstrap the model to get confidence intervals for each rater's solving probability
-  if (verbose) message(sprintf("Bootstrapping (B = %d)...", B))
+  message(sprintf("Bootstrapping (B = %d)...", B))
   boot <- .nonparametric_bootstrap_solve_or_guess(
     long_evaluations, system_rater_id = system_rater_id, B = B, progress = progress
   )
