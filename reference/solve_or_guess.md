@@ -105,9 +105,9 @@ An object of class `"sog"`, a list with elements:
 If you're using this to validate an AI screener e.g to evaluate the
 performance of
 [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md).
-We recommend using `kappa_ratios$ratio_hat` (system solving probability
-/ reference rater's solving probability), together with its bootstrap
-CI, as a good number for comparison per reference rater:
+We recommend using `kappa_ratios$ratio_hat` (AI solving probability /
+reference rater's solving probability), together with its bootstrap CI,
+as a good number for comparison per reference rater:
 
 - CI contains 1: the AI and that reference rater are statistically
   indistinguishable in solving probability.
@@ -118,10 +118,10 @@ CI, as a good number for comparison per reference rater:
 - CI entirely above 1: the AI is solving significantly more often than
   that reference rater. The AI is performing better than humans.
 
-`p_hat` alone is confounded by how easy/hard the item set happens to be,
+`p_hat` alone is influenced by how easy/hard the item set happens to be,
 which is exactly what the ratio cancels out. With two or more reference
 raters, also compare the `gpt/human` ratios against the `human/human`
-pairwise `kappa` values in `pairwise_kappa`: if the AI-human ratios fall
+pairwise `kappa` values in `pairwise_kappa`. If the AI-human ratios fall
 inside the same range as the human-human ones, the AI is behaving like
 "one more rater" rather than an outlier.
 
