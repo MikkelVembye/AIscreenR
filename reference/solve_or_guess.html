@@ -83,7 +83,6 @@ solving probability.</p>
 <span>  B <span class="op">=</span> <span class="fl">1000</span>,</span>
 <span>  conf_level <span class="op">=</span> <span class="fl">0.95</span>,</span>
 <span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -140,11 +139,6 @@ parallel whenever a non-sequential <code><a href="https://future.futureverse.org
 <dd><p>Optional integer seed, set before bootstrapping, for reproducibility.</p></dd>
 
 
-<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
-<dd><p>Logical; print progress messages while fitting/bootstrapping.
-Default <code>TRUE</code>.</p></dd>
-
-
 <dt id="arg-progress">progress<a class="anchor" aria-label="anchor" href="#arg-progress"></a></dt>
 <dd><p>Logical; show a progress bar for the <code>B</code> bootstrap
 refits. Default <code>TRUE</code>.</p></dd>
@@ -153,6 +147,26 @@ refits. Default <code>TRUE</code>.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An object of class <code>"sog"</code>, a list with elements:</p><table class="table table"><tr><td><b>solving_probabilities</b></td><td><code>tibble</code></td><td><code>rater_id</code>, <code>p_hat</code>, and bootstrap <code>ci_lower</code>/<code>ci_upper</code> for each rater.</td></tr><tr><td><b>pairwise_kappa</b></td><td><code>tibble</code></td><td>observed Cohen's kappa for every rater pair, restricted to items both raters in the pair actually rated (<code>n_overlap</code>).</td></tr><tr><td><b>kappa_ratios</b></td><td><code>tibble</code></td><td>\(p_system/p_reference\) for each reference rater, with a bootstrap CI.</td></tr><tr><td><b>fit</b></td><td><code>list</code></td><td>the raw solve-or-guess model fit (<code>rater_ability</code>, <code>item_estimates</code>, <code>guessing_distribution</code>, <code>class_distribution</code>).</td></tr><tr><td><b>evaluations</b></td><td><code>tibble</code></td><td>the long-format (<code>item_id</code>, <code>rater_id</code>, <code>evaluation</code>) data actually used to fit the model, after any tabscreen-object conversion and dropping of unrated pairs.</td></tr><tr><td><b>system_rater_id</b></td><td><code>character</code></td><td>the column name used as the system rater.</td></tr><tr><td><b>reference_raters</b></td><td><code>character</code></td><td>the column name(s) used as the reference raters.</td></tr><tr><td><b>bootstrap_rater_ability</b></td><td><code>tibble</code></td><td>every bootstrap replicate's rater ability estimates, tagged by <code>bootstrap_iter</code> - the raw draws behind <code>solving_probabilities</code>' and <code>kappa_ratios</code>' confidence intervals.</td></tr><tr><td><b>B</b></td><td><code>integer</code></td><td>the number of bootstrap replicates used.</td></tr><tr><td><b>conf_level</b></td><td><code>numeric</code></td><td>the confidence level used for the bootstrap intervals.</td></tr></table></div>
+    <div class="section level2">
+    <h2 id="interpreting-the-results">Interpreting the results<a class="anchor" aria-label="anchor" href="#interpreting-the-results"></a></h2>
+
+
+<p>If you're using this to validate an AI screener e.g to evaluate the performance
+of <code><a href="tabscreen_gpt.tools_responses.html">tabscreen_gpt()</a></code>. We recommend using
+<code>kappa_ratios$ratio_hat</code> (system solving probability / reference rater's
+solving probability), together with its bootstrap CI, as a good number for comparison per reference rater:</p><ul><li><p>CI contains 1: the AI and that reference rater are
+statistically indistinguishable in solving probability.</p></li>
+<li><p>CI entirely below 1: the AI is solving significantly less
+often than that reference rater. The AI is underperforming.</p></li>
+<li><p>CI entirely above 1: the AI is solving significantly more
+often than that reference rater. The AI is performing better than humans.</p></li>
+</ul><p><code>p_hat</code> alone is confounded by how easy/hard the item set happens to be,
+which is exactly what the ratio cancels out. With two or more reference
+raters, also compare the <code>gpt/human</code> ratios against the <code>human/human</code>
+pairwise <code>kappa</code> values in <code>pairwise_kappa</code>: if the AI-human ratios fall
+inside the same range as the human-human ones, the AI is behaving like
+"one more rater" rather than an outlier.</p>
+    </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Rohe, K., Krauska, A. N., Collins, G., Higgins, J., &amp; Pustejovsky, J. (2026).
@@ -165,14 +179,15 @@ heterogeneous human raters. Working paper.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">evaluations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  item_id  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"study_"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  human    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Include"</span>, <span class="st">"Exclude"</span><span class="op">)</span>, <span class="fl">50</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  human1   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Include"</span>, <span class="st">"Exclude"</span><span class="op">)</span>, <span class="fl">50</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  human2   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Exclude"</span>, <span class="st">"Include"</span><span class="op">)</span>, <span class="fl">50</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  gpt      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Include"</span>, <span class="st">"Exclude"</span><span class="op">)</span>, <span class="fl">50</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">solve_or_guess</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="va">evaluations</span>,</span></span>
 <span class="r-in"><span>  system_rater_id <span class="op">=</span> <span class="st">"gpt"</span>,</span></span>
-<span class="r-in"><span>  reference_raters <span class="op">=</span> <span class="st">"human"</span>,</span></span>
+<span class="r-in"><span>  reference_raters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"human1"</span>, <span class="st">"human2"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  B <span class="op">=</span> <span class="fl">200</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
