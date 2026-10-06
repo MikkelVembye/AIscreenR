@@ -68,7 +68,7 @@ Defined as the probability of achieving \code{c_target} recall is at least \code
 
 The algorithm uses with replacement. This means that relevant records are returned to the
 pool after selection, making draws independent without needing to know the total number of
-relevant records (L). See \href{https://doi.org/10.1002/jrsm.1690}{Hou & Tipton (2024)} for details.
+relevant records (L). See Hou & Tipton (2024) \doi{10.1002/jrsm.1690} for details.
 }
 \examples{
 \dontrun{

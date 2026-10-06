@@ -86,7 +86,7 @@ Assessing the accuracy of machine-assisted abstract screening with DistillerAI: 
 
 McHugh, M. L. (2012).
 Interrater reliability: The kappa statistic.
-\emph{Biochemia Medica}, 22(3), 276-282. \url{https://doi.org/10.11613/BM.2012.031}
+\emph{Biochemia Medica}, 22(3), 276-282. \doi{10.11613/BM.2012.031}
 
 Syriani, E., David, I., & Kumar, G. (2023).
 Assessing the Ability of ChatGPT to Screen Articles for Systematic Reviews.
