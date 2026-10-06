@@ -62,8 +62,7 @@ tabscreen_gpt.tools(data, prompt, studyid, title, abstract,
 
   Character string with the name of the completion model. Can take
   multiple models. Default is the latest `"gpt-4o-mini"`. Find available
-  model at
-  <https://developers.openai.com/api/docs/models/model-endpoint-compatibility>.
+  model at <https://developers.openai.com/api/docs/models>.
 
 - role:
 
@@ -157,8 +156,7 @@ tabscreen_gpt.tools(data, prompt, studyid, title, abstract,
 
   Numerical value indicating the number of requests per minute (rpm)
   available for the specified model. Find more information at
-  <https://developers.openai.com/api/docs/models/model-endpoint-compatibility>.
-  Alternatively, use
+  <https://developers.openai.com/api/docs/models>. Alternatively, use
   [`rate_limits_per_minute()`](https://mikkelvembye.github.io/AIscreenR/reference/rate_limits_per_minute.md).
 
 - reps:

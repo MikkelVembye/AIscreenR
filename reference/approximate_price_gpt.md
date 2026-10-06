@@ -53,7 +53,7 @@ approximate_price_gpt(
   Character string with the name of the completion model. Can take
   multiple models, including gpt-4 models. Default = `"gpt-4o-mini"`.
   Find available model at
-  <https://developers.openai.com/api/docs/models/model-endpoint-compatibility>.
+  <https://developers.openai.com/api/docs/models>.
 
 - reps:
 

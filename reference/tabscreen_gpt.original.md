@@ -89,7 +89,7 @@ tabscreen_gpt.original(
   gpt-4-0613). This model has been shown to outperform the gpt-3.5-turbo
   models in terms of its ability to detect relevant studies (Vembye et
   al., Under preparation). Find available model at
-  <https://developers.openai.com/api/docs/models/model-endpoint-compatibility>.
+  <https://developers.openai.com/api/docs/models>.
 
 - role:
 
@@ -176,8 +176,7 @@ tabscreen_gpt.original(
 
   Numerical value indicating the number of requests per minute (rpm)
   available for the specified api key. Find more information at
-  <https://developers.openai.com/api/docs/models/model-endpoint-compatibility>.
-  Alternatively, use
+  <https://developers.openai.com/api/docs/models>. Alternatively, use
   [`rate_limits_per_minute()`](https://mikkelvembye.github.io/AIscreenR/reference/rate_limits_per_minute.md).
 
 - reps:
