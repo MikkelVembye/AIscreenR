@@ -6,7 +6,7 @@
 #' per request should be included in the output data. Default = `TRUE`.
 #' @param model Character string with the name of the completion model.
 #'  Default = `"gpt-3.5-turbo-0301"`. Find available model at
-#' \url{https://developers.openai.com/api/docs/models/model-endpoint-compatibility}.
+#' \url{https://developers.openai.com/api/docs/models}.
 #' @param role Character string indicate the role of the user. Default is `"user"`.
 #' @param api_key Numerical value with your personal API key. Find setup guidance at
 #'  \url{https://developers.openai.com/api/docs/quickstart#generate-an-api-key}. Use
@@ -29,7 +29,7 @@
 #'   should be used instead' (Wickham, 2023).
 #' @param rpm Numerical value indicating the number of requests per minute (rpm)
 #'  available for the specified api key. Find more information at
-#'  \url{https://developers.openai.com/api/docs/models/model-endpoint-compatibility}.
+#'  \url{https://developers.openai.com/api/docs/models}.
 #'  Alternatively, use [rate_limits_per_minute()].
 #' @param reps Numerical value indicating the number of times the same
 #'  question should be sent to ChatGPT. This can be useful to test consistency

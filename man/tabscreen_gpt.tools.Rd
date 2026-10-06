@@ -32,7 +32,7 @@ automatically.}
 \item{model}{Character string with the name of the completion model. Can take
 multiple models. Default is the latest \code{"gpt-4o-mini"}.
 Find available model at
-\url{https://developers.openai.com/api/docs/models/model-endpoint-compatibility}.}
+\url{https://developers.openai.com/api/docs/models}.}
 
 \item{role}{Character string indicating the role of the user. Default is \code{"user"}.}
 
@@ -87,7 +87,7 @@ should be used instead' (Wickham, 2023).}
 
 \item{rpm}{Numerical value indicating the number of requests per minute (rpm)
 available for the specified model. Find more information at
-\url{https://developers.openai.com/api/docs/models/model-endpoint-compatibility}.
+\url{https://developers.openai.com/api/docs/models}.
 Alternatively, use \code{\link[=rate_limits_per_minute]{rate_limits_per_minute()}}.}
 
 \item{reps}{Numerical value indicating the number of times the same

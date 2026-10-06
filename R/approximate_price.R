@@ -13,7 +13,7 @@
 #' @param model Character string with the name of the completion model. Can take
 #'   multiple models, including gpt-4 models. Default = `"gpt-4o-mini"`.
 #'   Find available model at
-#'   \url{https://developers.openai.com/api/docs/models/model-endpoint-compatibility}.
+#'   \url{https://developers.openai.com/api/docs/models}.
 #' @param reps Numerical value indicating the number of times the same
 #'   question should be sent to the GPT server. This can be useful to test consistency
 #'   between answers. Default is `1` but when using gpt-3.5-turbo or gpt-4o-mini models, we recommend setting this

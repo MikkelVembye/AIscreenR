@@ -34,7 +34,7 @@
 #' @param model Character string with the name of the completion model. Can take
 #'   multiple models. Default is the latest `"gpt-4o-mini"`.
 #'   Find available model at
-#' \url{https://developers.openai.com/api/docs/models/model-endpoint-compatibility}.
+#' \url{https://developers.openai.com/api/docs/models}.
 #' @param role Character string indicating the role of the user. Default is `"user"`.
 #' @param tools This argument allows this user to apply customized functions.
 #' See \url{https://developers.openai.com/api/reference/resources/chat#chat-create-tools}.
@@ -71,7 +71,7 @@
 #'   should be used instead' (Wickham, 2023).
 #' @param rpm Numerical value indicating the number of requests per minute (rpm)
 #'   available for the specified model. Find more information at
-#'   \url{https://developers.openai.com/api/docs/models/model-endpoint-compatibility}.
+#'   \url{https://developers.openai.com/api/docs/models}.
 #'   Alternatively, use [rate_limits_per_minute()].
 #' @param reps Numerical value indicating the number of times the same
 #'   question should be send to the server. This can be useful to test consistency

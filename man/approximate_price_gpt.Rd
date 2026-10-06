@@ -33,7 +33,7 @@ automatically.}
 \item{model}{Character string with the name of the completion model. Can take
 multiple models, including gpt-4 models. Default = \code{"gpt-4o-mini"}.
 Find available model at
-\url{https://developers.openai.com/api/docs/models/model-endpoint-compatibility}.}
+\url{https://developers.openai.com/api/docs/models}.}
 
 \item{reps}{Numerical value indicating the number of times the same
 question should be sent to the GPT server. This can be useful to test consistency

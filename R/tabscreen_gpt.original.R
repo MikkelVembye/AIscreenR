@@ -36,7 +36,7 @@
 #'   been shown to outperform the gpt-3.5-turbo models in terms of its ability to detect
 #'   relevant studies (Vembye et al., Under preparation).
 #'   Find available model at
-#' \url{https://developers.openai.com/api/docs/models/model-endpoint-compatibility}.
+#' \url{https://developers.openai.com/api/docs/models}.
 #' @param role Character string indicate the role of the user. Default is `"user"`.
 #' @param functions Function to steer output. Default is `incl_function_simple`.
 #'   To get detailed responses use the hidden function call `incl_function` from the package. Also see 'Examples below.
@@ -77,7 +77,7 @@
 #'   should be used instead' (Wickham, 2023).
 #' @param rpm Numerical value indicating the number of requests per minute (rpm)
 #'   available for the specified api key. Find more information at
-#'   \url{https://developers.openai.com/api/docs/models/model-endpoint-compatibility}.
+#'   \url{https://developers.openai.com/api/docs/models}.
 #'   Alternatively, use [rate_limits_per_minute()].
 #' @param reps Numerical value indicating the number of times the same
 #'   question should be sent to OpenAI's GPT API models. This can be useful to test consistency
