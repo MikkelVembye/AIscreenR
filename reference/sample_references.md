@@ -9,7 +9,8 @@ a formal reliability guarantee. Defined as the probability of achieving
 The algorithm uses with replacement. This means that relevant records
 are returned to the pool after selection, making draws independent
 without needing to know the total number of relevant records (L). See
-[Hou & Tipton (2024)](https://doi.org/10.1002/jrsm.1690) for details.
+Hou & Tipton (2024)
+[doi:10.1002/jrsm.1690](https://doi.org/10.1002/jrsm.1690) for details.
 
 ## Usage
 
