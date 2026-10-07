@@ -1,4 +1,4 @@
-# Models Prizes July 31 2026
+# Models Prizes October 7 2026
 
 mio <- 1000000
 
@@ -87,7 +87,17 @@ model_prizes <-
       # GPT-5.6 models
       "gpt-5.6-sol",
       "gpt-5.6-terra",
-      "gpt-5.6-luna"
+      "gpt-5.6-luna",
+
+      # Pro models
+      "gpt-5-pro",
+      "gpt-5.2-pro",
+
+      # GPT-6 models
+      "gpt-6-luna",
+      "gpt-6-sol",
+      "gpt-6.1-sol",
+      "gpt-6-astra"
     ),
 
     price_in_per_token = c(
@@ -171,10 +181,19 @@ model_prizes <-
       30/mio,    # gpt-5.5-pro
 
       # GPT-5.6 models
-      5/mio,     # gpt-5.6-sol
+      4/mio,     # gpt-5.6-sol
       2/mio,     # gpt-5.6-terra
-      0.2/mio    # gpt-5.6-luna
+      0.2/mio,   # gpt-5.6-luna
 
+      # Pro models
+      15/mio,    # gpt-5-pro
+      21/mio,    # gpt-5.2-pro
+
+      # GPT-6 models
+      0.1/mio,   # gpt-6-luna
+      2/mio,     # gpt-6-sol
+      2/mio,     # gpt-6.1-sol
+      10/mio     # gpt-6-astra
     ),
 
     price_out_per_token = c(
@@ -258,9 +277,19 @@ model_prizes <-
       180/mio,    # gpt-5.5-pro
 
       # GPT-5.6 models
-      30/mio,     # gpt-5.6-sol
+      20/mio,     # gpt-5.6-sol
       12/mio,     # gpt-5.6-terra
-      1.2/mio     # gpt-5.6-luna
+      1.2/mio,    # gpt-5.6-luna
+
+      # Pro models
+      120/mio,    # gpt-5-pro
+      168/mio,    # gpt-5.2-pro
+
+      # GPT-6 models
+      0.5/mio,    # gpt-6-luna
+      10/mio,     # gpt-6-sol
+      10/mio,     # gpt-6.1-sol
+      50/mio      # gpt-6-astra
     )
   )
 
@@ -393,7 +422,14 @@ gemini_model_prizes <- data.frame(
     "gemini-3.1-flash-lite",
     "gemini-3.1-flash-lite-preview",
     "gemini-3.1-pro-preview",
-    "gemini-3.1-pro-preview-customtools"
+    "gemini-3.1-pro-preview-customtools",
+
+    # Gemini 3.5+ models
+    "gemini-3.5-flash-lite",
+    "gemini-3.5-flash",
+    "gemini-3.6-flash",
+    "gemini-3.7-flash",
+    "gemini-3.8-flash"
   ),
   price_in_per_token = c(
     0.10/mio, # gemini-2.5-flash-lite-preview-09-2025
@@ -405,7 +441,13 @@ gemini_model_prizes <- data.frame(
     0.25/mio, # gemini-3.1-flash-lite
     0.25/mio, # gemini-3.1-flash-lite-preview
     2.00/mio, # gemini-3.1-pro-preview
-    2.00/mio # gemini-3.1-pro-preview-customtools
+    2.00/mio, # gemini-3.1-pro-preview-customtools
+
+    0.30/mio, # gemini-3.5-flash-lite
+    1.50/mio, # gemini-3.5-flash
+    0.75/mio, # gemini-3.6-flash (introductory price until Dec 31 2026, doubles Jan 1 2027)
+    0.75/mio, # gemini-3.7-flash (introductory price until Dec 31 2026, doubles Jan 1 2027)
+    0.75/mio  # gemini-3.8-flash (introductory price until Dec 31 2026, doubles Jan 1 2027)
   ),
   price_out_per_token = c(
     0.40/mio, # gemini-2.5-flash-lite-preview-09-2025
@@ -417,20 +459,35 @@ gemini_model_prizes <- data.frame(
     1.50/mio, # gemini-3.1-flash-lite
     1.50/mio, # gemini-3.1-flash-lite-preview
     12.00/mio, # gemini-3.1-pro-preview
-    12.00/mio # gemini-3.1-pro-preview-customtools
+    12.00/mio, # gemini-3.1-pro-preview-customtools
+
+    2.50/mio, # gemini-3.5-flash-lite
+    9.00/mio, # gemini-3.5-flash
+    3.75/mio, # gemini-3.6-flash (introductory price until Dec 31 2026, doubles Jan 1 2027)
+    3.75/mio, # gemini-3.7-flash (introductory price until Dec 31 2026, doubles Jan 1 2027)
+    3.75/mio  # gemini-3.8-flash (introductory price until Dec 31 2026, doubles Jan 1 2027)
   ),
   stringsAsFactors = FALSE
 )
 
 claude_model_prizes <- data.frame(
   model = c(
+    # Claude Fable models
+    "claude-fable-5-1",
+    "claude-fable-5",
+
     # Claude Opus models
+    "claude-opus-5-5",
+    "claude-opus-5",
+    "claude-opus-4-8",
     "claude-opus-4-7",
     "claude-opus-4-6",
     "claude-opus-4-5",
     "claude-opus-4-1",
 
     # Claude Sonnet models
+    "claude-sonnet-5-5",
+    "claude-sonnet-5",
     "claude-sonnet-4-6",
     "claude-sonnet-4-5",
 
@@ -438,22 +495,38 @@ claude_model_prizes <- data.frame(
     "claude-haiku-4-5"
   ),
   price_in_per_token = c(
+    10/mio,  # claude-fable-5.1
+    10/mio,  # claude-fable-5
+
+    4/mio,   # claude-opus-5.5
+    5/mio,   # claude-opus-5
+    5/mio,   # claude-opus-4.8
     5/mio,   # claude-opus-4.7
     5/mio,   # claude-opus-4.6
     5/mio,   # claude-opus-4.5
     15/mio,  # claude-opus-4.1
 
+    2/mio,   # claude-sonnet-5.5
+    2/mio,   # claude-sonnet-5
     3/mio,   # claude-sonnet-4.6
     3/mio,   # claude-sonnet-4.5
 
     1/mio   # claude-haiku-4.5
   ),
   price_out_per_token = c(
+    50/mio,  # claude-fable-5.1
+    50/mio,  # claude-fable-5
+
+    20/mio,  # claude-opus-5.5
+    25/mio,  # claude-opus-5
+    25/mio,  # claude-opus-4.8
     25/mio,  # claude-opus-4.7
     25/mio,  # claude-opus-4.6
     25/mio,  # claude-opus-4.5
     75/mio,  # claude-opus-4.1
 
+    10/mio,  # claude-sonnet-5.5
+    10/mio,  # claude-sonnet-5
     15/mio,  # claude-sonnet-4.6
     15/mio,  # claude-sonnet-4.5
 
