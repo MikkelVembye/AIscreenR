@@ -1,7 +1,5 @@
 # Changelog
 
-## AIscreenR (development version)
-
 ## AIscreenR 0.5.0
 
 ### New features
@@ -17,6 +15,11 @@
   patterns of agreement alone, and
   [`rank_one_diagnostic()`](https://mikkelvembye.github.io/AIscreenR/reference/rank_one_diagnostic.md)
   checks whether that model’s core assumption holds for a given fit.
+
+### Bug fixes
+
+- [`read_ris_to_dataframe()`](https://mikkelvembye.github.io/AIscreenR/reference/read_ris_to_dataframe.md)
+  now repairs invalid UTF-8 characters to avoid data loss.
 
 ## AIscreenR 0.4.0
 
