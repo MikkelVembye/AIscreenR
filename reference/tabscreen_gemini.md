@@ -24,7 +24,7 @@ tabscreen_gemini(data, prompt, studyid, title, abstract,
   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
-  reasoning_effort = "medium", overinclusive = TRUE, ...)
+  reasoning_effort = "medium", overinclusive = TRUE, confidence = FALSE, ...)
 ```
 
 ## Arguments
@@ -243,6 +243,15 @@ tabscreen_gemini(data, prompt, studyid, title, abstract,
   decisions (i.e., "1" or "0"). This argument only affects the default
   function calling setup.
 
+- confidence:
+
+  Logical indicating whether the model should also report how confident
+  it is in each decision. If `TRUE`, a `confidence` variable (0 = not
+  confident at all, 100 = completely confident) is added to the output.
+  When `reps > 1`, the aggregated data contains `mean_confidence`.
+  Default is `FALSE`. This argument only affects the default function
+  calling setup, and is ignored if you provide your own `tools`.
+
 - ...:
 
   Further argument to pass to the request body. See
@@ -306,6 +315,7 @@ The `answer_data` data contains the following *mandatory* variables:
 | **decision_gpt** | `character` | indicating the raw Gemini decision - either `"1", "0", "1.1"` for inclusion, exclusion, or uncertainty, respectively. |
 | **detailed_description** | `character` | indicating detailed description of the decision made by Gemini. ONLY included if the detailed function calling is used. |
 | **decision_binary** | `integer` | indicating the binary decision (1 = include, 0 = exclude). |
+| **confidence** | `numeric` | indicating how confident the model is in its decision, from 0 (not confident at all) to 100 (completely confident). ONLY included when `confidence = TRUE`. |
 | **prompt_tokens** | `integer` | indicating the number of prompt tokens used. |
 | **completion_tokens** | `integer` | indicating the number of completion tokens used. |
 | **submodel** | `character` | indicating the exact model version used for screening. |
@@ -336,6 +346,7 @@ variables:
 | **final_decision_gpt** | `character` | indicating the final decision reached by gpt - either 'Include', 'Exclude', or 'Check'. |
 | **final_decision_gpt_num** | `integer` | indicating the final numeric decision reached by gpt - either 1 or 0. |
 | **longest_answer** | `character` | indicating the longest gpt response obtained across multiple repeated responses on the same title and abstract. Only included when `decision_description = TRUE`. See 'Examples' below for how to use this function. |
+| **mean_confidence** | `numeric` | indicating the average confidence across the repeated responses. ONLY included when `confidence = TRUE`. |
 | **reps** | `integer` | indicating the number of times the same question has been sent to Gemini's API models. |
 | **n_mis_answers** | `integer` | indicating the number of missing responses. |
 | **submodel** | `character` | indicating the exact (sub)model used for screening. |

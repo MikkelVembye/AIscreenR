@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">AIscreenR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.5.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.5.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,6 +41,13 @@
       <small>Source: <a href="https://github.com/MikkelVembye/AIscreenR/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.1" id="aiscreenr-051">AIscreenR 0.5.1<a class="anchor" aria-label="anchor" href="#aiscreenr-051"></a></h2>
+<div class="section level3">
+<h3 id="new-features-0-5-1">New features<a class="anchor" aria-label="anchor" href="#new-features-0-5-1"></a></h3>
+<ul><li>Adding the <code>confidence</code> argument to all <code>tabscreen_*()</code> functions. When <code>confidence = TRUE</code>, the model also reports how confident it is in each decision (0-100), returned in the new <code>confidence</code> variable. When <code>reps &gt; 1</code>, the aggregated data also contains <code>mean_confidence</code>. The new <code>gpt_confidence</code> argument in <code><a href="../reference/report.html">report()</a></code> includes the confidence in the report.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0" id="aiscreenr-050">AIscreenR 0.5.0<a class="anchor" aria-label="anchor" href="#aiscreenr-050"></a></h2>
 <div class="section level3">
