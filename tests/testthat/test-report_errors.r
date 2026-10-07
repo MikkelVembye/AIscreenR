@@ -84,3 +84,34 @@ test_that("report() error structure.", {
     )
   })
 })
+test_that("report() includes the confidence when gpt_confidence is given", {
+  if(skip) skip()
+  if(skip_github_action) skip_on_ci()
+  skip_on_cran()
+
+  conf_data <- test_data
+  conf_data$mean_confidence <- 85
+
+  withr::with_tempdir({
+
+    report(
+      data = conf_data,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      gpt_answer = longest_answer,
+      gpt_confidence = mean_confidence,
+      human_code = human_code,
+      final_decision_gpt_num = final_decision_gpt_num,
+      file = "test_report_conf.qmd",
+      format = "html",
+      document_title = "Test Report",
+      open = FALSE,
+      directory = "."
+    )
+
+    qmd_content <- readLines("test_report_conf.qmd", warn = FALSE)
+    expect_true(any(grepl("Confidence (GPT)**: 85", qmd_content, fixed = TRUE)))
+
+  })
+})

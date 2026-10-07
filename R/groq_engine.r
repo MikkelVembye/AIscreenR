@@ -29,6 +29,10 @@
   # error and the detailed function is called vs not called.
   detail_desc_default <- if (detailed) NA_character_ else NULL
 
+  # Logical argument indicating whether a confidence score is requested
+  conf <- is.list(body$tools) && length(body$tools) > 0 && "confidence" %in% names(body$tools[[1]]$`function`$parameters$properties)
+  conf_val <- NA_real_
+
   # Max tries and gpt_is_transient not relevant if 'max_t = 0'
   if (max_t == 0) max_t <- is_trans <- NULL
   
@@ -82,6 +86,9 @@
           func_args <- try(jsonlite::fromJSON(func_arguments_json), silent = TRUE)
           if (!inherits(func_args, "try-error")) {
             decision_val <- as.character(func_args$decision_gpt)
+            if (conf && !is.null(func_args$confidence)) {
+              conf_val <- suppressWarnings(as.numeric(func_args$confidence))
+            }
             # Optional detailed description
             if (detailed && "detailed_description" %in% names(func_args)) {
               detailed_desc_val <- as.character(func_args$detailed_description)
@@ -106,6 +113,9 @@
             decision_val <- as.character(parsed_content$decision)
           } else {
             decision_val <- "Error: 'decision_gpt' or 'decision' not in content."
+          }
+          if (conf && "confidence" %in% names(parsed_content)) {
+            conf_val <- suppressWarnings(as.numeric(parsed_content$confidence))
           }
           if (detailed) {
             if ("detailed_description" %in% names(parsed_content)) {
@@ -133,12 +143,14 @@
       decision_bin_val <- as.numeric(dplyr::if_else(stringr::str_detect(decision_val, "1"), 1, 0, missing = NA_real_))
       res_list <- list(decision_gpt = decision_val, decision_binary = decision_bin_val)
       if (detailed) res_list$detailed_description <- detailed_desc_val
+      if (conf) res_list$confidence <- conf_val
       if (token_inf) {
         res_list$prompt_tokens <- prompt_tok_val
         res_list$completion_tokens <- completion_tok_val
       }
     res <- tibble::as_tibble(res_list) |>
-      dplyr::relocate(tidyselect::any_of("detailed_description"), .after = decision_binary)
+      dplyr::relocate(tidyselect::any_of("detailed_description"), .after = decision_binary) |>
+      dplyr::relocate(tidyselect::any_of("confidence"), .after = decision_binary)
 
     } else {
       # If request failed
@@ -147,12 +159,14 @@
         decision_binary = NA_real_
       )
       if (detailed) res_list$detailed_description <- detail_desc_default
+      if (conf) res_list$confidence <- NA_real_
       if (token_inf) {
         res_list$prompt_tokens <- NA_real_
         res_list$completion_tokens <- NA_real_
       }
     res <- tibble::as_tibble(res_list) |>
-      dplyr::relocate(tidyselect::any_of("detailed_description"), .after = decision_binary)
+      dplyr::relocate(tidyselect::any_of("detailed_description"), .after = decision_binary) |>
+      dplyr::relocate(tidyselect::any_of("confidence"), .after = decision_binary)
     }
   } else {
     # No internet
@@ -161,12 +175,14 @@
       decision_binary = NA_real_
     )
     if (detailed) res_list$detailed_description <- detail_desc_default
+    if (conf) res_list$confidence <- NA_real_
     if (token_inf) {
       res_list$prompt_tokens <- NA_real_
       res_list$completion_tokens <- NA_real_
     }
     res <- tibble::as_tibble(res_list) |>
-      dplyr::relocate(tidyselect::any_of("detailed_description"), .after = decision_binary)
+      dplyr::relocate(tidyselect::any_of("detailed_description"), .after = decision_binary) |>
+      dplyr::relocate(tidyselect::any_of("confidence"), .after = decision_binary)
     }
   time <- tictoc::toc(quiet = TRUE)
   run_time_val <- round(as.numeric(time$toc - time$tic), 1)
@@ -218,6 +234,8 @@
         !is.null(t_choice$`function`) && t_choice$`function`$name %in% c("inclusion_decision", "inclusion_decision_binary")) detailed_for_wrapper <- TRUE
   }
 
+  conf_for_wrapper <- is.list(tool) && length(tool) > 0 && "confidence" %in% names(tool[[1]]$`function`$parameters$properties)
+
   # Allocate columns
   t_info_wrapper <- if (time_inf) NA_real_ else NULL
   p_tokens_wrapper <- if (token_inf) NA_real_ else NULL
@@ -230,6 +248,7 @@
       decision_binary = NA_real_
     )
     if (is_detailed) error_list$detailed_description <- NA_character_
+    if (conf_for_wrapper) error_list$confidence <- NA_real_
     if (token_inf) {
       error_list$prompt_tokens <- p_tokens_wrapper
       error_list$completion_tokens <- c_tokens_wrapper
@@ -238,6 +257,7 @@
       df <- tibble::as_tibble(error_list)
     if (is_detailed && !"detailed_description" %in% names(df)) df$detailed_description <- NA_character_
     if (is_detailed) df <- df |> dplyr::relocate(detailed_description, .after = decision_binary)
+    if (conf_for_wrapper) df <- df |> dplyr::relocate(confidence, .after = decision_binary)
     if (!token_inf && "prompt_tokens" %in% names(df)) df <- df |> dplyr::select(-prompt_tokens)
     if (!token_inf && "completion_tokens" %in% names(df)) df <- df |> dplyr::select(-completion_tokens)
     if (!time_inf && "run_time" %in% names(df)) df <- df |> dplyr::select(-run_time)
@@ -353,6 +373,21 @@
       .by = c(studyid:topp)
     )
   
+  # Average confidence across the repeated answers
+  if ("confidence" %in% names(answer_data)){
+    conf_dat_sum <-
+      answer_data |>
+      dplyr::summarise(
+        mean_confidence = mean(confidence, na.rm = TRUE),
+        .by = c(studyid:topp)
+      )
+
+    sum_dat <-
+      dplyr::left_join(sum_dat, conf_dat_sum, by = c("studyid", "promptid", "prompt", "model", "topp")) |>
+      suppressMessages() |>
+      dplyr::relocate(mean_confidence, .after = final_decision_gpt_num)
+  }
+
   # If detailed description is present, extract the longest answer among those
   if ("detailed_description" %in% names(answer_data)){
     long_answer_dat_sum <-

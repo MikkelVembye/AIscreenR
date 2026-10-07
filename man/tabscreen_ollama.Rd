@@ -10,7 +10,7 @@ api_url = "http://127.0.0.1:11434/api/chat", ..., model, role = "user",
 tools = NULL, tool_choice = NULL, context_length = NULL, top_p = 1,
 time_info = TRUE, max_tries = 16, max_seconds = NULL, backoff = NULL,
 after = NULL, reps = 1, seed_par = NULL, progress = TRUE,
-decision_description = FALSE, overinclusive = TRUE, messages = TRUE,
+decision_description = FALSE, overinclusive = TRUE, confidence = FALSE, messages = TRUE,
 incl_cutoff_upper = NULL, incl_cutoff_lower = NULL, force = FALSE)
 }
 \arguments{
@@ -90,6 +90,11 @@ If \code{FALSE}, the default function calling setup will not allow for uncertain
 will only return binary decisions (i.e., "1" or "0"). This argument only affects the default
 function calling setup.}
 
+\item{confidence}{Logical indicating whether the model should also report how confident it is in each decision.
+If \code{TRUE}, a \code{confidence} variable (0 = not confident at all, 100 = completely confident) is added to the
+output. When \code{reps > 1}, the aggregated data contains \code{mean_confidence}. Default is \code{FALSE}. This argument only
+affects the default function calling setup, and is ignored if you provide your own \code{tools}.}
+
 \item{messages}{Logical indicating whether to print messages embedded in the function.
 Default is \code{TRUE}.}
 
@@ -145,6 +150,7 @@ The \code{answer_data_aggregated} data (only present when reps > 1) contains the
 \bold{longest_answer}  \tab \code{character} \tab indicating the longest response obtained
 across multiple repeated responses on the same title and abstract. Only included if the detailed function
 is used. See 'Examples' below for how to use this function. \cr
+\bold{mean_confidence}  \tab \code{numeric} \tab indicating the average confidence across the repeated responses. ONLY included when \code{confidence = TRUE}. \cr
 \bold{reps}  \tab \code{integer}  \tab indicating the number of times the same question has been sent to OLLAMA models. \cr
 \bold{n_mis_answers} \tab \code{integer} \tab indicating the number of missing responses. \cr
 }
@@ -165,6 +171,7 @@ The \code{answer_data} data contains the following mandatory variables:
 Only included if the detailed function is used. See 'Examples' below for how to use this function. \cr
 \bold{decision_binary}  \tab \code{integer} \tab indicating the binary decision,
 that is 1 for inclusion and 0 for exclusion. 1.1 decision are coded equal to 1 in this case. \cr
+\bold{confidence}  \tab \code{numeric} \tab indicating how confident the model is in its decision, from 0 (not confident at all) to 100 (completely confident). ONLY included when \code{confidence = TRUE}. \cr
 \bold{run_time}  \tab \code{numeric} \tab indicating the time it took to obtain a response from the server for the given request. \cr
 \bold{n} \tab \code{integer} \tab indicating request ID.  \cr
 }

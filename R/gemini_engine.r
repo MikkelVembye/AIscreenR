@@ -20,6 +20,10 @@
     # Declarations are nested under tools -> functionDeclarations.
     detailed <- body$tools[[1]]$functionDeclarations[[1]]$name == "inclusion_decision"
 
+    # Logical argument indicating whether a confidence score is requested
+    conf <- "confidence" %in% names(body$tools[[1]]$functionDeclarations[[1]]$parameters$properties)
+    conf_na <- if (conf) NA_real_ else NULL
+
     # Indicates how the detailed description variable is handled when the function
     # error and the detailed function is called vs not called.
     detail_desc <- if(detailed) NA_character_ else NULL
@@ -109,6 +113,7 @@
           res <- tibble::tibble(
             decision_gpt = tib_text[1],
             decision_binary = NA_real_,
+            confidence = conf_na,
             detailed_description = detail_desc,
             prompt_tokens = p_tokens,
             completion_tokens = c_tokens,
@@ -152,6 +157,14 @@
             dplyr::relocate(detailed_description, .after = decision_binary)
         }
 
+        if (conf) {
+          if (!"confidence" %in% names(res)) res$confidence <- NA_real_
+          res <-
+            res |>
+            dplyr::mutate(confidence = suppressWarnings(as.numeric(confidence))) |>
+            dplyr::relocate(confidence, .after = decision_binary)
+        }
+
 
       } else {
         # Condition when HTTP response is NOT 200
@@ -159,6 +172,7 @@
         res <- tibble::tibble(
           decision_gpt = error_message(),
           decision_binary = NA_real_,
+          confidence = conf_na,
           detailed_description = detail_desc,
           prompt_tokens = NA_real_,
           completion_tokens = NA_real_,
@@ -174,6 +188,7 @@
       res <- tibble::tibble(
         decision_gpt = "Error: Could not reach host [check internet connection]",
         decision_binary = NA_real_,
+        confidence = conf_na,
         detailed_description = detail_desc,
         prompt_tokens = NA_real_,
         completion_tokens = NA_real_,

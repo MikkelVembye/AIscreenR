@@ -425,3 +425,453 @@ tools_detailed_binary_claude <- list(
     )
   )
 )
+
+
+#----------------------------------------------------------------
+# Function calls including a confidence score
+#----------------------------------------------------------------
+
+confidence_description <- paste0(
+  "How confident are you in your decision? ",
+  "Give a number from 0 (not confident at all) to 100 (completely confident)."
+)
+
+#----------------------------------------------------------------
+# Overinclusive GPT function calls with confidence
+#----------------------------------------------------------------
+
+tools_simple_conf <- list(
+  list(
+    type = "function",
+    "function" = list(
+      name = "inclusion_decision_simple",
+      description = inclusion_decision_description,
+      strict = TRUE,
+      parameters = list(
+        type = "object",
+        properties = list(
+          decision_gpt = list(
+            type = "string",
+            description = "1=Include, 0=Exclude, 1.1=Uncertain",
+            enum = list("1", "0", "1.1")
+          ),
+          confidence = list(
+            type = "number",
+            description = confidence_description
+          )
+        ),
+        required = list("decision_gpt", "confidence"),
+        additionalProperties = FALSE
+      )
+    )
+  )
+)
+
+tools_detailed_conf <- list(
+  list(
+    type = "function",
+    "function" = list(
+      name = "inclusion_decision",
+      description = inclusion_decision_description,
+      strict = TRUE,
+      parameters = list(
+        type = "object",
+        properties = list(
+          decision_gpt = list(
+            type = "string",
+            description = "1=Include, 0=Exclude, 1.1=Uncertain",
+            enum = list("1", "0", "1.1")
+          ),
+          detailed_description = list(
+            type = "string",
+            description = detailed_description_description
+          ),
+          confidence = list(
+            type = "number",
+            description = confidence_description
+          )
+        ),
+        required = list("decision_gpt", "detailed_description", "confidence"),
+        additionalProperties = FALSE
+      )
+    )
+  )
+)
+
+#----------------------------------------------------------------
+# Binary GPT function calls with confidence
+#----------------------------------------------------------------
+
+tools_simple_binary_conf <- list(
+  list(
+    type = "function",
+    "function" = list(
+      name = "inclusion_decision_simple_binary",
+      description = inclusion_decision_description_binary,
+      strict = TRUE,
+      parameters = list(
+        type = "object",
+        properties = list(
+          decision_gpt = list(
+            type = "string",
+            description = "1=Include, 0=Exclude",
+            enum = list("1", "0")
+          ),
+          confidence = list(
+            type = "number",
+            description = confidence_description
+          )
+        ),
+        required = list("decision_gpt", "confidence"),
+        additionalProperties = FALSE
+      )
+    )
+  )
+)
+
+tools_detailed_binary_conf <- list(
+  list(
+    type = "function",
+    "function" = list(
+      name = "inclusion_decision_binary",
+      description = inclusion_decision_description_binary,
+      strict = TRUE,
+      parameters = list(
+        type = "object",
+        properties = list(
+          decision_gpt = list(
+            type = "string",
+            description = "1=Include, 0=Exclude",
+            enum = list("1", "0")
+          ),
+          detailed_description = list(
+            type = "string",
+            description = detailed_description_description_binary
+          ),
+          confidence = list(
+            type = "number",
+            description = confidence_description
+          )
+        ),
+        required = list("decision_gpt", "detailed_description", "confidence"),
+        additionalProperties = FALSE
+      )
+    )
+  )
+)
+
+#----------------------------------------------------------------
+# GROQ function calling with confidence
+#----------------------------------------------------------------
+
+tools_simple_groq_conf <- list(
+  list(
+    type = "function",
+    "function" = list(
+      name = "inclusion_decision_simple",
+      description = inclusion_decision_description,
+      parameters = list(
+        type = "object",
+        properties = list(
+          decision_gpt = list(
+            type = "string",
+            description = "1=Include, 0=Exclude, 1.1=Uncertain",
+            enum = list("1", "0", "1.1")
+          ),
+          confidence = list(
+            type = "number",
+            description = confidence_description
+          )
+        ),
+        required = list("decision_gpt", "confidence"),
+        additionalProperties = FALSE
+      )
+    )
+  )
+)
+
+tools_detailed_groq_conf <- list(
+  list(
+    type = "function",
+    "function" = list(
+      name = "inclusion_decision",
+      description = inclusion_decision_description,
+      parameters = list(
+        type = "object",
+        properties = list(
+          decision_gpt = list(
+            type = "string",
+            description = "1=Include, 0=Exclude, 1.1=Uncertain",
+            enum = list("1", "0", "1.1")
+          ),
+          detailed_description = list(
+            type = "string",
+            description = "List the detailed description of your inclusion decision. IMPORTANT: This must match the logic of your decision_gpt exactly."
+          ),
+          confidence = list(
+            type = "number",
+            description = confidence_description
+          )
+        ),
+        required = list("decision_gpt", "detailed_description", "confidence"),
+        additionalProperties = FALSE
+      )
+    )
+  )
+)
+
+tools_simple_binary_groq_conf <- list(
+  list(
+    type = "function",
+    "function" = list(
+      name = "inclusion_decision_simple_binary",
+      description = inclusion_decision_description_binary,
+      parameters = list(
+        type = "object",
+        properties = list(
+          decision_gpt = list(
+            type = "string",
+            description = "1=Include, 0=Exclude",
+            enum = list("1", "0")
+          ),
+          confidence = list(
+            type = "number",
+            description = confidence_description
+          )
+        ),
+        required = list("decision_gpt", "confidence"),
+        additionalProperties = FALSE
+      )
+    )
+  )
+)
+
+tools_detailed_binary_groq_conf <- list(
+  list(
+    type = "function",
+    "function" = list(
+      name = "inclusion_decision_binary",
+      description = inclusion_decision_description_binary,
+      parameters = list(
+        type = "object",
+        properties = list(
+          decision_gpt = list(
+            type = "string",
+            description = "1=Include, 0=Exclude",
+            enum = list("1", "0")
+          ),
+          detailed_description = list(
+            type = "string",
+            description = "List the detailed description of your inclusion decision. IMPORTANT: This must match the logic of your decision_gpt exactly."
+          ),
+          confidence = list(
+            type = "number",
+            description = confidence_description
+          )
+        ),
+        required = list("decision_gpt", "detailed_description", "confidence"),
+        additionalProperties = FALSE
+      )
+    )
+  )
+)
+
+#----------------------------------------------------------------
+# Gemini function calling with confidence
+#----------------------------------------------------------------
+
+tools_simple_gemini_conf <- list(
+  list(
+    name = "inclusion_decision_simple",
+    description = inclusion_decision_description,
+    parameters = list(
+      type = "object",
+      properties = list(
+        decision_gpt = list(
+          type = "string",
+          description = "1=Include, 0=Exclude, 1.1=Uncertain",
+          enum = list("1", "0", "1.1")
+        ),
+        confidence = list(
+          type = "number",
+          description = confidence_description
+        )
+      ),
+      required = list("decision_gpt", "confidence")
+    )
+  )
+)
+
+tools_detailed_gemini_conf <- list(
+  list(
+    name = "inclusion_decision",
+    description = inclusion_decision_description,
+    parameters = list(
+      type = "object",
+      properties = list(
+        decision_gpt = list(
+          type = "string",
+          description = "1=Include, 0=Exclude, 1.1=Uncertain",
+          enum = list("1", "0", "1.1")
+        ),
+        detailed_description = list(
+          type = "string",
+          description = detailed_description_description
+        ),
+        confidence = list(
+          type = "number",
+          description = confidence_description
+        )
+      ),
+      required = list("decision_gpt", "detailed_description", "confidence")
+    )
+  )
+)
+
+tools_simple_binary_gemini_conf <- list(
+  list(
+    name = "inclusion_decision_simple_binary",
+    description = inclusion_decision_description_binary,
+    parameters = list(
+      type = "object",
+      properties = list(
+        decision_gpt = list(
+          type = "string",
+          description = "1=Include, 0=Exclude",
+          enum = list("1", "0")
+        ),
+        confidence = list(
+          type = "number",
+          description = confidence_description
+        )
+      ),
+      required = list("decision_gpt", "confidence")
+    )
+  )
+)
+
+tools_detailed_binary_gemini_conf <- list(
+  list(
+    name = "inclusion_decision_binary",
+    description = inclusion_decision_description_binary,
+    parameters = list(
+      type = "object",
+      properties = list(
+        decision_gpt = list(
+          type = "string",
+          description = "1=Include, 0=Exclude",
+          enum = list("1", "0")
+        ),
+        detailed_description = list(
+          type = "string",
+          description = detailed_description_description_binary
+        ),
+        confidence = list(
+          type = "number",
+          description = confidence_description
+        )
+      ),
+      required = list("decision_gpt", "detailed_description", "confidence")
+    )
+  )
+)
+
+#----------------------------------------------------------------
+# Anthropic-specific function calls (for Claude) with confidence
+#----------------------------------------------------------------
+
+tools_simple_claude_conf <- list(
+  list(
+    name = "inclusion_decision_simple",
+    description = inclusion_decision_description,
+    input_schema = list(
+      type = "object",
+      properties = list(
+        decision_gpt = list(
+          type = "string",
+          description = "1=Include, 0=Exclude, 1.1=Uncertain",
+          enum = list("1", "0", "1.1")
+        ),
+        confidence = list(
+          type = "number",
+          description = confidence_description
+        )
+      ),
+      required = list("decision_gpt", "confidence")
+    )
+  )
+)
+
+tools_detailed_claude_conf <- list(
+  list(
+    name = "inclusion_decision",
+    description = inclusion_decision_description,
+    input_schema = list(
+      type = "object",
+      properties = list(
+        decision_gpt = list(
+          type = "string",
+          description = "1=Include, 0=Exclude, 1.1=Uncertain",
+          enum = list("1", "0", "1.1")
+        ),
+        detailed_description = list(
+          type = "string",
+          description = detailed_description_description
+        ),
+        confidence = list(
+          type = "number",
+          description = confidence_description
+        )
+      ),
+      required = list("decision_gpt", "detailed_description", "confidence")
+    )
+  )
+)
+
+tools_simple_binary_claude_conf <- list(
+  list(
+    name = "inclusion_decision_simple_binary",
+    description = inclusion_decision_description_binary,
+    input_schema = list(
+      type = "object",
+      properties = list(
+        decision_gpt = list(
+          type = "string",
+          description = "1=Include, 0=Exclude",
+          enum = list("1", "0")
+        ),
+        confidence = list(
+          type = "number",
+          description = confidence_description
+        )
+      ),
+      required = list("decision_gpt", "confidence")
+    )
+  )
+)
+
+tools_detailed_binary_claude_conf <- list(
+  list(
+    name = "inclusion_decision_binary",
+    description = inclusion_decision_description_binary,
+    input_schema = list(
+      type = "object",
+      properties = list(
+        decision_gpt = list(
+          type = "string",
+          description = "1=Include, 0=Exclude",
+          enum = list("1", "0")
+        ),
+        detailed_description = list(
+          type = "string",
+          description = "List the detailed description of your inclusion decision. IMPORTANT: This must match the logic of your decision_gpt exactly."
+        ),
+        confidence = list(
+          type = "number",
+          description = confidence_description
+        )
+      ),
+      required = list("decision_gpt", "detailed_description", "confidence")
+    )
+  )
+)

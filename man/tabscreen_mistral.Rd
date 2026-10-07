@@ -12,7 +12,7 @@ tabscreen_mistral(data, prompt, studyid, title, abstract,
   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
   decision_description = FALSE, messages = TRUE, incl_cutoff_upper = NULL,
   incl_cutoff_lower = NULL, force = FALSE, custom_model = FALSE,
-  reasoning_effort = "none", overinclusive = TRUE, ...)
+  reasoning_effort = "none", overinclusive = TRUE, confidence = FALSE, ...)
 }
 \arguments{
 \item{data}{Dataset containing the titles and abstracts.}
@@ -134,6 +134,11 @@ If \code{FALSE}, the default function calling setup will not allow for uncertain
 will only return binary decisions (i.e., "1" or "0"). This argument only affects the default
 function calling setup.}
 
+\item{confidence}{Logical indicating whether the model should also report how confident it is in each decision.
+If \code{TRUE}, a \code{confidence} variable (0 = not confident at all, 100 = completely confident) is added to the
+output. When \code{reps > 1}, the aggregated data contains \code{mean_confidence}. Default is \code{FALSE}. This argument only
+affects the default function calling setup, and is ignored if you provide your own \code{tools}.}
+
 \item{...}{Further argument to pass to the request body.
 See \url{https://docs.mistral.ai/api}.}
 }
@@ -182,6 +187,7 @@ The \code{answer_data} data contains the following \emph{mandatory} variables:
 ONLY included if the detailed function calling function is used. See 'Examples' below for how to use this function. \cr
 \bold{decision_binary}  \tab \code{integer} \tab indicating the binary gpt decision,
 that is 1 for inclusion and 0 for exclusion. 1.1 decision are coded equal to 1 in this case. \cr
+\bold{confidence}  \tab \code{numeric} \tab indicating how confident the model is in its decision, from 0 (not confident at all) to 100 (completely confident). ONLY included when \code{confidence = TRUE}. \cr
 \bold{prompt_tokens}  \tab \code{integer} \tab indicating the number of prompt tokens sent to the server for the given request. \cr
 \bold{completion_tokens}  \tab \code{integer} \tab indicating the number of completion tokens sent to the server for the given request. \cr
 \bold{submodel} \tab \code{character} \tab indicating the exact (sub)model used for screening. \cr
@@ -213,6 +219,7 @@ When the same question is requested multiple times, the \code{answer_data_aggreg
 \bold{longest_answer}  \tab \code{character} \tab indicating the longest gpt response obtained
 across multiple repeated responses on the same title and abstract. Only included when \code{decision_description = TRUE}.
 See 'Examples' below for how to use this function. \cr
+\bold{mean_confidence}  \tab \code{numeric} \tab indicating the average confidence across the repeated responses. ONLY included when \code{confidence = TRUE}. \cr
 \bold{reps}  \tab \code{integer}  \tab indicating the number of times the same question has been sent to Mistral's GPT API models. \cr
 \bold{n_mis_answers} \tab \code{integer} \tab indicating the number of missing responses. \cr
 \bold{submodel} \tab \code{character} \tab indicating the exact (sub)model used for screening. \cr

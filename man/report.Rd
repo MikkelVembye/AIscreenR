@@ -17,7 +17,8 @@ report(
   open = TRUE,
   document_title,
   document_subtitle = "",
-  directory = getwd()
+  directory = getwd(),
+  gpt_confidence
 )
 }
 \arguments{
@@ -46,6 +47,8 @@ report(
 \item{document_subtitle}{Subtitle of the document. Default is an empty string.}
 
 \item{directory}{Directory where the output file will be saved. Default is the current working directory.}
+
+\item{gpt_confidence}{Optional column name for the AI's confidence in its decision.}
 }
 \value{
 An object of class \code{'report'}. The object is a list containing the following components:

@@ -27,6 +27,7 @@
 #' @param directory Directory where the output file will be saved. Default is the current working directory.
 #' @param human_code Column name for the human screening decision (numeric 0/1).
 #' @param final_decision_gpt_num Column name for the final numeric GPT decision (0/1).
+#' @param gpt_confidence Optional column name for the AI's confidence in its decision. 
 #' @importFrom htmltools htmlEscape
 #' 
 #' @return An object of class `'report'`. The object is a list containing the following components:
@@ -67,7 +68,8 @@ report <- function(
     open = TRUE,
     document_title,
     document_subtitle = "",
-    directory = getwd()
+    directory = getwd(),
+    gpt_confidence
 ){
 
   # Error handling for missing arguments
@@ -209,7 +211,14 @@ report <- function(
     gpt_answer <- data |> dplyr::pull({{ gpt_answer }})
     answer_txt <- paste0("-- **Answer (GPT)**: ", gpt_answer, "\n\n")
   }
-  
+
+  if (missing(gpt_confidence)){
+    confidence_txt <- rep("", length(studyid_txt))
+  } else {
+    gpt_confidence <- data |> dplyr::pull({{ gpt_confidence }})
+    confidence_txt <- paste0("-- **Confidence (GPT)**: ", round(gpt_confidence), "\n\n")
+  }
+
   # Keep disagreements first, then agreements, and label each section.
   is_disagreement <- human_code_vec != final_decision_vec
   is_disagreement[is.na(is_disagreement)] <- FALSE
@@ -220,7 +229,7 @@ report <- function(
   is_false_inclusion[is.na(is_false_inclusion)] <- FALSE
 
   comment_text <- rep("*Please add a comment on whether and why you agree with the GPT decision or not:*\n\n&nbsp;\n\n", length(studyid_txt))
-  row_text <- paste0(studyid_txt, title_text, author_txt, year_txt, journal_txt, abs_txt, answer_txt, gpt_num_answer, human_answer, comment_text, model_txt, time_txt)
+  row_text <- paste0(studyid_txt, title_text, author_txt, year_txt, journal_txt, abs_txt, answer_txt, confidence_txt, gpt_num_answer, human_answer, comment_text, model_txt, time_txt)
 
   # Stop early if a single study block is too large for a practical report entry.
   max_entry_bytes <- 50000L

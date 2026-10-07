@@ -32,6 +32,10 @@
 
   detail_desc_default <- if (detailed) NA_character_ else NULL
 
+  # Logical argument indicating whether a confidence score is requested
+  conf <- is.list(body$tools) && length(body$tools) > 0 && "confidence" %in% names(body$tools[[1]]$`function`$parameters$properties)
+  conf_val <- NA_real_
+
   # Determine expected function name for validation
   expected_fn <- NULL
 
@@ -174,6 +178,10 @@
         }
         decision_val <- validate_decision(decision_candidate)
 
+        if (conf && !is.null(func_args$confidence)) {
+          conf_val <- suppressWarnings(as.numeric(func_args$confidence))
+        }
+
         # If detailed description is expected, attempt to extract it from multiple possible keys
         if (detailed) {
           if (!is.null(func_args$detailed_description)) {
@@ -209,8 +217,10 @@
   # Compile results into a tibble, including the decision value, binary mapping, and detailed description if applicable
   res_list <- list(decision_gpt = decision_val, decision_binary = decision_bin_val)
   if (detailed) res_list$detailed_description <- detailed_desc_val
+  if (conf) res_list$confidence <- conf_val
   res <- tibble::as_tibble(res_list) |>
-    dplyr::relocate(tidyselect::any_of("detailed_description"), .after = tidyselect::all_of("decision_binary"))
+    dplyr::relocate(tidyselect::any_of("detailed_description"), .after = tidyselect::all_of("decision_binary")) |>
+    dplyr::relocate(tidyselect::any_of("confidence"), .after = tidyselect::all_of("decision_binary"))
 
   time <- tictoc::toc(quiet = TRUE)
   run_time_val <- round(as.numeric(time$toc - time$tic), 1)
@@ -259,6 +269,8 @@
 
   t_info_wrapper <- if (time_inf) NA_real_ else NULL
 
+  conf_for_wrapper <- is.list(tool) && length(tool) > 0 && "confidence" %in% names(tool[[1]]$`function`$parameters$properties)
+
   create_error_df <- function(is_detailed) {
     error_list <- list(
       decision_gpt = paste0(
@@ -269,10 +281,12 @@
       decision_binary = NA_real_
     )
     if (is_detailed) error_list$detailed_description <- NA_character_
+    if (conf_for_wrapper) error_list$confidence <- NA_real_
     if (time_inf) error_list$run_time <- t_info_wrapper
     df <- tibble::as_tibble(error_list)
     if (is_detailed && !"detailed_description" %in% names(df)) df$detailed_description <- NA_character_
     if (is_detailed) df <- df |> dplyr::relocate(tidyselect::any_of("detailed_description"), .after = tidyselect::all_of("decision_binary"))
+    if (conf_for_wrapper) df <- df |> dplyr::relocate(tidyselect::any_of("confidence"), .after = tidyselect::all_of("decision_binary"))
     if (!time_inf) df <- df |> dplyr::select(-tidyselect::any_of("run_time"))
     df
   }
@@ -380,6 +394,21 @@
       .by = c(studyid:topp)
     )
   
+  # Average confidence across the repeated answers
+  if ("confidence" %in% names(answer_data)){
+    conf_dat_sum <-
+      answer_data |>
+      dplyr::summarise(
+        mean_confidence = mean(confidence, na.rm = TRUE),
+        .by = c(studyid:topp)
+      )
+
+    sum_dat <-
+      dplyr::left_join(sum_dat, conf_dat_sum, by = c("studyid", "promptid", "prompt", "model", "topp")) |>
+      suppressMessages() |>
+      dplyr::relocate(mean_confidence, .after = final_decision_gpt_num)
+  }
+
   # If detailed description is present, extract the longest answer among those
   if ("detailed_description" %in% names(answer_data)){
     long_answer_dat_sum <-
