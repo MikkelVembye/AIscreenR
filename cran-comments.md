@@ -1,21 +1,18 @@
 ## Submission
 
-This is a minor version update of AIscreenR. The package provides functions for conducting title and abstract screening in systematic reviews with AI models, such as OpenAI's GPT (Generative Pre-trained Transformer) API (Application Programming Interface) models. The most substantial changes in this version is that we have: 
+This is a minor version update of AIscreenR. The package provides functions for conducting title and abstract screening in systematic reviews with AI models, such as OpenAI's GPT (Generative Pre-trained Transformer) API (Application Programming Interface) models. The most substantial change in this version is that we have:
 
-1) Adding `tabscreen_mistral()` and `get_api_key_mistral()` functions to screen titles and abstracts using Mistral's API models.
-2) Adding `tabscreen_gemini()` and `get_api_key_gemini()` function to screen titles and abstracts using Gemini's API models.
-3) Adding `tabscreen_claude()` and `get_api_key_anthropic()` function to screen titles and abstracts using Anthropics's API models.
-4) Migrating from chat/completions endpoint to responses for all OpenAI functions in order to use OpenAI's GPT-5.2 and above.
+1) Added `solve_or_guess()` and `rank_one_diagnostic()` to evaluate screening performance without requiring a gold-standard label set.
+2) Fixed `read_ris_to_dataframe()` so it repairs invalid UTF-8 characters to avoid data loss.
 
 
 ## Test environments
 
-* local Windows 10 Enterprise R 4.6.0 
-* ubuntu 20.04.3 LTS (on Github), R devel, release, oldrelease
+* local Windows 11 Enterprise, R 4.6.0
+* ubuntu (on Github), R devel, release, oldrelease
 * macOS-latest (on Github), R release
 * windows-latest (on Github), R release
 * win-builder (devel, release, oldrelease)
-* mac-builder (release)
 
 
 ## R CMD check results
@@ -28,8 +25,7 @@ There was 1 NOTE:
 
   Found the following (possibly) invalid URLs:
   URL: https://psycnet.apa.org/record/2026-37236-001
-    From: man/sample_references.Rd
-          man/tabscreen_claude.Rd
+    From: man/tabscreen_claude.Rd
           man/tabscreen_gemini.Rd
           man/tabscreen_gpt.original.Rd
           man/tabscreen_gpt.tools.Rd
@@ -40,8 +36,8 @@ There was 1 NOTE:
           inst/doc/Using-GPT-API-Models-For-Screening.html
     Status: 403
     Message: Forbidden
+  This is the correct URL.
 
-This is the correct URL
 
 ## revdepcheck results
 
