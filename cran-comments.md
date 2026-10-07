@@ -9,10 +9,11 @@ This is a minor version update of AIscreenR. The package provides functions for 
 ## Test environments
 
 * local Windows 11 Enterprise, R 4.6.0
-* ubuntu (on Github), R devel, release, oldrelease
+* ubuntu 24.04 LTS (on Github), R devel, release, oldrelease
 * macOS-latest (on Github), R release
 * windows-latest (on Github), R release
 * win-builder (devel, release, oldrelease)
+* mac-builder (release)
 
 
 ## R CMD check results
