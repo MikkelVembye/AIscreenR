@@ -28,8 +28,7 @@ report(
   open = TRUE,
   document_title,
   document_subtitle = "",
-  directory = getwd(),
-  gpt_confidence
+  directory = getwd()
 )
 ```
 
@@ -89,10 +88,6 @@ report(
 
   Directory where the output file will be saved. Default is the current
   working directory.
-
-- gpt_confidence:
-
-  Optional column name for the AI's confidence in its decision.
 
 ## Value
 
