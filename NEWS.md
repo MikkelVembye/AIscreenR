@@ -1,4 +1,4 @@
-# AIscreenR 0.5.1
+# AIscreenR 0.5.1.9000
 
 ## New features
 * Adding the `confidence` argument to all `tabscreen_*()` functions. When `confidence = TRUE`, the model also reports how confident it is in each decision (0-100), returned in the new `confidence` variable. When `reps > 1`, the aggregated data also contains `mean_confidence`. The new `gpt_confidence` argument in `report()` includes the confidence in the report.
