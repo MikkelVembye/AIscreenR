@@ -1,7 +1,20 @@
-# AIscreenR 0.5.1.9000
+# AIscreenR 0.6.0
+
+## Major improvements
+* All gpt-4 and gpt-3.5 models (e.g., `gpt-4`, `gpt-4o`, `gpt-4o-mini`, `gpt-4.1`) are deprecated and have been removed from `model_prizes`. `tabscreen_gpt()` and `tabscreen_gpt.tools()` now stop if one of these models is used, also when `custom_model = TRUE`.
+* The `top_p` argument has been removed from `tabscreen_gpt()`, `tabscreen_gpt.tools()`, and `approximate_price_gpt()`, and the `top_p` variable is no longer part of their output. The argument is unchanged for the other providers (Groq, Mistral, Gemini, and Ollama).
+* The default model is now `"gpt-6-luna"` in `tabscreen_gpt()`, `tabscreen_gpt.tools()`, `approximate_price_gpt()`, and `rate_limits_per_minute()`.
+* `reasoning_effort` and `verbosity` are now added to the request body for all gpt-5 and newer models.
+* Refactoring the price calculations. The reasoning token multipliers have been re-measured per model and reasoning effort, and prices are now looked up with a join on `model_prizes`.
+
+## Minor improvements
+* `screen_analyzer()` now also works for data without a `top_p` variable.
+
+
+# AIscreenR 0.5.1
 
 ## New features
-* Adding the `confidence` argument to all `tabscreen_*()` functions. When `confidence = TRUE`, the model also reports how confident it is in each decision (0-100), returned in the new `confidence` variable. When `reps > 1`, the aggregated data also contains `mean_confidence`. The new `gpt_confidence` argument in `report()` includes the confidence in the report.
+* Adding the `confidence` argument to all tabscreen functions. When `confidence = TRUE`, the model also reports how confident it is in each decision (0-100), returned in the new `confidence` variable. When `reps > 1`, the aggregated data also contains `mean_confidence`. The new `gpt_confidence` argument in `report()` includes the confidence in the report.
 
 # AIscreenR 0.5.0
 
