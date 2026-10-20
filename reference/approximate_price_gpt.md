@@ -105,14 +105,14 @@ app_price <- approximate_price_gpt(
 )
 
 app_price
-#> The approximate price of the (simple) screening will be around $0.0024.
+#> The approximate price of the (simple) screening will be around $0.0028.
 app_price$price_dollar
-#> [1] 0.0024
+#> [1] 0.0028
 app_price$price_data
 #> # A tibble: 2 × 8
 #>   promptid model      iterations prompt   completion_tokens input_price_dollar
 #>   <chr>    <chr>           <dbl> <chr>                <dbl>              <dbl>
-#> 1 Prompt 1 gpt-6-luna         10 Prompt 1              544.             0.0014
-#> 2 Prompt 1 gpt-5-nano          1 Prompt 1             1806.             0     
+#> 1 Prompt 1 gpt-6-luna         10 Prompt 1              732.             0.0014
+#> 2 Prompt 1 gpt-5-nano          1 Prompt 1             2543.             0     
 #> # ℹ 2 more variables: output_price_dollar <dbl>, total_price_dollar <dbl>
 ```
