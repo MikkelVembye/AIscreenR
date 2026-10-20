@@ -1,6 +1,6 @@
 # Changelog
 
-## AIscreenR 0.6.0
+## AIscreenR 0.5.2
 
 ### Major improvements
 
