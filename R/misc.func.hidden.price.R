@@ -14,33 +14,34 @@
 
 # Empirical multipliers used to approximate the reasoning tokens of the gpt models.
 # The multiplier is applied to the average number of completion tokens (.avg_completion_tokens).
-# Measured as mean completion tokens (reasoning included) / 7.05 across 50 references with verbosity = "low".
+# Measured as (mean + 1 sd) of the completion tokens (reasoning included) / 7.05 across 50 references with verbosity = "low".
+# The upper estimate is used so the approximation tends to overestimate rather than underestimate the price.
 # Verbosity is not used since the default (low) is almost always applied.
 .reasoning_multipliers <- function(){
   tibble::tribble(
     ~model_group,    ~reasoning_effort, ~multiplier,
-    "gpt-5-nano",    "low",             40.40,
-    "gpt-5-nano",    "medium",          128.11,
-    "gpt-5-nano",    "high",            251.23,
-    "gpt-5-mini",    "low",             17.28,
-    "gpt-5-mini",    "medium",          35.97,
-    "gpt-5-mini",    "high",            98.58,
-    "gpt-5.1",       "low",             8.74,
-    "gpt-5.1",       "medium",          22.78,
-    "gpt-5.1",       "high",            40.26,
-    "gpt-5.4-mini",  "low",             7.40,
-    "gpt-5.4-mini",  "medium",          11.46,
-    "gpt-5.4-mini",  "high",            19.52,
+    "gpt-5-nano",    "low",             52.12,
+    "gpt-5-nano",    "medium",          180.38,
+    "gpt-5-nano",    "high",            323.80,
+    "gpt-5-mini",    "low",             24.65,
+    "gpt-5-mini",    "medium",          48.52,
+    "gpt-5-mini",    "high",            117.20,
+    "gpt-5.1",       "low",             10.85,
+    "gpt-5.1",       "medium",          39.74,
+    "gpt-5.1",       "high",            68.12,
+    "gpt-5.4-mini",  "low",             9.70,
+    "gpt-5.4-mini",  "medium",          12.88,
+    "gpt-5.4-mini",  "high",            25.64,
     "gpt-6-luna",    "low",             3.26,
-    "gpt-6-luna",    "medium",          3.86,
-    "gpt-6-luna",    "high",            11.46,
+    "gpt-6-luna",    "medium",          5.19,
+    "gpt-6-luna",    "high",            18.72,
     "gpt-6-sol",     "low",             3.26,
-    "gpt-6-sol",     "medium",          4.85,
-    "gpt-6-sol",     "high",            5.16,
+    "gpt-6-sol",     "medium",          8.40,
+    "gpt-6-sol",     "high",            8.10,
     # Average of the measured gpt-6 models. Used for gpt-6 models that have not been measured.
     "gpt-6",         "low",             3.26,
-    "gpt-6",         "medium",          4.35,
-    "gpt-6",         "high",            8.31
+    "gpt-6",         "medium",          6.80,
+    "gpt-6",         "high",            13.41
   )
 }
 
