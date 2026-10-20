@@ -17,7 +17,7 @@ this will increase the completion tokens with an unknown amount."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">AIscreenR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.5.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,12 +68,10 @@ this will increase the completion tokens with an unknown amount.</p>
 <span>  <span class="va">studyid</span>,</span>
 <span>  <span class="va">title</span>,</span>
 <span>  <span class="va">abstract</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"gpt-4o-mini"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"gpt-6-luna"</span>,</span>
 <span>  reps <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  top_p <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  token_word_ratio <span class="op">=</span> <span class="fl">1.6</span>,</span>
-<span>  reasoning_effort <span class="op">=</span> <span class="st">"medium"</span>,</span>
-<span>  verbosity <span class="op">=</span> <span class="st">"low"</span></span>
+<span>  reasoning_effort <span class="op">=</span> <span class="st">"medium"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -104,7 +102,8 @@ automatically.</p></dd>
 
 <dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
 <dd><p>Character string with the name of the completion model. Can take
-multiple models, including gpt-4 models. Default = <code>"gpt-4o-mini"</code>.
+multiple models. Default = <code>"gpt-6-luna"</code>. Be aware that gpt-4 and gpt-3.5 models
+are deprecated and can no longer be used.
 Find available model at
 <a href="https://developers.openai.com/api/docs/models" class="external-link">https://developers.openai.com/api/docs/models</a>.</p></dd>
 
@@ -112,17 +111,8 @@ Find available model at
 <dt id="arg-reps">reps<a class="anchor" aria-label="anchor" href="#arg-reps"></a></dt>
 <dd><p>Numerical value indicating the number of times the same
 question should be sent to the GPT server. This can be useful to test consistency
-between answers. Default is <code>1</code> but when using gpt-3.5-turbo or gpt-4o-mini models, we recommend setting this
+between answers. Default is <code>1</code> but when using cheaper models, we recommend setting this
 value to <code>10</code>.</p></dd>
-
-
-<dt id="arg-top-p">top_p<a class="anchor" aria-label="anchor" href="#arg-top-p"></a></dt>
-<dd><p>'An alternative to sampling with temperature, called nucleus sampling,
-where the model considers the results of the tokens with top_p probability mass.
-So 0.1 means only the tokens comprising the top 10% probability mass are considered.
-We generally recommend altering this or temperature but not both.' (OPEN-AI). Default is 1.
-Find documentation at
-<a href="https://developers.openai.com/api/reference/resources/chat#chat/create-top_p" class="external-link">https://developers.openai.com/api/reference/resources/chat#chat/create-top_p</a>.</p></dd>
 
 
 <dt id="arg-token-word-ratio">token_word_ratio<a class="anchor" aria-label="anchor" href="#arg-token-word-ratio"></a></dt>
@@ -132,12 +122,8 @@ Default is <code>1.6</code> which we empirically have found to be the average nu
 
 <dt id="arg-reasoning-effort">reasoning_effort<a class="anchor" aria-label="anchor" href="#arg-reasoning-effort"></a></dt>
 <dd><p>Character string indicating the level of reasoning effort required for the task. Default is <code>"medium"</code>.
-Can take the values <code>"low"</code>, <code>"medium"</code>, and <code>"high"</code>. Only applicable for gpt-5 models.</p></dd>
-
-
-<dt id="arg-verbosity">verbosity<a class="anchor" aria-label="anchor" href="#arg-verbosity"></a></dt>
-<dd><p>Character string indicating the level of verbosity in the model's responses. Default is <code>"low"</code>.
-Can take the values <code>"low"</code>, <code>"medium"</code>, and <code>"high"</code>. Only applicable for gpt-5 models.</p></dd>
+Can take the values <code>"low"</code>, <code>"medium"</code>, and <code>"high"</code>. Only applicable for gpt models.
+Used to approximate the reasoning tokens. The approximation is based on measured reasoning token use with the default verbosity (<code>"low"</code>).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -162,20 +148,20 @@ components:</p>
 <span class="r-in"><span>  studyid <span class="op">=</span> <span class="va">studyid</span>,</span></span>
 <span class="r-in"><span>  title <span class="op">=</span> <span class="va">title</span>,</span></span>
 <span class="r-in"><span>  abstract <span class="op">=</span> <span class="va">abstract</span>,</span></span>
-<span class="r-in"><span>  model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-4o-mini"</span>, <span class="st">"gpt-4"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-6-luna"</span>, <span class="st">"gpt-5-nano"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  reps <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">app_price</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> The approximate price of the (simple) screening will be around $0.0469.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> The approximate price of the (simple) screening will be around $0.0024.</span>
 <span class="r-in"><span><span class="va">app_price</span><span class="op">$</span><span class="va">price_dollar</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0469</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0024</span>
 <span class="r-in"><span><span class="va">app_price</span><span class="op">$</span><span class="va">price_data</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   promptid model       iterations prompt   completion_tokens input_price_dollar</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Prompt 1 gpt-4o-mini         10 Prompt 1              155.             0.002<span style="text-decoration: underline;">2</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> Prompt 1 gpt-4                1 Prompt 1              155.             0.043<span style="text-decoration: underline;">8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   promptid model      iterations prompt   completion_tokens input_price_dollar</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Prompt 1 gpt-6-luna         10 Prompt 1              544.             0.001<span style="text-decoration: underline;">4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> Prompt 1 gpt-5-nano          1 Prompt 1             <span style="text-decoration: underline;">1</span>806.             0     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2 more variables: output_price_dollar &lt;dbl&gt;, total_price_dollar &lt;dbl&gt;</span></span>
 </code></pre></div>
     </div>

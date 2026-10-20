@@ -212,10 +212,8 @@ tabscreen_gemini(data, prompt, studyid, title, abstract,
 - force:
 
   Logical argument indicating whether to force the function to use more
-  than 10 iterations for gpt-3.5 models and more than 1 iteration for
-  gpt-4 models other than gpt-4o-mini. This argument is developed to
-  avoid the conduct of wrong and extreme sized screening. Default is
-  `FALSE`.
+  than 10 iterations. This argument is developed to avoid the conduct of
+  wrong and extreme sized screening. Default is `FALSE`.
 
 - custom_model:
 

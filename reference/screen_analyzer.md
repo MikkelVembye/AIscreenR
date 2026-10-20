@@ -43,7 +43,7 @@ the following variables:
 | **promptid** | `integer` | indicating the prompt ID. |
 | **model** | `character` | indicating the specific gpt-model used. |
 | **reps** | `integer` | indicating the number of times the same question was sent to GPT server. |
-| **top_p** | `numeric` | indicating the applied top_p. |
+| **top_p** | `numeric` | indicating the applied top_p. Only included for providers that apply top_p. |
 | **n_screened** | `integer` | indicating the number of screened references. |
 | **n_missing** | `numeric` | indicating the number of missing responses. |
 | **n_refs** | `integer` | indicating the total number of references expected to be screened for the given condition. |

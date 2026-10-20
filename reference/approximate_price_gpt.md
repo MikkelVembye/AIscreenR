@@ -17,12 +17,10 @@ approximate_price_gpt(
   studyid,
   title,
   abstract,
-  model = "gpt-4o-mini",
+  model = "gpt-6-luna",
   reps = 1,
-  top_p = 1,
   token_word_ratio = 1.6,
-  reasoning_effort = "medium",
-  verbosity = "low"
+  reasoning_effort = "medium"
 )
 ```
 
@@ -51,27 +49,16 @@ approximate_price_gpt(
 - model:
 
   Character string with the name of the completion model. Can take
-  multiple models, including gpt-4 models. Default = `"gpt-4o-mini"`.
-  Find available model at
-  <https://developers.openai.com/api/docs/models>.
+  multiple models. Default = `"gpt-6-luna"`. Be aware that gpt-4 and
+  gpt-3.5 models are deprecated and can no longer be used. Find
+  available model at <https://developers.openai.com/api/docs/models>.
 
 - reps:
 
   Numerical value indicating the number of times the same question
   should be sent to the GPT server. This can be useful to test
-  consistency between answers. Default is `1` but when using
-  gpt-3.5-turbo or gpt-4o-mini models, we recommend setting this value
-  to `10`.
-
-- top_p:
-
-  'An alternative to sampling with temperature, called nucleus sampling,
-  where the model considers the results of the tokens with top_p
-  probability mass. So 0.1 means only the tokens comprising the top 10%
-  probability mass are considered. We generally recommend altering this
-  or temperature but not both.' (OPEN-AI). Default is 1. Find
-  documentation at
-  <https://developers.openai.com/api/reference/resources/chat#chat/create-top_p>.
+  consistency between answers. Default is `1` but when using cheaper
+  models, we recommend setting this value to `10`.
 
 - token_word_ratio:
 
@@ -83,13 +70,9 @@ approximate_price_gpt(
 
   Character string indicating the level of reasoning effort required for
   the task. Default is `"medium"`. Can take the values `"low"`,
-  `"medium"`, and `"high"`. Only applicable for gpt-5 models.
-
-- verbosity:
-
-  Character string indicating the level of verbosity in the model's
-  responses. Default is `"low"`. Can take the values `"low"`,
-  `"medium"`, and `"high"`. Only applicable for gpt-5 models.
+  `"medium"`, and `"high"`. Only applicable for gpt models. Used to
+  approximate the reasoning tokens. The approximation is based on
+  measured reasoning token use with the default verbosity (`"low"`).
 
 ## Value
 
@@ -117,19 +100,19 @@ app_price <- approximate_price_gpt(
   studyid = studyid,
   title = title,
   abstract = abstract,
-  model = c("gpt-4o-mini", "gpt-4"),
+  model = c("gpt-6-luna", "gpt-5-nano"),
   reps = c(10, 1)
 )
 
 app_price
-#> The approximate price of the (simple) screening will be around $0.0469.
+#> The approximate price of the (simple) screening will be around $0.0024.
 app_price$price_dollar
-#> [1] 0.0469
+#> [1] 0.0024
 app_price$price_data
 #> # A tibble: 2 × 8
-#>   promptid model       iterations prompt   completion_tokens input_price_dollar
-#>   <chr>    <chr>            <dbl> <chr>                <dbl>              <dbl>
-#> 1 Prompt 1 gpt-4o-mini         10 Prompt 1              155.             0.0022
-#> 2 Prompt 1 gpt-4                1 Prompt 1              155.             0.0438
+#>   promptid model      iterations prompt   completion_tokens input_price_dollar
+#>   <chr>    <chr>           <dbl> <chr>                <dbl>              <dbl>
+#> 1 Prompt 1 gpt-6-luna         10 Prompt 1              544.             0.0014
+#> 2 Prompt 1 gpt-5-nano          1 Prompt 1             1806.             0     
 #> # ℹ 2 more variables: output_price_dollar <dbl>, total_price_dollar <dbl>
 ```

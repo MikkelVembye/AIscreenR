@@ -8,20 +8,21 @@ completion models, including fine-tuned versions. The function enables
 title and abstract screening across multiple prompts, with repeated
 questions to assess consistency across responses. All of this can be
 performed in parallel. The function utilizes function calling, which is
-invoked via the tools argument in the request body. This is the main
-difference between `tabscreen_gpt.tools()` and
-[`tabscreen_gpt.original()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.original.md).
-Function calls ensure more reliable and consistent responses to users'
-requests. See [Vembye, Christensen, Mølgaard, and Schytt.
-(2025)](https://psycnet.apa.org/record/2026-37236-001) for guidance on
-how adequately to conduct title and abstract screening with GPT models.
+invoked via the tools argument in the request body. Function calls
+ensure more reliable and consistent responses to users' requests. This
+function uses the chat completions endpoint. See
+[`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md)
+for the responses endpoint. See [Vembye, Christensen, Mølgaard, and
+Schytt. (2025)](https://psycnet.apa.org/record/2026-37236-001) for
+guidance on how adequately to conduct title and abstract screening with
+GPT models.
 
 ## Usage
 
 ``` r
 tabscreen_gpt.tools(data, prompt, studyid, title, abstract,
-  api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-4o-mini",
-  role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
+  api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-6-luna",
+  role = "user", tools = NULL, tool_choice = NULL,
   time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
   max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
@@ -61,8 +62,9 @@ tabscreen_gpt.tools(data, prompt, studyid, title, abstract,
 - model:
 
   Character string with the name of the completion model. Can take
-  multiple models. Default is the latest `"gpt-4o-mini"`. Find available
-  model at <https://developers.openai.com/api/docs/models>.
+  multiple models. Default is `"gpt-6-luna"`. Be aware that gpt-4 and
+  gpt-3.5 models are deprecated and can no longer be used. Find
+  available model at <https://developers.openai.com/api/docs/models>.
 
 - role:
 
@@ -82,16 +84,6 @@ tabscreen_gpt.tools(data, prompt, studyid, title, abstract,
   to `NULL` when using a customized function, the default is `"auto"`.
   See
   <https://developers.openai.com/api/reference/resources/chat#chat-create-tool_choice>.
-
-- top_p:
-
-  'An alternative to sampling with temperature, called nucleus sampling,
-  where the model considers the results of the tokens with top_p
-  probability mass. So 0.1 means only the tokens comprising the top 10%
-  probability mass are considered. We generally recommend altering this
-  or temperature but not both.' (OpenAI). Default is 1. Find
-  documentation at
-  <https://developers.openai.com/api/reference/resources/chat#chat/create-top_p>.
 
 - time_info:
 
@@ -165,9 +157,8 @@ tabscreen_gpt.tools(data, prompt, studyid, title, abstract,
   should be send to the server. This can be useful to test consistency
   between answers, and/or can be used to make inclusion judgments based
   on how many times a study has been included across a the given number
-  of screenings. Default is `1` but when using gpt-3.5-turbo models or
-  gpt-4o-mini, we recommend setting this value to `10` to catch model
-  uncertainty.
+  of screenings. Default is `1` but when using cheaper models, we
+  recommend setting this value to `10` to catch model uncertainty.
 
 - seed_par:
 
@@ -217,10 +208,8 @@ tabscreen_gpt.tools(data, prompt, studyid, title, abstract,
 - force:
 
   Logical argument indicating whether to force the function to use more
-  than 10 iterations for gpt-3.5 models and more than 1 iteration for
-  gpt-4 models other than gpt-4o-mini. This argument is developed to
-  avoid the conduct of wrong and extreme sized screening. Default is
-  `FALSE`.
+  than 10 iterations. This argument is developed to avoid the conduct of
+  wrong and extreme sized screening. Default is `FALSE`.
 
 - custom_model:
 
@@ -325,7 +314,6 @@ The `answer_data` data contains the following *mandatory* variables:
 | **model** | `character` | indicating the specific gpt-model used. |
 | **iterations** | `numeric` | indicating the number of times the same question has been sent to OpenAI's GPT API models. |
 | **question** | `character` | indicating the final question sent to OpenAI's GPT API models. |
-| **top_p** | `numeric` | indicating the applied top_p. |
 | **decision_gpt** | `character` | indicating the raw gpt decision - either `"1", "0", "1.1"` for inclusion, exclusion, or uncertainty, respectively. |
 | **detailed_description** | `character` | indicating detailed description of the given decision made by OpenAI's GPT API models. ONLY included if the detailed function calling function is used. See 'Examples' below for how to use this function. |
 | **decision_binary** | `integer` | indicating the binary gpt decision, that is 1 for inclusion and 0 for exclusion. 1.1 decision are coded equal to 1 in this case. |
@@ -355,7 +343,6 @@ variables:
 | **prompt** | `character` | indicating the prompt. |
 | **model** | `character` | indicating the specific gpt-model used. |
 | **question** | `character` | indicating the final question sent to OpenAI's GPT API models. |
-| **top_p** | `numeric` | indicating the applied top_p. |
 | **incl_p** | `numeric` | indicating the probability of inclusion calculated across multiple repeated responses on the same title and abstract. |
 | **final_decision_gpt** | `character` | indicating the final decision reached by gpt - either 'Include', 'Exclude', or 'Check'. |
 | **final_decision_gpt_num** | `integer` | indicating the final numeric decision reached by gpt - either 1 or 0. |

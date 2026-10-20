@@ -44,7 +44,7 @@ solve_or_guess(
 - system_rater_id:
 
   The name of the column in `evaluations` holding the automated/system
-  rater's decisions (e.g. `"gpt-4o-mini"`), coded the same way as the
+  rater's decisions (e.g. `"gpt-6-luna"`), coded the same way as the
   human decision column(s).
 
 - reference_raters:
@@ -160,7 +160,7 @@ res <- tabscreen_gpt(
 
 fit <- solve_or_guess(
   res,
-  system_rater_id = "gpt-4o-mini",
+  system_rater_id = "gpt-6-luna",
   reference_raters = c("human_code_1", "human_code_2"),
   B = 200
 )

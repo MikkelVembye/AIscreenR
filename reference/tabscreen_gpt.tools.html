@@ -6,9 +6,8 @@ Specifically, it allows users to draw on all OpenAI GPT API completion models, i
 The function enables title and abstract screening across multiple prompts, with
 repeated questions to assess consistency across responses. All of this can be performed in parallel.
 The function utilizes function calling, which is invoked via the
-tools argument in the request body. This is the main difference between tabscreen_gpt.tools()
-and tabscreen_gpt.original(). Function calls ensure more reliable and consistent responses to users'
-requests. See Vembye, Christensen, Mølgaard, and Schytt. (2025)
+tools argument in the request body. Function calls ensure more reliable and consistent responses to users'
+requests. This function uses the chat completions endpoint. See tabscreen_gpt() for the responses endpoint. See Vembye, Christensen, Mølgaard, and Schytt. (2025)
 for guidance on how adequately to conduct title and abstract screening with GPT models."><meta property="og:description" content="
 
 This function supports title and abstract screening using GPT API models in R.
@@ -16,9 +15,8 @@ Specifically, it allows users to draw on all OpenAI GPT API completion models, i
 The function enables title and abstract screening across multiple prompts, with
 repeated questions to assess consistency across responses. All of this can be performed in parallel.
 The function utilizes function calling, which is invoked via the
-tools argument in the request body. This is the main difference between tabscreen_gpt.tools()
-and tabscreen_gpt.original(). Function calls ensure more reliable and consistent responses to users'
-requests. See Vembye, Christensen, Mølgaard, and Schytt. (2025)
+tools argument in the request body. Function calls ensure more reliable and consistent responses to users'
+requests. This function uses the chat completions endpoint. See tabscreen_gpt() for the responses endpoint. See Vembye, Christensen, Mølgaard, and Schytt. (2025)
 for guidance on how adequately to conduct title and abstract screening with GPT models."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -27,7 +25,7 @@ for guidance on how adequately to conduct title and abstract screening with GPT 
 
     <a class="navbar-brand me-2" href="../index.html">AIscreenR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.5.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,17 +67,16 @@ Specifically, it allows users to draw on all OpenAI GPT API completion models, i
 The function enables title and abstract screening across multiple prompts, with
 repeated questions to assess consistency across responses. All of this can be performed in parallel.
 The function utilizes function calling, which is invoked via the
-tools argument in the request body. This is the main difference between <code>tabscreen_gpt.tools()</code>
-and <code><a href="tabscreen_gpt.original.html">tabscreen_gpt.original()</a></code>. Function calls ensure more reliable and consistent responses to users'
-requests. See <a href="https://psycnet.apa.org/record/2026-37236-001" class="external-link">Vembye, Christensen, Mølgaard, and Schytt. (2025)</a>
+tools argument in the request body. Function calls ensure more reliable and consistent responses to users'
+requests. This function uses the chat completions endpoint. See <code><a href="tabscreen_gpt.tools_responses.html">tabscreen_gpt()</a></code> for the responses endpoint. See <a href="https://psycnet.apa.org/record/2026-37236-001" class="external-link">Vembye, Christensen, Mølgaard, and Schytt. (2025)</a>
 for guidance on how adequately to conduct title and abstract screening with GPT models.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">tabscreen_gpt.tools</span><span class="op">(</span><span class="va">data</span>, <span class="va">prompt</span>, <span class="va">studyid</span>, <span class="va">title</span>, <span class="va">abstract</span>,</span>
-<span>  api_url <span class="op">=</span> <span class="st">"https://api.openai.com/v1/chat/completions"</span>, model <span class="op">=</span> <span class="st">"gpt-4o-mini"</span>,</span>
-<span>  role <span class="op">=</span> <span class="st">"user"</span>, tools <span class="op">=</span> <span class="cn">NULL</span>, tool_choice <span class="op">=</span> <span class="cn">NULL</span>, top_p <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  api_url <span class="op">=</span> <span class="st">"https://api.openai.com/v1/chat/completions"</span>, model <span class="op">=</span> <span class="st">"gpt-6-luna"</span>,</span>
+<span>  role <span class="op">=</span> <span class="st">"user"</span>, tools <span class="op">=</span> <span class="cn">NULL</span>, tool_choice <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  time_info <span class="op">=</span> <span class="cn">TRUE</span>, token_info <span class="op">=</span> <span class="cn">TRUE</span>, api_key <span class="op">=</span> <span class="fu"><a href="get_api_key.html">get_api_key</a></span><span class="op">(</span><span class="op">)</span>, max_tries <span class="op">=</span> <span class="fl">16</span>,</span>
 <span>  max_seconds <span class="op">=</span> <span class="cn">NULL</span>, is_transient <span class="op">=</span> <span class="va">gpt_is_transient</span>, backoff <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  after <span class="op">=</span> <span class="cn">NULL</span>, rpm <span class="op">=</span> <span class="fl">10000</span>, reps <span class="op">=</span> <span class="fl">1</span>, seed_par <span class="op">=</span> <span class="cn">NULL</span>, progress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -120,7 +117,8 @@ automatically.</p></dd>
 
 <dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
 <dd><p>Character string with the name of the completion model. Can take
-multiple models. Default is the latest <code>"gpt-4o-mini"</code>.
+multiple models. Default is <code>"gpt-6-luna"</code>. Be aware that gpt-4 and gpt-3.5 models
+are deprecated and can no longer be used.
 Find available model at
 <a href="https://developers.openai.com/api/docs/models" class="external-link">https://developers.openai.com/api/docs/models</a>.</p></dd>
 
@@ -140,15 +138,6 @@ Default is <code>NULL</code>. If not specified the default function calls from <
 'controls which (if any) tool is called by the model' (OpenAI). Default is <code>NULL</code>.
 If set to <code>NULL</code> when using a customized function, the default is <code>"auto"</code>.
 See <a href="https://developers.openai.com/api/reference/resources/chat#chat-create-tool_choice" class="external-link">https://developers.openai.com/api/reference/resources/chat#chat-create-tool_choice</a>.</p></dd>
-
-
-<dt id="arg-top-p">top_p<a class="anchor" aria-label="anchor" href="#arg-top-p"></a></dt>
-<dd><p>'An alternative to sampling with temperature, called nucleus sampling,
-where the model considers the results of the tokens with top_p probability mass.
-So 0.1 means only the tokens comprising the top 10% probability mass are considered.
-We generally recommend altering this or temperature but not both.' (OpenAI). Default is 1.
-Find documentation at
-<a href="https://developers.openai.com/api/reference/resources/chat#chat/create-top_p" class="external-link">https://developers.openai.com/api/reference/resources/chat#chat/create-top_p</a>.</p></dd>
 
 
 <dt id="arg-time-info">time_info<a class="anchor" aria-label="anchor" href="#arg-time-info"></a></dt>
@@ -210,7 +199,7 @@ Alternatively, use <code><a href="rate_limits_per_minute.html">rate_limits_per_m
 question should be send to the server. This can be useful to test consistency
 between answers, and/or can be used to make inclusion judgments based on how many times
 a study has been included across a the given number of screenings.
-Default is <code>1</code> but when using gpt-3.5-turbo models or gpt-4o-mini,
+Default is <code>1</code> but when using cheaper models,
 we recommend setting this value to <code>10</code> to catch model uncertainty.</p></dd>
 
 
@@ -255,7 +244,7 @@ Default is <code>NULL</code>, which means that no studies will be flagged for hu
 
 <dt id="arg-force">force<a class="anchor" aria-label="anchor" href="#arg-force"></a></dt>
 <dd><p>Logical argument indicating whether to force the function to use more than
-10 iterations for gpt-3.5 models and more than 1 iteration for gpt-4 models other than gpt-4o-mini.
+10 iterations.
 This argument is developed to avoid the conduct of wrong and extreme sized screening.
 Default is <code>FALSE</code>.</p></dd>
 
@@ -330,7 +319,7 @@ for each title and abstract across multiple repeated questions.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
-    <p>The <code>answer_data</code> data contains the following <em>mandatory</em> variables:</p><table class="table table"><tr><td><b>studyid</b></td><td><code>integer</code></td><td>indicating the study ID of the reference.</td></tr><tr><td><b>title</b></td><td><code>character</code></td><td>indicating the title of the reference.</td></tr><tr><td><b>abstract</b></td><td><code>character</code></td><td>indicating the abstract of the reference.</td></tr><tr><td><b>promptid</b></td><td><code>integer</code></td><td>indicating the prompt ID.</td></tr><tr><td><b>prompt</b></td><td><code>character</code></td><td>indicating the prompt.</td></tr><tr><td><b>model</b></td><td><code>character</code></td><td>indicating the specific gpt-model used.</td></tr><tr><td><b>iterations</b></td><td><code>numeric</code></td><td>indicating the number of times the same question has been sent to OpenAI's GPT API models.</td></tr><tr><td><b>question</b></td><td><code>character</code></td><td>indicating the final question sent to OpenAI's GPT API models.</td></tr><tr><td><b>top_p</b></td><td><code>numeric</code></td><td>indicating the applied top_p.</td></tr><tr><td><b>decision_gpt</b></td><td><code>character</code></td><td>indicating the raw gpt decision - either <code>"1", "0", "1.1"</code> for inclusion, exclusion, or uncertainty, respectively.</td></tr><tr><td><b>detailed_description</b></td><td><code>character</code></td><td>indicating detailed description of the given decision made by OpenAI's GPT API models.
+    <p>The <code>answer_data</code> data contains the following <em>mandatory</em> variables:</p><table class="table table"><tr><td><b>studyid</b></td><td><code>integer</code></td><td>indicating the study ID of the reference.</td></tr><tr><td><b>title</b></td><td><code>character</code></td><td>indicating the title of the reference.</td></tr><tr><td><b>abstract</b></td><td><code>character</code></td><td>indicating the abstract of the reference.</td></tr><tr><td><b>promptid</b></td><td><code>integer</code></td><td>indicating the prompt ID.</td></tr><tr><td><b>prompt</b></td><td><code>character</code></td><td>indicating the prompt.</td></tr><tr><td><b>model</b></td><td><code>character</code></td><td>indicating the specific gpt-model used.</td></tr><tr><td><b>iterations</b></td><td><code>numeric</code></td><td>indicating the number of times the same question has been sent to OpenAI's GPT API models.</td></tr><tr><td><b>question</b></td><td><code>character</code></td><td>indicating the final question sent to OpenAI's GPT API models.</td></tr><tr><td><b>decision_gpt</b></td><td><code>character</code></td><td>indicating the raw gpt decision - either <code>"1", "0", "1.1"</code> for inclusion, exclusion, or uncertainty, respectively.</td></tr><tr><td><b>detailed_description</b></td><td><code>character</code></td><td>indicating detailed description of the given decision made by OpenAI's GPT API models.
 ONLY included if the detailed function calling function is used. See 'Examples' below for how to use this function.</td></tr><tr><td><b>decision_binary</b></td><td><code>integer</code></td><td>indicating the binary gpt decision,
 that is 1 for inclusion and 0 for exclusion. 1.1 decision are coded equal to 1 in this case.</td></tr><tr><td><b>confidence</b></td><td><code>numeric</code></td><td>indicating how confident the model is in its decision, from 0 (not confident at all) to 100 (completely confident). ONLY included when <code>confidence = TRUE</code>.</td></tr><tr><td><b>prompt_tokens</b></td><td><code>integer</code></td><td>indicating the number of prompt tokens sent to the server for the given request.</td></tr><tr><td><b>completion_tokens</b></td><td><code>integer</code></td><td>indicating the number of completion tokens sent to the server for the given request.</td></tr><tr><td><b>submodel</b></td><td><code>character</code></td><td>indicating the exact (sub)model used for screening.</td></tr><tr><td><b>run_time</b></td><td><code>numeric</code></td><td>indicating the time it took to obtain a response from the server for the given request.</td></tr><tr><td><b>run_date</b></td><td><code>character</code></td><td>indicating the date the given response was received.</td></tr><tr><td><b>n</b></td><td><code>integer</code></td><td>indicating iteration ID. Is only different from 1, when <code>reps &gt; 1</code>.</td></tr></table><p><br>
 If any requests failed, the <code>gpt</code> object contains an
@@ -338,7 +327,7 @@ error dataset (<code>error_data</code>) containing the same variables as <code>a
 but with failed request references only.
 <br></p>
 
-<p>When the same question is requested multiple times, the <code>answer_data_aggregated</code> data contains the following <em>mandatory</em> variables:</p><table class="table table"><tr><td><b>studyid</b></td><td><code>integer</code></td><td>indicating the study ID of the reference.</td></tr><tr><td><b>title</b></td><td><code>character</code></td><td>indicating the title of the reference.</td></tr><tr><td><b>abstract</b></td><td><code>character</code></td><td>indicating the abstract of the reference.</td></tr><tr><td><b>promptid</b></td><td><code>integer</code></td><td>indicating the prompt ID.</td></tr><tr><td><b>prompt</b></td><td><code>character</code></td><td>indicating the prompt.</td></tr><tr><td><b>model</b></td><td><code>character</code></td><td>indicating the specific gpt-model used.</td></tr><tr><td><b>question</b></td><td><code>character</code></td><td>indicating the final question sent to OpenAI's GPT API models.</td></tr><tr><td><b>top_p</b></td><td><code>numeric</code></td><td>indicating the applied top_p.</td></tr><tr><td><b>incl_p</b></td><td><code>numeric</code></td><td>indicating the probability of inclusion calculated across multiple repeated responses on the same title and abstract.</td></tr><tr><td><b>final_decision_gpt</b></td><td><code>character</code></td><td>indicating the final decision reached by gpt - either 'Include', 'Exclude', or 'Check'.</td></tr><tr><td><b>final_decision_gpt_num</b></td><td><code>integer</code></td><td>indicating the final numeric decision reached by gpt - either 1 or 0.</td></tr><tr><td><b>longest_answer</b></td><td><code>character</code></td><td>indicating the longest gpt response obtained
+<p>When the same question is requested multiple times, the <code>answer_data_aggregated</code> data contains the following <em>mandatory</em> variables:</p><table class="table table"><tr><td><b>studyid</b></td><td><code>integer</code></td><td>indicating the study ID of the reference.</td></tr><tr><td><b>title</b></td><td><code>character</code></td><td>indicating the title of the reference.</td></tr><tr><td><b>abstract</b></td><td><code>character</code></td><td>indicating the abstract of the reference.</td></tr><tr><td><b>promptid</b></td><td><code>integer</code></td><td>indicating the prompt ID.</td></tr><tr><td><b>prompt</b></td><td><code>character</code></td><td>indicating the prompt.</td></tr><tr><td><b>model</b></td><td><code>character</code></td><td>indicating the specific gpt-model used.</td></tr><tr><td><b>question</b></td><td><code>character</code></td><td>indicating the final question sent to OpenAI's GPT API models.</td></tr><tr><td><b>incl_p</b></td><td><code>numeric</code></td><td>indicating the probability of inclusion calculated across multiple repeated responses on the same title and abstract.</td></tr><tr><td><b>final_decision_gpt</b></td><td><code>character</code></td><td>indicating the final decision reached by gpt - either 'Include', 'Exclude', or 'Check'.</td></tr><tr><td><b>final_decision_gpt_num</b></td><td><code>integer</code></td><td>indicating the final numeric decision reached by gpt - either 1 or 0.</td></tr><tr><td><b>longest_answer</b></td><td><code>character</code></td><td>indicating the longest gpt response obtained
 across multiple repeated responses on the same title and abstract. Only included when <code>decision_description = TRUE</code>.
 See 'Examples' below for how to use this function.</td></tr><tr><td><b>mean_confidence</b></td><td><code>numeric</code></td><td>indicating the average confidence across the repeated responses. ONLY included when <code>confidence = TRUE</code>.</td></tr><tr><td><b>reps</b></td><td><code>integer</code></td><td>indicating the number of times the same question has been sent to OpenAI's GPT API models.</td></tr><tr><td><b>n_mis_answers</b></td><td><code>integer</code></td><td>indicating the number of missing responses.</td></tr><tr><td><b>submodel</b></td><td><code>character</code></td><td>indicating the exact (sub)model used for screening.</td></tr></table><p><br></p>
 <p>The <code>price_data</code> data contains the following variables:</p><table class="table table"><tr><td><b>prompt</b></td><td><code>character</code></td><td>if multiple prompts are used this variable indicates the given prompt-id.</td></tr><tr><td><b>model</b></td><td><code>character</code></td><td>the specific gpt model used.</td></tr><tr><td><b>iterations</b></td><td><code>integer</code></td><td>indicating the number of times the same question was requested.</td></tr><tr><td><b>input_price_dollar</b></td><td><code>integer</code></td><td>price for all prompt/input tokens for the correspondent gpt-model.</td></tr><tr><td><b>output_price_dollar</b></td><td><code>integer</code></td><td>price for all completion/output tokens for the correspondent gpt-model.</td></tr><tr><td><b>total_price_dollar</b></td><td><code>integer</code></td><td>total price for all tokens for the correspondent gpt-model.</td></tr></table><p>Find current token pricing at <a href="https://developers.openai.com/api/docs/pricing" class="external-link">https://developers.openai.com/api/docs/pricing</a> or <a href="model_prizes.html">model_prizes</a>.</p>
