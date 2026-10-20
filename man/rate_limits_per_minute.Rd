@@ -5,14 +5,14 @@
 \title{Find updated rate limits for API models}
 \usage{
 rate_limits_per_minute(
-  model = "gpt-4o-mini",
+  model = "gpt-6-luna",
   AI_tool = "OpenAI",
   api_key = NULL
 )
 }
 \arguments{
 \item{model}{Character string with the name of the completion model.
-Default is \code{"gpt-4o-mini"}. Can take multiple values.
+Default is \code{"gpt-6-luna"}. Can take multiple values.
 For OpenAI models, find available models at
 \url{https://developers.openai.com/api/docs/models}.
 For Groq models, find available models at
@@ -44,7 +44,7 @@ Find general information at
 set_api_key()
 
 rate_limits_per_minute(
-  model = "gpt-4o-mini",
+  model = "gpt-6-luna",
   AI_tool = "OpenAI",
   api_key = get_api_key()
 )

@@ -201,7 +201,8 @@
 ################################################################
 
 .rep_gpt_engine <- function(
-    question, model_gpt, topp, iterations, req_per_min,
+    question, model_gpt, iterations, req_per_min,
+    topp = NULL,
     role_gpt,
     tool,
     t_choice,
@@ -260,14 +261,16 @@
     ),
     tools = tool,
     tool_choice = tools_choice,
-    top_p = topp,
     ...
   )
 
-  if (grepl("gpt-5", model_gpt)) {
+  # top_p is only used by other providers (e.g., Mistral) calling this function
+  if (!is.null(topp)) body$top_p <- topp
+
+  # reasoning_effort and verbosity are only valid for OpenAI's reasoning models
+  if (grepl("^gpt-[5-9]", model_gpt)) {
     if (!is.null(reasoning_effort)) body$reasoning_effort <- reasoning_effort
     if (!is.null(verbosity)) body$verbosity <- verbosity
-    body$top_p <- NULL
   }
 
   # Setting the iterations
@@ -306,6 +309,9 @@
 .aggregate_res <-
   function(data, incl_cutoff_u, incl_cutoff_l) {
 
+    # Grouping variables: everything from studyid up to the first answer variable
+    group_cols <- names(data)[match("studyid", names(data)):(match("decision_gpt", names(data)) - 1)]
+
     sum_dat <-
       data |>
       dplyr::summarise(
@@ -332,7 +338,7 @@
 
         submodel = unique(submodel),
 
-        .by = c(studyid:topp)
+        .by = dplyr::all_of(group_cols)
 
       )
 
@@ -343,7 +349,7 @@
         data |>
         dplyr::summarise(
           mean_confidence = mean(confidence, na.rm = TRUE),
-          .by = c(studyid:topp)
+          .by = dplyr::all_of(group_cols)
         )
 
       sum_dat <-
@@ -370,15 +376,15 @@
 
           n_words_answer = stringr::str_count(detailed_description, '\\w+'),
 
-          .by = c(studyid:topp)
+          .by = dplyr::all_of(group_cols)
 
         ) |>
         dplyr::filter(decision_binary == final_decision_gpt_num) |>
-        dplyr::arrange(promptid, model, topp, iterations, studyid, desc(n_words_answer)) |>
+        dplyr::arrange(dplyr::across(dplyr::any_of(c("promptid", "model", "topp", "iterations", "studyid"))), desc(n_words_answer)) |>
         dplyr::summarise(
 
           longest_answer = detailed_description[1],
-          .by = c(studyid:topp)
+          .by = dplyr::all_of(group_cols)
 
         )
 
@@ -645,7 +651,7 @@
 #######################################################################################
 
 .rep_gpt_engine_responses <- function(
-    question, model_gpt, topp, iterations, req_per_min,
+    question, model_gpt, iterations, req_per_min,
     tool,
     t_choice,
     seeds,
@@ -707,20 +713,12 @@
     input = question,
     tools = tools_responses,
     tool_choice = tools_choice,
-    top_p = topp,
     ...
   )
 
-  # If the model is a GPT-5 model, add reasoning_effort and verbosity to the body if they are not NULL.
-  if (grepl("gpt-5", model_gpt)) {
-    if (!is.null(reasoning_effort)) body$reasoning <- list(effort = reasoning_effort)
-    if (!is.null(verbosity)) body$text <- list(verbosity = verbosity)
-  }
-
-  # gpt-5 models do not support top_p at all.
-  if (grepl("gpt-5", model_gpt)){
-    body$top_p <- NULL
-  }
+  # Add reasoning_effort and verbosity to the body if they are not NULL.
+  if (!is.null(reasoning_effort)) body$reasoning <- list(effort = reasoning_effort)
+  if (!is.null(verbosity)) body$text <- list(verbosity = verbosity)
 
   # Setting the iterations
   if(iterations > 1) iterations <- 1:iterations

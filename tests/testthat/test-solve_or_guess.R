@@ -63,7 +63,7 @@ test_that("solve_or_guess() supports multiple reference raters and drops missing
 
 test_that("solve_or_guess() accepts a tabscreen result object directly", {
   gpt_tbl <- data.frame(
-    studyid = 1:6, promptid = 1L, topp = 1, model = "gpt-4o-mini",
+    studyid = 1:6, promptid = 1L, model = "gpt-6-luna",
     decision_binary = c(1, 0, 1, 0, 1, 0),
     human_code      = c(1, 0, 0, 0, 1, 1),
     stringsAsFactors = FALSE
@@ -72,7 +72,7 @@ test_that("solve_or_guess() accepts a tabscreen result object directly", {
 
   fit <- solve_or_guess(
     gpt_tbl,
-    system_rater_id  = "gpt-4o-mini",
+    system_rater_id  = "gpt-6-luna",
     reference_raters = "human_code",
     B = 5,
     seed = 3,
@@ -80,5 +80,5 @@ test_that("solve_or_guess() accepts a tabscreen result object directly", {
   )
 
   expect_s3_class(fit, "sog")
-  expect_setequal(fit$solving_probabilities$rater_id, c("gpt-4o-mini", "human_code"))
+  expect_setequal(fit$solving_probabilities$rater_id, c("gpt-6-luna", "human_code"))
 })

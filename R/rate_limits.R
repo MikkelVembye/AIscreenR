@@ -12,7 +12,7 @@
 #' @param AI_tool Character string specifying the AI tool from which the API is
 #' issued. Currently supports `"OpenAI"` (default), `"Groq"`, and `"Mistral"`.
 #' @param model Character string with the name of the completion model.
-#' Default is `"gpt-4o-mini"`. Can take multiple values.
+#' Default is `"gpt-6-luna"`. Can take multiple values.
 #' For OpenAI models, find available models at
 #' \url{https://developers.openai.com/api/docs/models}.
 #' For Groq models, find available models at
@@ -32,7 +32,7 @@
 #' set_api_key()
 #'
 #' rate_limits_per_minute(
-#'   model = "gpt-4o-mini",
+#'   model = "gpt-6-luna",
 #'   AI_tool = "OpenAI",
 #'   api_key = get_api_key()
 #' )
@@ -53,7 +53,7 @@
 #' }
 
 rate_limits_per_minute <- function(
-    model = "gpt-4o-mini",
+    model = "gpt-6-luna",
     AI_tool = "OpenAI",
     api_key = NULL
 ) {

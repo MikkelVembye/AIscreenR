@@ -11,26 +11,19 @@
 #'
 #' @template common-arg
 #' @param model Character string with the name of the completion model. Can take
-#'   multiple models, including gpt-4 models. Default = `"gpt-4o-mini"`.
+#'   multiple models. Default = `"gpt-6-luna"`. Be aware that gpt-4 and gpt-3.5 models
+#'   are deprecated and can no longer be used.
 #'   Find available model at
 #'   \url{https://developers.openai.com/api/docs/models}.
 #' @param reps Numerical value indicating the number of times the same
 #'   question should be sent to the GPT server. This can be useful to test consistency
-#'   between answers. Default is `1` but when using gpt-3.5-turbo or gpt-4o-mini models, we recommend setting this
+#'   between answers. Default is `1` but when using cheaper models, we recommend setting this
 #'   value to `10`.
-#' @param top_p 'An alternative to sampling with temperature, called nucleus sampling,
-#'   where the model considers the results of the tokens with top_p probability mass.
-#'   So 0.1 means only the tokens comprising the top 10% probability mass are considered.
-#'   We generally recommend altering this or temperature but not both.' (OPEN-AI). Default is 1.
-#'   Find documentation at
-#' \url{https://developers.openai.com/api/reference/resources/chat#chat/create-top_p}.
-#'
 #' @param token_word_ratio The multiplier used to approximate the number of tokens per word.
 #'   Default is `1.6` which we empirically have found to be the average number of tokens per word.
 #' @param reasoning_effort Character string indicating the level of reasoning effort required for the task. Default is `"medium"`.
-#'  Can take the values `"low"`, `"medium"`, and `"high"`. Only applicable for gpt-5 models.
-#' @param verbosity Character string indicating the level of verbosity in the model's responses. Default is `"low"`.
-#'  Can take the values `"low"`, `"medium"`, and `"high"`. Only applicable for gpt-5 models.
+#'  Can take the values `"low"`, `"medium"`, and `"high"`. Only applicable for gpt models.
+#'  Used to approximate the reasoning tokens. The approximation is based on measured reasoning token use with the default verbosity (`"low"`).
 #'
 #' @return An object of class \code{"gpt_price"}. The object is a list containing the following
 #' components:
@@ -50,7 +43,7 @@
 #'   studyid = studyid,
 #'   title = title,
 #'   abstract = abstract,
-#'   model = c("gpt-4o-mini", "gpt-4"),
+#'   model = c("gpt-6-luna", "gpt-5-nano"),
 #'   reps = c(10, 1)
 #' )
 #'
@@ -66,12 +59,10 @@ approximate_price_gpt <-
     studyid,
     title,
     abstract,
-    model = "gpt-4o-mini",
+    model = "gpt-6-luna",
     reps = 1,
-    top_p = 1,
     token_word_ratio = 1.6,
-    reasoning_effort = "medium",
-    verbosity = "low"
+    reasoning_effort = "medium"
   ){
 
     if (length(reps) > 1 && length(model) != length(reps)){
@@ -134,9 +125,7 @@ approximate_price_gpt <-
       dplyr::mutate(
         model = rep(model, studyid_length*prompt_length),
         iterations = rep(reps, studyid_length*prompt_length*mp_reps),
-        #req_per_min = rep(rpm, studyid_length*dplyr::n_distinct(prompt)*mp_rpm),
         reasoning_effort = reasoning_effort,
-        verbosity = verbosity,
         question_raw = paste0(
           prompt,
           " Now, evaluate the following title and abstract for",
@@ -147,11 +136,7 @@ approximate_price_gpt <-
         question = stringr::str_replace_all(question_raw, "\n\n", " "),
         question = stringr::str_remove_all(question, "\n")
       ) |>
-      dplyr::select(-question_raw) |>
-      dplyr::slice(rep(seq_len(dplyr::n()), each = length(top_p))) |>
-      mutate(
-        topp = rep(top_p, studyid_length*prompt_length*model_length)
-      )
+      dplyr::select(-question_raw)
 
 
     price_dat <- .price_gpt(question_dat)

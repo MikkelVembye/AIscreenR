@@ -12,8 +12,7 @@ test_that(".gpt_engine_responses return errors correctly", {
     model = "gpt-7",
     input = question,
     tools = tools_simple,
-    tool_choice = tools_choice_name,
-    top_p = 1
+    tool_choice = tools_choice_name
   )
 
   res <- .gpt_engine_responses(
@@ -36,11 +35,10 @@ test_that(".gpt_engine_responses return errors correctly", {
 
   # Specifying wrong api key
   body <- list(
-    model = "gpt-4o",
+    model = "gpt-6-luna",
     input = question,
     tools = tools_simple,
-    tool_choice = tools_choice_name,
-    top_p = 1
+    tool_choice = tools_choice_name
   )
 
   res <- .gpt_engine_responses(
@@ -111,8 +109,7 @@ test_that(".rep_gpt_engine_responses controls errrors correctly", {
 
   res <- .rep_gpt_engine_responses(
     question = question,
-    model_gpt = "gpt-4o-mini",
-    topp = 1,
+    model_gpt = "gpt-5-nano",
     tool = test_tool,
     t_choice = "inclusion_decision_simple",
     iterations = iterations,
@@ -126,7 +123,9 @@ test_that(".rep_gpt_engine_responses controls errrors correctly", {
     istrans = gpt_is_transient,
     ba = NULL,
     af = NULL,
-    endpoint_url = "https://api.openai.com/v1/responses"
+    endpoint_url = "https://api.openai.com/v1/responses",
+    reasoning_effort = NULL,
+    verbosity = NULL
   )
 
   expect_equal(ncol(res), 8)
@@ -138,8 +137,7 @@ test_that(".rep_gpt_engine_responses controls errrors correctly", {
   # Ineligible api key
   res <- .rep_gpt_engine_responses(
     question = question,
-    model_gpt = "gpt-4o-mini",
-    topp = 1,
+    model_gpt = "gpt-5-nano",
     tool = tools_simple,
     t_choice = "inclusion_decision_simple",
     iterations = iterations,
@@ -153,7 +151,9 @@ test_that(".rep_gpt_engine_responses controls errrors correctly", {
     istrans = gpt_is_transient,
     ba = NULL,
     af = NULL,
-    endpoint_url = "https://api.openai.com/v1/responses"
+    endpoint_url = "https://api.openai.com/v1/responses",
+    reasoning_effort = NULL,
+    verbosity = NULL
   )
 
   expect_equal(ncol(res), 8)
@@ -164,8 +164,7 @@ test_that(".rep_gpt_engine_responses controls errrors correctly", {
   # Ineligible model
   res <- .rep_gpt_engine_responses(
     question = question,
-    model_gpt = "gpt-4o-min",
-    topp = 1,
+    model_gpt = "gpt-5-nan",
     tool = tools_simple,
     t_choice = "inclusion_decision_simple",
     iterations = iterations,
@@ -179,7 +178,9 @@ test_that(".rep_gpt_engine_responses controls errrors correctly", {
     istrans = gpt_is_transient,
     ba = NULL,
     af = NULL,
-    endpoint_url = "https://api.openai.com/v1/responses"
+    endpoint_url = "https://api.openai.com/v1/responses",
+    reasoning_effort = NULL,
+    verbosity = NULL
   )
 
   expect_equal(ncol(res), 8)
@@ -194,7 +195,66 @@ test_that(".rep_gpt_engine_responses controls errrors correctly", {
 
 
 
-# Old tests (tabscreen_gpt.original)
+test_that("tabscreen_gpt() stops for deprecated gpt-4 and gpt-3.5 models.", {
+
+  deprecated_models <- c(
+    "gpt-4", "gpt-4-turbo", "gpt-4o", "gpt-4o-mini", "gpt-4.1", "gpt-4.1-nano",
+    "gpt-3.5-turbo", "gpt-3.5-turbo-0125"
+  )
+
+  for (m in deprecated_models) {
+
+    expect_error(
+      tabscreen_gpt(
+        data = filges2015_dat[1:2,],
+        prompt = "Is this study about FFT?",
+        studyid = studyid,
+        title = title,
+        abstract = abstract,
+        model = m,
+        api_key = "1234"
+      ),
+      "deprecated"
+    )
+
+    # Also when custom_model = TRUE
+    expect_error(
+      tabscreen_gpt(
+        data = filges2015_dat[1:2,],
+        prompt = "Is this study about FFT?",
+        studyid = studyid,
+        title = title,
+        abstract = abstract,
+        model = m,
+        custom_model = TRUE,
+        api_key = "1234"
+      ),
+      "deprecated"
+    )
+
+    expect_error(
+      tabscreen_gpt.tools(
+        data = filges2015_dat[1:2,],
+        prompt = "Is this study about FFT?",
+        studyid = studyid,
+        title = title,
+        abstract = abstract,
+        model = m,
+        api_key = "1234"
+      ),
+      "deprecated"
+    )
+
+  }
+
+  # top_p has been removed from the OpenAI functions
+  expect_false("top_p" %in% names(formals(tabscreen_gpt)))
+  expect_false("top_p" %in% names(formals(tabscreen_gpt.tools)))
+  expect_false("top_p" %in% names(formals(approximate_price_gpt)))
+
+})
+
+# Skipped tests that call the API
 paths <- system.file("extdata", "test_prompts.rds", package = "AIscreenR")
 prompts <- readRDS(file = paths)
 
@@ -210,7 +270,7 @@ prompt <- prompts[1]
 prompt2 <- prompts[2]
 
 
-models <- c("gpt-3.5-turbo-0613", "gpt-4")
+models <- c("gpt-5-nano", "gpt-6-luna")
 reps <- c(10, 1)
 rpm <- c(3500, 200)
 
@@ -230,7 +290,7 @@ test_that("tabscreen_gpt() overinclusive chooses default tools", {
     studyid = studyid,
     title = title,
     abstract = abstract,
-    model = "gpt-3.5-turbo-0613",
+    model = "gpt-5-nano",
     overinclusive = FALSE,
     decision_description = FALSE,
     messages = FALSE,
@@ -247,7 +307,7 @@ test_that("tabscreen_gpt() overinclusive chooses default tools", {
     studyid = studyid,
     title = title,
     abstract = abstract,
-    model = "gpt-3.5-turbo-0613",
+    model = "gpt-5-nano",
     overinclusive = FALSE,
     decision_description = TRUE,
     messages = FALSE,
@@ -265,7 +325,7 @@ test_that("tabscreen_gpt() overinclusive chooses default tools", {
     studyid = studyid,
     title = title,
     abstract = abstract,
-    model = "gpt-3.5-turbo-0613",
+    model = "gpt-5-nano",
     overinclusive = TRUE,
     decision_description = FALSE,
     messages = FALSE,
@@ -282,7 +342,7 @@ test_that("tabscreen_gpt() overinclusive chooses default tools", {
     studyid = studyid,
     title = title,
     abstract = abstract,
-    model = "gpt-3.5-turbo-0613",
+    model = "gpt-5-nano",
     overinclusive = TRUE,
     decision_description = TRUE,
     messages = FALSE,
@@ -310,7 +370,7 @@ test_that("tabscreen_gpt() works with single parameter values.",{
       prompt = prompt,
       title = title,
       abstract = abstract,
-      model = "gpt-3.5-turbo-0613",
+      model = "gpt-5-nano",
       reps = 1,
       max_tries = 0
     )
@@ -333,7 +393,7 @@ test_that("tabscreen_gpt() works with single parameter values.",{
       studyid = studyid,
       title = title,
       abstract = abstract,
-      model = c("gpt-3.5-turbo-0613", "gpt-4"),
+      model = c("gpt-5-nano", "gpt-6-luna"),
       reps = 1
     )
 
@@ -352,7 +412,7 @@ test_that("tabscreen_gpt() works with single parameter values.",{
       studyid = studyid,
       title = title,
       abstract = abstract,
-      model = c("gpt-3.5-turbo-0613"),
+      model = c("gpt-5-nano"),
       reps = 1
     )
 
@@ -381,7 +441,7 @@ test_that("tabscreen_gpt() works with multiple parameter values.",{
       studyid = studyid,
       title = title,
       abstract = abstract,
-      model = c("gpt-3.5-turbo-0613", "gpt-4"),
+      model = c("gpt-5-nano", "gpt-6-luna"),
       reps = c(2, 1)
     )
 
@@ -402,7 +462,7 @@ test_that("tabscreen_gpt() works with multiple parameter values.",{
       studyid = studyid,
       title = title,
       abstract = abstract,
-      model = c("gpt-3.5-turbo-0613", "gpt-4"),
+      model = c("gpt-5-nano", "gpt-6-luna"),
       reps = c(2, 1)
     )
 
@@ -422,9 +482,8 @@ test_that("tabscreen_gpt() works with multiple parameter values.",{
       studyid = studyid,
       title = title,
       abstract = abstract,
-      model = c("gpt-3.5-turbo-0613", "gpt-4"),
-      reps = c(2, 1),
-      top_p = c(0.2, 1)
+      model = c("gpt-5-nano", "gpt-6-luna"),
+      reps = c(2, 1)
     )
 
   )
@@ -450,7 +509,7 @@ test_that("tabscreen_gpt() don't return time and token info.", {
       studyid = studyid,
       title = title,
       abstract = abstract,
-      model = "gpt-3.5-turbo-0613",
+      model = "gpt-5-nano",
       reps = 1,
       time_info = FALSE,
       token_info = FALSE
@@ -471,7 +530,7 @@ test_that("tabscreen_gpt() don't return time and token info.", {
       studyid = studyid,
       title = title,
       abstract = abstract,
-      model = "gpt-3.5-turbo-0613",
+      model = "gpt-5-nano",
       reps = 2,
       api_key = 1234,
       time_info = FALSE,
@@ -491,7 +550,7 @@ test_that("tabscreen_gpt() don't return time and token info.", {
       studyid = studyid,
       title = title,
       abstract = abstract,
-      model = "gpt-3.5-turbo-0613",
+      model = "gpt-5-nano",
       reps = 1,
       time_info = TRUE,
       token_info = FALSE
@@ -513,7 +572,7 @@ test_that("tabscreen_gpt() don't return time and token info.", {
       studyid = studyid,
       title = title,
       abstract = abstract,
-      model = "gpt-3.5-turbo-0613",
+      model = "gpt-5-nano",
       reps = 1,
       time_info = FALSE,
       token_info = TRUE
@@ -543,7 +602,7 @@ test_that("tabscreen_gpt() works with detailed fucntions and ... .", {
       studyid = studyid,
       title = title,
       abstract = abstract,
-      model = "gpt-3.5-turbo",
+      model = "gpt-5-nano",
       reps = 1,
       functions = AIscreenR:::incl_function,
       function_call_name = list(name = "inclusion_decision")
@@ -569,7 +628,7 @@ test_that("tabscreen_gpt() works with detailed fucntions and ... .", {
       studyid = studyid,
       title = title,
       abstract = abstract,
-      model = "gpt-3.5-turbo",
+      model = "gpt-5-nano",
       reps = 1,
       functions = AIscreenR:::incl_function,
       function_call_name = list(name = "inclusion_decision"),
@@ -592,7 +651,7 @@ test_that("tabscreen_gpt() works with detailed fucntions and ... .", {
       studyid = studyid,
       title = title,
       abstract = abstract,
-      model = "gpt-3.5-turbo",
+      model = "gpt-5-nano",
       reps = 3,
       functions = AIscreenR:::incl_function,
       function_call_name = list(name = "inclusion_decision"),
@@ -623,7 +682,7 @@ test_that("Message behavior.", {
       studyid = studyid,
       title = title,
       abstract = abstract,
-      model = "gpt-4",
+      model = "gpt-6-luna",
       reps = 1,
       messages = FALSE,
       progress = FALSE
@@ -639,7 +698,7 @@ test_that("Message behavior.", {
       studyid = studyid,
       title = title,
       abstract = abstract,
-      model = "gpt-3.5-turbo",
+      model = "gpt-5-nano",
       reps = 1,
       messages = FALSE,
       progress = FALSE
@@ -654,22 +713,7 @@ test_that("Message behavior.", {
       studyid = studyid,
       title = title,
       abstract = abstract,
-      model = "gpt-4",
-      reps = 2
-    ),
-
-    "* Consider to reduce reps to 1 for gpt-4 models."
-
-  )
-  expect_message(
-
-    test_obj <- tabscreen_gpt(
-      data = filges2015_dat[1,],
-      prompt = prompt,
-      studyid = studyid,
-      title = title,
-      abstract = abstract,
-      model = "gpt-3.5-turbo",
+      model = "gpt-5-nano",
       reps = 1,
       functions = AIscreenR:::incl_function,
       function_call_name = list(name = "inclusion_decision")
@@ -684,7 +728,7 @@ test_that("Message behavior.", {
       studyid = studyid,
       title = title,
       abstract = abstract,
-      model = "gpt-4",
+      model = "gpt-6-luna",
       reps = 1,
       functions = AIscreenR:::incl_function,
       function_call_name = list(name = "inclusion_decision")
@@ -761,7 +805,7 @@ test_that("tabscreen_gpt() expected errors.", {
       studyid = studyid,
       title = title,
       abstract = abstract,
-      model = c("gpt-3.5turbo-0613", "gpt-4"),
+      model = c("gpt-5-nano", "gpt-6-luna"),
       reps = reps,
       rpm = rpm
     )
@@ -811,7 +855,7 @@ test_that("tabscreen_gpt() expected errors.", {
       studyid = studyid,
       title = title,
       abstract = abstract,
-      model = c("gpt-3.5turbo-0613", "gpt-4"),
+      model = c("gpt-5-nano", "gpt-6-luna"),
       reps = reps,
       rpm = rpm,
       functions = AIscreenR:::incl_function,
@@ -941,7 +985,7 @@ test_that("That paralell processing works.", {
         prompt = prompt,
         title = title,
         abstract = abstract,
-        model = "gpt-3.5-turbo-0613",
+        model = "gpt-5-nano",
         reps = 10
       )
     )
@@ -980,7 +1024,7 @@ test_that("max_tokens < 11 work",{
       studyid = studyid,
       title = title,
       abstract = abstract,
-      model = "gpt-3.5-turbo",
+      model = "gpt-5-nano",
       reps = 1,
       max_tokens = 9
     )
@@ -989,123 +1033,6 @@ test_that("max_tokens < 11 work",{
     suppressMessages()
 
   expect_false(is.na(test_obj$answer_data_all$decision_gpt))
-
-})
-
-test_that("Print and class expectation for chatgpt object.", {
-
-  if(skip) skip()
-  if(skip_github_action) skip_on_ci()
-  skip_on_cran()
-
-  expect_message(
-
-    random_name <- tabscreen_gpt(
-      data = filges2015_dat[1,],
-      prompt = prompt,
-      studyid = studyid,
-      title = title,
-      abstract = abstract,
-      model = "gpt-3.5-turbo-0613",
-      reps = 1,
-      max_tries = 0
-    )
-
-  )
-
-  # class check
-  expect_s3_class(random_name, "chatgpt")
-  expect_s3_class(random_name, "list")
-
-  expect_output(print(random_name), "random_name")
-
-  expect_output(print.chatgpt(random_name), "random_name\\$answer_data_all")
-  expect_output(print.chatgpt(random_name), "random_name\\$answer_data_sum")
-  expect_output(print.chatgpt(random_name), "random_name\\$price_dollor")
-
-  print_out1 <- paste0(
-    "Find data with all answers by executing\\n random_name\\$answer_data_all\\n\\nFind ",
-    "data with the result aggregated across multiple answers by executing\\n ",
-    "random_name\\$answer_data_sum\\n\\nFind total price for the screening by executing\\n random_name\\$price_dollor"
-  )
-  expect_output(print(random_name), print_out1)
-
-  expect_message(
-
-    random_name <- tabscreen_gpt(
-      data = filges2015_dat[c(1:2),],
-      prompt = c(prompt),
-      studyid = studyid, # indicate the variable with the studyid in the data
-      title = title, # indicate the variable with the titles in the data
-      abstract = abstract,
-      api_key = 1234
-    )
-  ) |>
-    suppressMessages()
-
-  expect_identical(names(random_name$answer_data_all), names(random_name$error_data))
-
-  expect_output(print(random_name), "random_name\\$answer_data_all")
-  expect_output(print(random_name), "random_name\\$answer_data_sum")
-  expect_output(print(random_name), "random_name\\$price_dollor")
-  expect_output(print(random_name), "random_name\\$error_data")
-
-  print_out2 <- paste0(
-    "Find data with all answers by executing\\n random_name\\$answer_data_all\\n\\nFind ",
-    "data with the result aggregated across multiple answers by executing\\n ",
-    "random_name\\$answer_data_sum\\n\\nFind total price for the screening by executing\\n random_name\\$price_dollor"
-  )
-
-  expect_output(print(random_name), print_out2)
-
-  #############
-  expect_message(
-
-    random_name <- tabscreen_gpt(
-      data = filges2015_dat[1,],
-      prompt = prompt,
-      studyid = studyid,
-      title = title,
-      abstract = abstract,
-      model = "gpt-3.5-turbo-0613",
-      reps = 1,
-      token_info = FALSE
-    )
-
-  )
-
-  # class check
-  expect_s3_class(random_name, "chatgpt")
-  expect_s3_class(random_name, "list")
-
-  expect_output(print(random_name), "random_name")
-
-  expect_output(print.chatgpt(random_name), "random_name\\$answer_data_all")
-  expect_output(print.chatgpt(random_name), "random_name\\$answer_data_sum")
-
-  expect_false("price_dollor" %in% names(random_name))
-
-  expect_message(
-
-    random_name <- tabscreen_gpt(
-      data = filges2015_dat[c(1:2),],
-      prompt = c(prompt),
-      studyid = studyid, # indicate the variable with the studyid in the data
-      title = title, # indicate the variable with the titles in the data
-      abstract = abstract,
-      api_key = 1234,
-      token_info = FALSE
-    )
-  ) |>
-    suppressMessages()
-
-
-  expect_output(print(random_name), "random_name\\$answer_data_all")
-  expect_output(print(random_name), "random_name\\$answer_data_sum")
-  expect_output(print(random_name), "random_name\\$error_data")
-
-  expect_false("price_dollor" %in% names(random_name))
-
 
 })
 

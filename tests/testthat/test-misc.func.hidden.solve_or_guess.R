@@ -102,7 +102,7 @@ test_that(".nonparametric_bootstrap_solve_or_guess() returns B replicates", {
 })
 
 gpt_tbl <- data.frame(
-  studyid = 1:5, promptid = 1L, topp = 1, model = "gpt-4o-mini",
+  studyid = 1:5, promptid = 1L, topp = 1, model = "gpt-6-luna",
   decision_binary = c(1, 0, 1, 0, 1),
   human_code      = c(1, 0, 0, 0, 1),
   stringsAsFactors = FALSE
@@ -112,9 +112,9 @@ class(gpt_tbl) <- c("gpt_tbl", class(gpt_tbl))
 test_that(".tabscreen_to_wide() converts a gpt_tbl object into one row per item", {
   wide <- .tabscreen_to_wide(gpt_tbl, human_decision = "human_code")
 
-  expect_setequal(names(wide), c("item_id", "human_code", "gpt-4o-mini"))
+  expect_setequal(names(wide), c("item_id", "human_code", "gpt-6-luna"))
   expect_equal(nrow(wide), 5)
-  expect_true(all(wide[["gpt-4o-mini"]] %in% c("Include", "Exclude")))
+  expect_true(all(wide[["gpt-6-luna"]] %in% c("Include", "Exclude")))
 })
 
 test_that(".tabscreen_to_wide() errors on more than one prompt/top_p configuration", {

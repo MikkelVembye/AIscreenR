@@ -92,7 +92,7 @@ obj_with_error <-
     studyid = studyid,
     title = title,
     abstract = abstract,
-    model = "gpt-4o-mini"
+    model = "gpt-6-luna"
     )
 
 obj_rescreened <-

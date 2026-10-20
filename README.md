@@ -63,13 +63,13 @@ library(future)
 # Setting API
 set_api_key()
 
-# Obtain rate limits info (Default is "gpt-4o-mini")
+# Obtain rate limits info (Default is "gpt-6-luna")
 rate_limits <- rate_limits_per_minute()
 rate_limits
 #> # A tibble: 1 × 3
 #>   model       requests_per_minute tokens_per_minute
 #>   <chr>                     <dbl>             <dbl>
-#> 1 gpt-4o-mini               30000         150000000
+#> 1 gpt-6-luna               30000         150000000
 ```
 
 ## How to load RIS files
@@ -163,7 +163,7 @@ app_obj <-
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
     abstract = abstract, # indicate the variable with the abstracts in the data
-    model = "gpt-4o-mini",
+    model = "gpt-6-luna",
     rep = 1 
   )
 
@@ -176,7 +176,7 @@ app_obj$price_data
 #> A tibble: 1 × 8
 #>   promptid model       iterations prompt   completion_tokens input_price_dollar output_price_dollar
 #>   <chr>    <chr>            <dbl> <chr>                <dbl>              <dbl>               <dbl>
-#> 1 Prompt 1 gpt-4o-mini          1 Prompt 1             1706.             0.0443             0.00102
+#> 1 Prompt 1 gpt-6-luna          1 Prompt 1             1706.             0.0443             0.00102
 #> ℹ 1 more variable: total_price_dollar <dbl>
 ```
 
@@ -198,7 +198,7 @@ test_obj <-
     studyid = studyid, # indicate the variable with the studyid in the data
     title = title, # indicate the variable with the titles in the data
     abstract = abstract, # indicate the variable with the abstracts in the data
-    model = "gpt-4o-mini",
+    model = "gpt-6-luna",
     reps = 10, # Number of times the same question is asked 
     incl_cutoff_upper = 0.1, # If GPT includes a reference in 10% or more of the iterations, it will be included
     # If the GPT model as no or little information to base its decision on, it will be more likely to include the reference. 
@@ -219,7 +219,7 @@ price_dat
 #> A tibble: 1 × 8
 #>   promptid model       iterations prompt completion_tokens input_price_dollar output_price_dollar
 #>      <int> <chr>            <dbl>  <int>             <dbl>              <dbl>               <dbl>
-#> 1        1 gpt-4o-mini         10      1              7000              0.017             0.00042
+#> 1        1 gpt-6-luna         10      1              7000              0.017             0.00042
 #> ℹ 1 more variable: total_price_dollar <dbl>
 
 agg_dat <- test_obj$answer_data_aggregated

@@ -25,7 +25,7 @@
       # Eq. 5 (Syriani et al., 2023)
       specificity = human_ex_gpt_ex / (human_ex_gpt_ex + human_ex_gpt_in),
 
-      .by = c(promptid, model, reps, top_p)
+      .by = dplyr::any_of(c("promptid", "model", "reps", "top_p"))
     ) |>
     dplyr::rowwise() |>
     dplyr::mutate(

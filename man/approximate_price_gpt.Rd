@@ -10,12 +10,10 @@ approximate_price_gpt(
   studyid,
   title,
   abstract,
-  model = "gpt-4o-mini",
+  model = "gpt-6-luna",
   reps = 1,
-  top_p = 1,
   token_word_ratio = 1.6,
-  reasoning_effort = "medium",
-  verbosity = "low"
+  reasoning_effort = "medium"
 )
 }
 \arguments{
@@ -31,30 +29,22 @@ automatically.}
 \item{abstract}{Name of variable containing the abstract information.}
 
 \item{model}{Character string with the name of the completion model. Can take
-multiple models, including gpt-4 models. Default = \code{"gpt-4o-mini"}.
+multiple models. Default = \code{"gpt-6-luna"}. Be aware that gpt-4 and gpt-3.5 models
+are deprecated and can no longer be used.
 Find available model at
 \url{https://developers.openai.com/api/docs/models}.}
 
 \item{reps}{Numerical value indicating the number of times the same
 question should be sent to the GPT server. This can be useful to test consistency
-between answers. Default is \code{1} but when using gpt-3.5-turbo or gpt-4o-mini models, we recommend setting this
+between answers. Default is \code{1} but when using cheaper models, we recommend setting this
 value to \code{10}.}
-
-\item{top_p}{'An alternative to sampling with temperature, called nucleus sampling,
-where the model considers the results of the tokens with top_p probability mass.
-So 0.1 means only the tokens comprising the top 10\% probability mass are considered.
-We generally recommend altering this or temperature but not both.' (OPEN-AI). Default is 1.
-Find documentation at
-\url{https://developers.openai.com/api/reference/resources/chat#chat/create-top_p}.}
 
 \item{token_word_ratio}{The multiplier used to approximate the number of tokens per word.
 Default is \code{1.6} which we empirically have found to be the average number of tokens per word.}
 
 \item{reasoning_effort}{Character string indicating the level of reasoning effort required for the task. Default is \code{"medium"}.
-Can take the values \code{"low"}, \code{"medium"}, and \code{"high"}. Only applicable for gpt-5 models.}
-
-\item{verbosity}{Character string indicating the level of verbosity in the model's responses. Default is \code{"low"}.
-Can take the values \code{"low"}, \code{"medium"}, and \code{"high"}. Only applicable for gpt-5 models.}
+Can take the values \code{"low"}, \code{"medium"}, and \code{"high"}. Only applicable for gpt models.
+Used to approximate the reasoning tokens. The approximation is based on measured reasoning token use with the default verbosity (\code{"low"}).}
 }
 \value{
 An object of class \code{"gpt_price"}. The object is a list containing the following
@@ -79,7 +69,7 @@ app_price <- approximate_price_gpt(
   studyid = studyid,
   title = title,
   abstract = abstract,
-  model = c("gpt-4o-mini", "gpt-4"),
+  model = c("gpt-6-luna", "gpt-5-nano"),
   reps = c(10, 1)
 )
 

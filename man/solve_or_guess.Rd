@@ -27,7 +27,7 @@ screened becomes its own AI rater (named after the model), and the
 result must reflect a single prompt/top_p configuration.}
 
 \item{system_rater_id}{The name of the column in \code{evaluations} holding the
-automated/system rater's decisions (e.g. \code{"gpt-4o-mini"}), coded the same
+automated/system rater's decisions (e.g. \code{"gpt-6-luna"}), coded the same
 way as the human decision column(s).}
 
 \item{reference_raters}{Character vector naming the column(s) in
@@ -129,7 +129,7 @@ res <- tabscreen_gpt(
 
 fit <- solve_or_guess(
   res,
-  system_rater_id = "gpt-4o-mini",
+  system_rater_id = "gpt-6-luna",
   reference_raters = c("human_code_1", "human_code_2"),
   B = 200
 )

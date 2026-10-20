@@ -5,8 +5,8 @@
 \title{Title and abstract screening with GPT API models using function calls via the tools argument}
 \usage{
 tabscreen_gpt.tools(data, prompt, studyid, title, abstract,
-  api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-4o-mini",
-  role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
+  api_url = "https://api.openai.com/v1/chat/completions", model = "gpt-6-luna",
+  role = "user", tools = NULL, tool_choice = NULL,
   time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
   max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
@@ -30,7 +30,8 @@ automatically.}
 \item{api_url}{Character string with the endpoint URL for OpenAI's API. Default is \code{"https://api.openai.com/v1/chat/completions"}.}
 
 \item{model}{Character string with the name of the completion model. Can take
-multiple models. Default is the latest \code{"gpt-4o-mini"}.
+multiple models. Default is \code{"gpt-6-luna"}. Be aware that gpt-4 and gpt-3.5 models
+are deprecated and can no longer be used.
 Find available model at
 \url{https://developers.openai.com/api/docs/models}.}
 
@@ -44,13 +45,6 @@ Default is \code{NULL}. If not specified the default function calls from \code{A
 'controls which (if any) tool is called by the model' (OpenAI). Default is \code{NULL}.
 If set to \code{NULL} when using a customized function, the default is \code{"auto"}.
 See \url{https://developers.openai.com/api/reference/resources/chat#chat-create-tool_choice}.}
-
-\item{top_p}{'An alternative to sampling with temperature, called nucleus sampling,
-where the model considers the results of the tokens with top_p probability mass.
-So 0.1 means only the tokens comprising the top 10\% probability mass are considered.
-We generally recommend altering this or temperature but not both.' (OpenAI). Default is 1.
-Find documentation at
-\url{https://developers.openai.com/api/reference/resources/chat#chat/create-top_p}.}
 
 \item{time_info}{Logical indicating whether the run time of each
 request/question should be included in the data. Default is \code{TRUE}.}
@@ -94,7 +88,7 @@ Alternatively, use \code{\link[=rate_limits_per_minute]{rate_limits_per_minute()
 question should be send to the server. This can be useful to test consistency
 between answers, and/or can be used to make inclusion judgments based on how many times
 a study has been included across a the given number of screenings.
-Default is \code{1} but when using gpt-3.5-turbo models or gpt-4o-mini,
+Default is \code{1} but when using cheaper models,
 we recommend setting this value to \code{10} to catch model uncertainty.}
 
 \item{seed_par}{Numerical value for a seed to ensure that proper,
@@ -125,7 +119,7 @@ between \code{incl_cutoff_lower} and \code{incl_cutoff_upper} will be flagged fo
 Default is \code{NULL}, which means that no studies will be flagged for human checking.}
 
 \item{force}{Logical argument indicating whether to force the function to use more than
-10 iterations for gpt-3.5 models and more than 1 iteration for gpt-4 models other than gpt-4o-mini.
+10 iterations.
 This argument is developed to avoid the conduct of wrong and extreme sized screening.
 Default is \code{FALSE}.}
 
@@ -179,9 +173,8 @@ Specifically, it allows users to draw on all OpenAI GPT API completion models, i
 The function enables title and abstract screening across multiple prompts, with
 repeated questions to assess consistency across responses. All of this can be performed in parallel.
 The function utilizes function calling, which is invoked via the
-tools argument in the request body. This is the main difference between \code{\link[=tabscreen_gpt.tools]{tabscreen_gpt.tools()}}
-and \code{\link[=tabscreen_gpt.original]{tabscreen_gpt.original()}}. Function calls ensure more reliable and consistent responses to users'
-requests. See \href{https://psycnet.apa.org/record/2026-37236-001}{Vembye, Christensen, Mølgaard, and Schytt. (2025)}
+tools argument in the request body. Function calls ensure more reliable and consistent responses to users'
+requests. This function uses the chat completions endpoint. See \code{\link[=tabscreen_gpt]{tabscreen_gpt()}} for the responses endpoint. See \href{https://psycnet.apa.org/record/2026-37236-001}{Vembye, Christensen, Mølgaard, and Schytt. (2025)}
 for guidance on how adequately to conduct title and abstract screening with GPT models.
 }
 \note{
@@ -195,7 +188,6 @@ The \code{answer_data} data contains the following \emph{mandatory} variables:
 \bold{model} \tab \code{character}   \tab indicating the specific gpt-model used. \cr
 \bold{iterations} \tab \code{numeric} \tab indicating the number of times the same question has been sent to OpenAI's GPT API models. \cr
 \bold{question} \tab \code{character} \tab indicating the final question sent to OpenAI's GPT API models. \cr
-\bold{top_p}  \tab \code{numeric} \tab indicating the applied top_p. \cr
 \bold{decision_gpt}  \tab \code{character} \tab indicating the raw gpt decision - either \code{"1", "0", "1.1"} for inclusion, exclusion, or uncertainty, respectively. \cr
 \bold{detailed_description}  \tab \code{character} \tab indicating detailed description of the given decision made by OpenAI's GPT API models.
 ONLY included if the detailed function calling function is used. See 'Examples' below for how to use this function. \cr
@@ -226,7 +218,6 @@ When the same question is requested multiple times, the \code{answer_data_aggreg
 \bold{prompt} \tab \code{character} \tab indicating the prompt. \cr
 \bold{model} \tab \code{character}   \tab indicating the specific gpt-model used. \cr
 \bold{question} \tab \code{character} \tab indicating the final question sent to OpenAI's GPT API models. \cr
-\bold{top_p} \tab \code{numeric}  \tab indicating the applied top_p. \cr
 \bold{incl_p} \tab \code{numeric}  \tab indicating the probability of inclusion calculated across multiple repeated responses on the same title and abstract. \cr
 \bold{final_decision_gpt} \tab \code{character} \tab indicating the final decision reached by gpt - either 'Include', 'Exclude', or 'Check'. \cr
 \bold{final_decision_gpt_num}  \tab \code{integer}  \tab indicating the final numeric decision reached by gpt - either 1 or 0. \cr

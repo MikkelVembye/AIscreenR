@@ -33,7 +33,7 @@
 #'  \bold{promptid} \tab \code{integer} \tab indicating the prompt ID. \cr
 #'  \bold{model} \tab \code{character}   \tab indicating the specific gpt-model used. \cr
 #'  \bold{reps}  \tab \code{integer}  \tab indicating the number of times the same question was sent to GPT server. \cr
-#'  \bold{top_p} \tab \code{numeric}  \tab indicating the applied top_p. \cr
+#'  \bold{top_p} \tab \code{numeric}  \tab indicating the applied top_p. Only included for providers that apply top_p. \cr
 #'  \bold{n_screened} \tab \code{integer} \tab indicating the number of screened references. \cr
 #'  \bold{n_missing} \tab \code{numeric} \tab indicating the number of missing responses. \cr
 #'  \bold{n_refs} \tab \code{integer} \tab indicating the total number of references expected to be screened for the given condition. \cr
@@ -98,15 +98,16 @@ screen_analyzer <- function(x, human_decision = human_code, key_result = TRUE){
   if (is_chatgpt(x)) dat <- x$answer_data_sum
   if (is_chatgpt_tbl(x)) dat <- x
 
+  # topp only exists in data from providers that apply top_p (e.g., Mistral, Groq)
   names <- names(x)
 
   if(!"answer_data_aggregated" %in% names & is_gpt(x)){
-    dat <- x$answer_data |> dplyr::rename(final_decision_gpt_num = decision_binary, reps = iterations, top_p = topp)
+    dat <- x$answer_data |> dplyr::rename(final_decision_gpt_num = decision_binary, reps = iterations) |> dplyr::rename(dplyr::any_of(c(top_p = "topp")))
   } else if("answer_data_aggregated" %in% names & is_gpt(x)) {
     dat <- x$answer_data_aggregated
   }
 
-  if (is_gpt_tbl(x)) dat <- x |> dplyr::rename(final_decision_gpt_num = decision_binary, reps = iterations, top_p = topp)
+  if (is_gpt_tbl(x)) dat <- x |> dplyr::rename(final_decision_gpt_num = decision_binary, reps = iterations) |> dplyr::rename(dplyr::any_of(c(top_p = "topp")))
   if (is_gpt_agg_tbl(x)) dat <- x
 
   # Ensuring human decision variable
@@ -117,7 +118,7 @@ screen_analyzer <- function(x, human_decision = human_code, key_result = TRUE){
   # Calculating results performance
   res <- .calc_perform(dat, hum_decision = {{ human_decision }})
 
-  if (key_result) res <- res |> dplyr::select(promptid, model, reps, top_p, p_agreement, recall, specificity, n_screened, n_missing)
+  if (key_result) res <- res |> dplyr::select(promptid, model, reps, dplyr::any_of("top_p"), p_agreement, recall, specificity, n_screened, n_missing)
 
   if ("answer_data_aggregated" %in% names || is_gpt_agg_tbl(x)){
 
@@ -145,7 +146,7 @@ screen_analyzer <- function(x, human_decision = human_code, key_result = TRUE){
     if (key_result) {
       res_p_incl <-
         res_p_incl |>
-        dplyr::select(promptid, model, reps, top_p, p_agreement, recall, specificity, incl_p, criteria)
+        dplyr::select(promptid, model, reps, dplyr::any_of("top_p"), p_agreement, recall, specificity, incl_p, criteria)
     }
 
     attr(res, "p_incl_data") <- res_p_incl

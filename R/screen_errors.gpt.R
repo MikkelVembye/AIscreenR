@@ -54,7 +54,7 @@
 #'     studyid = studyid,
 #'     title = title,
 #'     abstract = abstract,
-#'     model = "gpt-4o"
+#'     model = "gpt-6-luna"
 #'     )
 #'
 #' obj_rescreened <-
@@ -189,7 +189,7 @@ screen_errors.gpt <- function(
 
       error_dat <-
         bind_rows(error_400_dat, error_other_dat) |>
-        arrange(promptid, model, topp, iterations, studyid, n)
+        arrange(promptid, model, iterations, studyid, n)
 
 
     }
@@ -199,11 +199,12 @@ screen_errors.gpt <- function(
 
     params <- error_dat |>
       dplyr::mutate(iterations = 1) |>
-      dplyr::select(question, model_gpt = model, topp, iterations, req_per_min)
+      dplyr::select(question, model_gpt = model, iterations, req_per_min)
 
+    # Question data is everything before the answer variables
     question_dat <-
       error_dat |>
-      dplyr::select(1:topp)
+      dplyr::select(1:(match("decision_gpt", names(error_dat)) - 1))
 
     furrr_seed <- if (is.null(seed_par)) TRUE else NULL
 
@@ -246,7 +247,7 @@ screen_errors.gpt <- function(
 
       answer_dat <-
         dplyr::bind_rows(succes_dat, error_dat_recovered) |>
-        dplyr::arrange(promptid, model, topp, iterations, studyid, n)
+        dplyr::arrange(promptid, model, iterations, studyid, n)
 
     } else {
 
@@ -297,7 +298,6 @@ screen_errors.gpt <- function(
         dplyr::left_join(question_dat, answer_dat_sum) |>
         suppressMessages() |>
         dplyr::select(-c(iterations, req_per_min)) |>
-        dplyr::rename(top_p = topp) |>
         tibble::new_tibble(class = "gpt_agg_tbl")
 
     } else {

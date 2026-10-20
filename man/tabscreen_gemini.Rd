@@ -122,7 +122,7 @@ between \code{incl_cutoff_lower} and \code{incl_cutoff_upper} will be flagged fo
 Default is \code{NULL}, which means that no studies will be flagged for human checking.}
 
 \item{force}{Logical argument indicating whether to force the function to use more than
-10 iterations for gpt-3.5 models and more than 1 iteration for gpt-4 models other than gpt-4o-mini.
+10 iterations.
 This argument is developed to avoid the conduct of wrong and extreme sized screening.
 Default is \code{FALSE}.}
 

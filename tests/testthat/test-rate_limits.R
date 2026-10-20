@@ -1,4 +1,4 @@
-models <- c("gpt-4o-mini", "gpt-4")
+models <- c("gpt-6-luna", "gpt-5-nano")
 
 skip <- FALSE
 
@@ -33,6 +33,11 @@ test_that("rate_limits_per_minute() casts errors correctly.", {
 
   expect_error(
     rate_limits_per_minute(model = "gpt-3"),
+    "Unknown model"
+  )
+
+  expect_error(
+    rate_limits_per_minute(model = "gpt-4o-mini"),
     "Unknown model"
   )
 

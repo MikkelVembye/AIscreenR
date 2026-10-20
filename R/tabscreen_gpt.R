@@ -12,8 +12,8 @@
 #' repeated questions to assess consistency across responses. All of this can be performed in parallel.
 #' The function utilizes function calling, which is invoked via the
 #' tools argument in the request body. Furthermore, this function uses the responses endpoint.
-#' This is the main difference between [tabscreen_gpt.tools()]
-#' and [tabscreen_gpt.original()]. Function calls ensure more reliable and consistent responses to users'
+#' This is the main difference between this function and [tabscreen_gpt.tools()].
+#' Function calls ensure more reliable and consistent responses to users'
 #' requests. Using the Responses endpoint can improve performance, enable access to newer models, and reduce costs.
 #' \emph{\href{https://developers.openai.com/api/docs/guides/migrate-to-responses?lang=javascript&tool-use=chat-completions&update-item-definitions=chat-completions&update-multiturn=responses}{Migrate to the Responses API}}
 #' See [Vembye, Christensen, Mølgaard, and Schytt. (2025)](https://psycnet.apa.org/record/2026-37236-001)
@@ -35,7 +35,8 @@
 #' @template common-arg
 #' @param api_url Character string with the endpoint URL for OpenAI's API. Default is `"https://api.openai.com/v1/responses"`.
 #' @param model Character string with the name of the completion model. Can take
-#'   multiple models. Default is the latest `"gpt-4o-mini"`.
+#'   multiple models. Default is `"gpt-6-luna"`. Be aware that gpt-4 and gpt-3.5 models
+#'   are deprecated and can no longer be used.
 #'   Find available model at
 #' \url{https://developers.openai.com/api/docs/models}.
 #' @param role Character string indicating the role of the user. Default is `"user"`.
@@ -46,13 +47,6 @@
 #' 'controls which (if any) tool is called by the model' (OpenAI). Default is `NULL`.
 #' If set to `NULL` when using a customized function, the default is `"auto"`.
 #' See \url{https://developers.openai.com/api/reference/resources/chat#chat-create-tool_choice}.
-#' @param top_p 'An alternative to sampling with temperature, called nucleus sampling,
-#'   where the model considers the results of the tokens with top_p probability mass.
-#'   So 0.1 means only the tokens comprising the top 10% probability mass are considered.
-#'   We generally recommend altering this or temperature but not both.' (OpenAI). Default is 1.
-#'   Find documentation at
-#' \url{https://developers.openai.com/api/reference/resources/chat#chat/create-top_p}. Be aware
-#' that this argument is not supported for any gpt-5 model and will be set to NULL if a gpt-5 model is used.
 #' @param time_info Logical indicating whether the run time of each
 #'   request/question should be included in the data. Default is `TRUE`.
 #' @param token_info Logical indicating whether token information should be included
@@ -81,7 +75,7 @@
 #'   question should be send to the server. This can be useful to test consistency
 #'   between answers, and/or can be used to make inclusion judgments based on how many times
 #'   a study has been included across a the given number of screenings.
-#'   Default is `1` but when using gpt-3.5-turbo models or gpt-4o-mini,
+#'   Default is `1` but when using cheaper models,
 #'   we recommend setting this value to `10` to catch model uncertainty.
 #' @param seed_par Numerical value for a seed to ensure that proper,
 #'   parallel-safe random numbers are produced.
@@ -115,7 +109,7 @@
 #'   between `incl_cutoff_lower` and `incl_cutoff_upper` will be flagged for human checking. 
 #'   Default is `NULL`, which means that no studies will be flagged for human checking.
 #' @param force Logical argument indicating whether to force the function to use more than
-#'   10 iterations for gpt-3.5 models and more than 1 iteration for gpt-4 models other than gpt-4o-mini.
+#'   10 iterations.
 #'   This argument is developed to avoid the conduct of wrong and extreme sized screening.
 #'   Default is `FALSE`.
 #' @param custom_model Logical indicating whether a fine-tuned or custom model is used. Default is `FALSE`.
@@ -128,8 +122,8 @@
 #'   See \url{https://developers.openai.com/api/reference/resources/chat}.
 #'
 #' @usage tabscreen_gpt.tools_responses(data, prompt, studyid, title, abstract,
-#'   api_url = "https://api.openai.com/v1/responses", model = "gpt-4o-mini",
-#'   role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
+#'   api_url = "https://api.openai.com/v1/responses", model = "gpt-6-luna",
+#'   role = "user", tools = NULL, tool_choice = NULL,
 #'   time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
 #'   max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
 #'   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
@@ -139,8 +133,8 @@
 #'   overinclusive = TRUE, confidence = FALSE, ...)
 #'
 #' tabscreen_gpt(data, prompt, studyid, title, abstract,
-#'   api_url = "https://api.openai.com/v1/responses", model = "gpt-4o-mini",
-#'   role = "user", tools = NULL, tool_choice = NULL, top_p = 1,
+#'   api_url = "https://api.openai.com/v1/responses", model = "gpt-6-luna",
+#'   role = "user", tools = NULL, tool_choice = NULL,
 #'   time_info = TRUE, token_info = TRUE, api_key = get_api_key(), max_tries = 16,
 #'   max_seconds = NULL, is_transient = gpt_is_transient, backoff = NULL,
 #'   after = NULL, rpm = 10000, reps = 1, seed_par = NULL, progress = TRUE,
@@ -175,7 +169,6 @@
 #'  \bold{model} \tab \code{character}   \tab indicating the specific gpt-model used. \cr
 #'  \bold{iterations} \tab \code{numeric} \tab indicating the number of times the same question has been sent to OpenAI's GPT API models. \cr
 #'  \bold{question} \tab \code{character} \tab indicating the final question sent to OpenAI's GPT API models. \cr
-#'  \bold{top_p}  \tab \code{numeric} \tab indicating the applied top_p. \cr
 #'  \bold{decision_gpt}  \tab \code{character} \tab indicating the raw gpt decision - either \code{"1", "0", "1.1"} for inclusion, exclusion, or uncertainty, respectively. \cr
 #'  \bold{detailed_description}  \tab \code{character} \tab indicating detailed description of the given decision made by OpenAI's GPT API models.
 #'  ONLY included if the detailed function calling function is used. See 'Examples' below for how to use this function. \cr
@@ -205,7 +198,6 @@
 #'  \bold{prompt} \tab \code{character} \tab indicating the prompt. \cr
 #'  \bold{model} \tab \code{character}   \tab indicating the specific gpt-model used. \cr
 #'  \bold{question} \tab \code{character} \tab indicating the final question sent to OpenAI's GPT API models. \cr
-#'  \bold{top_p} \tab \code{numeric}  \tab indicating the applied top_p. \cr
 #'  \bold{incl_p} \tab \code{numeric}  \tab indicating the probability of inclusion calculated across multiple repeated responses on the same title and abstract. \cr
 #'  \bold{final_decision_gpt} \tab \code{character} \tab indicating the final decision reached by gpt - either 'Include', 'Exclude', or 'Check'. \cr
 #'  \bold{final_decision_gpt_num}  \tab \code{integer}  \tab indicating the final numeric decision reached by gpt - either 1 or 0. \cr
@@ -281,11 +273,10 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
   title,
   abstract,
   api_url = "https://api.openai.com/v1/responses",
-  model = "gpt-4o-mini",
+  model = "gpt-6-luna",
   role = "user",
   tools = NULL,
   tool_choice = NULL,
-  top_p = 1,
   time_info = TRUE,
   token_info = TRUE,
   api_key = get_api_key(),
@@ -332,6 +323,11 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
     model <- unique(model)
   }
 
+  # Stop if deprecated models are called
+  if (any(stringr::str_detect(model, "^gpt-(4|3\\.5)"))) {
+    stop("gpt-4 and gpt-3.5 models are deprecated and can no longer be used. Use a gpt-5 model or newer.")
+  }
+
   # Stop if wrong models are called
   if (!custom_model){
     if(any(!model %in% model_prizes$model)) {
@@ -339,48 +335,11 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
     }
   }
 
-  # Stop if top_p is set for gpt-5 models
-  if (any(stringr::str_detect(model, "gpt-5")) && any(top_p != 1)){
-    stop("The top_p argument is not supported for gpt-5 models.")
-  }
-
   # Ensuring that users do not conduct wrong screening
   if (max(reps) > 10 && !force){
     max_reps_message <- paste("* Are you sure you want to use", max(reps), "iterations? If so, set 'force = TRUE'")
     stop(max_reps_message)
   }
-
-  # Check if the user want to use gpt-4 model with iterations
-  ## Consider updating to include gpt-5. But we need to think more deeply about this as not
-  ## all (future) models necessarily include a number
-
-#  if (any(stringr::str_detect(model, "gpt-4")) && max(reps) > 1 && !force){
-#
-#    gpt4_dat <-
-#      tibble::tibble(model, reps) |>
-#      dplyr::filter(!stringr::str_detect(model, "mini|nano"))
-#
-#      if(nrow(gpt4_dat) > 0){
-#
-#        gpt4_reps <-
-#          gpt4_dat |>
-#          dplyr::filter(stringr::str_detect(model, "gpt-4")) |>
-#          dplyr::pull(reps) |>
-#          max()
-#
-#        if (gpt4_reps > 1){
-#
-#          max_reps_mes_gpt4 <-
-#            paste("* Are you sure you want to use", gpt4_reps, "iterations with a gpt-4 model?",
-#                  "If so, set force = TRUE.")
-#          stop(max_reps_mes_gpt4)
-#
-#        }
-#
-#      }
-#
-#
-#  }
 
   # Ensuring that the rpm argument fits to the corresponding model
   if (length(rpm) > 1 && length(model) != length(rpm)){
@@ -429,7 +388,7 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
   }
 
   # Validate / neutralize reasoning args
-  reasoning_supported_patterns <- c("^gpt-5")
+  reasoning_supported_patterns <- c("^gpt-[5-9]")
   reasoning_supported <- any(stringr::str_detect(model, paste(reasoning_supported_patterns, collapse = "|")))
   if (reasoning_supported) {
     if (!reasoning_effort %in% c("low","medium","high"))
@@ -622,11 +581,7 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
         verbosity = verbosity_val
       ) |>
       dplyr::select(-question_raw) |>
-      dplyr::slice(rep(seq_len(dplyr::n()), each = length(top_p))) |>
-      dplyr::mutate(
-        topp = rep(top_p, studyid_length*prompt_length*model_length)
-      ) |>
-      dplyr::arrange(promptid, model, topp, iterations, studyid)
+      dplyr::arrange(promptid, model, iterations, studyid)
 
     #...................................
     # Approximate price calculation ----
@@ -652,8 +607,8 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
 
     if (messages){
       message(paste0("* The approximate price of the current (simple) screening will be around $", app_price, "."))
-      if (any(stringr::str_detect(model, "gpt-5"))){
-        message(paste0("* Be aware that the price approximations are based on rough estimates of reasoning costs for gpt-5 models. The actual price may therefore deviate from the approximation."))
+      if (any(stringr::str_detect(model, "gpt-"))){
+        message(paste0("* Be aware that the price approximations are based on rough estimates of reasoning costs for gpt models. The actual price may therefore deviate from the approximation."))
       }
     }
 
@@ -696,7 +651,7 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
     furrr_seed <- if (is.null(seed_par)) TRUE else NULL
 
     params <- question_dat |>
-      dplyr::select(question, model_gpt = model, topp, iterations, req_per_min, reasoning_effort, verbosity)
+      dplyr::select(question, model_gpt = model, iterations, req_per_min, reasoning_effort, verbosity)
 
 
     answer_dat <-
@@ -770,7 +725,6 @@ tabscreen_gpt <- tabscreen_gpt.tools_responses <- function(
         dplyr::left_join(question_dat, answer_dat_sum) |>
         suppressMessages() |>
         dplyr::select(-c(iterations, req_per_min)) |>
-        dplyr::rename(top_p = topp) |>
         tibble::new_tibble(class = "gpt_agg_tbl")
 
       attr(answer_dat_aggregated, "incl_cutoff_upper") <- incl_cutoff_upper

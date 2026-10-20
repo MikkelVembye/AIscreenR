@@ -47,7 +47,7 @@
 #'   screened becomes its own AI rater (named after the model), and the
 #'   result must reflect a single prompt/top_p configuration.
 #' @param system_rater_id The name of the column in `evaluations` holding the
-#'   automated/system rater's decisions (e.g. `"gpt-4o-mini"`), coded the same
+#'   automated/system rater's decisions (e.g. `"gpt-6-luna"`), coded the same
 #'   way as the human decision column(s).
 #' @param reference_raters Character vector naming the column(s) in
 #'   `evaluations` to compare the system rater against - typically one or more
@@ -110,7 +110,7 @@
 #'
 #' fit <- solve_or_guess(
 #'   res,
-#'   system_rater_id = "gpt-4o-mini",
+#'   system_rater_id = "gpt-6-luna",
 #'   reference_raters = c("human_code_1", "human_code_2"),
 #'   B = 200
 #' )
