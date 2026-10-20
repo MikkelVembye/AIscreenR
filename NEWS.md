@@ -1,4 +1,4 @@
-# AIscreenR 0.6.0
+# AIscreenR 0.5.2
 
 ## Major improvements
 * All gpt-4 and gpt-3.5 models (e.g., `gpt-4`, `gpt-4o`, `gpt-4o-mini`, `gpt-4.1`) are deprecated and have been removed from `model_prizes`. `tabscreen_gpt()` and `tabscreen_gpt.tools()` now stop if one of these models is used, also when `custom_model = TRUE`.
