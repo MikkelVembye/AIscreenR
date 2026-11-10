@@ -110,7 +110,7 @@
 #' \bold{price_in_per_token} \tab \code{character} \tab indicating the input prize per token \cr
 #' \bold{price_out_per_token} \tab \code{character} \tab indicating the output prize per token \cr
 #' }
-#' @references Gemini. \emph{Pricing}. \url{https://ai.google.dev/gemini-api/docs/pricing}
+#' @references Gemini. \emph{Pricing}. \url{https://aistudio.google.com/docs/pricing}
 
 "gemini_model_prizes"
 

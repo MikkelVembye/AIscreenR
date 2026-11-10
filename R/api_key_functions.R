@@ -209,7 +209,7 @@ get_api_key_mistral <- function(env_var = "MISTRAL_API_KEY") {
 #' @return The specified API key (NOTE: Avoid exposing this in the console).
 #' @export
 #'
-#' @note Find your personal API key via the Gemini quickstart guide at \url{https://ai.google.dev/gemini-api/docs/api-key}.
+#' @note Find your personal API key via the Gemini quickstart guide at \url{https://aistudio.google.com/docs/api-key}.
 #' @seealso \code{\link{set_api_key}}.
 #'
 #'

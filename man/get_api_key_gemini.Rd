@@ -23,7 +23,7 @@ api key permanently to your R environment by using \code{\link[usethis:edit_r_en
 Then write \verb{GEMINI_API_KEY=[insert your api key here]} and close the \code{.Renviron} window and restart R.
 }
 \note{
-Find your personal API key via the Gemini quickstart guide at \url{https://ai.google.dev/gemini-api/docs/api-key}.
+Find your personal API key via the Gemini quickstart guide at \url{https://aistudio.google.com/docs/api-key}.
 }
 \examples{
 \dontrun{

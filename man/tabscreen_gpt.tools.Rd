@@ -174,7 +174,7 @@ The function enables title and abstract screening across multiple prompts, with
 repeated questions to assess consistency across responses. All of this can be performed in parallel.
 The function utilizes function calling, which is invoked via the
 tools argument in the request body. Function calls ensure more reliable and consistent responses to users'
-requests. This function uses the chat completions endpoint. See \code{\link[=tabscreen_gpt]{tabscreen_gpt()}} for the responses endpoint. See \href{https://psycnet.apa.org/record/2026-37236-001}{Vembye, Christensen, Mølgaard, and Schytt. (2025)}
+requests. This function uses the chat completions endpoint. See \code{\link[=tabscreen_gpt]{tabscreen_gpt()}} for the responses endpoint. See Vembye, Christensen, Mølgaard, and Schytt. (2025) \doi{10.1037/met0000769}
 for guidance on how adequately to conduct title and abstract screening with GPT models.
 }
 \note{

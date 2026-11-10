@@ -16,7 +16,7 @@
 #' Function calls ensure more reliable and consistent responses to users'
 #' requests. Using the Responses endpoint can improve performance, enable access to newer models, and reduce costs.
 #' \emph{\href{https://developers.openai.com/api/docs/guides/migrate-to-responses?lang=javascript&tool-use=chat-completions&update-item-definitions=chat-completions&update-multiturn=responses}{Migrate to the Responses API}}
-#' See [Vembye, Christensen, Mølgaard, and Schytt. (2025)](https://psycnet.apa.org/record/2026-37236-001)
+#' See Vembye, Christensen, Mølgaard, and Schytt. (2025) \doi{10.1037/met0000769}
 #' for guidance on how adequately to conduct title and abstract screening with GPT models.
 #'
 #' @references Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2025).

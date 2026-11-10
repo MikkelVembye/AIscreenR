@@ -12,7 +12,7 @@
 #' repeated questions to assess consistency across responses. All of this can be performed in parallel.
 #' The function utilizes function calling, which is invoked via the
 #' tools argument in the request body. Function calls ensure more reliable and consistent responses to users'
-#' requests. This function uses the chat completions endpoint. See [tabscreen_gpt()] for the responses endpoint. See [Vembye, Christensen, Mølgaard, and Schytt. (2025)](https://psycnet.apa.org/record/2026-37236-001)
+#' requests. This function uses the chat completions endpoint. See [tabscreen_gpt()] for the responses endpoint. See Vembye, Christensen, Mølgaard, and Schytt. (2025) \doi{10.1037/met0000769}
 #' for guidance on how adequately to conduct title and abstract screening with GPT models.
 #'
 #' @references Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2025).

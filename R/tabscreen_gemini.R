@@ -11,7 +11,7 @@
 #' The function enables title and abstract screening across multiple prompts, with
 #' repeated questions to assess consistency across responses. All of this can be performed in parallel.
 #' The function utilizes function calling, which is invoked via the
-#' tools argument in the request body. See [Vembye, Christensen, Mølgaard, and Schytt. (2025)](https://psycnet.apa.org/record/2026-37236-001)
+#' tools argument in the request body. See Vembye, Christensen, Mølgaard, and Schytt. (2025) \doi{10.1037/met0000769}
 #' for guidance on how adequately to conduct title and abstract screening with GPT models.
 #'
 #' @references Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W. (2025).
@@ -33,15 +33,15 @@
 #' @param model Character string with the name of the Gemini completion model. Can take
 #'   multiple models. Default is `"gemini-3.1-flash-lite"`.
 #'   Find available models at
-#' \url{https://ai.google.dev/gemini-api/docs/models}.
+#' \url{https://aistudio.google.com/docs/models}.
 #' @param role Character string indicating the role of the user. Default is `"user"` (required for Gemini API).
 #' @param tools This argument allows users to apply customized function declarations.
-#' See \url{https://ai.google.dev/gemini-api/docs/function-calling}.
+#' See \url{https://aistudio.google.com/docs/function-calling}.
 #' Default is `NULL`. If not specified, the default function calls from `AIscreenR` (Gemini format) are used.
 #' @param tool_choice If a customized function is provided, this argument controls
 #' which mode Gemini uses for function calling ("auto", "any", "none"). Default is `NULL`.
 #' If set to `NULL` when using a customized function, the default is `"auto"`.
-#' See \url{https://ai.google.dev/gemini-api/docs/function-calling}.
+#' See \url{https://aistudio.google.com/docs/function-calling}.
 #' @param top_p 'An alternative to sampling with temperature, called nucleus sampling,
 #'   where the model considers the results of the tokens with top_p probability mass.
 #'   So 0.1 means only the tokens comprising the top 10% probability mass are considered. Default is 1.
@@ -115,9 +115,9 @@
 #'  Can take the values `"minimal"`, `"low"`, `"medium"`, and `"high"`. For Gemini 3.1 Pro, `"minimal"` is not supported. 
 #' Be aware that 2.5 models don't support `thinkingLevel`/`reasoning_effort`, but use `thinkingBudget` instead. Therefore, reasoning_effort is 
 #' mapped to budget values when using 2.5 models.
-#' See \url{https://ai.google.dev/gemini-api/docs/thinking#rest} for more information.
+#' See \url{https://aistudio.google.com/docs/thinking} for more information.
 #' @param ... Further argument to pass to the request body.
-#'   See \url{https://ai.google.dev/gemini-api/docs/text-generation#rest}.
+#'   See \url{https://aistudio.google.com/docs/text-generation}.
 #'
 #' @usage tabscreen_gemini(data, prompt, studyid, title, abstract,
 #'   api_url = "https://generativelanguage.googleapis.com", model = "gemini-3.1-flash-lite",
@@ -208,7 +208,7 @@
 #'  \bold{total_price_dollar} \tab \code{integer} \tab total price for all tokens for the correspondent gpt-model. \cr
 #' }
 #'
-#' Find current token pricing at \url{https://ai.google.dev/gemini-api/docs/pricing} or [model_prizes].
+#' Find current token pricing at \url{https://aistudio.google.com/docs/pricing} or [model_prizes].
 #'
 #' @importFrom stats df
 #' @import dplyr

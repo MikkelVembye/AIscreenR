@@ -32,18 +32,18 @@ The v1beta path and model endpoint will be appended automatically.}
 \item{model}{Character string with the name of the Gemini completion model. Can take
 multiple models. Default is \code{"gemini-3.1-flash-lite"}.
 Find available models at
-\url{https://ai.google.dev/gemini-api/docs/models}.}
+\url{https://aistudio.google.com/docs/models}.}
 
 \item{role}{Character string indicating the role of the user. Default is \code{"user"} (required for Gemini API).}
 
 \item{tools}{This argument allows users to apply customized function declarations.
-See \url{https://ai.google.dev/gemini-api/docs/function-calling}.
+See \url{https://aistudio.google.com/docs/function-calling}.
 Default is \code{NULL}. If not specified, the default function calls from \code{AIscreenR} (Gemini format) are used.}
 
 \item{tool_choice}{If a customized function is provided, this argument controls
 which mode Gemini uses for function calling ("auto", "any", "none"). Default is \code{NULL}.
 If set to \code{NULL} when using a customized function, the default is \code{"auto"}.
-See \url{https://ai.google.dev/gemini-api/docs/function-calling}.}
+See \url{https://aistudio.google.com/docs/function-calling}.}
 
 \item{top_p}{'An alternative to sampling with temperature, called nucleus sampling,
 where the model considers the results of the tokens with top_p probability mass.
@@ -132,7 +132,7 @@ Default is \code{FALSE}.}
 Can take the values \code{"minimal"}, \code{"low"}, \code{"medium"}, and \code{"high"}. For Gemini 3.1 Pro, \code{"minimal"} is not supported.
 Be aware that 2.5 models don't support \code{thinkingLevel}/\code{reasoning_effort}, but use \code{thinkingBudget} instead. Therefore, reasoning_effort is
 mapped to budget values when using 2.5 models.
-See \url{https://ai.google.dev/gemini-api/docs/thinking#rest} for more information.}
+See \url{https://aistudio.google.com/docs/thinking} for more information.}
 
 \item{overinclusive}{Logical indicating whether uncertain decisions (\code{"1.1"}) should be
 allowed in the default function calling setup. Default is \code{TRUE}, which means that the
@@ -147,7 +147,7 @@ output. When \code{reps > 1}, the aggregated data contains \code{mean_confidence
 affects the default function calling setup, and is ignored if you provide your own \code{tools}.}
 
 \item{...}{Further argument to pass to the request body.
-See \url{https://ai.google.dev/gemini-api/docs/text-generation#rest}.}
+See \url{https://aistudio.google.com/docs/text-generation}.}
 }
 \value{
 An object of class \code{'gpt'}. The object is a list containing the following
@@ -174,7 +174,7 @@ Specifically, it allows users to draw on Gemini's API completion models, includi
 The function enables title and abstract screening across multiple prompts, with
 repeated questions to assess consistency across responses. All of this can be performed in parallel.
 The function utilizes function calling, which is invoked via the
-tools argument in the request body. See \href{https://psycnet.apa.org/record/2026-37236-001}{Vembye, Christensen, Mølgaard, and Schytt. (2025)}
+tools argument in the request body. See Vembye, Christensen, Mølgaard, and Schytt. (2025) \doi{10.1037/met0000769}
 for guidance on how adequately to conduct title and abstract screening with GPT models.
 }
 \note{
@@ -242,7 +242,7 @@ The \code{price_data} data contains the following variables:
 \bold{total_price_dollar} \tab \code{integer} \tab total price for all tokens for the correspondent gpt-model. \cr
 }
 
-Find current token pricing at \url{https://ai.google.dev/gemini-api/docs/pricing} or \link{model_prizes}.
+Find current token pricing at \url{https://aistudio.google.com/docs/pricing} or \link{model_prizes}.
 }
 \examples{
 \dontrun{

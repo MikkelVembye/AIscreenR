@@ -167,7 +167,7 @@ This function uses the function calling feature of Mistral's API models, which a
 structured and accurate responses from the model. The function follows the same general structure
 as the other screening functions in the package, but with some specific arguments and features that
 are tailored to Mistral's API models.
-See \href{https://psycnet.apa.org/record/2026-37236-001}{Vembye, Christensen, Mølgaard, and Schytt. (2025)}
+See Vembye, Christensen, Mølgaard, and Schytt. (2025) \doi{10.1037/met0000769}
 for guidance on how adequately to conduct title and abstract screening with GPT models.
 }
 \note{
