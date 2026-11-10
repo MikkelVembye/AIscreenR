@@ -58,8 +58,11 @@ model_prizes <-
       # GPT-6 models
       "gpt-6-luna",
       "gpt-6-sol",
+      "gpt-6-astra",
+
+      # GPT-6.1 models
       "gpt-6.1-sol",
-      "gpt-6-astra"
+      "gpt-6.1-terra"
     ),
 
     price_in_per_token = c(
@@ -116,8 +119,11 @@ model_prizes <-
       # GPT-6 models
       0.1/mio,   # gpt-6-luna
       2/mio,     # gpt-6-sol
+      10/mio,    # gpt-6-astra
+
+      # GPT-6.1 models
       2/mio,     # gpt-6.1-sol
-      10/mio     # gpt-6-astra
+      1/mio      # gpt-6.1-terra
     ),
 
     price_out_per_token = c(
@@ -174,8 +180,11 @@ model_prizes <-
       # GPT-6 models
       0.5/mio,    # gpt-6-luna
       10/mio,     # gpt-6-sol
+      50/mio,     # gpt-6-astra
+
+      # GPT-6.1 models
       10/mio,     # gpt-6.1-sol
-      50/mio      # gpt-6-astra
+      5/mio       # gpt-6.1-terra
     )
   )
 
