@@ -34,7 +34,7 @@ Then write `GEMINI_API_KEY=[insert your api key here]` and close the
 ## Note
 
 Find your personal API key via the Gemini quickstart guide at
-<https://ai.google.dev/gemini-api/docs/api-key>.
+<https://aistudio.google.com/docs/api-key>.
 
 ## See also
 

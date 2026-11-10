@@ -21,4 +21,4 @@ A `data.frame` containing 4 rows/models and 3 variables/columns
 
 ## References
 
-Gemini. *Pricing*. <https://ai.google.dev/gemini-api/docs/pricing>
+Gemini. *Pricing*. <https://aistudio.google.com/docs/pricing>

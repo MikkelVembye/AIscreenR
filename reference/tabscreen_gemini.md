@@ -8,10 +8,11 @@ models, including fine-tuned versions. The function enables title and
 abstract screening across multiple prompts, with repeated questions to
 assess consistency across responses. All of this can be performed in
 parallel. The function utilizes function calling, which is invoked via
-the tools argument in the request body. See [Vembye, Christensen,
-Mølgaard, and Schytt.
-(2025)](https://psycnet.apa.org/record/2026-37236-001) for guidance on
-how adequately to conduct title and abstract screening with GPT models.
+the tools argument in the request body. See Vembye, Christensen,
+Mølgaard, and Schytt. (2025)
+[doi:10.1037/met0000769](https://doi.org/10.1037/met0000769) for
+guidance on how adequately to conduct title and abstract screening with
+GPT models.
 
 ## Usage
 
@@ -59,7 +60,7 @@ tabscreen_gemini(data, prompt, studyid, title, abstract,
 
   Character string with the name of the Gemini completion model. Can
   take multiple models. Default is `"gemini-3.1-flash-lite"`. Find
-  available models at <https://ai.google.dev/gemini-api/docs/models>.
+  available models at <https://aistudio.google.com/docs/models>.
 
 - role:
 
@@ -69,9 +70,9 @@ tabscreen_gemini(data, prompt, studyid, title, abstract,
 - tools:
 
   This argument allows users to apply customized function declarations.
-  See <https://ai.google.dev/gemini-api/docs/function-calling>. Default
-  is `NULL`. If not specified, the default function calls from
-  `AIscreenR` (Gemini format) are used.
+  See <https://aistudio.google.com/docs/function-calling>. Default is
+  `NULL`. If not specified, the default function calls from `AIscreenR`
+  (Gemini format) are used.
 
 - tool_choice:
 
@@ -79,7 +80,7 @@ tabscreen_gemini(data, prompt, studyid, title, abstract,
   mode Gemini uses for function calling ("auto", "any", "none"). Default
   is `NULL`. If set to `NULL` when using a customized function, the
   default is `"auto"`. See
-  <https://ai.google.dev/gemini-api/docs/function-calling>.
+  <https://aistudio.google.com/docs/function-calling>.
 
 - top_p:
 
@@ -228,8 +229,8 @@ tabscreen_gemini(data, prompt, studyid, title, abstract,
   not supported. Be aware that 2.5 models don't support
   `thinkingLevel`/`reasoning_effort`, but use `thinkingBudget` instead.
   Therefore, reasoning_effort is mapped to budget values when using 2.5
-  models. See <https://ai.google.dev/gemini-api/docs/thinking#rest> for
-  more information.
+  models. See <https://aistudio.google.com/docs/thinking> for more
+  information.
 
 - overinclusive:
 
@@ -253,7 +254,7 @@ tabscreen_gemini(data, prompt, studyid, title, abstract,
 - ...:
 
   Further argument to pass to the request body. See
-  <https://ai.google.dev/gemini-api/docs/text-generation#rest>.
+  <https://aistudio.google.com/docs/text-generation>.
 
 ## Value
 
@@ -362,8 +363,8 @@ The `price_data` data contains the following variables:
 | **output_price_dollar** | `integer` | price for all completion/output tokens for the correspondent gpt-model. |
 | **total_price_dollar** | `integer` | total price for all tokens for the correspondent gpt-model. |
 
-Find current token pricing at
-<https://ai.google.dev/gemini-api/docs/pricing> or
+Find current token pricing at <https://aistudio.google.com/docs/pricing>
+or
 [model_prizes](https://mikkelvembye.github.io/AIscreenR/reference/model_prizes.md).
 
 ## References

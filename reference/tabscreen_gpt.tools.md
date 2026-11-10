@@ -12,8 +12,9 @@ invoked via the tools argument in the request body. Function calls
 ensure more reliable and consistent responses to users' requests. This
 function uses the chat completions endpoint. See
 [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md)
-for the responses endpoint. See [Vembye, Christensen, Mølgaard, and
-Schytt. (2025)](https://psycnet.apa.org/record/2026-37236-001) for
+for the responses endpoint. See Vembye, Christensen, Mølgaard, and
+Schytt. (2025)
+[doi:10.1037/met0000769](https://doi.org/10.1037/met0000769) for
 guidance on how adequately to conduct title and abstract screening with
 GPT models.
 

@@ -6,7 +6,8 @@ Specifically, it allows users to draw on Gemini's API completion models, includi
 The function enables title and abstract screening across multiple prompts, with
 repeated questions to assess consistency across responses. All of this can be performed in parallel.
 The function utilizes function calling, which is invoked via the
-tools argument in the request body. See Vembye, Christensen, Mølgaard, and Schytt. (2025)
+tools argument in the request body. See Vembye, Christensen, Mølgaard, and Schytt. (2025) doi:10.1037/met0000769
+
 for guidance on how adequately to conduct title and abstract screening with GPT models."><meta property="og:description" content="
 
 This function supports title and abstract screening using API models in R.
@@ -14,7 +15,8 @@ Specifically, it allows users to draw on Gemini's API completion models, includi
 The function enables title and abstract screening across multiple prompts, with
 repeated questions to assess consistency across responses. All of this can be performed in parallel.
 The function utilizes function calling, which is invoked via the
-tools argument in the request body. See Vembye, Christensen, Mølgaard, and Schytt. (2025)
+tools argument in the request body. See Vembye, Christensen, Mølgaard, and Schytt. (2025) doi:10.1037/met0000769
+
 for guidance on how adequately to conduct title and abstract screening with GPT models."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -65,7 +67,8 @@ Specifically, it allows users to draw on Gemini's API completion models, includi
 The function enables title and abstract screening across multiple prompts, with
 repeated questions to assess consistency across responses. All of this can be performed in parallel.
 The function utilizes function calling, which is invoked via the
-tools argument in the request body. See <a href="https://psycnet.apa.org/record/2026-37236-001" class="external-link">Vembye, Christensen, Mølgaard, and Schytt. (2025)</a>
+tools argument in the request body. See Vembye, Christensen, Mølgaard, and Schytt. (2025) <a href="https://doi.org/10.1037/met0000769" class="external-link">doi:10.1037/met0000769</a>
+
 for guidance on how adequately to conduct title and abstract screening with GPT models.</p>
     </div>
 
@@ -116,7 +119,7 @@ The v1beta path and model endpoint will be appended automatically.</p></dd>
 <dd><p>Character string with the name of the Gemini completion model. Can take
 multiple models. Default is <code>"gemini-3.1-flash-lite"</code>.
 Find available models at
-<a href="https://ai.google.dev/gemini-api/docs/models" class="external-link">https://ai.google.dev/gemini-api/docs/models</a>.</p></dd>
+<a href="https://aistudio.google.com/docs/models" class="external-link">https://aistudio.google.com/docs/models</a>.</p></dd>
 
 
 <dt id="arg-role">role<a class="anchor" aria-label="anchor" href="#arg-role"></a></dt>
@@ -125,7 +128,7 @@ Find available models at
 
 <dt id="arg-tools">tools<a class="anchor" aria-label="anchor" href="#arg-tools"></a></dt>
 <dd><p>This argument allows users to apply customized function declarations.
-See <a href="https://ai.google.dev/gemini-api/docs/function-calling" class="external-link">https://ai.google.dev/gemini-api/docs/function-calling</a>.
+See <a href="https://aistudio.google.com/docs/function-calling" class="external-link">https://aistudio.google.com/docs/function-calling</a>.
 Default is <code>NULL</code>. If not specified, the default function calls from <code>AIscreenR</code> (Gemini format) are used.</p></dd>
 
 
@@ -133,7 +136,7 @@ Default is <code>NULL</code>. If not specified, the default function calls from 
 <dd><p>If a customized function is provided, this argument controls
 which mode Gemini uses for function calling ("auto", "any", "none"). Default is <code>NULL</code>.
 If set to <code>NULL</code> when using a customized function, the default is <code>"auto"</code>.
-See <a href="https://ai.google.dev/gemini-api/docs/function-calling" class="external-link">https://ai.google.dev/gemini-api/docs/function-calling</a>.</p></dd>
+See <a href="https://aistudio.google.com/docs/function-calling" class="external-link">https://aistudio.google.com/docs/function-calling</a>.</p></dd>
 
 
 <dt id="arg-top-p">top_p<a class="anchor" aria-label="anchor" href="#arg-top-p"></a></dt>
@@ -260,7 +263,7 @@ Default is <code>FALSE</code>.</p></dd>
 Can take the values <code>"minimal"</code>, <code>"low"</code>, <code>"medium"</code>, and <code>"high"</code>. For Gemini 3.1 Pro, <code>"minimal"</code> is not supported.
 Be aware that 2.5 models don't support <code>thinkingLevel</code>/<code>reasoning_effort</code>, but use <code>thinkingBudget</code> instead. Therefore, reasoning_effort is
 mapped to budget values when using 2.5 models.
-See <a href="https://ai.google.dev/gemini-api/docs/thinking#rest" class="external-link">https://ai.google.dev/gemini-api/docs/thinking#rest</a> for more information.</p></dd>
+See <a href="https://aistudio.google.com/docs/thinking" class="external-link">https://aistudio.google.com/docs/thinking</a> for more information.</p></dd>
 
 
 <dt id="arg-overinclusive">overinclusive<a class="anchor" aria-label="anchor" href="#arg-overinclusive"></a></dt>
@@ -281,7 +284,7 @@ affects the default function calling setup, and is ignored if you provide your o
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Further argument to pass to the request body.
-See <a href="https://ai.google.dev/gemini-api/docs/text-generation#rest" class="external-link">https://ai.google.dev/gemini-api/docs/text-generation#rest</a>.</p></dd>
+See <a href="https://aistudio.google.com/docs/text-generation" class="external-link">https://aistudio.google.com/docs/text-generation</a>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -325,7 +328,7 @@ but with failed request references only.
 <p>When the same question is requested multiple times, the <code>answer_data_aggregated</code> data contains the following <em>mandatory</em> variables:</p><table class="table table"><tr><td><b>studyid</b></td><td><code>integer</code></td><td>indicating the study ID of the reference.</td></tr><tr><td><b>title</b></td><td><code>character</code></td><td>indicating the title of the reference.</td></tr><tr><td><b>abstract</b></td><td><code>character</code></td><td>indicating the abstract of the reference.</td></tr><tr><td><b>promptid</b></td><td><code>integer</code></td><td>indicating the prompt ID.</td></tr><tr><td><b>prompt</b></td><td><code>character</code></td><td>indicating the prompt.</td></tr><tr><td><b>model</b></td><td><code>character</code></td><td>indicating the specific gpt-model used.</td></tr><tr><td><b>question</b></td><td><code>character</code></td><td>indicating the final question sent to Gemini's API models.</td></tr><tr><td><b>top_p</b></td><td><code>numeric</code></td><td>indicating the applied top_p.</td></tr><tr><td><b>incl_p</b></td><td><code>numeric</code></td><td>indicating the probability of inclusion calculated across multiple repeated responses on the same title and abstract.</td></tr><tr><td><b>final_decision_gpt</b></td><td><code>character</code></td><td>indicating the final decision reached by gpt - either 'Include', 'Exclude', or 'Check'.</td></tr><tr><td><b>final_decision_gpt_num</b></td><td><code>integer</code></td><td>indicating the final numeric decision reached by gpt - either 1 or 0.</td></tr><tr><td><b>longest_answer</b></td><td><code>character</code></td><td>indicating the longest gpt response obtained
 across multiple repeated responses on the same title and abstract. Only included when <code>decision_description = TRUE</code>.
 See 'Examples' below for how to use this function.</td></tr><tr><td><b>mean_confidence</b></td><td><code>numeric</code></td><td>indicating the average confidence across the repeated responses. ONLY included when <code>confidence = TRUE</code>.</td></tr><tr><td><b>reps</b></td><td><code>integer</code></td><td>indicating the number of times the same question has been sent to Gemini's API models.</td></tr><tr><td><b>n_mis_answers</b></td><td><code>integer</code></td><td>indicating the number of missing responses.</td></tr><tr><td><b>submodel</b></td><td><code>character</code></td><td>indicating the exact (sub)model used for screening.</td></tr></table><p><br></p>
-<p>The <code>price_data</code> data contains the following variables:</p><table class="table table"><tr><td><b>prompt</b></td><td><code>character</code></td><td>if multiple prompts are used this variable indicates the given prompt-id.</td></tr><tr><td><b>model</b></td><td><code>character</code></td><td>the specific gpt model used.</td></tr><tr><td><b>iterations</b></td><td><code>integer</code></td><td>indicating the number of times the same question was requested.</td></tr><tr><td><b>input_price_dollar</b></td><td><code>integer</code></td><td>price for all prompt/input tokens for the correspondent gpt-model.</td></tr><tr><td><b>output_price_dollar</b></td><td><code>integer</code></td><td>price for all completion/output tokens for the correspondent gpt-model.</td></tr><tr><td><b>total_price_dollar</b></td><td><code>integer</code></td><td>total price for all tokens for the correspondent gpt-model.</td></tr></table><p>Find current token pricing at <a href="https://ai.google.dev/gemini-api/docs/pricing" class="external-link">https://ai.google.dev/gemini-api/docs/pricing</a> or <a href="model_prizes.html">model_prizes</a>.</p>
+<p>The <code>price_data</code> data contains the following variables:</p><table class="table table"><tr><td><b>prompt</b></td><td><code>character</code></td><td>if multiple prompts are used this variable indicates the given prompt-id.</td></tr><tr><td><b>model</b></td><td><code>character</code></td><td>the specific gpt model used.</td></tr><tr><td><b>iterations</b></td><td><code>integer</code></td><td>indicating the number of times the same question was requested.</td></tr><tr><td><b>input_price_dollar</b></td><td><code>integer</code></td><td>price for all prompt/input tokens for the correspondent gpt-model.</td></tr><tr><td><b>output_price_dollar</b></td><td><code>integer</code></td><td>price for all completion/output tokens for the correspondent gpt-model.</td></tr><tr><td><b>total_price_dollar</b></td><td><code>integer</code></td><td>total price for all tokens for the correspondent gpt-model.</td></tr></table><p>Find current token pricing at <a href="https://aistudio.google.com/docs/pricing" class="external-link">https://aistudio.google.com/docs/pricing</a> or <a href="model_prizes.html">model_prizes</a>.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

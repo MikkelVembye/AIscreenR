@@ -18,8 +18,8 @@ The function allows to run title and abstract screening across multiple
 prompts and with repeated questions to check for consistency across
 answers. This function draws on the newly developed function calling to
 better steer the output of the responses. This function was used in
-[Vembye, Christensen, Mølgaard, and Schytt.
-(2025)](https://psycnet.apa.org/record/2026-37236-001).
+Vembye, Christensen, Mølgaard, and Schytt. (2025)
+[doi:10.1037/met0000769](https://doi.org/10.1037/met0000769) .
 
 ## Usage
 
@@ -311,7 +311,8 @@ Find current token pricing at
 Vembye, M. H., Christensen, J., Mølgaard, A. B., & Schytt, F. L. W.
 (2025) *GPT API Models Can Function as Highly Reliable Second Screeners
 of Titles and Abstracts in Systematic Reviews: A Proof of Concept and
-Common Guidelines* <https://psycnet.apa.org/record/2026-37236-001>
+Common Guidelines*
+[doi:10.1037/met0000769](https://doi.org/10.1037/met0000769)
 
 Wickham H (2023). *httr2: Perform HTTP Requests and Process the
 Responses*. https://httr2.r-lib.org, https://github.com/r-lib/httr2.

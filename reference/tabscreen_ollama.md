@@ -11,11 +11,11 @@ screening across multiple prompts and with repeated questions to check
 for consistency across answers. All of which can be done in parallel.
 The function draws on the newly developed function calling which is
 called via the tools argument in the request body. Function calls ensure
-more reliable and consistent responses to ones requests. See [Vembye,
-Christensen, Mølgaard, and Schytt.
-(2025)](https://psycnet.apa.org/record/2026-37236-001) for guidance on
-how adequately to conduct title and abstract screening with OLLAMA
-models.
+more reliable and consistent responses to ones requests. See Vembye,
+Christensen, Mølgaard, and Schytt. (2025)
+[doi:10.1037/met0000769](https://doi.org/10.1037/met0000769) for
+guidance on how adequately to conduct title and abstract screening with
+OLLAMA models.
 
 ## Usage
 
