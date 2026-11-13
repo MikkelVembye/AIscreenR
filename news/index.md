@@ -2,6 +2,8 @@
 
 ## AIscreenR 0.5.1
 
+CRAN release: 2026-11-13
+
 ### Major improvements
 
 - All gpt-4 and gpt-3.5 models (e.g., `gpt-4`, `gpt-4o`, `gpt-4o-mini`,
