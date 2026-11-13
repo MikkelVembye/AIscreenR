@@ -1,6 +1,6 @@
 # Changelog
 
-## AIscreenR 0.5.2
+## AIscreenR 0.5.1
 
 ### Major improvements
 
@@ -35,8 +35,6 @@
 
 - [`screen_analyzer()`](https://mikkelvembye.github.io/AIscreenR/reference/screen_analyzer.md)
   now also works for data without a `top_p` variable.
-
-## AIscreenR 0.5.1
 
 ### New features
 
