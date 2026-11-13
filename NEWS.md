@@ -1,4 +1,4 @@
-# AIscreenR 0.5.2
+# AIscreenR 0.5.1
 
 ## Major improvements
 * All gpt-4 and gpt-3.5 models (e.g., `gpt-4`, `gpt-4o`, `gpt-4o-mini`, `gpt-4.1`) are deprecated and have been removed from `model_prizes`. `tabscreen_gpt()` and `tabscreen_gpt.tools()` now stop if one of these models is used, also when `custom_model = TRUE`.
@@ -10,8 +10,6 @@
 ## Minor improvements
 * `screen_analyzer()` now also works for data without a `top_p` variable.
 
-
-# AIscreenR 0.5.1
 
 ## New features
 * Adding the `confidence` argument to all tabscreen functions. When `confidence = TRUE`, the model also reports how confident it is in each decision (0-100), returned in the new `confidence` variable. When `reps > 1`, the aggregated data also contains `mean_confidence`. The new `gpt_confidence` argument in `report()` includes the confidence in the report.
