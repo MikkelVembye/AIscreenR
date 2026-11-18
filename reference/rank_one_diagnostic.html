@@ -11,13 +11,10 @@ computed over rater pairs that share at least one rated item.
 The significance of T_obs is
 assessed with a parametric bootstrap. Here we simulate fresh datasets from the
 fitted model, refit the rank-one form, and recompute the residual each
-time (T_boot). The p-value is (1 + #{T_boot &amp;gt;= T_obs}) / (B + 1), so it
-is never exactly 0; a small p-value
+time (T_boot). The p-value is the fraction of bootstrap replicates
+whose residual is at least as large as the observed one; a small p-value
 means the observed agreement pattern is not well explained by a single
-solving probability per rater.
-Note that the chance baseline (Pe) is fixed from the original fit and is
-not re-estimated on each simulated dataset, so the bootstrap does not
-reflect the uncertainty in the fitted guessing behavior."><meta property="og:description" content="This function checks whether the solve-or-guess fit from
+solving probability per rater."><meta property="og:description" content="This function checks whether the solve-or-guess fit from
 solve_or_guess is consistent with its core assumption: a
 single solving probability per rater explains how often any two raters
 agree. Under this assumption, each pair of raters' agreement rate should
@@ -29,13 +26,10 @@ computed over rater pairs that share at least one rated item.
 The significance of T_obs is
 assessed with a parametric bootstrap. Here we simulate fresh datasets from the
 fitted model, refit the rank-one form, and recompute the residual each
-time (T_boot). The p-value is (1 + #{T_boot &amp;gt;= T_obs}) / (B + 1), so it
-is never exactly 0; a small p-value
+time (T_boot). The p-value is the fraction of bootstrap replicates
+whose residual is at least as large as the observed one; a small p-value
 means the observed agreement pattern is not well explained by a single
-solving probability per rater.
-Note that the chance baseline (Pe) is fixed from the original fit and is
-not re-estimated on each simulated dataset, so the bootstrap does not
-reflect the uncertainty in the fitted guessing behavior."></head><body>
+solving probability per rater."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -74,7 +68,7 @@ reflect the uncertainty in the fitted guessing behavior."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Rank-one diagnostic for a solve-or-guess fit</h1>
-      <small class="dont-index">Source: <a href="https://github.com/MikkelVembye/AIscreenR/blob/main/R/rank_one_diagnostic.R" class="external-link"><code>R/rank_one_diagnostic.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/MikkelVembye/AIscreenR/blob/v0.5.1.9999/R/rank_one_diagnostic.R" class="external-link"><code>R/rank_one_diagnostic.R</code></a></small>
       <div class="d-none name"><code>rank_one_diagnostic.Rd</code></div>
     </div>
 
@@ -91,13 +85,10 @@ computed over rater pairs that share at least one rated item.</p>
 <p>The significance of <code>T_obs</code> is
 assessed with a parametric bootstrap. Here we simulate fresh datasets from the
 fitted model, refit the rank-one form, and recompute the residual each
-time (<code>T_boot</code>). The p-value is <code>(1 + #{T_boot &gt;= T_obs}) / (B + 1)</code>, so it
-is never exactly 0; a small p-value
+time (<code>T_boot</code>). The p-value is the fraction of bootstrap replicates
+whose residual is at least as large as the observed one; a small p-value
 means the observed agreement pattern is not well explained by a single
 solving probability per rater.</p>
-<p>Note that the chance baseline (<code>Pe</code>) is fixed from the original fit and is
-not re-estimated on each simulated dataset, so the bootstrap does not
-reflect the uncertainty in the fitted guessing behavior.</p>
     </div>
 
     <div class="section level2">
@@ -128,7 +119,7 @@ degrees-of-freedom summary. Default <code>TRUE</code>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>An object of class <code>"sog_rank_one"</code>, a list with elements:</p><table class="table table"><tr><td><b>T_obs</b></td><td><code>numeric</code></td><td>the observed rank-one residual sum of squares, computed from the real data.</td></tr><tr><td><b>T_boot</b></td><td><code>numeric</code></td><td>length-<code>B</code> vector of the residual recomputed from each parametric bootstrap replicate - the simulated null distribution that <code>T_obs</code> is compared against.</td></tr><tr><td><b>B</b></td><td><code>integer</code></td><td>the number of bootstrap replicates used.</td></tr><tr><td><b>n_valid_pairs</b></td><td><code>integer</code></td><td>number of rater pairs that share at least one rated item, and so contribute to <code>T_obs</code>/<code>T_boot</code>.</td></tr><tr><td><b>n_params</b></td><td><code>integer</code></td><td>number of free parameters in the rank-one form (one solving probability per rater; the pair-specific chance baseline is fixed from the fit, not re-estimated).</td></tr><tr><td><b>df</b></td><td><code>integer</code></td><td><code>n_valid_pairs - n_params</code>. A non-positive value means there are no more valid pairs than parameters, so the rank-one form can fit the agreement rates exactly and the test cannot detect anything. A warning is given and <code>p_value</code> is <code>NA</code>.</td></tr><tr><td><b>p_value</b></td><td><code>numeric</code></td><td><code>(1 + #{T_boot &gt;= T_obs}) / (B + 1)</code> - a small value means the observed agreement is not well explained by a single solving probability per rater. <code>NA</code> when <code>df &lt;= 0</code>.</td></tr><tr><td><b>raters</b></td><td><code>character</code></td><td>rater identifiers in the order used to build the underlying agreement matrix (system rater first, then the rest).</td></tr><tr><td><b>Pi</b></td><td><code>matrix</code></td><td>each rater's fitted guess distribution (rows = raters, columns = answers, rows sum to 1).</td></tr><tr><td><b>Pe</b></td><td><code>matrix</code></td><td>the pair-specific chance-agreement baseline used in the rank-one form.</td></tr></table></div>
+    <p>An object of class <code>"sog_rank_one"</code>, a list with elements:</p><table class="table table"><tr><td><b>T_obs</b></td><td><code>numeric</code></td><td>the observed rank-one residual sum of squares, computed from the real data.</td></tr><tr><td><b>T_boot</b></td><td><code>numeric</code></td><td>length-<code>B</code> vector of the residual recomputed from each parametric bootstrap replicate - the simulated null distribution that <code>T_obs</code> is compared against.</td></tr><tr><td><b>B</b></td><td><code>integer</code></td><td>the number of bootstrap replicates used.</td></tr><tr><td><b>n_valid_pairs</b></td><td><code>integer</code></td><td>number of rater pairs that share at least one rated item, and so contribute to <code>T_obs</code>/<code>T_boot</code>.</td></tr><tr><td><b>n_params</b></td><td><code>integer</code></td><td>number of free parameters in the rank-one form (one solving probability per rater; the pair-specific chance baseline is fixed from the fit, not re-estimated).</td></tr><tr><td><b>df</b></td><td><code>integer</code></td><td><code>n_valid_pairs - n_params</code>. A non-positive value means there are no more valid pairs than parameters, but the bootstrap p-value is still valid regardless, since the rank-one equations are nonlinear.</td></tr><tr><td><b>p_value</b></td><td><code>numeric</code></td><td>fraction of <code>T_boot</code> at least as large as <code>T_obs</code> - a small value means the observed agreement is not well explained by a single solving probability per rater.</td></tr><tr><td><b>raters</b></td><td><code>character</code></td><td>rater identifiers in the order used to build the underlying agreement matrix (system rater first, then the rest).</td></tr></table></div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Rohe, K., Krauska, A. N., Collins, G., Higgins, J., &amp; Pustejovsky, J. (2026).
