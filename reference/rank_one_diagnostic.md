@@ -14,10 +14,13 @@ over rater pairs that share at least one rated item.
 The significance of `T_obs` is assessed with a parametric bootstrap.
 Here we simulate fresh datasets from the fitted model, refit the
 rank-one form, and recompute the residual each time (`T_boot`). The
-p-value is the fraction of bootstrap replicates whose residual is at
-least as large as the observed one; a small p-value means the observed
-agreement pattern is not well explained by a single solving probability
-per rater.
+p-value is `(1 + #{T_boot >= T_obs}) / (B + 1)`, so it is never exactly
+0; a small p-value means the observed agreement pattern is not well
+explained by a single solving probability per rater.
+
+Note that the chance baseline (`Pe`) is fixed from the original fit and
+is not re-estimated on each simulated dataset, so the bootstrap does not
+reflect the uncertainty in the fitted guessing behavior.
 
 ## Usage
 
@@ -56,9 +59,11 @@ An object of class `"sog_rank_one"`, a list with elements:
 | **B** | `integer` | the number of bootstrap replicates used. |
 | **n_valid_pairs** | `integer` | number of rater pairs that share at least one rated item, and so contribute to `T_obs`/`T_boot`. |
 | **n_params** | `integer` | number of free parameters in the rank-one form (one solving probability per rater; the pair-specific chance baseline is fixed from the fit, not re-estimated). |
-| **df** | `integer` | `n_valid_pairs - n_params`. A non-positive value means there are no more valid pairs than parameters, but the bootstrap p-value is still valid regardless, since the rank-one equations are nonlinear. |
-| **p_value** | `numeric` | fraction of `T_boot` at least as large as `T_obs` - a small value means the observed agreement is not well explained by a single solving probability per rater. |
+| **df** | `integer` | `n_valid_pairs - n_params`. A non-positive value means there are no more valid pairs than parameters, so the rank-one form can fit the agreement rates exactly and the test cannot detect anything. A warning is given and `p_value` is `NA`. |
+| **p_value** | `numeric` | `(1 + #{T_boot >= T_obs}) / (B + 1)` - a small value means the observed agreement is not well explained by a single solving probability per rater. `NA` when `df <= 0`. |
 | **raters** | `character` | rater identifiers in the order used to build the underlying agreement matrix (system rater first, then the rest). |
+| **Pi** | `matrix` | each rater's fitted guess distribution (rows = raters, columns = answers, rows sum to 1). |
+| **Pe** | `matrix` | the pair-specific chance-agreement baseline used in the rank-one form. |
 
 ## References
 
