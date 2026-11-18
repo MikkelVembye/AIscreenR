@@ -1,6 +1,62 @@
 # Updated test for tabscreen_gpt.default functions
 
+# Fake OpenAI replies, so these tests never reach the real API.
+# httr2::local_mocked_responses() answers every req_perform() with this function.
+mock_openai_errors <- function(req) {
+  # Unknown models give 404, a tool with an invalid schema gives 400,
+  # and any other request gets 401 (wrong key)
+  if (req$body$data$model %in% c("gpt-7", "gpt-5-nan")) {
+    httr2::response_json(
+      status_code = 404,
+      body = list(error = list(message = "The model does not exist"))
+    )
+  } else if (identical(req$body$data$tools[[1]]$parameters$type, "invalid_schema_type")) {
+    httr2::response_json(
+      status_code = 400,
+      body = list(error = list(message = "Invalid schema for function: invalid type"))
+    )
+  } else {
+    httr2::response_json(
+      status_code = 401,
+      body = list(error = list(message = "Incorrect API key provided"))
+    )
+  }
+}
+
+# A valid reply with one function call, as the Responses API returns it.
+# The detailed tools also need a detailed_description.
+mock_openai_ok <- function(req) {
+  tool_name <- req$body$data$tools[[1]]$name
+  detailed <- tool_name %in% c("inclusion_decision", "inclusion_decision_binary")
+  args <- if (detailed) {
+    '{"decision_gpt":"1","detailed_description":"Mocked answer"}'
+  } else {
+    '{"decision_gpt":"1"}'
+  }
+
+  httr2::response_json(
+    status_code = 200,
+    body = list(
+      model = req$body$data$model, # like the real API, echo the requested model
+      output = list(list(type = "function_call", arguments = args)),
+      usage = list(input_tokens = 10, output_tokens = 5)
+    )
+  )
+}
+
+# Everything a screening test needs to run without any real API call:
+# mocked replies, a dummy key and a sequential plan (mocks do not reach
+# parallel workers). All of it is undone when the test ends.
+local_gpt_mock <- function(mock = mock_openai_ok, env = parent.frame()) {
+  local_mock_api(mock, env = env)
+  withr::local_envvar(OPENAI_API_KEY = "dummy-key", .local_envir = env)
+  old_plan <- future::plan(future::sequential)
+  withr::defer(future::plan(old_plan), envir = env)
+}
+
 test_that(".gpt_engine_responses return errors correctly", {
+
+  local_mock_api(mock_openai_errors)
 
   tools_choice_name <- list(
     type = "function",
@@ -20,7 +76,7 @@ test_that(".gpt_engine_responses return errors correctly", {
     RPM = 10000,
     timeinf = T,
     tokeninf = T,
-    key = get_api_key(),
+    key = "dummy-key", # not a real key, the request is mocked
     max_t = 4,
     max_s = 10,
     is_trans = gpt_is_transient,
@@ -64,7 +120,7 @@ test_that(".gpt_engine_responses return errors correctly", {
     RPM = 10000,
     timeinf = T,
     tokeninf = T,
-    key = get_api_key(),
+    key = "dummy-key", # not a real key, the request is mocked
     max_t = 4,
     max_s = 10,
     is_trans = gpt_is_transient(),
@@ -78,6 +134,8 @@ test_that(".gpt_engine_responses return errors correctly", {
 
 
 test_that(".rep_gpt_engine_responses controls errrors correctly", {
+
+  local_mock_api(mock_openai_errors)
 
   iterations <- 3
 
@@ -117,7 +175,7 @@ test_that(".rep_gpt_engine_responses controls errrors correctly", {
     seeds = NULL,
     time_inf = T,
     token_inf = T,
-    apikey = get_api_key(),
+    apikey = "dummy-key", # not a real key, the request is mocked
     maxt = 4,
     maxs = 10,
     istrans = gpt_is_transient,
@@ -172,7 +230,7 @@ test_that(".rep_gpt_engine_responses controls errrors correctly", {
     seeds = NULL,
     time_inf = T,
     token_inf = T,
-    apikey = get_api_key(),
+    apikey = "dummy-key", # not a real key, the request is mocked
     maxt = 4,
     maxs = 10,
     istrans = gpt_is_transient,
@@ -279,79 +337,54 @@ skip_github_action <- FALSE
 
 test_that("tabscreen_gpt() overinclusive chooses default tools", {
 
-  if(skip) skip()
-  if(skip_github_action) skip_on_ci()
-  skip_on_cran()
+  # No real API calls: the replies are mocked and run in this R process
+  # (mocks do not reach parallel workers, hence the sequential plan).
+  # The mock also stores each request body, so we can check which tool is sent.
+  sent <- list()
+  record_and_reply <- function(req) {
+    sent[[length(sent) + 1]] <<- req$body$data
+    mock_openai_ok(req)
+  }
+  local_mock_api(record_and_reply)
+  withr::local_envvar(OPENAI_API_KEY = "dummy-key")
+  old_plan <- future::plan(future::sequential)
+  withr::defer(future::plan(old_plan))
+
+  # Sends one record with the given settings and returns the request body
+  body_for <- function(overinclusive, decision_description) {
+    sent <<- list()
+    tabscreen_gpt(
+      data = filges2015_dat[1, ],
+      prompt = prompt,
+      studyid = studyid,
+      title = title,
+      abstract = abstract,
+      model = "gpt-5-nano",
+      overinclusive = overinclusive,
+      decision_description = decision_description,
+      messages = FALSE,
+      progress = FALSE
+    )
+    sent[[1]]
+  }
 
   # Binary default tools when overinclusive = FALSE
-  res_bin <- tabscreen_gpt(
-    data = filges2015_dat[1,],
-    prompt = prompt,
-    studyid = studyid,
-    title = title,
-    abstract = abstract,
-    model = "gpt-5-nano",
-    overinclusive = FALSE,
-    decision_description = FALSE,
-    messages = FALSE,
-    progress = FALSE
-  )
+  body <- body_for(overinclusive = FALSE, decision_description = FALSE)
+  expect_identical(body$tool_choice$name, "inclusion_decision_simple_binary")
+  expect_identical(body$tools[[1]]$name, "inclusion_decision_simple_binary")
 
-  args_bin <- attr(res_bin, "arg_list")
-  expect_identical(args_bin$tool_choice, "inclusion_decision_simple_binary")
-  expect_identical(args_bin$tools[[1]]$`function`$name, "inclusion_decision_simple_binary")
-
-  res_bin_det <- tabscreen_gpt(
-    data = filges2015_dat[1,],
-    prompt = prompt,
-    studyid = studyid,
-    title = title,
-    abstract = abstract,
-    model = "gpt-5-nano",
-    overinclusive = FALSE,
-    decision_description = TRUE,
-    messages = FALSE,
-    progress = FALSE
-  )
-
-  args_bin_det <- attr(res_bin_det, "arg_list")
-  expect_identical(args_bin_det$tool_choice, "inclusion_decision_binary")
-  expect_identical(args_bin_det$tools[[1]]$`function`$name, "inclusion_decision_binary")
+  body <- body_for(overinclusive = FALSE, decision_description = TRUE)
+  expect_identical(body$tool_choice$name, "inclusion_decision_binary")
+  expect_identical(body$tools[[1]]$name, "inclusion_decision_binary")
 
   # Over-inclusive tools (supports 1.1) when overinclusive = TRUE
-  res_over <- tabscreen_gpt(
-    data = filges2015_dat[1,],
-    prompt = prompt,
-    studyid = studyid,
-    title = title,
-    abstract = abstract,
-    model = "gpt-5-nano",
-    overinclusive = TRUE,
-    decision_description = FALSE,
-    messages = FALSE,
-    progress = FALSE
-  )
+  body <- body_for(overinclusive = TRUE, decision_description = FALSE)
+  expect_identical(body$tool_choice$name, "inclusion_decision_simple")
+  expect_identical(body$tools[[1]]$name, "inclusion_decision_simple")
 
-  args_over <- attr(res_over, "arg_list")
-  expect_identical(args_over$tool_choice, "inclusion_decision_simple")
-  expect_identical(args_over$tools[[1]]$`function`$name, "inclusion_decision_simple")
-
-  res_over_det <- tabscreen_gpt(
-    data = filges2015_dat[1,],
-    prompt = prompt,
-    studyid = studyid,
-    title = title,
-    abstract = abstract,
-    model = "gpt-5-nano",
-    overinclusive = TRUE,
-    decision_description = TRUE,
-    messages = FALSE,
-    progress = FALSE
-  )
-
-  args_over_det <- attr(res_over_det, "arg_list")
-  expect_identical(args_over_det$tool_choice, "inclusion_decision")
-  expect_identical(args_over_det$tools[[1]]$`function`$name, "inclusion_decision")
+  body <- body_for(overinclusive = TRUE, decision_description = TRUE)
+  expect_identical(body$tool_choice$name, "inclusion_decision")
+  expect_identical(body$tools[[1]]$name, "inclusion_decision")
 
 })
 
@@ -359,10 +392,9 @@ suppressWarnings(future::plan(future::multisession))
 
 test_that("tabscreen_gpt() works with single parameter values.",{
 
-  if(skip) skip()
-  if(skip_github_action) skip_on_ci()
-  skip_on_cran()
+  local_gpt_mock()
 
+  # reps = 1, so there is no aggregated data
   expect_message(
 
     test_obj <- tabscreen_gpt(
@@ -377,10 +409,10 @@ test_that("tabscreen_gpt() works with single parameter values.",{
 
   )
 
-  expect_true(is.numeric(test_obj$answer_data_all$decision_binary))
+  expect_true(is.numeric(test_obj$answer_data$decision_binary))
 
-  expect_equal(nrow(test_obj$answer_data_all), 1L)
-  expect_equal(nrow(test_obj$answer_data_sum), 1L)
+  expect_equal(nrow(test_obj$answer_data), 1L)
+  expect_null(test_obj$answer_data_aggregated)
   expect_equal(nrow(test_obj$price_data), 1L)
   expect_length(test_obj$price_dollar, 1L)
 
@@ -399,8 +431,7 @@ test_that("tabscreen_gpt() works with single parameter values.",{
 
   )
 
-  expect_equal(nrow(test_obj$answer_data_all), 2L)
-  expect_equal(nrow(test_obj$answer_data_sum), 2L)
+  expect_equal(nrow(test_obj$answer_data), 2L)
   expect_equal(nrow(test_obj$price_data), 2L)
   expect_length(test_obj$price_dollar, 1L)
 
@@ -418,21 +449,18 @@ test_that("tabscreen_gpt() works with single parameter values.",{
 
   )
 
-  expect_equal(nrow(test_obj$answer_data_all), 2L)
-  expect_equal(nrow(test_obj$answer_data_sum), 2L)
-  expect_equal(nrow(test_obj$price_data), 1L)
+  expect_equal(nrow(test_obj$answer_data), 2L)
+  # price_data has one row per prompt, model and number of reps
+  expect_equal(nrow(test_obj$price_data), 2L)
   expect_length(test_obj$price_dollar, 1L)
-
-
 
 })
 
 test_that("tabscreen_gpt() works with multiple parameter values.",{
 
-  if(skip) skip()
-  if(skip_github_action) skip_on_ci()
-  skip_on_cran()
+  local_gpt_mock()
 
+  # 1 record, 2 models: gpt-5-nano is asked twice and gpt-6-luna once
   expect_message(
 
     test_obj <- tabscreen_gpt(
@@ -447,13 +475,14 @@ test_that("tabscreen_gpt() works with multiple parameter values.",{
 
   )
 
-  expect_equal(nrow(test_obj$answer_data_all), 3L)
-  expect_equal(nrow(test_obj$answer_data_sum), 2L)
+  expect_equal(nrow(test_obj$answer_data), 3L)
+  expect_equal(nrow(test_obj$answer_data_aggregated), 2L)
   expect_equal(nrow(test_obj$price_data), 2L)
   expect_length(test_obj$price_dollar, 1L)
 
-  expect_gt(nrow(test_obj$answer_data_all), nrow(test_obj$answer_data_sum))
+  expect_gt(nrow(test_obj$answer_data), nrow(test_obj$answer_data_aggregated))
 
+  # 2 records
   expect_message(
 
     test_obj <- tabscreen_gpt(
@@ -468,17 +497,17 @@ test_that("tabscreen_gpt() works with multiple parameter values.",{
 
   )
 
-  expect_equal(nrow(test_obj$answer_data_all), 6L)
-  expect_equal(nrow(test_obj$answer_data_sum), 4L)
+  expect_equal(nrow(test_obj$answer_data), 6L)
+  expect_equal(nrow(test_obj$answer_data_aggregated), 4L)
   expect_equal(nrow(test_obj$price_data), 2L)
   expect_length(test_obj$price_dollar, 1L)
 
-
+  # 2 records and 2 prompts
   expect_message(
 
     test_obj <- tabscreen_gpt(
       data = filges2015_dat[1:2,],
-      prompt = prompt,
+      prompt = c(prompt, prompt2),
       studyid = studyid,
       title = title,
       abstract = abstract,
@@ -488,18 +517,21 @@ test_that("tabscreen_gpt() works with multiple parameter values.",{
 
   )
 
-  expect_equal(nrow(test_obj$answer_data_all), 12L)
-  expect_equal(nrow(test_obj$answer_data_sum), 2*2*2)
-  expect_equal(nrow(test_obj$price_data), 2L)
+  expect_equal(nrow(test_obj$answer_data), 12L)
+  expect_equal(nrow(test_obj$answer_data_aggregated), 2*2*2)
+  # price_data has one row per prompt, model and number of reps
+  expect_equal(nrow(test_obj$price_data), 2*2)
   expect_length(test_obj$price_dollar, 1L)
 
 })
 
 test_that("tabscreen_gpt() don't return time and token info.", {
 
-  if(skip) skip()
-  if(skip_github_action) skip_on_ci()
-  skip_on_cran()
+  local_gpt_mock()
+
+  # Columns added by time_info and token_info
+  time_col <- "run_time"
+  token_cols <- c("prompt_tokens", "completion_tokens")
 
   expect_message(
 
@@ -517,11 +549,12 @@ test_that("tabscreen_gpt() don't return time and token info.", {
 
   )
 
-  time_token_not_include <- any(!stringr::str_detect(names(test_obj$answer_data_all), "time|token"))
-  expect_true(time_token_not_include)
+  expect_false(any(c(time_col, token_cols) %in% names(test_obj$answer_data)))
 
+  # Only answer_data and run_date are returned (no price data without token info)
   expect_equal(length(test_obj), 2)
 
+  # With reps > 1, the aggregated data is returned too
   expect_message(
 
     test_obj <- tabscreen_gpt(
@@ -532,7 +565,6 @@ test_that("tabscreen_gpt() don't return time and token info.", {
       abstract = abstract,
       model = "gpt-5-nano",
       reps = 2,
-      api_key = 1234,
       time_info = FALSE,
       token_info = FALSE
     )
@@ -558,11 +590,8 @@ test_that("tabscreen_gpt() don't return time and token info.", {
 
   )
 
-  token_not_include <- any(!stringr::str_detect(names(test_obj$answer_data_all), "token"))
-  expect_true(token_not_include)
-
-  time_include <- any(stringr::str_detect(names(test_obj$answer_data_all), "time"))
-  expect_true(time_include)
+  expect_false(any(token_cols %in% names(test_obj$answer_data)))
+  expect_true(time_col %in% names(test_obj$answer_data))
 
   expect_message(
 
@@ -580,11 +609,8 @@ test_that("tabscreen_gpt() don't return time and token info.", {
 
   )
 
-  time_not_include <- any(!stringr::str_detect(names(test_obj$answer_data_all), "time"))
-  expect_true(time_not_include)
-
-  token_include <- any(stringr::str_detect(names(test_obj$answer_data_all), "token"))
-  expect_true(token_include)
+  expect_false(time_col %in% names(test_obj$answer_data))
+  expect_true(all(token_cols %in% names(test_obj$answer_data)))
 
 })
 

@@ -1,4 +1,26 @@
+# Fake Mistral errors, so these tests never reach the real API:
+# unknown models give 400, a wrong role gives 422, anything else gives 401.
+mock_mistral_errors <- function(req) {
+  model <- req$body$data$model
+  role <- req$body$data$messages[[1]]$role
+
+  if (identical(model, "mistral-7")) {
+    status <- 400
+    msg <- "Invalid model"
+  } else if (!identical(role, "user")) {
+    status <- 422
+    msg <- "Invalid role"
+  } else {
+    status <- 401
+    msg <- "Unauthorized"
+  }
+
+  httr2::response_json(status_code = status, body = list(message = msg))
+}
+
 test_that(".gpt_engine return errors correctly", {
+
+  local_mock_api(mock_mistral_errors)
 
   tools_choice_name <- list(
     type = "function",
@@ -24,7 +46,7 @@ test_that(".gpt_engine return errors correctly", {
     RPM = 10000,
     timeinf = T,
     tokeninf = T,
-    key = get_api_key_mistral(),
+    key = "dummy-key", # not a real key, the request is mocked
     max_t = 4,
     max_s = 10,
     is_trans = gpt_is_transient,
@@ -83,7 +105,7 @@ test_that(".gpt_engine return errors correctly", {
     RPM = 10000,
     timeinf = T,
     tokeninf = T,
-    key = get_api_key_mistral(),
+    key = "dummy-key", # not a real key, the request is mocked
     max_t = 4,
     max_s = 10,
     is_trans = gpt_is_transient,
@@ -113,7 +135,7 @@ test_that(".gpt_engine return errors correctly", {
     RPM = 10000,
     timeinf = T,
     tokeninf = T,
-    key = get_api_key(),
+    key = "dummy-key", # not a real key, the request is mocked
     max_t = 4,
     max_s = 10,
     is_trans = gpt_is_transient(),
@@ -127,6 +149,8 @@ test_that(".gpt_engine return errors correctly", {
 
 
 test_that(".rep_gpt_engine controls errrors correctly", {
+
+  local_mock_api(mock_mistral_errors)
 
   iterations <- 3
 
@@ -143,7 +167,7 @@ test_that(".rep_gpt_engine controls errrors correctly", {
     seeds = NULL,
     time_inf = T,
     token_inf = T,
-    apikey = get_api_key(),
+    apikey = "dummy-key", # not a real key, the request is mocked
     maxt = 4,
     maxs = 10,
     istrans = gpt_is_transient,
@@ -155,7 +179,7 @@ test_that(".rep_gpt_engine controls errrors correctly", {
   expect_equal(ncol(res), 8)
   expect_equal(nrow(res), iterations)
   expect_equal(max(res$n), iterations)
-  expect_true(all(stringr::str_detect(res$decision_gpt, "401")))
+  expect_true(all(stringr::str_detect(res$decision_gpt, "422")))
 
   # Ineligible api key
   res <- .rep_gpt_engine(
@@ -197,7 +221,7 @@ test_that(".rep_gpt_engine controls errrors correctly", {
     seeds = NULL,
     time_inf = T,
     token_inf = T,
-    apikey = get_api_key_mistral(),
+    apikey = "dummy-key", # not a real key, the request is mocked
     maxt = 4,
     maxs = 10,
     istrans = gpt_is_transient,

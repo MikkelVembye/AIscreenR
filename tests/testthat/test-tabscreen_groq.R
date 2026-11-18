@@ -1,4 +1,26 @@
+# Fake Groq errors, so these tests never reach the real API:
+# unknown models give 404, a wrong role gives 400, anything else gives 401.
+mock_groq_errors <- function(req) {
+  model <- req$body$data$model
+  role <- req$body$data$messages[[1]]$role
+
+  if (model %in% c("llama-7", "llama-min")) {
+    status <- 404
+    msg <- "The model does not exist"
+  } else if (!identical(role, "user")) {
+    status <- 400
+    msg <- "Invalid role"
+  } else {
+    status <- 401
+    msg <- "Invalid API Key"
+  }
+
+  httr2::response_json(status_code = status, body = list(error = list(message = msg)))
+}
+
 test_that(".groq_engine return errors correctly", {
+
+  local_mock_api(mock_groq_errors)
 
   tools_choice_name <- list(
     type = "function",
@@ -24,7 +46,7 @@ test_that(".groq_engine return errors correctly", {
     RPM = 10000,
     time_inf = T,
     token_inf = T,
-    api_key = get_api_key_groq(),
+    api_key = "dummy-key", # not a real key, the request is mocked
     max_t = 4,
     max_s = 10,
     is_trans = .groq_is_transient,
@@ -83,7 +105,7 @@ test_that(".groq_engine return errors correctly", {
     RPM = 10000,
     time_inf = T,
     token_inf = T,
-    api_key = get_api_key_groq(),
+    api_key = "dummy-key", # not a real key, the request is mocked
     max_t = 4,
     max_s = 10,
     is_trans = .groq_is_transient,
@@ -113,7 +135,7 @@ test_that(".groq_engine return errors correctly", {
     RPM = 10000,
     time_inf = T,
     token_inf = T,
-    api_key = get_api_key_groq(),
+    api_key = "dummy-key", # not a real key, the request is mocked
     max_t = 4,
     max_s = 10,
     is_trans = .groq_is_transient(),
@@ -127,6 +149,8 @@ test_that(".groq_engine return errors correctly", {
 
 
 test_that(".rep_groq_engine controls errrors correctly", {
+
+  local_mock_api(mock_groq_errors)
 
   iterations <- 3
 
@@ -143,7 +167,7 @@ test_that(".rep_groq_engine controls errrors correctly", {
     seeds = NULL,
     time_inf = T,
     token_inf = T,
-    api_key = get_api_key_groq(),
+    api_key = "dummy-key", # not a real key, the request is mocked
     max_t = 4,
     max_s = 10,
     is_trans = .groq_is_transient,
@@ -197,7 +221,7 @@ test_that(".rep_groq_engine controls errrors correctly", {
     seeds = NULL,
     time_inf = T,
     token_inf = T,
-    api_key = get_api_key_groq(),
+    api_key = "dummy-key", # not a real key, the request is mocked
     max_t = 4,
     max_s = 10,
     is_trans = .groq_is_transient,

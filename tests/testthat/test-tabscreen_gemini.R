@@ -1,4 +1,21 @@
+# Fake Gemini errors, so these tests never reach the real API:
+# the unknown model "gemini-1" gives 404, anything else gives 400
+# (wrong key or wrong role).
+mock_gemini_errors <- function(req) {
+  if (grepl("models/gemini-1:", req$url, fixed = TRUE)) {
+    status <- 404
+    msg <- "Model not found"
+  } else {
+    status <- 400
+    msg <- "Invalid request"
+  }
+
+  httr2::response_json(status_code = status, body = list(error = list(code = status, message = msg)))
+}
+
 test_that(".gemini_engine return errors correctly", {
+
+  local_mock_api(mock_gemini_errors)
 
   function_declarations <- list(
   list(
@@ -26,7 +43,7 @@ test_that(".gemini_engine return errors correctly", {
     RPM = 10000,
     timeinf = T,
     tokeninf = T,
-    key = get_api_key_gemini(),
+    key = "dummy-key", # not a real key, the request is mocked
     max_t = 4,
     max_s = 10,
     is_trans = gpt_is_transient,
@@ -92,7 +109,7 @@ test_that(".gemini_engine return errors correctly", {
     RPM = 10000,
     timeinf = T,
     tokeninf = T,
-    key = get_api_key_gemini(),
+    key = "dummy-key", # not a real key, the request is mocked
     max_t = 4,
     max_s = 10,
     is_trans = gpt_is_transient,
@@ -124,7 +141,7 @@ test_that(".gemini_engine return errors correctly", {
     RPM = 10000,
     timeinf = T,
     tokeninf = T,
-    key = get_api_key_gemini(),
+    key = "dummy-key", # not a real key, the request is mocked
     max_t = 4,
     max_s = 10,
     is_trans = gpt_is_transient(),
@@ -138,6 +155,8 @@ test_that(".gemini_engine return errors correctly", {
 
 
 test_that(".rep_gpt_engine controls errrors correctly", {
+
+  local_mock_api(mock_gemini_errors)
 
   iterations <- 3
 
@@ -154,7 +173,7 @@ test_that(".rep_gpt_engine controls errrors correctly", {
     seeds = NULL,
     time_inf = T,
     token_inf = T,
-    apikey = get_api_key_gemini(),
+    apikey = "dummy-key", # not a real key, the request is mocked
     maxt = 4,
     maxs = 10,
     istrans = gpt_is_transient,
@@ -210,7 +229,7 @@ test_that(".rep_gpt_engine controls errrors correctly", {
     seeds = NULL,
     time_inf = T,
     token_inf = T,
-    apikey = get_api_key_gemini(),
+    apikey = "dummy-key", # not a real key, the request is mocked
     maxt = 4,
     maxs = 10,
     istrans = gpt_is_transient,
