@@ -14,10 +14,14 @@
 #' The significance of `T_obs` is
 #' assessed with a parametric bootstrap. Here we simulate fresh datasets from the
 #' fitted model, refit the rank-one form, and recompute the residual each
-#' time (`T_boot`). The p-value is the fraction of bootstrap replicates
-#' whose residual is at least as large as the observed one; a small p-value
+#' time (`T_boot`). The p-value is `(1 + #{T_boot >= T_obs}) / (B + 1)`, so it
+#' is never exactly 0; a small p-value
 #' means the observed agreement pattern is not well explained by a single
 #' solving probability per rater.
+#'
+#' Note that the chance baseline (`Pe`) is fixed from the original fit and is
+#' not re-estimated on each simulated dataset, so the bootstrap does not
+#' reflect the uncertainty in the fitted guessing behavior.
 #'
 #' @references
 #' Rohe, K., Krauska, A. N., Collins, G., Higgins, J., & Pustejovsky, J. (2026).
@@ -37,9 +41,11 @@
 #'  \bold{B} \tab \code{integer} \tab the number of bootstrap replicates used. \cr
 #'  \bold{n_valid_pairs} \tab \code{integer} \tab number of rater pairs that share at least one rated item, and so contribute to `T_obs`/`T_boot`. \cr
 #'  \bold{n_params} \tab \code{integer} \tab number of free parameters in the rank-one form (one solving probability per rater; the pair-specific chance baseline is fixed from the fit, not re-estimated). \cr
-#'  \bold{df} \tab \code{integer} \tab `n_valid_pairs - n_params`. A non-positive value means there are no more valid pairs than parameters, but the bootstrap p-value is still valid regardless, since the rank-one equations are nonlinear. \cr
-#'  \bold{p_value} \tab \code{numeric} \tab fraction of `T_boot` at least as large as `T_obs` - a small value means the observed agreement is not well explained by a single solving probability per rater. \cr
+#'  \bold{df} \tab \code{integer} \tab `n_valid_pairs - n_params`. A non-positive value means there are no more valid pairs than parameters, so the rank-one form can fit the agreement rates exactly and the test cannot detect anything. A warning is given and `p_value` is `NA`. \cr
+#'  \bold{p_value} \tab \code{numeric} \tab `(1 + #{T_boot >= T_obs}) / (B + 1)` - a small value means the observed agreement is not well explained by a single solving probability per rater. `NA` when `df <= 0`. \cr
 #'  \bold{raters} \tab \code{character} \tab rater identifiers in the order used to build the underlying agreement matrix (system rater first, then the rest). \cr
+#'  \bold{Pi} \tab \code{matrix} \tab each rater's fitted guess distribution (rows = raters, columns = answers, rows sum to 1). \cr
+#'  \bold{Pe} \tab \code{matrix} \tab the pair-specific chance-agreement baseline used in the rank-one form. \cr
 #' }
 #'
 #' @export
@@ -84,6 +90,14 @@ rank_one_diagnostic <- function(x, B = 1000, seed = NULL, verbose = TRUE) {
   n_valid  <- sum(valid_pairs)
   df <- n_valid - n_params
 
+  if (df <= 0) {
+    warning(
+      "Degrees of freedom are ", df, ": the rank-one form can fit the agreement rates exactly, ",
+      "so the test cannot detect misfit. `p_value` will be NA.",
+      call. = FALSE
+    )
+  }
+
   if (verbose) {
     message(sprintf(
       "Valid rater pairs (with overlap): %d / %d possible. Parameters: %d. Degrees of freedom: %d.",
@@ -113,10 +127,12 @@ rank_one_diagnostic <- function(x, B = 1000, seed = NULL, verbose = TRUE) {
   tau <- tau / sum(tau)
 
   # Each rater's fitted guess distribution over answers, renormalized to sum to 1.
-  Pi <- matrix(0, m, d, dimnames = list(RATERS, ev_levels))
+  # Index columns by name (as.character), not by number: with numeric labels
+  # such as 0/1, Pi[r, e] would read e as a column position.
+  Pi <- matrix(0, m, d, dimnames = list(RATERS, as.character(ev_levels)))
   for (r in RATERS) {
     for (e in ev_levels) {
-      Pi[r, e] <- fit$guessing_distribution$probability[
+      Pi[r, as.character(e)] <- fit$guessing_distribution$probability[
         fit$guessing_distribution$rater_id == r & fit$guessing_distribution$evaluation == e
       ]
     }
@@ -167,7 +183,7 @@ rank_one_diagnostic <- function(x, B = 1000, seed = NULL, verbose = TRUE) {
   # the observed value is relative to it.
   if (verbose) message(sprintf("Parametric bootstrap (B = %d)...", B))
   T_boot <- replicate(B, sim_T())
-  p_value <- mean(T_boot >= T_obs)
+  p_value <- if (df > 0) (1 + sum(T_boot >= T_obs)) / (B + 1) else NA_real_
 
   out <- list(
     T_obs         = T_obs,
@@ -177,7 +193,9 @@ rank_one_diagnostic <- function(x, B = 1000, seed = NULL, verbose = TRUE) {
     n_params      = n_params,
     df            = df,
     p_value       = p_value,
-    raters        = RATERS
+    raters        = RATERS,
+    Pi            = Pi,
+    Pe            = Pe
   )
   class(out) <- "sog_rank_one"
   return(out)

@@ -24,9 +24,11 @@ An object of class \code{"sog_rank_one"}, a list with elements:
 \bold{B} \tab \code{integer} \tab the number of bootstrap replicates used. \cr
 \bold{n_valid_pairs} \tab \code{integer} \tab number of rater pairs that share at least one rated item, and so contribute to \code{T_obs}/\code{T_boot}. \cr
 \bold{n_params} \tab \code{integer} \tab number of free parameters in the rank-one form (one solving probability per rater; the pair-specific chance baseline is fixed from the fit, not re-estimated). \cr
-\bold{df} \tab \code{integer} \tab \code{n_valid_pairs - n_params}. A non-positive value means there are no more valid pairs than parameters, but the bootstrap p-value is still valid regardless, since the rank-one equations are nonlinear. \cr
-\bold{p_value} \tab \code{numeric} \tab fraction of \code{T_boot} at least as large as \code{T_obs} - a small value means the observed agreement is not well explained by a single solving probability per rater. \cr
+\bold{df} \tab \code{integer} \tab \code{n_valid_pairs - n_params}. A non-positive value means there are no more valid pairs than parameters, so the rank-one form can fit the agreement rates exactly and the test cannot detect anything. A warning is given and \code{p_value} is \code{NA}. \cr
+\bold{p_value} \tab \code{numeric} \tab \verb{(1 + #\{T_boot >= T_obs\}) / (B + 1)} - a small value means the observed agreement is not well explained by a single solving probability per rater. \code{NA} when \code{df <= 0}. \cr
 \bold{raters} \tab \code{character} \tab rater identifiers in the order used to build the underlying agreement matrix (system rater first, then the rest). \cr
+\bold{Pi} \tab \code{matrix} \tab each rater's fitted guess distribution (rows = raters, columns = answers, rows sum to 1). \cr
+\bold{Pe} \tab \code{matrix} \tab the pair-specific chance-agreement baseline used in the rank-one form. \cr
 }
 }
 \description{
@@ -43,10 +45,14 @@ computed over rater pairs that share at least one rated item.
 The significance of \code{T_obs} is
 assessed with a parametric bootstrap. Here we simulate fresh datasets from the
 fitted model, refit the rank-one form, and recompute the residual each
-time (\code{T_boot}). The p-value is the fraction of bootstrap replicates
-whose residual is at least as large as the observed one; a small p-value
+time (\code{T_boot}). The p-value is \verb{(1 + #\{T_boot >= T_obs\}) / (B + 1)}, so it
+is never exactly 0; a small p-value
 means the observed agreement pattern is not well explained by a single
 solving probability per rater.
+
+Note that the chance baseline (\code{Pe}) is fixed from the original fit and is
+not re-estimated on each simulated dataset, so the bootstrap does not
+reflect the uncertainty in the fitted guessing behavior.
 }
 \examples{
 \dontrun{
