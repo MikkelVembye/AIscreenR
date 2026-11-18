@@ -2,6 +2,7 @@
 
 ## Bug fixes
 * `rank_one_diagnostic()` now handles numeric evaluation labels such as 0/1. Before, the guessing probabilities were placed in the wrong columns, which could make the diagnostic reject a model that holds.
+* Check code
 
 ## Minor improvements
 * `rank_one_diagnostic()` now computes the p-value as `(1 + #{T_boot >= T_obs}) / (B + 1)`, so it is never exactly 0.
