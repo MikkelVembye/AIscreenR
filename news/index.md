@@ -2,6 +2,26 @@
 
 ## AIscreenR 0.5.1.9999
 
+### Bug fixes
+
+- [`rank_one_diagnostic()`](https://mikkelvembye.github.io/AIscreenR/reference/rank_one_diagnostic.md)
+  now handles numeric evaluation labels such as 0/1. Before, the
+  guessing probabilities were placed in the wrong columns, which could
+  make the diagnostic reject a model that holds.
+
+### Minor improvements
+
+- [`rank_one_diagnostic()`](https://mikkelvembye.github.io/AIscreenR/reference/rank_one_diagnostic.md)
+  now computes the p-value as `(1 + #{T_boot >= T_obs}) / (B + 1)`, so
+  it is never exactly 0.
+- [`rank_one_diagnostic()`](https://mikkelvembye.github.io/AIscreenR/reference/rank_one_diagnostic.md)
+  now gives a warning and returns `p_value = NA` when the degrees of
+  freedom are 0 or negative, because the test cannot detect misfit in
+  that case.
+- [`rank_one_diagnostic()`](https://mikkelvembye.github.io/AIscreenR/reference/rank_one_diagnostic.md)
+  now also returns the fitted guess distributions (`Pi`) and the
+  chance-agreement baseline (`Pe`).
+
 ## AIscreenR 0.5.1
 
 CRAN release: 2026-11-13
