@@ -108,7 +108,6 @@ rank_one_diagnostic <- function(x, B = 1000, seed = NULL, verbose = TRUE) {
   # Each rater's fitted solving probability (the intercept term), converted
   # back off the logit scale - used as starting values for fit_rank_one() and
   # to simulate raters in the bootstrap below.
-  
   fit <- x$fit
   p_hat <- stats::setNames(
     vapply(RATERS, function(r) {

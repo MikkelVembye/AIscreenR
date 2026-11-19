@@ -1,4 +1,26 @@
+# Fake Claude errors, so these tests never reach the real API:
+# unknown models give 404, a wrong role gives 400, anything else gives 401.
+mock_claude_errors <- function(req) {
+  model <- req$body$data$model
+  role <- req$body$data$messages[[1]]$role
+
+  if (model %in% c("claude-haiku-1")) {
+    status <- 404
+    msg <- "The model does not exist"
+  } else if (!identical(role, "user")) {
+    status <- 400
+    msg <- "Invalid role"
+  } else {
+    status <- 401
+    msg <- "Invalid x-api-key"
+  }
+
+  httr2::response_json(status_code = status, body = list(type = "error", error = list(message = msg)))
+}
+
 test_that(".claude_engine return errors correctly", {
+
+  local_mock_api(mock_claude_errors)
 
   # Specifying unknown model
   body <- list(
@@ -16,7 +38,7 @@ test_that(".claude_engine return errors correctly", {
     RPM = 10000,
     time_inf = T,
     token_inf = T,
-    api_key = get_api_key_anthropic(),
+    api_key = "dummy-key", # not a real key, the request is mocked
     max_t = 4,
     max_s = 10,
     is_trans = gpt_is_transient,
@@ -73,7 +95,7 @@ test_that(".claude_engine return errors correctly", {
     RPM = 10000,
     time_inf = T,
     token_inf = T,
-    api_key = get_api_key_anthropic(),
+    api_key = "dummy-key", # not a real key, the request is mocked
     max_t = 4,
     max_s = 10,
     is_trans = gpt_is_transient,
@@ -102,7 +124,7 @@ test_that(".claude_engine return errors correctly", {
     RPM = 10000,
     time_inf = T,
     token_inf = T,
-    api_key = get_api_key_anthropic(),
+    api_key = "dummy-key", # not a real key, the request is mocked
     max_t = 4,
     max_s = 10,
     is_trans = gpt_is_transient(),
@@ -117,6 +139,8 @@ test_that(".claude_engine return errors correctly", {
 
 test_that(".rep_claude_engine controls errrors correctly", {
 
+  local_mock_api(mock_claude_errors)
+
   iterations <- 3
 
   # Ineligible role
@@ -130,7 +154,7 @@ test_that(".rep_claude_engine controls errrors correctly", {
     seeds = NULL,
     time_inf = T,
     token_inf = T,
-    api_key = get_api_key_anthropic(),
+    api_key = "dummy-key", # not a real key, the request is mocked
     max_t = 4,
     max_s = 10,
     is_trans = gpt_is_transient,
@@ -180,7 +204,7 @@ test_that(".rep_claude_engine controls errrors correctly", {
     seeds = NULL,
     time_inf = T,
     token_inf = T,
-    api_key = get_api_key_anthropic(),
+    api_key = "dummy-key", # not a real key, the request is mocked
     max_t = 4,
     max_s = 10,
     is_trans = gpt_is_transient,

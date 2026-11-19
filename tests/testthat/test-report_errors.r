@@ -46,9 +46,8 @@ test_that("report() function generates a report correctly", {
 })
 
 test_that("report() error structure.", {
-  if(skip) skip()
-  if(skip_github_action) skip_on_ci()
-  skip_on_cran()
+  # Not skipped: every call below stops in the argument checks, before
+  # anything is written or rendered with Quarto.
   withr::with_tempdir({
     # Test for missing arguments
     expect_error(

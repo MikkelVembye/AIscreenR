@@ -17,6 +17,26 @@ test_that("sample_references() draws a simple random sample", {
   )
 })
 
+test_that("simple random sampling returns n rows and is reproducible", {
+  dat <- data.frame(
+    record_id = 1:20,
+    decision_binary = rep(c(1, 0), each = 10),
+    human_code = c(rep(1, 8), rep(0, 12))
+  )
+  s1 <- sample_references(dat, n = 5)
+  s2 <- sample_references(dat, n = 5)
+
+  expect_equal(nrow(s1), 5)
+  expect_equal(s1, s2)
+  expect_false(anyDuplicated(s1$record_id) > 0)
+})
+
+test_that("simple random sampling respects prob_vec", {
+  dat <- data.frame(record_id = 1:20)
+  s <- sample_references(dat, n = 1, prob_vec = c(1, rep(0, 19)))
+  expect_equal(as.integer(s[[1]]), 1L)
+})
+
 test_that("sample_references() warns without a seed", {
   expect_snapshot(res <- sample_references(ref_dat(), n = 2, seed = NULL))
 })
@@ -44,6 +64,62 @@ test_that("sample_references() samples a target set", {
   )
 })
 
+test_that("sample_references() needs n, or relevant_col with c_target and R_c", {
+  dat <- data.frame(record_id = 1:20, decision_binary = rep(c(1, 0), each = 10))
+  expect_error(sample_references(dat), "Provide `n` for simple random sampling")
+  expect_error(
+    sample_references(dat, relevant_col = "decision_binary"),
+    "Provide `n`, or both `c_target` and `R_c`"
+  )
+})
+
+test_that("sample_references() checks that id_col and relevant_col exist", {
+  dat <- data.frame(record_id = 1:20, decision_binary = rep(c(1, 0), each = 10))
+  expect_error(
+    sample_references(
+      dat[, "decision_binary", drop = FALSE],
+      relevant_col = "decision_binary", c_target = 0.9, R_c = 0.5
+    ),
+    "`id_col` = \"record_id\" was not found"
+  )
+  expect_error(
+    sample_references(dat, relevant_col = "not_a_column", c_target = 0.9, R_c = 0.5),
+    "not_a_column.*was not found"
+  )
+})
+
+test_that("target set is sampled from relevant records with the right size", {
+  dat <- data.frame(
+    record_id = 1:20,
+    decision_binary = rep(c(1, 0), each = 10),
+    human_code = c(rep(1, 8), rep(0, 12))
+  )
+  res <- sample_references(
+    dat, relevant_col = "decision_binary", c_target = 0.9, R_c = 0.5
+  )
+
+  expect_equal(res$k, 7)
+  expect_length(res$target_ids, 7)
+  expect_false(anyDuplicated(res$target_ids) > 0)
+  expect_true(all(res$target_set$decision_binary == 1))
+  expect_equal(res$reliability_guarantee, 1 - 0.9^7)
+})
+
+test_that("several relevant_col columns must all be 1", {
+  dat <- data.frame(
+    record_id = 1:20,
+    decision_binary = rep(c(1, 0), each = 10),
+    human_code = c(rep(1, 8), rep(0, 12))
+  )
+  res <- sample_references(
+    dat, relevant_col = c("decision_binary", "human_code"),
+    c_target = 0.9, R_c = 0.5
+  )
+
+  expect_true(all(res$target_set$decision_binary == 1))
+  expect_true(all(res$target_set$human_code == 1))
+})
+
 test_that("sample_references() validates its input", {
   expect_error(sample_references(ref_dat()), "Provide `n`")
   expect_error(
@@ -58,5 +134,24 @@ test_that("sample_references() validates its input", {
   expect_error(
     sample_references(ref_dat(), relevant_col = "human_code", c_target = 0.99, R_c = 0.99999),
     "relevant records available"
+  )
+})
+
+test_that("sample_references() stops when there are too few relevant records", {
+  dat <- data.frame(record_id = 1:20, decision_binary = rep(c(1, 0), each = 10))
+  expect_error(
+    sample_references(dat, relevant_col = "decision_binary", c_target = 0.95, R_c = 0.9),
+    "Only 10 relevant records available"
+  )
+})
+
+test_that("sample_references() prints a message when message = TRUE", {
+  dat <- data.frame(record_id = 1:20, decision_binary = rep(c(1, 0), each = 10))
+  expect_message(
+    sample_references(
+      dat, relevant_col = "decision_binary", c_target = 0.9, R_c = 0.5,
+      message = TRUE
+    ),
+    "sampled with replacement"
   )
 })

@@ -22,6 +22,45 @@ test_that("create_fine_tune_data() builds questions", {
   expect_equal(as.character(no_id$studyid), "1")
 })
 
+test_that("create_fine_tune_data() builds the question and sets the class", {
+  dat <- data.frame(
+    studyid = c("a", "b"),
+    title = c("T1", "T2"),
+    abstract = c("A1\n\nmore", "A2\nx"),
+    stringsAsFactors = FALSE
+  )
+  out <- create_fine_tune_data(
+    data = dat, prompt = "Q?",
+    studyid = studyid, title = title, abstract = abstract
+  )
+
+  expect_s3_class(out, "fine_tune_data")
+  expect_named(out, c("studyid", "title", "abstract", "question"))
+  expect_equal(levels(out$studyid), c("a", "b"))
+  expect_equal(
+    out$question[1],
+    "Q? Now, evaluate the following title and abstract for Study a: -Title: T1 -Abstract: A1 more"
+  )
+  expect_equal(
+    out$question[2],
+    "Q? Now, evaluate the following title and abstract for Study b: -Title: T2 -Abstract: A2x"
+  )
+})
+
+test_that("create_fine_tune_data() numbers the studies when studyid is missing", {
+  dat <- data.frame(
+    title = c("T1", "T2"),
+    abstract = c("A1", "A2"),
+    stringsAsFactors = FALSE
+  )
+  out <- create_fine_tune_data(
+    data = dat, prompt = "Q?", title = title, abstract = abstract
+  )
+
+  expect_equal(levels(out$studyid), c("1", "2"))
+  expect_match(out$question[2], "Study 2:", fixed = TRUE)
+})
+
 test_that("save_fine_tune_data() writes jsonl", {
   dat <- ft_dat()
   dat$true_answer <- ifelse(dat$human == 1, "Include", "Exclude")
