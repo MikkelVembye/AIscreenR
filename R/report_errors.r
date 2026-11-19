@@ -85,7 +85,9 @@ report <- function(
   
   # Error handling for invalid file format
   valid_formats <- c("html", "pdf", "docx")
-  if (!(format %in% valid_formats)) stop("Invalid format. Choose from 'html', 'pdf', 'docx'.")
+  if (!is.character(format) || length(format) != 1L || is.na(format) || !format %in% valid_formats) {
+    stop("Invalid format. Choose from 'html', 'pdf', 'docx'.")
+  }
   
   # allow full path in `file`
   file_has_path <- basename(file) != file

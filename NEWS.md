@@ -2,7 +2,9 @@
 
 ## Bug fixes
 * `rank_one_diagnostic()` now handles numeric evaluation labels such as 0/1. Before, the guessing probabilities were placed in the wrong columns, which could make the diagnostic reject a model that holds.
-* Check code
+* `report()` now rejects missing, non-scalar, and missing-value formats with a consistent validation error.
+* `screen_errors()` now returns the original object when there are no errors to rescreen.
+* `tabscreen_gpt()` now handles malformed model responses when `token_info = FALSE` without failing while removing token columns.
 
 ## Minor improvements
 * `rank_one_diagnostic()` now computes the p-value as `(1 + #{T_boot >= T_obs}) / (B + 1)`, so it is never exactly 0.
