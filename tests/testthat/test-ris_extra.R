@@ -37,8 +37,13 @@ test_that("read_ris_to_dataframe() repairs invalid UTF-8 bytes", {
   df <- read_ris_to_dataframe(write_ris(bytes = bytes))
   expect_equal(df$title, "Caf\u00e9 culture")
 
-  bytes <- c(charToRaw("TY  - JOUR\nTI  - Bad "), as.raw(0x81), charToRaw(" byte\nER  - \n"))
-  expect_equal(read_ris_to_dataframe(write_ris(bytes = bytes))$title, "Bad \u0081 byte")
+  # Undefined Windows-1252 bytes vary across iconv implementations.
+  bytes <- c(
+    charToRaw("TY  - JOUR\nTI  - Price "),
+    as.raw(0x80),
+    charToRaw(" 10\nER  - \n")
+  )
+  expect_equal(read_ris_to_dataframe(write_ris(bytes = bytes))$title, "Price \u20ac 10")
 })
 
 test_that("read_ris_to_dataframe() warns about bytes that cannot be recovered", {

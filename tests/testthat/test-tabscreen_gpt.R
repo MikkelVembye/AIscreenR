@@ -48,7 +48,7 @@ mock_openai_ok <- function(req) {
 # mocked replies, a dummy key and a sequential plan (mocks do not reach
 # parallel workers). All of it is undone when the test ends.
 local_gpt_mock <- function(mock = mock_openai_ok, env = parent.frame()) {
-  local_mock_api(mock, env = env)
+  local_mock_api(mock, .env = env)
   withr::local_envvar(OPENAI_API_KEY = "dummy-key", .local_envir = env)
   old_plan <- future::plan(future::sequential)
   withr::defer(future::plan(old_plan), envir = env)
