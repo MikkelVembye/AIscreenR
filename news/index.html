@@ -47,7 +47,12 @@
 <h3 id="bug-fixes-0-5-1-9999">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-5-1-9999"></a></h3>
 <ul><li>
 <code><a href="../reference/rank_one_diagnostic.html">rank_one_diagnostic()</a></code> now handles numeric evaluation labels such as 0/1. Before, the guessing probabilities were placed in the wrong columns, which could make the diagnostic reject a model that holds.</li>
-<li>Check code</li>
+<li>
+<code><a href="../reference/report.html">report()</a></code> now rejects missing, non-scalar, and missing-value formats with a consistent validation error.</li>
+<li>
+<code><a href="../reference/screen_errors.html">screen_errors()</a></code> now returns the original object when there are no errors to rescreen.</li>
+<li>
+<code><a href="../reference/tabscreen_gpt.tools_responses.html">tabscreen_gpt()</a></code> now handles malformed model responses when <code>token_info = FALSE</code> without failing while removing token columns.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="minor-improvements-0-5-1-9999">Minor improvements<a class="anchor" aria-label="anchor" href="#minor-improvements-0-5-1-9999"></a></h3>

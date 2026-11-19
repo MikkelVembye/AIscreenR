@@ -8,7 +8,14 @@
   now handles numeric evaluation labels such as 0/1. Before, the
   guessing probabilities were placed in the wrong columns, which could
   make the diagnostic reject a model that holds.
-- Check code
+- [`report()`](https://mikkelvembye.github.io/AIscreenR/reference/report.md)
+  now rejects missing, non-scalar, and missing-value formats with a
+  consistent validation error.
+- [`screen_errors()`](https://mikkelvembye.github.io/AIscreenR/reference/screen_errors.md)
+  now returns the original object when there are no errors to rescreen.
+- [`tabscreen_gpt()`](https://mikkelvembye.github.io/AIscreenR/reference/tabscreen_gpt.tools_responses.md)
+  now handles malformed model responses when `token_info = FALSE`
+  without failing while removing token columns.
 
 ### Minor improvements
 
