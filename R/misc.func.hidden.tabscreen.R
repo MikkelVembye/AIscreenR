@@ -639,7 +639,9 @@
 
     # If the user do not what time and token info, this is removed here
     if (!timeinf) res <- res |> dplyr::select(-run_time)
-    if (!tokeninf) res <- res |> dplyr::select(-c(prompt_tokens, completion_tokens))
+    if (!tokeninf) {
+      res <- res |> dplyr::select(-dplyr::any_of(c("prompt_tokens", "completion_tokens")))
+    }
 
     # Returning the response result
     res
