@@ -102,3 +102,31 @@ test_that("rank_one_diagnostic() reads numeric 0/1 labels by name, not position"
     expect_equal(unname(Pi[r, "1"]), p1 / (p0 + p1))
   }
 })
+
+test_that("rank_one_diagnostic() prints progress messages when verbose = TRUE", {
+  evaluations <- data.frame(
+    item_id = paste0("s", 1:10),
+    gpt     = c("Include", "Include", "Exclude", "Exclude", "Include", "Exclude", "Include", "Exclude", "Include", "Exclude"),
+    human_1 = c("Include", "Include", "Exclude", "Include", "Include", "Exclude", "Include", "Exclude", "Exclude", "Exclude"),
+    human_2 = c("Include", "Exclude", "Exclude", "Exclude", "Include", "Include", "Include", "Exclude", "Include", "Exclude"),
+    human_3 = c("Include", "Include", "Exclude", "Exclude", "Include", "Exclude", "Exclude", "Exclude", "Include", "Include"),
+    stringsAsFactors = FALSE
+  )
+
+  fit <- solve_or_guess(
+    evaluations,
+    system_rater_id  = "gpt",
+    reference_raters = c("human_1", "human_2", "human_3"),
+    B = 5,
+    seed = 1,
+    progress = FALSE
+  )
+
+  msgs <- testthat::capture_messages(
+    rank_one_diagnostic(fit, B = 5, seed = 1, verbose = TRUE)
+  )
+
+  # 4 raters give 6 pairs and 4 parameters, so df = 2
+  expect_match(msgs, "Valid rater pairs (with overlap): 6 / 6 possible. Parameters: 4. Degrees of freedom: 2.", fixed = TRUE, all = FALSE)
+  expect_match(msgs, "Parametric bootstrap (B = 5)", fixed = TRUE, all = FALSE)
+})
