@@ -201,6 +201,22 @@ test_that(".gemini_engine() copes with unusual responses", {
   expect_true(is.na(res$confidence))
   res <- run(call(list(decision_gpt = "1", detailed_description = "z"), "inclusion_decision"), body = gemini_body(tools_detailed_gemini))
   expect_equal(res$detailed_description, "z")
+
+  # Function call arguments that cannot become a tibble (a JSON array gives an unnamed list)
+  res <- run(call(list("a", "b")))
+  expect_true(is.na(res$decision_binary))
+  expect_match(res$decision_gpt, "Error")
+  expect_true(is.na(res$prompt_tokens))
+
+  # The same without token columns (they do not exist when the response cannot be parsed)
+  res <- run(call(list("a", "b")), tokeninf = FALSE)
+  expect_true(is.na(res$decision_binary))
+  expect_false(any(c("prompt_tokens", "completion_tokens") %in% names(res)))
+
+  # A request without tools is not a detailed request
+  res <- run(call(list(decision_gpt = "1")), body = list(contents = list()))
+  expect_equal(res$decision_binary, 1)
+  expect_false("detailed_description" %in% names(res))
 })
 
 test_that(".rep_gemini_engine() maps tool choices and thinking settings", {
@@ -234,4 +250,25 @@ test_that(".rep_gemini_engine() maps tool choices and thinking settings", {
   expect_equal(state$reqs[[state$n]]$body$data$generationConfig$thinkingConfig$thinkingBudget, 128)
   run("auto", model = "gemini-2.5-flash", effort = 2048)
   expect_equal(state$reqs[[state$n]]$body$data$generationConfig$thinkingConfig$thinkingBudget, 2048)
+})
+
+test_that(".rep_gemini_engine() sends no tools when tool is NULL", {
+  # A fixed reply with a function call, whatever the request contains
+  reply <- list(
+    candidates = list(list(content = list(parts = list(
+      list(functionCall = list(name = "inclusion_decision_simple", args = list(decision_gpt = "1")))
+    )))),
+    usageMetadata = list(promptTokenCount = 1, candidatesTokenCount = 1), modelVersion = "v"
+  )
+  state <- local_mock_api(\(req) json_resp(reply))
+
+  res <- .rep_gemini_engine(
+    question = "q", model_gpt = "gemini-3.1-flash-lite", topp = NULL, iterations = 1, req_per_min = 1000,
+    role_gpt = "user", tool = NULL, t_choice = "auto", seeds = NULL, time_inf = TRUE, token_inf = TRUE,
+    apikey = "k", maxt = 1, maxs = NULL, istrans = gpt_is_transient, ba = NULL, af = NULL,
+    endpoint_url = "https://mock.test", reasoning_effort = NULL
+  )
+
+  expect_null(state$reqs[[state$n]]$body$data$tools)
+  expect_equal(res$decision_binary, 1)
 })

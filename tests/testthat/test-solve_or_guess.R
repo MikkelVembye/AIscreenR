@@ -8,13 +8,17 @@ evaluations <- data.frame(
 )
 
 test_that("solve_or_guess() fits a plain wide data.frame and returns expected structure", {
-  fit <- solve_or_guess(
-    evaluations,
-    system_rater_id  = "gpt",
-    reference_raters = "human",
-    B = 5,
-    seed = 1,
-    progress = FALSE
+  # One reference rater works, but gives a warning
+  expect_warning(
+    fit <- solve_or_guess(
+      evaluations,
+      system_rater_id  = "gpt",
+      reference_raters = "human",
+      B = 5,
+      seed = 1,
+      progress = FALSE
+    ),
+    "At least 2 reference raters"
   )
 
   expect_s3_class(fit, "sog")
@@ -33,8 +37,11 @@ test_that("solve_or_guess() validates its arguments", {
     solve_or_guess(evaluations, system_rater_id = "gpt", reference_raters = "gpt"),
     "must not also appear"
   )
+  # The one-rater warning comes first, so it is ignored here
   expect_error(
-    solve_or_guess(evaluations, system_rater_id = "gpt", reference_raters = "nonexistent"),
+    suppressWarnings(
+      solve_or_guess(evaluations, system_rater_id = "gpt", reference_raters = "nonexistent")
+    ),
     "missing column"
   )
 })
@@ -70,13 +77,16 @@ test_that("solve_or_guess() accepts a tabscreen result object directly", {
   )
   class(gpt_tbl) <- c("gpt_tbl", class(gpt_tbl))
 
-  fit <- solve_or_guess(
-    gpt_tbl,
-    system_rater_id  = "gpt-6-luna",
-    reference_raters = "human_code",
-    B = 5,
-    seed = 3,
-    progress = FALSE
+  expect_warning(
+    fit <- solve_or_guess(
+      gpt_tbl,
+      system_rater_id  = "gpt-6-luna",
+      reference_raters = "human_code",
+      B = 5,
+      seed = 3,
+      progress = FALSE
+    ),
+    "At least 2 reference raters"
   )
 
   expect_s3_class(fit, "sog")

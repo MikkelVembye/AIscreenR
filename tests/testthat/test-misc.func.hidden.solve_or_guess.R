@@ -65,7 +65,10 @@ partial_evaluations <- data.frame(
 )
 
 test_that(".solve_or_guess_fast() excludes unrated items instead of treating them as a 'MISSING' answer", {
-  fit <- .solve_or_guess_fast(partial_evaluations, system_rater_id = "system", verbose = FALSE)
+  expect_warning(
+    fit <- .solve_or_guess_fast(partial_evaluations, system_rater_id = "system", verbose = FALSE),
+    "no evaluation"
+  )
 
   expect_setequal(unique(fit$guessing_distribution$evaluation), c("Include", "Exclude"))
 
@@ -88,7 +91,10 @@ no_overlap_evaluations <- data.frame(
 )
 
 test_that(".solve_or_guess_fast() handles two raters who never rated the same item", {
-  fit <- .solve_or_guess_fast(no_overlap_evaluations, system_rater_id = "system", verbose = FALSE)
+  expect_warning(
+    fit <- .solve_or_guess_fast(no_overlap_evaluations, system_rater_id = "system", verbose = FALSE),
+    "no evaluation"
+  )
   expect_setequal(unique(fit$rater_ability$rater_id), c("system", "human1", "human2"))
 })
 
