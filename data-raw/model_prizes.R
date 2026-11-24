@@ -1,4 +1,4 @@
-# Models Prizes October 20 2026
+# Models Prizes November 24 2026
 
 mio <- 1000000
 
@@ -62,7 +62,11 @@ model_prizes <-
 
       # GPT-6.1 models
       "gpt-6.1-sol",
-      "gpt-6.1-terra"
+      "gpt-6.1-terra",
+
+      # GPT-6.2 models
+      "gpt-6.2-sol",
+      "gpt-6.2-astra"
     ),
 
     price_in_per_token = c(
@@ -123,7 +127,11 @@ model_prizes <-
 
       # GPT-6.1 models
       2/mio,     # gpt-6.1-sol
-      1/mio      # gpt-6.1-terra
+      1/mio,     # gpt-6.1-terra
+
+      # GPT-6.2 models
+      2/mio,     # gpt-6.2-sol
+      8/mio      # gpt-6.2-astra
     ),
 
     price_out_per_token = c(
@@ -184,7 +192,11 @@ model_prizes <-
 
       # GPT-6.1 models
       10/mio,     # gpt-6.1-sol
-      5/mio       # gpt-6.1-terra
+      5/mio,      # gpt-6.1-terra
+
+      # GPT-6.2 models
+      10/mio,     # gpt-6.2-sol
+      40/mio      # gpt-6.2-astra
     )
   )
 
