@@ -1,0 +1,79 @@
+---
+title: "Double Screening in a Shiny App"
+format:
+  html:
+    toc: true
+vignette: |
+  %\VignetteIndexEntry{Double Screening in a Shiny App}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+execute:
+  eval: false
+---
+
+`run_screening_app()` opens a local app in which two human reviewers and an OpenAI
+GPT model screen the titles and abstracts of a RIS file.
+
+## Start
+
+The app needs the packages `shiny`, `DT`, `future` and `writexl`.
+
+```r
+install.packages(c("shiny", "DT", "future", "writexl"))
+
+library(AIscreenR)
+run_screening_app("my_review.rds")
+```
+
+`my_review.rds` is the project file. All work is saved in it after every click.
+Run the same command again to continue. Use one file per review.
+
+## The steps
+
+When a step is done, a *Next* button takes you to the following tab.
+
+1. **Upload** a RIS file (up to 50 MB), check the preview and click *Create project*.
+2. **Setup**: write the screening question, choose the model and save. Tick
+   *Ask the AI for a reason* if you want one for each answer. This costs more.
+3. **Screen**: choose *human1* or *human2*. Answer with the buttons or the keys
+   `I` (include) and `E` (exclude), and add a note if you wish. Click *Hand over*
+   before the other reviewer takes over. After the last record, click
+   *I am finished*. When both have finished, all answers are locked.
+4. **AI**: give an API key (or set it first with `set_api_key()`), check the
+   approximate cost and start. The screening runs in the background, so the
+   reviewers can screen meanwhile. Keep the app open. *Stop* finishes the current
+   chunk of 25 records, and *Continue/Retry* screens the records without an answer.
+   The total price is shown on the tab and printed in the R console. It is
+   calculated from the tokens used, so check your OpenAI account for the bill.
+5. **Reconcile**: the two reviewers settle the records on which they disagree.
+6. **Compare**: the AI against the final human decision, a list of the records
+   where they differ, and the analysis from `solve_or_guess()`. The analysis can
+   take several minutes (about 9 minutes for 1,000 records).
+7. **Export** an Excel file, or the RIS file with one `N1` note line per record.
+   The Excel file has the sheet `answer_data` (the AI answers as returned by
+   `tabscreen_gpt()`) and the sheet `decisions` (human, AI and final decisions,
+   1 = include, 0 = exclude).
+
+## Report of AI disagreements
+
+When both reviewers have finished, all disagreements are settled and the AI has
+answered, the **AI**, **Reconcile** and **Export** tabs offer *Report (HTML)* and
+*Report (Word)*. The report is made with `report()` and lists the records where
+the AI differs from the final decision, split into false exclusions and false
+inclusions. It includes the AI's reasons if you asked for them. It needs
+[Quarto](https://quarto.org) and the R package `quarto`.
+
+## Good to know
+
+- AI answers marked as uncertain count as *include*.
+- Disagreements between the AI and the humans are shown, but not settled. The
+  final decision always comes from the two reviewers.
+- The question and model are locked once the AI has answered. *Delete AI answers
+  and start over* unlocks them, and the screening must then be paid for again.
+- Several AI requests are sent at once. By default, the number is the available
+  cores minus one. Set it with `run_screening_app("my_review.rds", workers = 4)`.
+  Use a lower number if you reach the rate limit of your OpenAI account or the
+  computer runs short of memory.
+- The reviewers cannot see each other's answers *in the app*. The project file
+  itself is not protected, so do not open it during screening.
+- The API key is not saved in the project file.

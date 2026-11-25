@@ -24,6 +24,11 @@ reference:
       - screen_errors.gpt
       - screen_errors.chatgpt
 
+  - title: "Screening app"
+    desc: "Double screening by two reviewers and AI in a local Shiny app"
+    contents:
+      - run_screening_app
+
   - title: "Analyze screening performance"
     desc: "R functions to analyze agreement between humans and GPT"
     contents:
@@ -103,6 +108,11 @@ articles:
     navbar: ~
     contents:
       - Using-GPT-API-Models-For-Screening
+
+  - title: Double screening in a Shiny app
+    navbar: ~
+    contents:
+      - articles/screening-app
 
   - title: Generating disagreement reports
     navbar: ~

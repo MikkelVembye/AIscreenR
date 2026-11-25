@@ -1,5 +1,8 @@
 # AIscreenR 0.5.1.9999
 
+## New features
+* New function `run_screening_app()` opens a local Shiny app for double screening a RIS file. Two reviewers and an OpenAI GPT model screen every record, the reviewers settle their disagreements, and the results can be compared with the AI and exported as Excel or RIS. A `report()` of the AI disagreements can be downloaded as HTML or Word. The total price of the AI screening is shown. AI requests are sent in parallel, controlled by the `workers` argument (default: available cores minus one). The app needs the suggested packages `shiny`, `DT`, `future` and `writexl`.
+
 ## Bug fixes
 * `rank_one_diagnostic()` now handles numeric evaluation labels such as 0/1. Before, the guessing probabilities were placed in the wrong columns, which could make the diagnostic reject a model that holds.
 * `report()` now rejects missing, non-scalar, and missing-value formats with a consistent validation error.

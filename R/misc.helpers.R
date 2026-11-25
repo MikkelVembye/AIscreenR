@@ -16,7 +16,7 @@ utils::globalVariables(
     "studyid", "top_p", "n_mis_answers", "screen_errros", "max_tries", "max_seconds", "irr", "se_irr", "cl_irr", "cu_irr",
     "level_of_agreement", "precision", "recall", "npv", "specificity", "bacc", "F2", "mcc", "denominator", "nominator",
     "model_prizes", "price_in_per_token", "price_out_per_token",
-    "submodel", "prompt", "data", "tools", "tool_choice", "is.gpt", "criteria", "incl_p_cutoff", "incl_p", "title","supplementary","file_path","file_content","combination_idx","rep_num",
+    "submodel", "prompt", "data", "tools", "tool_choice", "is.gpt", "criteria", "incl_p_cutoff", "incl_p", "title", "abstract","supplementary","file_path","file_content","combination_idx","rep_num",
     "current_file_path","safe_basename","current_prompt","current_model",
     "current_rep_num","current_study_id","current_prompt_id",
     "current_vector_store_name","precomputed_supplementary","total_price_dollar", "groq_model_prizes", "mistral_model_prizes", "gemini_model_prizes", "n_missing",
